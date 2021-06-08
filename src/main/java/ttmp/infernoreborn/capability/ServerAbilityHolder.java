@@ -1,6 +1,9 @@
 package ttmp.infernoreborn.capability;
 
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.ai.attributes.Attribute;
+import net.minecraft.entity.ai.attributes.AttributeModifier;
+import net.minecraft.entity.ai.attributes.ModifiableAttributeInstance;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.INBT;
 import net.minecraft.nbt.ListNBT;
@@ -14,95 +17,116 @@ import ttmp.infernoreborn.ability.Ability;
 import ttmp.infernoreborn.contents.Abilities;
 
 import javax.annotation.Nullable;
-import java.util.AbstractList;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 
-public class ServerAbilityHolder extends AbilityHolder implements INBTSerializable<CompoundNBT>{
-	@Nullable public static ServerAbilityHolder of(ICapabilityProvider provider){
-		AbilityHolder of = AbilityHolder.of(provider);
-		return of instanceof ServerAbilityHolder ? (ServerAbilityHolder)of : null;
-	}
+public class ServerAbilityHolder extends AbilityHolder implements INBTSerializable<CompoundNBT> {
+    @Nullable
+    public static ServerAbilityHolder of(ICapabilityProvider provider) {
+        AbilityHolder of = AbilityHolder.of(provider);
+        return of instanceof ServerAbilityHolder ? (ServerAbilityHolder) of : null;
+    }
 
-	private final Set<Ability> abilities = new HashSet<>();
-	private final Set<Ability> addedAbilities = new HashSet<>();
-	private final Set<Ability> removedAbilities = new HashSet<>();
-	private final Set<Ability> abilitiesView = Collections.unmodifiableSet(abilities);
+    private final Set<Ability> abilities = new HashSet<>();
+    private final Set<Ability> addedAbilities = new HashSet<>();
+    private final Set<Ability> removedAbilities = new HashSet<>();
+    private final Set<Ability> abilitiesView = Collections.unmodifiableSet(abilities);
 
-	private boolean updateAbility;
+    private boolean updateAbility;
 
-	@Override public Set<Ability> getAbilities(){
-		return abilitiesView;
-	}
-	@Override public boolean has(Ability ability){
-		return this.abilities.contains(ability);
-	}
-	@Override public boolean add(Ability ability){
-		if(this.abilities.contains(ability)||!addedAbilities.add(ability)) return false;
-		updateAbility = true;
-		return true;
-	}
-	@Override public boolean remove(Ability ability){
-		if(!this.abilities.contains(ability)||!removedAbilities.add(ability)) return false;
-		updateAbility = true;
-		return true;
-	}
+    @Override
+    public Set<Ability> getAbilities() {
+        return abilitiesView;
+    }
 
-	@Override public void update(LivingEntity entity){
-		boolean update = false;
-		if(!addedAbilities.isEmpty()){
-			for(Ability ability : addedAbilities)
-				if(abilities.add(ability))
-					onAbilityAdded(ability);
-			addedAbilities.clear();
-			update = true;
-		}
-		if(!removedAbilities.isEmpty()){
-			for(Ability ability : removedAbilities)
-				if(abilities.remove(ability))
-					onAbilityRemoved(ability);
-			removedAbilities.clear();
-			update = true;
-		}
+    @Override
+    public boolean has(Ability ability) {
+        return this.abilities.contains(ability);
+    }
 
-		// TODO
-	}
+    @Override
+    public boolean add(Ability ability) {
+        if (this.abilities.contains(ability) || !addedAbilities.add(ability)) return false;
+        updateAbility = true;
+        return true;
+    }
 
-	protected void onAbilityAdded(Ability ability){
-		// TODO
-	}
-	protected void onAbilityRemoved(Ability ability){
-		// TODO
-	}
+    @Override
+    public boolean remove(Ability ability) {
+        if (!this.abilities.contains(ability) || !removedAbilities.add(ability)) return false;
+        updateAbility = true;
+        return true;
+    }
 
-	@Override public CompoundNBT serializeNBT(){
-		CompoundNBT nbt = new CompoundNBT();
+    @Override
+    public void update(LivingEntity entity) {
+        boolean update = false;
+        if (!addedAbilities.isEmpty()) {
+            for (Ability ability : addedAbilities)
+                if (abilities.add(ability)) {
+                    onAbilityAdded(ability, entity);
+                }
+            addedAbilities.clear();
+            update = true;
+        }
+        if (!removedAbilities.isEmpty()) {
+            for (Ability ability : removedAbilities)
+                if (abilities.remove(ability))
+                    onAbilityRemoved(ability, entity);
+            removedAbilities.clear();
+            update = true;
+        }
 
-		if(!abilities.isEmpty()){
-			IForgeRegistry<Ability> registry = Abilities.getRegistry();
-			nbt.put("abilities", abilities.stream()
-					.map(registry::getKey)
-					.filter(Objects::nonNull)
-					.map(ResourceLocation::toString)
-					.map(StringNBT::valueOf)
-					.collect(ListNBT::new, AbstractList::add, (l1, l2) -> {}));
-		}
-		return nbt;
-	}
-	@Override public void deserializeNBT(CompoundNBT nbt){
-		this.abilities.clear();
+        // TODO
+    }
 
-		ListNBT abilities = nbt.getList("abilities", Constants.NBT.TAG_STRING);
-		if(!abilities.isEmpty()){
-			IForgeRegistry<Ability> registry = Abilities.getRegistry();
-			abilities.stream()
-					.map(INBT::getAsString)
-					.map(ResourceLocation::new)
-					.map(registry::getValue)
-					.filter(Objects::nonNull)
-					.forEach(this.abilities::add);
-		}
-	}
+    protected void onAbilityAdded(Ability ability, LivingEntity entity) {
+        for (Map.Entry<Attribute, Set<AttributeModifier>> entry : ability.getAttributes().entrySet()) {
+            ModifiableAttributeInstance att = entity.getAttributes().getInstance(entry.getKey());
+            for (AttributeModifier m : entry.getValue()) {
+                att.addPermanentModifier(m);
+            }
+        }
+    }
+
+    protected void onAbilityRemoved(Ability ability, LivingEntity entity) {
+        for (Map.Entry<Attribute, Set<AttributeModifier>> entry : ability.getAttributes().entrySet()) {
+            ModifiableAttributeInstance att = entity.getAttributes().getInstance(entry.getKey());
+            for (AttributeModifier m : entry.getValue()){
+                att.removePermanentModifier(m.getId());
+            }
+        }
+    }
+
+    @Override
+    public CompoundNBT serializeNBT() {
+        CompoundNBT nbt = new CompoundNBT();
+
+        if (!abilities.isEmpty()) {
+            IForgeRegistry<Ability> registry = Abilities.getRegistry();
+            nbt.put("abilities", abilities.stream()
+                    .map(registry::getKey)
+                    .filter(Objects::nonNull)
+                    .map(ResourceLocation::toString)
+                    .map(StringNBT::valueOf)
+                    .collect(ListNBT::new, AbstractList::add, (l1, l2) -> {
+                    }));
+        }
+        return nbt;
+    }
+
+    @Override
+    public void deserializeNBT(CompoundNBT nbt) {
+        this.abilities.clear();
+
+        ListNBT abilities = nbt.getList("abilities", Constants.NBT.TAG_STRING);
+        if (!abilities.isEmpty()) {
+            IForgeRegistry<Ability> registry = Abilities.getRegistry();
+            abilities.stream()
+                    .map(INBT::getAsString)
+                    .map(ResourceLocation::new)
+                    .map(registry::getValue)
+                    .filter(Objects::nonNull)
+                    .forEach(this.abilities::add);
+        }
+    }
 }
