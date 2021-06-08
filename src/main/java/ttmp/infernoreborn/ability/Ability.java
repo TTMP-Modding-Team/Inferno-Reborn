@@ -53,7 +53,7 @@ public class Ability extends ForgeRegistryEntry<Ability>{
 
 		public Properties addAttribute(Attribute attribute, UUID uuid, double amount, AttributeModifier.Operation operation){
 			Set<AttributeModifier> m = attributes.computeIfAbsent(attribute, a -> new HashSet<>());
-			if(m.add(new AttributeModifier(uuid, "Ability Attributes", amount, operation)))
+			if(!m.add(new AttributeModifier(uuid, "Ability Attributes", amount, operation)))
 				throw new IllegalStateException("Registration of attribute with overlapping ID "+uuid);
 			return this;
 		}

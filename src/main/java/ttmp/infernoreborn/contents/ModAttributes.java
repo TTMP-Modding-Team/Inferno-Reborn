@@ -11,7 +11,7 @@ import static ttmp.infernoreborn.InfernoReborn.MODID;
 public final class ModAttributes{
 	private ModAttributes(){}
 
-	private static final DeferredRegister<Attribute> ATTRIBUTES = DeferredRegister.create(ForgeRegistries.ATTRIBUTES, MODID);
+	public static final DeferredRegister<Attribute> REGISTER = DeferredRegister.create(ForgeRegistries.ATTRIBUTES, MODID);
 
 	/** 마법이 아닌 모든 종류의 간접 피해량이 N만큼 상승 */
 	public static final RegistryObject<RangedAttribute> RANGED_ATTACK = attribute("ranged_attack", 0, -1024, 1024);
@@ -35,6 +35,6 @@ public final class ModAttributes{
 
 	private static RegistryObject<RangedAttribute> attribute(String name, double def, double min, double max){
 		String desc = "infernoreborn."+name;
-		return ATTRIBUTES.register(name, () -> new RangedAttribute(desc, def, min, max));
+		return REGISTER.register(name, () -> new RangedAttribute(desc, def, min, max));
 	}
 }

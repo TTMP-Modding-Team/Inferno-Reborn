@@ -27,9 +27,9 @@ public final class Abilities{
 		return registry;
 	}
 
-	private static final DeferredRegister<Ability> ABILITIES = DeferredRegister.create(Ability.class, MODID);
+	public static final DeferredRegister<Ability> REGISTER = DeferredRegister.create(Ability.class, MODID);
 
-	public static final RegistryObject<Ability> HEART = ABILITIES.register("heart", () ->
+	public static final RegistryObject<Ability> HEART = REGISTER.register("heart", () ->
 			new Ability(new Ability.Properties(0xFF0000)
 					.addAttribute(Attributes.MAX_HEALTH, UUID.fromString("55924d9f-ac7a-4472-bfea-bc4e305a363f"), .5, Operation.ADDITION)));
 

@@ -33,10 +33,12 @@ public class ServerAbilityHolder extends AbilityHolder implements INBTSerializab
 
 	private boolean updateAbility;
 
-	public Set<Ability> getAbilities(){
+	@Override public Set<Ability> getAbilities(){
 		return abilitiesView;
 	}
-
+	@Override public boolean has(Ability ability){
+		return this.abilities.contains(ability);
+	}
 	@Override public boolean add(Ability ability){
 		if(this.abilities.contains(ability)||!addedAbilities.add(ability)) return false;
 		updateAbility = true;
