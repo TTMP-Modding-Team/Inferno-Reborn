@@ -9,7 +9,7 @@ import net.minecraftforge.fml.RegistryObject;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber.Bus;
 import net.minecraftforge.registries.DeferredRegister;
-import net.minecraftforge.registries.IForgeRegistry;
+import net.minecraftforge.registries.ForgeRegistry;
 import net.minecraftforge.registries.RegistryBuilder;
 import ttmp.infernoreborn.ability.Ability;
 
@@ -21,9 +21,9 @@ import static ttmp.infernoreborn.InfernoReborn.MODID;
 public final class Abilities{
 	private Abilities(){}
 
-	private static IForgeRegistry<Ability> registry;
+	private static ForgeRegistry<Ability> registry;
 
-	public static IForgeRegistry<Ability> getRegistry(){
+	public static ForgeRegistry<Ability> getRegistry(){
 		return registry;
 	}
 
@@ -35,7 +35,7 @@ public final class Abilities{
 
 	@SubscribeEvent
 	public static void newRegistry(RegistryEvent.NewRegistry e){
-		registry = new RegistryBuilder<Ability>()
+		registry = (ForgeRegistry<Ability>)new RegistryBuilder<Ability>()
 				.setType(Ability.class)
 				.setName(new ResourceLocation(MODID, "abilities"))
 				.create();

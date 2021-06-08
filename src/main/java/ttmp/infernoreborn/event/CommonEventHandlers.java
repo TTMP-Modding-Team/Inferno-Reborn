@@ -1,4 +1,4 @@
-package ttmp.infernoreborn;
+package ttmp.infernoreborn.event;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
@@ -10,6 +10,7 @@ import net.minecraftforge.event.entity.living.LivingEvent.LivingUpdateEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.registries.ForgeRegistryEntry;
+import ttmp.infernoreborn.InfernoReborn;
 import ttmp.infernoreborn.capability.AbilityHolder;
 import ttmp.infernoreborn.capability.ClientAbilityHolder;
 import ttmp.infernoreborn.capability.ServerAbilityHolder;
@@ -20,8 +21,8 @@ import java.util.stream.Collectors;
 import static ttmp.infernoreborn.InfernoReborn.MODID;
 
 @Mod.EventBusSubscriber(modid = MODID)
-public class InfernoRebornEventHandlers{
-	private InfernoRebornEventHandlers(){}
+public class CommonEventHandlers{
+	private CommonEventHandlers(){}
 
 	private static final ResourceLocation ABILITY_HOLDER_KEY = new ResourceLocation(MODID, "ability_holder");
 

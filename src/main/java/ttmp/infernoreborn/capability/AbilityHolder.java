@@ -24,6 +24,8 @@ public abstract class AbilityHolder implements ICapabilityProvider{
 	public abstract boolean add(Ability ability);
 	public abstract boolean remove(Ability ability);
 
+	public abstract void clear();
+
 	public abstract void update(LivingEntity entity);
 
 	private final LazyOptional<AbilityHolder> self = LazyOptional.of(() -> this);

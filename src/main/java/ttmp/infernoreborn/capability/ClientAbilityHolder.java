@@ -21,5 +21,8 @@ public class ClientAbilityHolder extends AbilityHolder{
 	@Override public boolean remove(Ability ability){
 		return abilities.remove(ability);
 	}
+	@Override public void clear(){
+		abilities.clear();
+	}
 	@Override public void update(LivingEntity entity){}
 }
