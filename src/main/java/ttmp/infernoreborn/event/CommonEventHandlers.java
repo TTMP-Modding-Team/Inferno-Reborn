@@ -7,10 +7,12 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.entity.living.LivingEvent.LivingUpdateEvent;
+import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.registries.ForgeRegistryEntry;
 import ttmp.infernoreborn.InfernoReborn;
+import ttmp.infernoreborn.ability.OnEvent;
 import ttmp.infernoreborn.capability.AbilityHolder;
 import ttmp.infernoreborn.capability.ClientAbilityHolder;
 import ttmp.infernoreborn.capability.ServerAbilityHolder;
@@ -38,6 +40,16 @@ public class CommonEventHandlers{
 		LivingEntity entity = event.getEntityLiving();
 		AbilityHolder h = AbilityHolder.of(entity);
 		if(h!=null) h.update(entity);
+	}
+
+	@SubscribeEvent
+	public static void onLivingHurt(LivingHurtEvent event){
+		LivingEntity entity = event.getEntityLiving();
+		ServerAbilityHolder h = ServerAbilityHolder.of(entity);
+		if(h!=null){
+			for(OnEvent<LivingHurtEvent> e : h.getOnHurtListeners().values())
+				e.onEvent(entity, h, event);
+		}
 	}
 
 	@SubscribeEvent

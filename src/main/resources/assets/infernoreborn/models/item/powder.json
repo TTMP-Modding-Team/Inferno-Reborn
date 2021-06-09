@@ -1,7 +1,0 @@
-{
-	"parent": "item/generated",
-	"textures": {
-		"layer0": "mobabilities:items/powder_0",
-		"layer1": "mobabilities:items/powder_1"
-	}
-}

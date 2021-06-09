@@ -12,6 +12,7 @@ import ttmp.infernoreborn.item.DebugStickAbilityItem;
 import ttmp.infernoreborn.item.DebugStickAttributeItem;
 import ttmp.infernoreborn.item.FixedAbilityItem;
 import ttmp.infernoreborn.item.GeneratorAbilityItem;
+import ttmp.infernoreborn.item.RandomAbilityItem;
 
 import static ttmp.infernoreborn.InfernoReborn.MODID;
 
@@ -20,16 +21,24 @@ public final class ModItems{
 
 	public static final DeferredRegister<Item> REGISTER = DeferredRegister.create(ForgeRegistries.ITEMS, MODID);
 
-	public static final ItemGroup GROUP = new ItemGroup("infernoreborn"){
+	public static final ItemGroup SPARKS = new ItemGroup("infernoreborn.sparks"){
+		@Override public ItemStack makeIcon(){
+			return new ItemStack(PRIMAL_INFERNO_SPARK.get());
+		}
+	};
+	public static final ItemGroup ARTIFACTS = new ItemGroup("infernoreborn.artifacts"){
 		@Override public ItemStack makeIcon(){
 			return new ItemStack(Items.COBBLESTONE);
 		}
 	};
 
+	public static final RegistryObject<Item> PRIMAL_INFERNO_SPARK = REGISTER.register("primal_inferno_spark", () ->
+			new RandomAbilityItem(new Item.Properties().tab(SPARKS).rarity(Rarity.RARE)));
+	public static final RegistryObject<Item> GENERATOR_INFERNO_SPARK = REGISTER.register("generator_inferno_spark", () ->
+			new GeneratorAbilityItem(new Item.Properties().tab(SPARKS).rarity(Rarity.RARE)));
 	public static final RegistryObject<Item> INFERNO_SPARK = REGISTER.register("inferno_spark", () ->
-			new FixedAbilityItem(new Item.Properties().tab(GROUP).rarity(Rarity.RARE)));
-	public static final RegistryObject<Item> MYSTERIOUS_INFERNO_SPARK = REGISTER.register("mysterious_inferno_spark", () ->
-			new GeneratorAbilityItem(new Item.Properties().tab(GROUP).rarity(Rarity.RARE)));
-	public static final RegistryObject<Item> DEBUG_STICK_ATTRIBUTE = REGISTER.register("debug_stick_attribute", () -> new DebugStickAttributeItem(new Item.Properties().tab(GROUP)));
-	public static final RegistryObject<Item> DEBUG_STICK_ABILITY = REGISTER.register("debug_stick_ability", () -> new DebugStickAbilityItem(new Item.Properties().tab(GROUP)));
+			new FixedAbilityItem(new Item.Properties().tab(SPARKS).rarity(Rarity.RARE)));
+
+	public static final RegistryObject<Item> DEBUG_STICK_ATTRIBUTE = REGISTER.register("debug_stick_attribute", () -> new DebugStickAttributeItem(new Item.Properties().tab(ARTIFACTS)));
+	public static final RegistryObject<Item> DEBUG_STICK_ABILITY = REGISTER.register("debug_stick_ability", () -> new DebugStickAbilityItem(new Item.Properties().tab(ARTIFACTS)));
 }

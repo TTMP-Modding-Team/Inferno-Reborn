@@ -8,14 +8,15 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.Style;
 import net.minecraft.util.text.TextFormatting;
+import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.Constants;
 import ttmp.infernoreborn.ability.generator.AbilityGenerator;
 import ttmp.infernoreborn.ability.generator.AbilityGenerators;
-import ttmp.infernoreborn.capability.AbilityHolder;
+import ttmp.infernoreborn.ability.generator.scheme.AbilityGeneratorScheme;
+import ttmp.infernoreborn.capability.ServerAbilityHolder;
 
 import javax.annotation.Nullable;
 import java.util.List;
@@ -27,42 +28,45 @@ public class GeneratorAbilityItem extends BaseAbilityItem{
 
 	@Override public void fillItemCategory(ItemGroup group, NonNullList<ItemStack> itemStacks){
 		if(!this.allowdedIn(group)) return;
-		for(AbilityGenerator generator : AbilityGenerators.getWeightedPool().getItems().keySet()){
-			if(!generator.displayItem()) continue;
+		for(AbilityGeneratorScheme scheme : AbilityGenerators.getSchemes()){
+			if(scheme.getItemDisplay()==null) continue;
 			ItemStack stack = new ItemStack(this);
-			setGenerator(stack, generator);
+			setGenerator(stack, scheme);
 			itemStacks.add(stack);
 		}
 	}
 
 	@Override protected boolean generate(ItemStack stack, LivingEntity entity){
-		AbilityHolder h = AbilityHolder.of(entity);
+		ServerAbilityHolder h = ServerAbilityHolder.of(entity);
 		if(h==null) return false;
 		AbilityGenerator generator = getGenerator(stack);
 		if(generator==null) return false;
-		h.clear();
-		generator.generate(entity);
+		h.generate(entity, generator);
 		return true;
 	}
 
 	@Override public void appendHoverText(ItemStack stack, @Nullable World world, List<ITextComponent> text, ITooltipFlag flags){
-		AbilityGenerator generator = getGenerator(stack);
-		if(generator!=null)
-			text.add(new StringTextComponent(generator.getId().toString()).setStyle(Style.EMPTY.applyFormat(TextFormatting.GRAY)));
+		AbilityGeneratorScheme scheme = getScheme(stack);
+		if(scheme!=null)
+			text.add(new TranslationTextComponent("ability_generator."+scheme.getId().getNamespace()+"."+scheme.getId().getPath()).setStyle(Style.EMPTY.applyFormat(TextFormatting.GRAY)));
 	}
 
 	@Nullable public static AbilityGenerator getGenerator(ItemStack stack){
 		CompoundNBT tag = stack.getTag();
 		if(tag==null||!tag.contains("Generator", Constants.NBT.TAG_STRING)) return null;
-		ResourceLocation generator = new ResourceLocation(tag.getString("Generator"));
-		for(AbilityGenerator g : AbilityGenerators.getWeightedPool().getItems().keySet()){
-			if(g.getId().equals(generator)) return g;
-		}
-		return null;
+		return AbilityGenerators.findGeneratorWithId(new ResourceLocation(tag.getString("Generator")));
+	}
+	@Nullable public static AbilityGeneratorScheme getScheme(ItemStack stack){
+		CompoundNBT tag = stack.getTag();
+		if(tag==null||!tag.contains("Generator", Constants.NBT.TAG_STRING)) return null;
+		return AbilityGenerators.findSchemeWithId(new ResourceLocation(tag.getString("Generator")));
 	}
 	public static void setGenerator(ItemStack stack, @Nullable AbilityGenerator generator){
+		setGenerator(stack, generator==null ? null : generator.getScheme());
+	}
+	public static void setGenerator(ItemStack stack, @Nullable AbilityGeneratorScheme scheme){
 		CompoundNBT tag = stack.getOrCreateTag();
-		if(generator==null) tag.remove("Generator");
-		else tag.putString("Generator", generator.getId().toString());
+		if(scheme==null) tag.remove("Generator");
+		else tag.putString("Generator", scheme.getId().toString());
 	}
 }

@@ -12,6 +12,7 @@ import net.minecraftforge.registries.ForgeRegistries;
 import ttmp.infernoreborn.ability.generator.node.Node;
 import ttmp.infernoreborn.ability.generator.node.action.Action;
 import ttmp.infernoreborn.ability.generator.parser.Parsers;
+import ttmp.infernoreborn.ability.generator.scheme.AbilityGeneratorScheme;
 import ttmp.infernoreborn.capability.AbilityHolder;
 
 import javax.annotation.Nullable;
@@ -20,22 +21,22 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 public final class AbilityGenerator{
-	private final ResourceLocation id;
+	private final AbilityGeneratorScheme scheme;
 	private final int weight;
 	@Nullable private final Set<EntityType<?>> target;
 	@Nullable private final Action action;
 
-	private final boolean displayItem;
-
-	public AbilityGenerator(ResourceLocation id, int weight, @Nullable Set<EntityType<?>> target, @Nullable Action action, boolean displayItem){
-		this.id = Objects.requireNonNull(id);
+	public AbilityGenerator(AbilityGeneratorScheme scheme,
+	                        int weight,
+	                        @Nullable Set<EntityType<?>> target,
+	                        @Nullable Action action){
+		this.scheme = Objects.requireNonNull(scheme);
 		this.weight = Math.max(0, weight);
 		this.target = target;
 		this.action = action;
-		this.displayItem = displayItem;
 	}
 	public AbilityGenerator(ResourceLocation id, JsonObject object){
-		this.id = Objects.requireNonNull(id);
+		this.scheme = new AbilityGeneratorScheme(id, object);
 		this.weight = JSONUtils.getAsInt(object, "weight");
 		if(object.has("target")){
 			JsonArray target = JSONUtils.getAsJsonArray(object, "target");
@@ -47,11 +48,10 @@ public final class AbilityGenerator{
 			this.target = b.build();
 		}else this.target = null;
 		this.action = Parsers.ACTION_PARSER.parseOrNull(object);
-		this.displayItem = JSONUtils.getAsBoolean(object, "displayItem", true);
 	}
 
-	public ResourceLocation getId(){
-		return id;
+	public AbilityGeneratorScheme getScheme(){
+		return scheme;
 	}
 	public int getWeight(){
 		return weight;
@@ -63,10 +63,6 @@ public final class AbilityGenerator{
 		return action;
 	}
 
-	public boolean displayItem(){
-		return displayItem;
-	}
-
 	public void generate(LivingEntity entity){
 		AbilityHolder h = AbilityHolder.of(entity);
 		if(h==null) return;
@@ -76,6 +72,7 @@ public final class AbilityGenerator{
 
 	public JsonObject serialize(){
 		JsonObject o = action!=null ? action.serialize() : new JsonObject();
+		scheme.serialize(o);
 		o.addProperty("weight", weight);
 		if(target!=null){
 			JsonArray array = new JsonArray();
@@ -83,7 +80,6 @@ public final class AbilityGenerator{
 				array.add(Node.toSerializedString(Objects.requireNonNull(t.getRegistryName())));
 			o.add("target", array);
 		}
-		if(!displayItem) o.addProperty("displayItem", false);
 		return o;
 	}
 
@@ -91,19 +87,19 @@ public final class AbilityGenerator{
 		if(this==o) return true;
 		if(o==null||getClass()!=o.getClass()) return false;
 		AbilityGenerator that = (AbilityGenerator)o;
-		return Objects.equals(getId(), that.getId());
+		return getScheme().equals(that.getScheme());
 	}
+
 	@Override public int hashCode(){
-		return getId().hashCode();
+		return Objects.hash(getScheme());
 	}
 
 	@Override public String toString(){
 		return "AbilityGenerator{"+
-				"id="+id+
+				"scheme="+scheme+
 				", weight="+weight+
-				", target="+(target==null ? "null" : target.stream().map(EntityType::toString).collect(Collectors.joining(", ", "[", "]")))+
+				", target="+(target!=null ? target.stream().map(EntityType::toString).collect(Collectors.joining(", ", "[", "]")) : "null")+
 				", action="+action+
-				", displayItem="+displayItem+
 				'}';
 	}
 }

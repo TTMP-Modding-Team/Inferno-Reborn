@@ -6,14 +6,22 @@ import it.unimi.dsi.fastutil.objects.Object2IntArrayMap;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.Object2IntMaps;
 import net.minecraft.client.resources.JsonReloadListener;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.profiler.IProfiler;
 import net.minecraft.resources.IResourceManager;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.event.AddReloadListenerEvent;
+import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.network.PacketDistributor;
 import ttmp.infernoreborn.ability.generator.pool.WeightedPool;
+import ttmp.infernoreborn.ability.generator.scheme.AbilityGeneratorScheme;
+import ttmp.infernoreborn.network.ModNet;
+import ttmp.infernoreborn.network.SyncAbilitySchemeMsg;
 
+import javax.annotation.Nullable;
 import java.util.Collections;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -26,17 +34,24 @@ public final class AbilityGenerators{
 	private AbilityGenerators(){}
 
 	private static WeightedPool<AbilityGenerator> generators = new WeightedPool<>(Object2IntMaps.emptyMap());
-	private static Set<ResourceLocation> generatorIDs = Collections.emptySet();
+	private static Set<AbilityGeneratorScheme> schemes = Collections.emptySet();
 
 	public static WeightedPool<AbilityGenerator> getWeightedPool(){
 		return generators;
 	}
-	public static Set<ResourceLocation> getGeneratorIDs(){
-		return generatorIDs;
+	public static Set<AbilityGeneratorScheme> getSchemes(){
+		return schemes;
 	}
 	/** Client use only. I will cut your throat if you fuck with this */
-	public static void setGeneratorIDs(Set<ResourceLocation> generatorIDs){
-		AbilityGenerators.generatorIDs = generatorIDs;
+	public static void setSchemes(Set<AbilityGeneratorScheme> schemes){
+		AbilityGenerators.schemes = schemes;
+	}
+
+	@Nullable public static AbilityGenerator findGeneratorWithId(ResourceLocation id){
+		return generators.getItems().keySet().stream().filter(it -> it.getScheme().getId().equals(id)).findAny().orElse(null);
+	}
+	@Nullable public static AbilityGeneratorScheme findSchemeWithId(ResourceLocation id){
+		return schemes.stream().filter(it -> it.getId().equals(id)).findAny().orElse(null);
 	}
 
 	@Mod.EventBusSubscriber(modid = MODID)
@@ -54,14 +69,29 @@ public final class AbilityGenerators{
 				m.put(generator, generator.getWeight());
 			}
 			generators = new WeightedPool<>(m);
-			generatorIDs = m.keySet().stream()
-					.map(AbilityGenerator::getId)
+			schemes = m.keySet().stream()
+					.map(AbilityGenerator::getScheme)
 					.collect(Collectors.toSet());
+
+			// TODO 싱크
+			// MinecraftServer server = LogicalSidedProvider.INSTANCE.get(LogicalSide.SERVER);
+			// SyncAbilitySchemeMsg message = new SyncAbilitySchemeMsg(schemes);
+			// for(ServerPlayerEntity player : server.getPlayerList().getPlayers()){
+			// 	ModNet.CHANNEL.send(PacketDistributor.PLAYER.with(() -> player), message);
+			// }
 		}
 
 		@SubscribeEvent
 		public static void onAddReloadListener(AddReloadListenerEvent event){
 			event.addListener(new Listener());
+		}
+
+		@SubscribeEvent
+		public static void onPlayerLoggedIn(PlayerEvent.PlayerLoggedInEvent event){
+			PlayerEntity player = event.getPlayer();
+			if(player instanceof ServerPlayerEntity){
+				ModNet.CHANNEL.send(PacketDistributor.PLAYER.with(() -> (ServerPlayerEntity)player), new SyncAbilitySchemeMsg(AbilityGenerators.getSchemes()));
+			}
 		}
 	}
 }

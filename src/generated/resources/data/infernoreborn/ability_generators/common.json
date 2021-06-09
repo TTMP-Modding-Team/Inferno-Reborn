@@ -1,0 +1,30 @@
+{
+  "do": [
+    {
+      "give": {
+        "infernoreborn:heart5": 1,
+        "infernoreborn:heart3": 4,
+        "infernoreborn:heart2": 8,
+        "infernoreborn:heart4": 2,
+        "infernoreborn:heart": 16
+      }
+    },
+    {
+      "give": {
+        "infernoreborn:iron_skin": 2,
+        "infernoreborn:mud_skin": 1,
+        "infernoreborn:rock_skin": 4,
+        "infernoreborn:wood_skin": 8,
+        "infernoreborn:frozen_skin": 1,
+        "infernoreborn:woolly_skin": 1
+      }
+    }
+  ],
+  "specialEffect": {
+    "colors": [
+      16777215
+    ]
+  },
+  "itemDisplay": {},
+  "weight": 20
+}

@@ -1,13 +1,28 @@
 package ttmp.infernoreborn.capability;
 
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.particle.Particle;
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.particles.ParticleTypes;
+import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import ttmp.infernoreborn.ability.Ability;
+import ttmp.infernoreborn.ability.generator.scheme.AbilityGeneratorScheme;
 
+import javax.annotation.Nullable;
 import java.util.HashSet;
+import java.util.Random;
 import java.util.Set;
 
 public class ClientAbilityHolder extends AbilityHolder{
+	@Nullable
+	public static ClientAbilityHolder of(ICapabilityProvider provider){
+		AbilityHolder of = AbilityHolder.of(provider);
+		return of instanceof ClientAbilityHolder ? (ClientAbilityHolder)of : null;
+	}
+
 	private final Set<Ability> abilities = new HashSet<>();
+
+	@Nullable private AbilityGeneratorScheme appliedGeneratorScheme;
 
 	@Override public Set<Ability> getAbilities(){
 		return abilities;
@@ -24,5 +39,33 @@ public class ClientAbilityHolder extends AbilityHolder{
 	@Override public void clear(){
 		abilities.clear();
 	}
-	@Override public void update(LivingEntity entity){}
+
+	@Override public void update(LivingEntity entity){
+		if(appliedGeneratorScheme!=null&&appliedGeneratorScheme.getSpecialEffect()!=null){
+			Random rand = entity.getRandom();
+			if(rand.nextBoolean()){
+				int[] colors = appliedGeneratorScheme.getSpecialEffect().getColors();
+				int color = colors[rand.nextInt(colors.length)];
+				float r = (color >> 16&0xFF)/255f;
+				float g = (color >> 8&0xFF)/255f;
+				float b = (color&0xFF)/255f;
+
+				Particle particle = Minecraft.getInstance().particleEngine.createParticle(ParticleTypes.INSTANT_EFFECT,
+						entity.getRandomX(.5),
+						entity.getRandomY(),
+						entity.getRandomZ(.5),
+						rand.nextGaussian(),
+						rand.nextGaussian(),
+						rand.nextGaussian());
+				if(particle!=null) particle.setColor(r, g, b);
+			}
+		}
+	}
+
+	@Nullable public AbilityGeneratorScheme getAppliedGeneratorScheme(){
+		return appliedGeneratorScheme;
+	}
+	public void setAppliedGeneratorScheme(@Nullable AbilityGeneratorScheme appliedGeneratorScheme){
+		this.appliedGeneratorScheme = appliedGeneratorScheme;
+	}
 }

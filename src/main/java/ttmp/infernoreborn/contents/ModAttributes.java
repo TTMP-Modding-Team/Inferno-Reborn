@@ -25,13 +25,15 @@ public final class ModAttributes{
 	public static final RegistryObject<RangedAttribute> SHIELD_REGEN = attribute("shield_regeneration", 0.0025, 0, 1024);
 
 	/** 퍼센트 단위 피해 면역 */
-	public static final RegistryObject<RangedAttribute> DAMAGE_RESISTANCE = attribute("damage_resistance", 0, -1024, 1024);
+	public static final RegistryObject<RangedAttribute> DAMAGE_RESISTANCE = attribute("damage_resistance", 0, 0, 1);
 	/** 퍼센트 단위 낙뎀 면역 */
 	public static final RegistryObject<RangedAttribute> FALLING_DAMAGE_RESISTANCE = attribute("falling_damage_resistance", 0, 0, 1);
-	/** 퍼센트 단위 간접 피해 면역 */
-	public static final RegistryObject<RangedAttribute> RANGED_DAMAGE_RESISTANCE = attribute("ranged_damage_resistance", 0, -1024, 1024);
+	/** 퍼센트 단위 비마법 직접 피해 면역 */
+	public static final RegistryObject<RangedAttribute> MELEE_DAMAGE_RESISTANCE = attribute("melee_damage_resistance", 0, 0, 1);
+	/** 퍼센트 단위 비마법 간접 피해 면역 */
+	public static final RegistryObject<RangedAttribute> RANGED_DAMAGE_RESISTANCE = attribute("ranged_damage_resistance", 0, 0, 1);
 	/** 퍼센트 단위 마법 피해 면역 */
-	public static final RegistryObject<RangedAttribute> MAGIC_DAMAGE_RESISTANCE = attribute("magic_damage_resistance", 0, -1024, 1024);
+	public static final RegistryObject<RangedAttribute> MAGIC_DAMAGE_RESISTANCE = attribute("magic_damage_resistance", 0, 0, 1);
 
 	private static RegistryObject<RangedAttribute> attribute(String name, double def, double min, double max){
 		String desc = "infernoreborn."+name;

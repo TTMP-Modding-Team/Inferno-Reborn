@@ -3,6 +3,8 @@ package ttmp.infernoreborn;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.nbt.INBT;
 import net.minecraft.util.Direction;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.client.event.ColorHandlerEvent;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityManager;
 import net.minecraftforge.eventbus.api.IEventBus;
@@ -14,15 +16,18 @@ import net.minecraftforge.fml.event.lifecycle.GatherDataEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import ttmp.infernoreborn.ability.Ability;
+import ttmp.infernoreborn.ability.generator.scheme.AbilityGeneratorScheme;
 import ttmp.infernoreborn.capability.AbilityHolder;
 import ttmp.infernoreborn.contents.Abilities;
 import ttmp.infernoreborn.contents.ModAttributes;
 import ttmp.infernoreborn.contents.ModItems;
 import ttmp.infernoreborn.datagen.AbilityGeneratorDataProvider;
+import ttmp.infernoreborn.item.FixedAbilityItem;
+import ttmp.infernoreborn.item.GeneratorAbilityItem;
 import ttmp.infernoreborn.network.ModNet;
 
 import javax.annotation.Nullable;
-
 
 @Mod(InfernoReborn.MODID)
 @Mod.EventBusSubscriber(modid = InfernoReborn.MODID, bus = Bus.MOD)
@@ -58,6 +63,43 @@ public class InfernoReborn{
 		DataGenerator generator = event.getGenerator();
 		if(event.includeServer()){
 			generator.addProvider(new AbilityGeneratorDataProvider(event.getGenerator()));
+		}
+	}
+
+	@Mod.EventBusSubscriber(modid = MODID, bus = Bus.MOD, value = Dist.CLIENT)
+	private static final class Client{
+		private Client(){}
+
+		@SubscribeEvent
+		public static void onItemColor(ColorHandlerEvent.Item event){
+			event.getItemColors().register((stack, layer) -> {
+				Ability[] abilities = FixedAbilityItem.getAbilities(stack);
+
+				switch(layer){
+					case 0:
+						return abilities.length==0 ? 0x3a3a3a : abilities[0].getPrimaryColor();
+					case 1:
+						return abilities.length==0 ? 0xff00ff : abilities[0].getSecondaryColor();
+					case 2:
+						return abilities.length==0 ? 0x3a3a3a : abilities[0].getHighlightColor();
+					default:
+						return -1;
+				}
+			}, ModItems.INFERNO_SPARK.get());
+			event.getItemColors().register((stack, layer) -> {
+				AbilityGeneratorScheme scheme = GeneratorAbilityItem.getScheme(stack);
+
+				switch(layer){
+					case 0:
+						return scheme==null||scheme.getItemDisplay()==null ? 0x3a3a3a : scheme.getItemDisplay().getPrimaryColor();
+					case 1:
+						return scheme==null||scheme.getItemDisplay()==null ? 0xff00ff : scheme.getItemDisplay().getSecondaryColor();
+					case 2:
+						return scheme==null||scheme.getItemDisplay()==null ? 0x3a3a3a : scheme.getItemDisplay().getHighlightColor();
+					default:
+						return -1;
+				}
+			}, ModItems.GENERATOR_INFERNO_SPARK.get());
 		}
 	}
 }

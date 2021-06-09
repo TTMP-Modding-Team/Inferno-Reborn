@@ -11,8 +11,10 @@ import net.minecraft.nbt.StringNBT;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.Style;
 import net.minecraft.util.text.TextFormatting;
+import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.registries.IForgeRegistry;
@@ -29,6 +31,26 @@ import java.util.Objects;
 public class FixedAbilityItem extends BaseAbilityItem{
 	public FixedAbilityItem(Properties properties){
 		super(properties);
+	}
+
+	@Override public ITextComponent getHighlightTip(ItemStack item, ITextComponent displayName){
+		Ability[] abilities = getAbilities(item);
+		switch(abilities.length){
+			case 0:
+				return displayName;
+			case 1:
+				return new StringTextComponent("")
+						.append(displayName)
+						.append(" (")
+						.append(abilities[0].getName().setStyle(Style.EMPTY.applyFormat(TextFormatting.YELLOW)))
+						.append(")");
+			default:
+				return new StringTextComponent("")
+						.append(displayName)
+						.append(" (")
+						.append(new TranslationTextComponent("tooltip.infernoreborn.inferno_spark.n_abilities", abilities.length).setStyle(Style.EMPTY.applyFormat(TextFormatting.YELLOW)))
+						.append(")");
+		}
 	}
 
 	@Override public void fillItemCategory(ItemGroup group, NonNullList<ItemStack> itemStacks){

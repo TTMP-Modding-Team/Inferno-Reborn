@@ -1,0 +1,31 @@
+{
+	"itemGroup.infernoreborn.sparks": "Inferno Reborn: Sparks",
+	"itemGroup.infernoreborn.artifacts": "Inferno Reborn: Artifacts",
+
+	"item.infernoreborn.inferno_spark": "Inferno Spark",
+	"item.infernoreborn.mysterious_inferno_spark": "Mysterious Inferno Spark",
+	"item.infernoreborn.primal_inferno_spark": "Primal Inferno Spark",
+
+	"tooltip.infernoreborn.inferno_spark.n_abilities": "%s abilities",
+
+	"ability.infernoreborn.heart": "Heart",
+	"ability.infernoreborn.heart2": "Heart+",
+	"ability.infernoreborn.heart3": "Heart++",
+	"ability.infernoreborn.heart4": "Heart+++",
+	"ability.infernoreborn.heart5": "Heart++++",
+	"ability.infernoreborn.heart6": "Heart+++++",
+	"ability.infernoreborn.heart7": "Heart++++++",
+	"ability.infernoreborn.heart8": "Heart+++++++",
+	"ability.infernoreborn.heart9": "Heart++++++++",
+	"ability.infernoreborn.heart10": "Heart+++++++++",
+
+	"ability.infernoreborn.wood_skin": "Wood Skin",
+	"ability.infernoreborn.rock_skin": "Rock Skin",
+	"ability.infernoreborn.iron_skin": "Iron Skin",
+	"ability.infernoreborn.diamond_skin": "Diamond Skin",
+	"ability.infernoreborn.netherite_skin": "Netherite Skin",
+	"ability.infernoreborn.mud_skin": "Mud Skin",
+	"ability.infernoreborn.frozen_skin": "Frozen Skin",
+	"ability.infernoreborn.woolly_skin": "Woolly Skin",
+	"ability.infernoreborn.fuzzy_skin": "Fuzzy Skin"
+}

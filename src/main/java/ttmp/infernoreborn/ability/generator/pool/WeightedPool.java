@@ -14,21 +14,29 @@ public class WeightedPool<T>{
 	private final Object2IntMap<T> items = new Object2IntOpenHashMap<>();
 	private final Object2IntMap<T> itemsView = Object2IntMaps.unmodifiable(items);
 
+	private final int nullWeight;
 	private final int totalWeight;
 
 	public WeightedPool(Object2IntMap<T> items){
+		this(items, 0);
+	}
+	public WeightedPool(Object2IntMap<T> items, int nullWeight){
 		for(Entry<T> e : items.object2IntEntrySet())
 			if(e.getIntValue()>0) this.items.put(e.getKey(), e.getIntValue());
 
-		int wgt = 0;
+		this.nullWeight = Math.max(0, nullWeight);
+		int wgt = nullWeight;
 		for(Entry<T> e : items.object2IntEntrySet()){
 			wgt += e.getIntValue();
 		}
-		totalWeight = wgt;
+		this.totalWeight = wgt;
 	}
 
 	public Object2IntMap<T> getItems(){
 		return itemsView;
+	}
+	public int getNullWeight(){
+		return nullWeight;
 	}
 	public int getTotalWeight(){
 		return totalWeight;
@@ -49,11 +57,7 @@ public class WeightedPool<T>{
 			r -= e.getIntValue();
 			if(r<=0) return e.getKey();
 		}
-		// Should be unreachable below
-		return items.object2IntEntrySet().stream()
-				.findFirst()
-				.orElseThrow(() -> new IllegalStateException("Empty pool"))
-				.getKey();
+		return null;
 	}
 
 	@Override public String toString(){
