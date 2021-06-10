@@ -3,11 +3,15 @@ package ttmp.infernoreborn.event;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.inventory.container.Container;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.entity.living.LivingEvent.LivingUpdateEvent;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
+import net.minecraftforge.event.entity.player.PlayerContainerEvent;
+import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.registries.ForgeRegistryEntry;
@@ -33,6 +37,28 @@ public class CommonEventHandlers{
 		Entity e = event.getObject();
 		if(e instanceof LivingEntity&&!(e instanceof PlayerEntity))
 			event.addCapability(ABILITY_HOLDER_KEY, e.level.isClientSide ? new ClientAbilityHolder() : new ServerAbilityHolder());
+	}
+
+	@SubscribeEvent
+	public static void onPlayerLoggedIn(PlayerEvent.PlayerLoggedInEvent event){
+		PlayerEntity player = event.getPlayer();
+		player.containerMenu.addSlotListener();
+	}
+
+	@SubscribeEvent
+	public static void onPlayerClone(PlayerEvent.Clone event){
+		if(event.getPlayer() instanceof ServerPlayerEntity)
+			addSlotListeners((ServerPlayerEntity)event.getPlayer(), event.getPlayer().inventoryMenu);
+	}
+
+	@SubscribeEvent
+	public static void onPlayerContainerOpen(PlayerContainerEvent.Open event){
+		if(event.getPlayer() instanceof ServerPlayerEntity)
+			addSlotListeners((ServerPlayerEntity)event.getPlayer(), event.getContainer());
+	}
+
+	private static void addSlotListeners(ServerPlayerEntity player, Container container){
+		container.addSlotListener();
 	}
 
 	@SubscribeEvent

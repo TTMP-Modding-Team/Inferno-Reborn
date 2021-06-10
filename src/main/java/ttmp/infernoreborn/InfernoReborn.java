@@ -19,6 +19,7 @@ import org.apache.logging.log4j.Logger;
 import ttmp.infernoreborn.ability.Ability;
 import ttmp.infernoreborn.ability.generator.scheme.AbilityGeneratorScheme;
 import ttmp.infernoreborn.capability.AbilityHolder;
+import ttmp.infernoreborn.capability.EssenceHolder;
 import ttmp.infernoreborn.contents.Abilities;
 import ttmp.infernoreborn.contents.ModAttributes;
 import ttmp.infernoreborn.contents.ModItems;
@@ -47,14 +48,19 @@ public class InfernoReborn{
 	@SubscribeEvent
 	public static void commonSetup(FMLCommonSetupEvent event){
 		event.enqueueWork(() -> {
-			CapabilityManager.INSTANCE.register(AbilityHolder.class, new Capability.IStorage<AbilityHolder>(){
-				@Nullable @Override public INBT writeNBT(Capability<AbilityHolder> capability, AbilityHolder instance, Direction side){
-					return null;
-				}
-				@Override public void readNBT(Capability<AbilityHolder> capability, AbilityHolder instance, Direction side, INBT nbt){}
-			}, () -> {
-				throw new UnsupportedOperationException();
-			});
+			registerDefaultCapability(AbilityHolder.class);
+			registerDefaultCapability(EssenceHolder.class);
+		});
+	}
+
+	private static <T> void registerDefaultCapability(Class<T> clazz){
+		CapabilityManager.INSTANCE.register(clazz, new Capability.IStorage<T>(){
+			@Nullable @Override public INBT writeNBT(Capability<T> capability, T instance, Direction side){
+				return null;
+			}
+			@Override public void readNBT(Capability<T> capability, T instance, Direction side, INBT nbt){}
+		}, () -> {
+			throw new UnsupportedOperationException();
 		});
 	}
 

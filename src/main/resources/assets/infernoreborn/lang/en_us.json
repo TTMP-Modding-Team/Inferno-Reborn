@@ -6,6 +6,13 @@
 	"item.infernoreborn.mysterious_inferno_spark": "Mysterious Inferno Spark",
 	"item.infernoreborn.primal_inferno_spark": "Primal Inferno Spark",
 
+	"item.infernoreborn.essence_holder": "Essence Holder",
+	"item.infernoreborn.essence_holder.desc.0": "Holds essence",
+
+	"tooltip.infernoreborn.expand": "[%s...]",
+	"tooltip.infernoreborn.expand.shift": "Shift",
+	"tooltip.infernoreborn.expand.ctrl": "Ctrl",
+	"tooltip.infernoreborn.expand.alt": "Alt",
 	"tooltip.infernoreborn.inferno_spark.n_abilities": "%s abilities",
 
 	"ability.infernoreborn.heart": "Heart",
