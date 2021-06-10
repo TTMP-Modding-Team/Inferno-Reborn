@@ -173,3 +173,21 @@ publishing {
         }
     }
 }
+repositories {
+    maven { url 'https://maven.blamejared.com' }
+}
+
+dependencies {
+    // 1.14+
+    compileOnly fg.deobf("vazkii.patchouli:Patchouli:1.16.4-52-SNAPSHOT:api")
+    runtimeOnly fg.deobf("vazkii.patchouli:Patchouli:1.16.4-52-SNAPSHOT")
+}
+
+minecraft {
+    runs {
+        client {
+            property 'mixin.env.remapRefMap', 'true'
+            property 'mixin.env.refMapRemappingFile', "${projectDir}/build/createSrgToMcp/output.srg"
+        }
+    }
+}

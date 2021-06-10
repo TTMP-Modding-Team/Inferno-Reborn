@@ -22,6 +22,7 @@ import ttmp.infernoreborn.capability.AbilityHolder;
 import ttmp.infernoreborn.contents.Abilities;
 import ttmp.infernoreborn.contents.ModAttributes;
 import ttmp.infernoreborn.contents.ModItems;
+import ttmp.infernoreborn.datagen.AbilDexDataProvider;
 import ttmp.infernoreborn.datagen.AbilityGeneratorDataProvider;
 import ttmp.infernoreborn.item.FixedAbilityItem;
 import ttmp.infernoreborn.item.GeneratorAbilityItem;
@@ -33,6 +34,7 @@ import javax.annotation.Nullable;
 @Mod.EventBusSubscriber(modid = InfernoReborn.MODID, bus = Bus.MOD)
 public class InfernoReborn{
 	public static final String MODID = "infernoreborn";
+	public static final String VERSION = "1";
 	public static final Logger LOGGER = LogManager.getLogger("Inferno Reborn");
 
 	public InfernoReborn(){
@@ -63,6 +65,7 @@ public class InfernoReborn{
 		DataGenerator generator = event.getGenerator();
 		if(event.includeServer()){
 			generator.addProvider(new AbilityGeneratorDataProvider(event.getGenerator()));
+			generator.addProvider(new AbilDexDataProvider(event.getGenerator()));
 		}
 	}
 

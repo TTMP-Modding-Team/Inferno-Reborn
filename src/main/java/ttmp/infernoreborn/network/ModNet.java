@@ -52,6 +52,7 @@ public final class ModNet{
 				if(entity==null) return;
 				ClientAbilityHolder h = ClientAbilityHolder.of(entity);
 				if(h==null) return;
+				h.clear();
 				for(Ability a : msg.getAbilities()) h.add(a);
 				h.setAppliedGeneratorScheme(msg.getAppliedGeneratorScheme());
 			});

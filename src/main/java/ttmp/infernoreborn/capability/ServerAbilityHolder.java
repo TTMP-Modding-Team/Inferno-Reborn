@@ -107,6 +107,7 @@ public class ServerAbilityHolder extends AbilityHolder implements INBTSerializab
 					onAbilityAdded(ability, entity);
 			}
 			for(Ability ability : removedAbilities){
+				System.out.println(entity.level.isClientSide() + ability.toString());
 				if(abilities.remove(ability))
 					onAbilityRemoved(ability, entity);
 			}
