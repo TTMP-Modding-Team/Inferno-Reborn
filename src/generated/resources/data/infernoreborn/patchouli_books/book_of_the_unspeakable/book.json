@@ -1,0 +1,8 @@
+{
+  "name": "item.infernoreborn.book_of_the_unspeakable",
+  "landing_text": "text.infernoreborn.landingText",
+  "version": "1",
+  "dont_generate_book": true,
+  "custom_book_item": "infernoreborn:book_of_the_unspeakable",
+  "i18n": true
+}

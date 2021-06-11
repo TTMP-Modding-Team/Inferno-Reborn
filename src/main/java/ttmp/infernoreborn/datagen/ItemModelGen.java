@@ -27,6 +27,7 @@ public class ItemModelGen extends ItemModelProvider{
 					new ResourceLocation(MODID, "item/essence/greater_"+type.id+"_crystal"));
 		}
 		item(ModItems.ESSENCE_HOLDER.getId().getPath(), new ResourceLocation(MODID, "item/essence_holder"));
+		item(ModItems.BOOK_OF_THE_UNSPEAKABLE.getId().getPath(), new ResourceLocation(MODID, "item/book_of_the_unspeakable"));
 	}
 
 	protected ItemModelBuilder item(String name, ResourceLocation... textures){

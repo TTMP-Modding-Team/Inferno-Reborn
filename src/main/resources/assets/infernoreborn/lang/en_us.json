@@ -29,8 +29,8 @@
 	"item.infernoreborn.essence_holder.desc.essences.frost": "%s Frost Essences",
 	"item.infernoreborn.essence_holder.desc.essences.earth": "%s Earth Essences",
 
-	"item.infernoreborn.abildex": "f",
-	"item.infernoreborn.abildex.desc.essence_holder": "Essence Holder included",
+	"item.infernoreborn.book_of_the_unspeakable": "Book of the Unspeakable",
+	"item.infernoreborn.book_of_the_unspeakable.desc.essence_holder": "+ Essence Holder",
 
 	"tooltip.infernoreborn.expand": "[%s]",
 	"tooltip.infernoreborn.expand.shift": "Shift",
@@ -60,5 +60,5 @@
 	"ability.infernoreborn.fuzzy_skin": "Fuzzy Skin",
 
 	"container.infernoreborn.essence_holder": "Essence Holder",
-	"container.infernoreborn.abildex": "DSFd"
+	"container.infernoreborn.book_of_the_unspeakable": "Book of the Unspeakable"
 }

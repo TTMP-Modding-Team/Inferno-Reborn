@@ -51,7 +51,7 @@ public class Ability extends ForgeRegistryEntry<Ability>{
 		return new TranslationTextComponent(getUnlocalizedName());
 	}
 
-	protected String getUnlocalizedName(){
+	public String getUnlocalizedName(){
 		ResourceLocation n = Objects.requireNonNull(getRegistryName());
 		return "ability."+n.getNamespace()+"."+n.getPath();
 	}

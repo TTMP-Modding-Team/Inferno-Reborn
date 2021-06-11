@@ -23,14 +23,17 @@ import ttmp.infernoreborn.ability.generator.scheme.AbilityGeneratorScheme;
 import ttmp.infernoreborn.capability.AbilityHolder;
 import ttmp.infernoreborn.capability.EssenceHolder;
 import ttmp.infernoreborn.client.EssenceHolderScreen;
+import ttmp.infernoreborn.client.ItemColorUtils;
+import ttmp.infernoreborn.client.PrimalInfernoSparkColor;
 import ttmp.infernoreborn.contents.Abilities;
 import ttmp.infernoreborn.contents.ModAttributes;
 import ttmp.infernoreborn.contents.ModContainers;
 import ttmp.infernoreborn.contents.ModItems;
 import ttmp.infernoreborn.contents.ModRecipes;
-import ttmp.infernoreborn.datagen.AbilDexDataProvider;
+import ttmp.infernoreborn.datagen.BookDataProvider;
 import ttmp.infernoreborn.datagen.AbilityGeneratorDataProvider;
 import ttmp.infernoreborn.datagen.ItemModelGen;
+import ttmp.infernoreborn.datagen.RecipeGen;
 import ttmp.infernoreborn.item.FixedAbilityItem;
 import ttmp.infernoreborn.item.GeneratorAbilityItem;
 import ttmp.infernoreborn.network.ModNet;
@@ -79,7 +82,8 @@ public class InfernoReborn{
 		DataGenerator generator = event.getGenerator();
 		if(event.includeServer()){
 			generator.addProvider(new AbilityGeneratorDataProvider(event.getGenerator()));
-			generator.addProvider(new AbilDexDataProvider(event.getGenerator()));
+			generator.addProvider(new BookDataProvider(event.getGenerator()));
+			generator.addProvider(new RecipeGen(event.getGenerator()));
 		}
 		if(event.includeClient()){
 			generator.addProvider(new ItemModelGen(event.getGenerator(), event.getExistingFileHelper()));
@@ -104,11 +108,11 @@ public class InfernoReborn{
 
 				switch(layer){
 					case 0:
-						return abilities.length==0 ? 0x3a3a3a : abilities[0].getPrimaryColor();
+						return ItemColorUtils.getPrimaryColorBlend(abilities);
 					case 1:
-						return abilities.length==0 ? 0xff00ff : abilities[0].getSecondaryColor();
+						return ItemColorUtils.getSecondaryColorBlend(abilities);
 					case 2:
-						return abilities.length==0 ? 0x3a3a3a : abilities[0].getHighlightColor();
+						return ItemColorUtils.getHighlightColorBlend(abilities);
 					default:
 						return -1;
 				}
@@ -127,6 +131,7 @@ public class InfernoReborn{
 						return -1;
 				}
 			}, ModItems.GENERATOR_INFERNO_SPARK.get());
+			event.getItemColors().register(new PrimalInfernoSparkColor(), ModItems.PRIMAL_INFERNO_SPARK.get());
 		}
 	}
 }

@@ -1,7 +1,0 @@
-{
-  "name": "item.infernoreborn.abildex",
-  "landing_text": "text.infernoreborn.landingtext",
-  "version": "1",
-  "dont_generate_book": true,
-  "custom_book_item": "infernoreborn:abildex"
-}
