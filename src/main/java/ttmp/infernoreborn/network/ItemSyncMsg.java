@@ -1,5 +1,7 @@
 package ttmp.infernoreborn.network;
 
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketBuffer;
 
 public abstract class ItemSyncMsg{
@@ -22,4 +24,11 @@ public abstract class ItemSyncMsg{
 	}
 
 	protected abstract void doWrite(PacketBuffer buf);
+
+	public void sync(PlayerEntity player){
+		ItemStack stack = player.inventory.getItem(slot);
+		if(stack.isEmpty()) return;
+		doSync(player, stack);
+	}
+	protected abstract void doSync(PlayerEntity player, ItemStack stack);
 }

@@ -6,10 +6,30 @@
 	"item.infernoreborn.mysterious_inferno_spark": "Mysterious Inferno Spark",
 	"item.infernoreborn.primal_inferno_spark": "Primal Inferno Spark",
 
+	"item.infernoreborn.blood_essence_shard": "Shard of Blood Essence",
+	"item.infernoreborn.blood_essence_crystal": "Crystal of Blood Essence",
+	"item.infernoreborn.greater_blood_essence_crystal": "Greater Crystal of Blood Essence",
+
+	"item.infernoreborn.metal_essence_shard": "Shard of Metal Essence",
+	"item.infernoreborn.metal_essence_crystal": "Crystal of Metal Essence",
+	"item.infernoreborn.greater_metal_essence_crystal": "Greater Crystal of Metal Essence",
+
+	"item.infernoreborn.frost_essence_shard": "Shard of Frost Essence",
+	"item.infernoreborn.frost_essence_crystal": "Crystal of Frost Essence",
+	"item.infernoreborn.greater_frost_essence_crystal": "Greater Crystal of Frost Essence",
+
+	"item.infernoreborn.earth_essence_shard": "Shard of Earth Essence",
+	"item.infernoreborn.earth_essence_crystal": "Crystal of Earth Essence",
+	"item.infernoreborn.greater_earth_essence_crystal": "Greater Crystal of Earth Essence",
+
 	"item.infernoreborn.essence_holder": "Essence Holder",
 	"item.infernoreborn.essence_holder.desc.0": "Holds essence",
+	"item.infernoreborn.essence_holder.desc.essences.blood": "%s Blood Essences",
+	"item.infernoreborn.essence_holder.desc.essences.metal": "%s Metal Essences",
+	"item.infernoreborn.essence_holder.desc.essences.frost": "%s Frost Essences",
+	"item.infernoreborn.essence_holder.desc.essences.earth": "%s Earth Essences",
 
-	"tooltip.infernoreborn.expand": "[%s...]",
+	"tooltip.infernoreborn.expand": "[%s]",
 	"tooltip.infernoreborn.expand.shift": "Shift",
 	"tooltip.infernoreborn.expand.ctrl": "Ctrl",
 	"tooltip.infernoreborn.expand.alt": "Alt",
@@ -34,5 +54,7 @@
 	"ability.infernoreborn.mud_skin": "Mud Skin",
 	"ability.infernoreborn.frozen_skin": "Frozen Skin",
 	"ability.infernoreborn.woolly_skin": "Woolly Skin",
-	"ability.infernoreborn.fuzzy_skin": "Fuzzy Skin"
+	"ability.infernoreborn.fuzzy_skin": "Fuzzy Skin",
+
+	"container.infernoreborn.essence_holder": "Essence Holder"
 }

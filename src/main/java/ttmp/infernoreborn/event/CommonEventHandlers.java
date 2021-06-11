@@ -20,6 +20,7 @@ import ttmp.infernoreborn.ability.OnEvent;
 import ttmp.infernoreborn.capability.AbilityHolder;
 import ttmp.infernoreborn.capability.ClientAbilityHolder;
 import ttmp.infernoreborn.capability.ServerAbilityHolder;
+import ttmp.infernoreborn.container.listener.EssenceHolderSynchronizer;
 
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -41,8 +42,8 @@ public class CommonEventHandlers{
 
 	@SubscribeEvent
 	public static void onPlayerLoggedIn(PlayerEvent.PlayerLoggedInEvent event){
-		PlayerEntity player = event.getPlayer();
-		player.containerMenu.addSlotListener();
+		if(event.getPlayer() instanceof ServerPlayerEntity)
+			addSlotListeners((ServerPlayerEntity)event.getPlayer(), event.getPlayer().inventoryMenu);
 	}
 
 	@SubscribeEvent
@@ -58,7 +59,7 @@ public class CommonEventHandlers{
 	}
 
 	private static void addSlotListeners(ServerPlayerEntity player, Container container){
-		container.addSlotListener();
+		// container.addSlotListener(new EssenceHolderSynchronizer(player));
 	}
 
 	@SubscribeEvent

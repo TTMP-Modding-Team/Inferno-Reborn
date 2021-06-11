@@ -1,5 +1,6 @@
 package ttmp.infernoreborn;
 
+import net.minecraft.client.gui.ScreenManager;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.nbt.INBT;
 import net.minecraft.util.Direction;
@@ -11,6 +12,7 @@ import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber.Bus;
+import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.GatherDataEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
@@ -20,10 +22,13 @@ import ttmp.infernoreborn.ability.Ability;
 import ttmp.infernoreborn.ability.generator.scheme.AbilityGeneratorScheme;
 import ttmp.infernoreborn.capability.AbilityHolder;
 import ttmp.infernoreborn.capability.EssenceHolder;
+import ttmp.infernoreborn.client.EssenceHolderScreen;
 import ttmp.infernoreborn.contents.Abilities;
 import ttmp.infernoreborn.contents.ModAttributes;
+import ttmp.infernoreborn.contents.ModContainers;
 import ttmp.infernoreborn.contents.ModItems;
 import ttmp.infernoreborn.datagen.AbilityGeneratorDataProvider;
+import ttmp.infernoreborn.datagen.ItemModelGen;
 import ttmp.infernoreborn.item.FixedAbilityItem;
 import ttmp.infernoreborn.item.GeneratorAbilityItem;
 import ttmp.infernoreborn.network.ModNet;
@@ -40,6 +45,7 @@ public class InfernoReborn{
 		IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
 		Abilities.REGISTER.register(modEventBus);
 		ModAttributes.REGISTER.register(modEventBus);
+		ModContainers.REGISTER.register(modEventBus);
 		ModItems.REGISTER.register(modEventBus);
 
 		ModNet.init();
@@ -70,11 +76,21 @@ public class InfernoReborn{
 		if(event.includeServer()){
 			generator.addProvider(new AbilityGeneratorDataProvider(event.getGenerator()));
 		}
+		if(event.includeClient()){
+			generator.addProvider(new ItemModelGen(event.getGenerator(), event.getExistingFileHelper()));
+		}
 	}
 
 	@Mod.EventBusSubscriber(modid = MODID, bus = Bus.MOD, value = Dist.CLIENT)
 	private static final class Client{
 		private Client(){}
+
+		@SubscribeEvent
+		public static void clientSetup(FMLClientSetupEvent event){
+			event.enqueueWork(() -> {
+				ScreenManager.register(ModContainers.ESSENCE_HOLDER.get(), EssenceHolderScreen::new);
+			});
+		}
 
 		@SubscribeEvent
 		public static void onItemColor(ColorHandlerEvent.Item event){
