@@ -29,6 +29,9 @@
 	"item.infernoreborn.essence_holder.desc.essences.frost": "%s Frost Essences",
 	"item.infernoreborn.essence_holder.desc.essences.earth": "%s Earth Essences",
 
+	"item.infernoreborn.abildex": "f",
+	"item.infernoreborn.abildex.desc.essence_holder": "Essence Holder included",
+
 	"tooltip.infernoreborn.expand": "[%s]",
 	"tooltip.infernoreborn.expand.shift": "Shift",
 	"tooltip.infernoreborn.expand.ctrl": "Ctrl",
@@ -56,5 +59,6 @@
 	"ability.infernoreborn.woolly_skin": "Woolly Skin",
 	"ability.infernoreborn.fuzzy_skin": "Fuzzy Skin",
 
-	"container.infernoreborn.essence_holder": "Essence Holder"
+	"container.infernoreborn.essence_holder": "Essence Holder",
+	"container.infernoreborn.abildex": "DSFd"
 }

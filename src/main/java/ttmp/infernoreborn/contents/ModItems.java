@@ -8,6 +8,7 @@ import net.minecraft.item.Rarity;
 import net.minecraftforge.fml.RegistryObject;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
+import ttmp.infernoreborn.item.AbilDexItem;
 import ttmp.infernoreborn.item.DebugStickAbilityItem;
 import ttmp.infernoreborn.item.DebugStickAttributeItem;
 import ttmp.infernoreborn.item.EssenceHolderItem;
@@ -61,5 +62,5 @@ public final class ModItems{
 	public static final RegistryObject<Item> DEBUG_STICK_ATTRIBUTE = REGISTER.register("debug_stick_attribute", () -> new DebugStickAttributeItem(new Item.Properties().tab(ARTIFACTS)));
 	public static final RegistryObject<Item> DEBUG_STICK_ABILITY = REGISTER.register("debug_stick_ability", () -> new DebugStickAbilityItem(new Item.Properties().tab(ARTIFACTS)));
 
-	public static final RegistryObject<Item> ABILDEX = REGISTER.register("abildex", () -> new AbilDexItem(new Item.Properties().tab(ARTIFACTS)));
+	public static final RegistryObject<Item> ABILDEX = REGISTER.register("abildex", () -> new AbilDexItem(new Item.Properties().stacksTo(1).tab(ARTIFACTS)));
 }

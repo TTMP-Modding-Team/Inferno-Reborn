@@ -2,9 +2,6 @@ package ttmp.infernoreborn.item;
 
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.container.Container;
-import net.minecraft.inventory.container.INamedContainerProvider;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
@@ -15,7 +12,7 @@ import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import ttmp.infernoreborn.capability.EssenceHolder;
-import ttmp.infernoreborn.container.EssenceHolderContainer;
+import ttmp.infernoreborn.container.EssenceHolderContainerProvider;
 import ttmp.infernoreborn.util.EssenceType;
 import ttmp.infernoreborn.util.ExpandKey;
 
@@ -34,50 +31,24 @@ public class EssenceHolderItem extends Item{
 	@Override public ActionResult<ItemStack> use(World world, PlayerEntity player, Hand hand){
 		ItemStack stack = player.getItemInHand(hand);
 		if(!world.isClientSide){
-			int holderSlot;
-			switch(hand){
-				case MAIN_HAND:
-					holderSlot = player.inventory.selected;
-					break;
-				case OFF_HAND:
-					holderSlot = player.inventory.items.size()+player.inventory.armor.size();
-					break;
-				default:
-					throw new IllegalStateException("Three hands PogU");
-			}
-			stack.getCapability(EssenceHolder.capability).ifPresent(essenceHolder -> player.openMenu(new INamedContainerProvider(){
-				@Override public ITextComponent getDisplayName(){
-					return new TranslationTextComponent("container.infernoreborn.essence_holder");
-				}
-				@Override public Container createMenu(int id, PlayerInventory playerInventory, PlayerEntity player){
-					EssenceHolderContainer c = new EssenceHolderContainer(id, playerInventory);
-					c.setHolderSlot(holderSlot);
-					return c;
-				}
-			}));
+			player.openMenu(new EssenceHolderContainerProvider(
+					new TranslationTextComponent("container.infernoreborn.essence_holder"),
+					player,
+					hand));
 		}
 		return ActionResult.success(stack);
 	}
 
 	@Override public void appendHoverText(ItemStack stack, @Nullable World world, List<ITextComponent> text, ITooltipFlag flags){
-		boolean allCollapsed = true;
+		text.add(new TranslationTextComponent("item.infernoreborn.essence_holder.desc.0"));
 		if(ExpandKey.SHIFT.isKeyDown()){
-			allCollapsed = false;
 			stack.getCapability(EssenceHolder.capability).ifPresent(essenceHolder -> {
 				for(EssenceType type : EssenceType.values()){
 					int essence = essenceHolder.getEssence(type);
 					if(essence>0) text.add(new TranslationTextComponent("item.infernoreborn.essence_holder.desc.essences."+type.id, essence));
 				}
 			});
-		}
-		if(ExpandKey.CTRL.isKeyDown()){
-			allCollapsed = false;
-			text.add(new TranslationTextComponent("item.infernoreborn.essence_holder.desc.0"));
-		}
-		if(allCollapsed){
-			text.add(ExpandKey.SHIFT.getCollapsedText());
-			text.add(ExpandKey.CTRL.getCollapsedText());
-		}
+		}else text.add(ExpandKey.SHIFT.getCollapsedText());
 	}
 
 	@Nullable @Override public CompoundNBT getShareTag(ItemStack stack){

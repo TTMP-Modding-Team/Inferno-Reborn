@@ -27,6 +27,7 @@ import ttmp.infernoreborn.contents.Abilities;
 import ttmp.infernoreborn.contents.ModAttributes;
 import ttmp.infernoreborn.contents.ModContainers;
 import ttmp.infernoreborn.contents.ModItems;
+import ttmp.infernoreborn.contents.ModRecipes;
 import ttmp.infernoreborn.datagen.AbilDexDataProvider;
 import ttmp.infernoreborn.datagen.AbilityGeneratorDataProvider;
 import ttmp.infernoreborn.datagen.ItemModelGen;
@@ -49,6 +50,7 @@ public class InfernoReborn{
 		ModAttributes.REGISTER.register(modEventBus);
 		ModContainers.REGISTER.register(modEventBus);
 		ModItems.REGISTER.register(modEventBus);
+		ModRecipes.REGISTER.register(modEventBus);
 
 		ModNet.init();
 	}
