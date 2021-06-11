@@ -8,7 +8,12 @@ import net.minecraft.item.Rarity;
 import net.minecraftforge.fml.RegistryObject;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
-import ttmp.infernoreborn.item.*;
+import ttmp.infernoreborn.item.DebugStickAbilityItem;
+import ttmp.infernoreborn.item.DebugStickAttributeItem;
+import ttmp.infernoreborn.item.EssenceHolderItem;
+import ttmp.infernoreborn.item.FixedAbilityItem;
+import ttmp.infernoreborn.item.GeneratorAbilityItem;
+import ttmp.infernoreborn.item.RandomAbilityItem;
 
 import static ttmp.infernoreborn.InfernoReborn.MODID;
 
@@ -34,6 +39,24 @@ public final class ModItems{
 			new GeneratorAbilityItem(new Item.Properties().tab(SPARKS).rarity(Rarity.RARE)));
 	public static final RegistryObject<Item> INFERNO_SPARK = REGISTER.register("inferno_spark", () ->
 			new FixedAbilityItem(new Item.Properties().tab(SPARKS).rarity(Rarity.RARE)));
+
+	public static final RegistryObject<Item> BLOOD_ESSENCE_SHARD = REGISTER.register("blood_essence_shard", () -> new Item(new Item.Properties().tab(ARTIFACTS).rarity(Rarity.UNCOMMON)));
+	public static final RegistryObject<Item> BLOOD_ESSENCE_CRYSTAL = REGISTER.register("blood_essence_crystal", () -> new Item(new Item.Properties().tab(ARTIFACTS).rarity(Rarity.UNCOMMON)));
+	public static final RegistryObject<Item> GREATER_BLOOD_ESSENCE_CRYSTAL = REGISTER.register("greater_blood_essence_crystal", () -> new Item(new Item.Properties().tab(ARTIFACTS).rarity(Rarity.UNCOMMON)));
+
+	public static final RegistryObject<Item> METAL_ESSENCE_SHARD = REGISTER.register("metal_essence_shard", () -> new Item(new Item.Properties().tab(ARTIFACTS).rarity(Rarity.UNCOMMON)));
+	public static final RegistryObject<Item> METAL_ESSENCE_CRYSTAL = REGISTER.register("metal_essence_crystal", () -> new Item(new Item.Properties().tab(ARTIFACTS).rarity(Rarity.UNCOMMON)));
+	public static final RegistryObject<Item> GREATER_METAL_ESSENCE_CRYSTAL = REGISTER.register("greater_metal_essence_crystal", () -> new Item(new Item.Properties().tab(ARTIFACTS).rarity(Rarity.UNCOMMON)));
+
+	public static final RegistryObject<Item> FROST_ESSENCE_SHARD = REGISTER.register("frost_essence_shard", () -> new Item(new Item.Properties().tab(ARTIFACTS).rarity(Rarity.UNCOMMON)));
+	public static final RegistryObject<Item> FROST_ESSENCE_CRYSTAL = REGISTER.register("frost_essence_crystal", () -> new Item(new Item.Properties().tab(ARTIFACTS).rarity(Rarity.UNCOMMON)));
+	public static final RegistryObject<Item> GREATER_FROST_ESSENCE_CRYSTAL = REGISTER.register("greater_frost_essence_crystal", () -> new Item(new Item.Properties().tab(ARTIFACTS).rarity(Rarity.UNCOMMON)));
+
+	public static final RegistryObject<Item> EARTH_ESSENCE_SHARD = REGISTER.register("earth_essence_shard", () -> new Item(new Item.Properties().tab(ARTIFACTS).rarity(Rarity.UNCOMMON)));
+	public static final RegistryObject<Item> EARTH_ESSENCE_CRYSTAL = REGISTER.register("earth_essence_crystal", () -> new Item(new Item.Properties().tab(ARTIFACTS).rarity(Rarity.UNCOMMON)));
+	public static final RegistryObject<Item> GREATER_EARTH_ESSENCE_CRYSTAL = REGISTER.register("greater_earth_essence_crystal", () -> new Item(new Item.Properties().tab(ARTIFACTS).rarity(Rarity.UNCOMMON)));
+
+	public static final RegistryObject<Item> ESSENCE_HOLDER = REGISTER.register("essence_holder", () -> new EssenceHolderItem(new Item.Properties().stacksTo(1).tab(ARTIFACTS).rarity(Rarity.UNCOMMON)));
 
 	public static final RegistryObject<Item> DEBUG_STICK_ATTRIBUTE = REGISTER.register("debug_stick_attribute", () -> new DebugStickAttributeItem(new Item.Properties().tab(ARTIFACTS)));
 	public static final RegistryObject<Item> DEBUG_STICK_ABILITY = REGISTER.register("debug_stick_ability", () -> new DebugStickAbilityItem(new Item.Properties().tab(ARTIFACTS)));
