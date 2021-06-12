@@ -1,12 +1,15 @@
 package ttmp.infernoreborn.contents;
 
+import net.minecraft.enchantment.ThornsEnchantment;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.ai.attributes.AttributeModifier.Operation;
 import net.minecraft.entity.ai.attributes.Attributes;
+import net.minecraft.entity.ai.attributes.ModifiableAttributeInstance;
 import net.minecraft.potion.EffectInstance;
 import net.minecraft.potion.Effects;
 import net.minecraft.util.DamageSource;
+import net.minecraft.util.EntityDamageSource;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -16,6 +19,7 @@ import net.minecraftforge.fml.common.Mod.EventBusSubscriber.Bus;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistry;
 import net.minecraftforge.registries.RegistryBuilder;
+import ttmp.infernoreborn.InfernoReborn;
 import ttmp.infernoreborn.ability.Ability;
 import ttmp.infernoreborn.util.AbilityUtils;
 
@@ -107,6 +111,62 @@ public final class Abilities{
 							((LivingEntity)hitEntity).addEffect(new EffectInstance(Effects.CONFUSION, 200));
 						}
 					})));
+	// TODO NEED TO CHANGE COLORS
+	public static final RegistryObject<Ability> SPINESKIN = REGISTER.register("spine_skin", () ->
+			new Ability(new Ability.Properties(0xC8C8C8, 0xC8C8C8)
+					.onHurt((entity, holder, event) -> {
+						if(event.getSource() instanceof EntityDamageSource&&((EntityDamageSource)event.getSource()).isThorns()) return;
+						Entity source = event.getSource().getEntity();
+						if(source!=null&&source.isAlive())
+							source.hurt(DamageSource.thorns(entity), ThornsEnchantment.getDamage(2, entity.getRandom()));
+					}).addAttribute(Attributes.ARMOR, UUID.fromString("733dfe0f-a807-4812-b49b-3353e732fb03"), 1, Operation.ADDITION)));
+
+	public static final RegistryObject<Ability> MELEE_VETERAN = REGISTER.register("melee_veteran", () ->
+			new Ability(new Ability.Properties(0xe0c1ad, 0x694d40)
+					.onAttack((entity, holder, event) -> {
+						if(entity==event.getSource().getDirectEntity()){
+							event.setAmount(event.getAmount()*(1.1f));
+						}
+					})));
+	public static final RegistryObject<Ability> RANGE_VETERAN = REGISTER.register("range_veteran", () ->
+			new Ability(new Ability.Properties(0xe0c1ad, 0x694d40)
+					.onAttack((entity, holder, event) -> {
+						if(entity!=event.getSource().getDirectEntity()&&event.getSource().isProjectile()&&!event.getSource().isMagic()){
+							event.setAmount(event.getAmount()*(1.1f));
+						}
+					})));
+	public static final RegistryObject<Ability> MAGIC_VETERAN = REGISTER.register("magic_veteran", () ->
+			new Ability(new Ability.Properties(0xe0c1ad, 0x694d40)
+					.onAttack((entity, holder, event) -> {
+						if(event.getSource().isMagic()){
+							event.setAmount(event.getAmount()*(1.1f));
+						}
+					})));
+
+	public static final RegistryObject<Ability> BULLETPROOF = REGISTER.register("bulletproof", () ->
+			new Ability(new Ability.Properties(0xC8C8C8, 0xC8C8C8)
+					.onHurt((entity, holder, event) -> {
+								DamageSource source = event.getSource();
+								if(source.isProjectile()) event.setAmount(event.getAmount()*0.2f);
+							}
+					)));
+
+	public static final RegistryObject<Ability> VAMPIRE = REGISTER.register("vampire", () ->
+			new Ability(new Ability.Properties(0x800000, 0x800000)
+					.onAttack((entity, holder, event) -> {
+						LivingEntity target = event.getEntityLiving();
+						float amount = event.getAmount();
+						if(entity!=event.getSource().getDirectEntity()) amount /= 2;
+						entity.heal(amount);
+					})));
+
+	public static final RegistryObject<Ability> CROWD_CONTROL = REGISTER.register("crowd_control", () ->
+			new Ability(new Ability.Properties(0x000000, 0x0000000)
+					.onAttack((entity, holder, event) -> {
+						event.getEntityLiving().addEffect(new EffectInstance(Effects.LEVITATION, 100));
+						event.getEntityLiving().addEffect(new EffectInstance(Effects.DIG_SLOWDOWN, 64, 1));
+					})));
+
 
 	@SubscribeEvent
 	public static void newRegistry(RegistryEvent.NewRegistry e){

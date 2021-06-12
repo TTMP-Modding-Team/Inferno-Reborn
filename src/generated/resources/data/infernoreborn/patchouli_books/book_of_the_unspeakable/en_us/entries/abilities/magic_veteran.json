@@ -1,0 +1,18 @@
+{
+	"name": "ability.infernoreborn.magic_veteran",
+	"category": "infernoreborn:abilities",
+	"icon": "infernoreborn:inferno_spark{Abilities:[\"infernoreborn:magic_veteran\"]}",
+	"pages": [
+		{
+			"type": "text",
+			"text": "page.infernoreborn.magic_veteran.0"
+		},
+		{
+			"type": "empty"
+		},
+		{
+			"type": "text",
+			"text": "page.infernoreborn.magic_veteran.2"
+		}
+	]
+}

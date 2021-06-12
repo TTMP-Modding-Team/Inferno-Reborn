@@ -20,6 +20,7 @@ public class Ability extends ForgeRegistryEntry<Ability>{
 	private final Map<Attribute, Set<AttributeModifier>> attributes;
 
 	@Nullable private final OnEvent<LivingHurtEvent> onHurt;
+	@Nullable private final OnEvent<LivingHurtEvent> onAttack;
 
 	public Ability(Properties properties){
 		this.primaryColor = properties.primaryColor;
@@ -27,6 +28,7 @@ public class Ability extends ForgeRegistryEntry<Ability>{
 		this.highlightColor = properties.highlightColor;
 		this.attributes = properties.attributes;
 		this.onHurt = properties.onHurt;
+		this.onAttack = properties.onAttack;
 	}
 
 	public int getPrimaryColor(){
@@ -45,6 +47,9 @@ public class Ability extends ForgeRegistryEntry<Ability>{
 
 	@Nullable public OnEvent<LivingHurtEvent> onHurt(){
 		return onHurt;
+	}
+	@Nullable public OnEvent<LivingHurtEvent> onAttack(){
+		return onAttack;
 	}
 
 	public TranslationTextComponent getName(){
@@ -75,6 +80,7 @@ public class Ability extends ForgeRegistryEntry<Ability>{
 		private final Map<Attribute, Set<AttributeModifier>> attributes = new HashMap<>();
 
 		@Nullable private OnEvent<LivingHurtEvent> onHurt;
+		@Nullable private OnEvent<LivingHurtEvent> onAttack;
 
 		public Properties(int primaryColor, int secondaryColor){
 			this(primaryColor, secondaryColor, primaryColor);
@@ -94,6 +100,11 @@ public class Ability extends ForgeRegistryEntry<Ability>{
 
 		public Properties onHurt(@Nullable OnEvent<LivingHurtEvent> onHurt){
 			this.onHurt = onHurt;
+			return this;
+		}
+
+		public Properties onAttack(@Nullable OnEvent<LivingHurtEvent> onAttack){
+			this.onAttack = onAttack;
 			return this;
 		}
 	}

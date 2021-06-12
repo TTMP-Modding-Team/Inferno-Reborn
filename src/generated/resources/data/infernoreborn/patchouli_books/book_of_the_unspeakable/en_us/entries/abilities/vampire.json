@@ -1,0 +1,18 @@
+{
+	"name": "ability.infernoreborn.vampire",
+	"category": "infernoreborn:abilities",
+	"icon": "infernoreborn:inferno_spark{Abilities:[\"infernoreborn:vampire\"]}",
+	"pages": [
+		{
+			"type": "text",
+			"text": "page.infernoreborn.vampire.0"
+		},
+		{
+			"type": "empty"
+		},
+		{
+			"type": "text",
+			"text": "page.infernoreborn.vampire.2"
+		}
+	]
+}

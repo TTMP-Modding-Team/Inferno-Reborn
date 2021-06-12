@@ -50,7 +50,9 @@ public class ServerAbilityHolder extends AbilityHolder implements INBTSerializab
 	private final Set<Ability> abilitiesView = Collections.unmodifiableSet(abilities);
 
 	private final Map<Ability, OnEvent<LivingHurtEvent>> onHurtListeners = new HashMap<>();
+	private final Map<Ability, OnEvent<LivingHurtEvent>> onAttackListeners = new HashMap<>();
 	private final Map<Ability, OnEvent<LivingHurtEvent>> onHurtListenersView = Collections.unmodifiableMap(onHurtListeners);
+	private final Map<Ability, OnEvent<LivingHurtEvent>> onAttackListenersView = Collections.unmodifiableMap(onAttackListeners);
 
 	@Nullable private AbilityGeneratorScheme appliedGeneratorScheme;
 
@@ -91,6 +93,9 @@ public class ServerAbilityHolder extends AbilityHolder implements INBTSerializab
 	public Map<Ability, OnEvent<LivingHurtEvent>> getOnHurtListeners(){
 		return onHurtListenersView;
 	}
+	public Map<Ability, OnEvent<LivingHurtEvent>> getOnAttackListeners(){
+		return onAttackListenersView;
+	}
 
 	@Override
 	public void update(LivingEntity entity){
@@ -127,6 +132,10 @@ public class ServerAbilityHolder extends AbilityHolder implements INBTSerializab
 		}
 	}
 
+	public void updateAttributes(LivingEntity entity){
+		ModNet.CHANNEL.send(PacketDistributor.TRACKING_ENTITY.with(() -> entity), new SyncAbilityHolderMsg(entity.getId(), abilities, appliedGeneratorScheme));
+	}
+
 	public void generate(LivingEntity entity, @Nullable AbilityGenerator generator){
 		clear();
 		if(generator==null) generator = AbilityGenerators.getWeightedPool().nextItem(entity.getRandom());
@@ -142,6 +151,7 @@ public class ServerAbilityHolder extends AbilityHolder implements INBTSerializab
 				instance.addTransientModifier(m);
 		}
 		if(ability.onHurt()!=null) onHurtListeners.put(ability, ability.onHurt());
+		if(ability.onAttack()!=null) onAttackListeners.put(ability, ability.onAttack());
 	}
 
 	protected void onAbilityRemoved(Ability ability, LivingEntity entity){
@@ -152,6 +162,7 @@ public class ServerAbilityHolder extends AbilityHolder implements INBTSerializab
 				instance.removeModifier(m.getId());
 		}
 		onHurtListeners.remove(ability);
+		onAttackListeners.remove(ability);
 	}
 
 	@Override

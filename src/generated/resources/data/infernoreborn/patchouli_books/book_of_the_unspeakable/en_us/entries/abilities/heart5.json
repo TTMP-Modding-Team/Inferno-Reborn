@@ -1,11 +1,18 @@
 {
-  "name": "ability.infernoreborn.heart5",
-  "icon": "infernoreborn:inferno_spark{Abilities:[\"infernoreborn:heart5\"]}",
-  "category": "infernoreborn:abilities",
-  "pages": [
-    {
-      "type": "text",
-      "text": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce et tortor porttitor odio ultrices consequat. Etiam lacinia tempus nulla eu convallis. Nullam ultricies euismod felis, at vestibulum nulla tincidunt ac. Sed eu lacus ante. Nunc diam lorem, luctus vel pellentesque vitae, dapibus eget massa. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. In interdum laoreet lacinia. Mauris eget nulla massa. Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Nunc ultricies vulputate nibh, sed commodo odio gravida id.\n\nNulla ligula elit, egestas non lacus eu, imperdiet interdum magna. Nunc ullamcorper lacus a turpis auctor sodales. Donec lectus nisl, tempus nec tellus posuere, accumsan tempor elit. Nunc sed dictum tellus, ut vehicula est. Aliquam non dolor eget augue hendrerit tristique. Nunc sed lacinia justo, efficitur rhoncus nunc. Proin bibendum, tortor id aliquam fringilla, mi magna consectetur massa, nec malesuada dui dolor sed nisi. Suspendisse finibus nibh lacinia pulvinar ornare. Donec vitae rutrum massa.\n\nSed tincidunt vestibulum mauris a elementum. Praesent efficitur, nunc ut eleifend rhoncus, quam dui volutpat nisi, vel viverra sem purus at leo. In maximus neque quis lectus mattis egestas. Ut at interdum lorem. Sed eleifend commodo vestibulum. Aenean lectus nisi, efficitur non neque quis, euismod cursus mi. Nullam laoreet, nisl non pretium bibendum, arcu mi consequat libero, ac consequat elit velit id massa. Etiam blandit nunc turpis, ut condimentum eros ultricies eu. Maecenas mauris lorem, eleifend et ultrices in, mattis a arcu. Nulla maximus dolor id dolor tempor, sed rhoncus lectus euismod. Nulla id felis ac tortor rhoncus bibendum ut non risus. Donec varius risus odio, vitae viverra erat convallis eu. Sed non feugiat ante. Quisque ac condimentum libero, eget porttitor dui. Donec a leo scelerisque, facilisis lorem et, consequat dui.\n\nNullam malesuada a dolor vel volutpat. Vivamus nisi velit, tincidunt in quam et, varius ultrices lacus. Praesent sagittis sem odio, vitae varius nisi tempor ut. Duis luctus porta euismod. Interdum et malesuada fames ac ante ipsum primis in faucibus. Integer ultrices mi ac est sodales, ut accumsan magna rhoncus. Donec facilisis nisi quis tincidunt suscipit. Aliquam ut diam nisi. Curabitur posuere sagittis nisi, at laoreet nisl. Nulla est elit, varius eu enim vel, aliquam volutpat tellus. Morbi eleifend lectus justo, eu varius eros tincidunt quis. Integer quis libero ac justo molestie posuere.\n\nSed sagittis id dolor at tempor. Donec blandit diam sit amet facilisis porttitor. Suspendisse lectus justo, efficitur vel nisi non, luctus vehicula nisi. Nam mauris justo, porttitor ut dolor nec, euismod mattis diam. Proin orci sapien, ullamcorper id arcu sed, posuere mollis massa. Ut ultrices bibendum tincidunt. Nunc luctus pellentesque mauris, non pretium ligula convallis a. Nulla vitae felis lobortis, eleifend dolor a, semper turpis."
-    }
-  ]
+	"name": "ability.infernoreborn.heart5",
+	"category": "infernoreborn:abilities",
+	"icon": "infernoreborn:inferno_spark{Abilities:[\"infernoreborn:heart5\"]}",
+	"pages": [
+		{
+			"type": "text",
+			"text": "page.infernoreborn.heart5.0"
+		},
+		{
+			"type": "empty"
+		},
+		{
+			"type": "text",
+			"text": "page.infernoreborn.heart5.2"
+		}
+	]
 }

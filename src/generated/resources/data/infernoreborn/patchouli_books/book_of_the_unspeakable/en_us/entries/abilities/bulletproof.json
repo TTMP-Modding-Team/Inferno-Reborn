@@ -1,0 +1,18 @@
+{
+	"name": "ability.infernoreborn.bulletproof",
+	"category": "infernoreborn:abilities",
+	"icon": "infernoreborn:inferno_spark{Abilities:[\"infernoreborn:bulletproof\"]}",
+	"pages": [
+		{
+			"type": "text",
+			"text": "page.infernoreborn.bulletproof.0"
+		},
+		{
+			"type": "empty"
+		},
+		{
+			"type": "text",
+			"text": "page.infernoreborn.bulletproof.2"
+		}
+	]
+}

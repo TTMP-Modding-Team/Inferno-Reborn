@@ -7,11 +7,13 @@ import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.inventory.container.Container;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
+import net.minecraftforge.event.entity.living.LivingAttackEvent;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.entity.living.LivingEvent.LivingUpdateEvent;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import net.minecraftforge.event.entity.player.PlayerContainerEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
+import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.registries.ForgeRegistryEntry;
@@ -79,6 +81,18 @@ public class CommonEventHandlers{
 		}
 	}
 
+	@SubscribeEvent(priority = EventPriority.LOW)
+	public static void onDamageAfter(LivingHurtEvent event){
+		Entity entity = event.getSource().getDirectEntity();
+		if(entity instanceof LivingEntity){
+			ServerAbilityHolder h = ServerAbilityHolder.of(entity);
+			if(h!=null){
+				for(OnEvent<LivingHurtEvent> e : h.getOnAttackListeners().values())
+					e.onEvent((LivingEntity)entity, h, event);
+			}
+		}
+	}
+
 	@SubscribeEvent
 	public static void onLivingDeath(LivingDeathEvent event){
 		LivingEntity entity = event.getEntityLiving();
@@ -89,6 +103,15 @@ public class CommonEventHandlers{
 					.filter(Objects::nonNull)
 					.map(ResourceLocation::toString)
 					.collect(Collectors.joining(", ")));
+		}
+	}
+
+	@SubscribeEvent
+	public static void onStartTracking(PlayerEvent.StartTracking event){
+		if(event.getTarget() instanceof LivingEntity){
+			LivingEntity target = (LivingEntity)event.getTarget();
+			ServerAbilityHolder holder = ServerAbilityHolder.of(target);
+			if(holder!=null) holder.updateAttributes(target);
 		}
 	}
 }
