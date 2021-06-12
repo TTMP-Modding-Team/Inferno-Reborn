@@ -1,18 +1,11 @@
 {
-	"name": "ability.infernoreborn.melee_veteran",
-	"category": "infernoreborn:abilities",
-	"icon": "infernoreborn:inferno_spark{Abilities:[\"infernoreborn:melee_veteran\"]}",
-	"pages": [
-		{
-			"type": "text",
-			"text": "page.infernoreborn.melee_veteran.0"
-		},
-		{
-			"type": "empty"
-		},
-		{
-			"type": "text",
-			"text": "page.infernoreborn.melee_veteran.2"
-		}
-	]
+  "name": "ability.infernoreborn.melee_veteran",
+  "category": "infernoreborn:abilities",
+  "icon": "infernoreborn:inferno_spark{Abilities:[\"infernoreborn:melee_veteran\"]}",
+  "pages": [
+    {
+      "type": "text",
+      "text": "text.infernoreborn.melee_veteran.0"
+    }
+  ]
 }

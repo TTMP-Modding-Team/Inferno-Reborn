@@ -154,7 +154,6 @@ public final class Abilities{
 	public static final RegistryObject<Ability> VAMPIRE = REGISTER.register("vampire", () ->
 			new Ability(new Ability.Properties(0x800000, 0x800000)
 					.onAttack((entity, holder, event) -> {
-						LivingEntity target = event.getEntityLiving();
 						float amount = event.getAmount();
 						if(entity!=event.getSource().getDirectEntity()) amount /= 2;
 						entity.heal(amount);
@@ -164,7 +163,7 @@ public final class Abilities{
 			new Ability(new Ability.Properties(0x000000, 0x0000000)
 					.onAttack((entity, holder, event) -> {
 						event.getEntityLiving().addEffect(new EffectInstance(Effects.LEVITATION, 100));
-						event.getEntityLiving().addEffect(new EffectInstance(Effects.DIG_SLOWDOWN, 64, 1));
+						AbilityUtils.addStackEffect(event.getEntityLiving(), Effects.DIG_SLOWDOWN, 100, 0, 1, 5, true, true);
 					})));
 
 

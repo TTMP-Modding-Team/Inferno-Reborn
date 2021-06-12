@@ -7,7 +7,6 @@ import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.inventory.container.Container;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
-import net.minecraftforge.event.entity.living.LivingAttackEvent;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.entity.living.LivingEvent.LivingUpdateEvent;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
@@ -22,7 +21,6 @@ import ttmp.infernoreborn.ability.OnEvent;
 import ttmp.infernoreborn.capability.AbilityHolder;
 import ttmp.infernoreborn.capability.ClientAbilityHolder;
 import ttmp.infernoreborn.capability.ServerAbilityHolder;
-import ttmp.infernoreborn.container.listener.EssenceHolderSynchronizer;
 
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -82,7 +80,7 @@ public class CommonEventHandlers{
 	}
 
 	@SubscribeEvent(priority = EventPriority.LOW)
-	public static void onDamageAfter(LivingHurtEvent event){
+	public static void onLivingHurtAfter(LivingHurtEvent event){
 		Entity entity = event.getSource().getDirectEntity();
 		if(entity instanceof LivingEntity){
 			ServerAbilityHolder h = ServerAbilityHolder.of(entity);
@@ -111,7 +109,7 @@ public class CommonEventHandlers{
 		if(event.getTarget() instanceof LivingEntity){
 			LivingEntity target = (LivingEntity)event.getTarget();
 			ServerAbilityHolder holder = ServerAbilityHolder.of(target);
-			if(holder!=null) holder.updateAttributes(target);
+			if(holder!=null) holder.syncAbilityToClient(target);
 		}
 	}
 }

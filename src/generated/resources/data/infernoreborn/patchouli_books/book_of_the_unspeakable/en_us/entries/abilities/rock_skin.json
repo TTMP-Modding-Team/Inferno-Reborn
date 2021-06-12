@@ -1,18 +1,11 @@
 {
-	"name": "ability.infernoreborn.rock_skin",
-	"category": "infernoreborn:abilities",
-	"icon": "infernoreborn:inferno_spark{Abilities:[\"infernoreborn:rock_skin\"]}",
-	"pages": [
-		{
-			"type": "text",
-			"text": "page.infernoreborn.rock_skin.0"
-		},
-		{
-			"type": "empty"
-		},
-		{
-			"type": "text",
-			"text": "page.infernoreborn.rock_skin.2"
-		}
-	]
+  "name": "ability.infernoreborn.rock_skin",
+  "category": "infernoreborn:abilities",
+  "icon": "infernoreborn:inferno_spark{Abilities:[\"infernoreborn:rock_skin\"]}",
+  "pages": [
+    {
+      "type": "text",
+      "text": "text.infernoreborn.rock_skin.0"
+    }
+  ]
 }

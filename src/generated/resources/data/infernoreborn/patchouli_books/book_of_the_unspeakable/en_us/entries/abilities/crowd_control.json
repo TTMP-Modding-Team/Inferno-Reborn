@@ -1,18 +1,11 @@
 {
-	"name": "ability.infernoreborn.crowd_control",
-	"category": "infernoreborn:abilities",
-	"icon": "infernoreborn:inferno_spark{Abilities:[\"infernoreborn:crowd_control\"]}",
-	"pages": [
-		{
-			"type": "text",
-			"text": "page.infernoreborn.crowd_control.0"
-		},
-		{
-			"type": "empty"
-		},
-		{
-			"type": "text",
-			"text": "page.infernoreborn.crowd_control.2"
-		}
-	]
+  "name": "ability.infernoreborn.crowd_control",
+  "category": "infernoreborn:abilities",
+  "icon": "infernoreborn:inferno_spark{Abilities:[\"infernoreborn:crowd_control\"]}",
+  "pages": [
+    {
+      "type": "text",
+      "text": "text.infernoreborn.crowd_control.0"
+    }
+  ]
 }

@@ -1,18 +1,11 @@
 {
-	"name": "ability.infernoreborn.frozen_skin",
-	"category": "infernoreborn:abilities",
-	"icon": "infernoreborn:inferno_spark{Abilities:[\"infernoreborn:frozen_skin\"]}",
-	"pages": [
-		{
-			"type": "text",
-			"text": "page.infernoreborn.frozen_skin.0"
-		},
-		{
-			"type": "empty"
-		},
-		{
-			"type": "text",
-			"text": "page.infernoreborn.frozen_skin.2"
-		}
-	]
+  "name": "ability.infernoreborn.frozen_skin",
+  "category": "infernoreborn:abilities",
+  "icon": "infernoreborn:inferno_spark{Abilities:[\"infernoreborn:frozen_skin\"]}",
+  "pages": [
+    {
+      "type": "text",
+      "text": "text.infernoreborn.frozen_skin.0"
+    }
+  ]
 }

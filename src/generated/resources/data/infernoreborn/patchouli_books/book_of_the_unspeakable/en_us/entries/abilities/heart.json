@@ -1,18 +1,11 @@
 {
-	"name": "ability.infernoreborn.heart",
-	"category": "infernoreborn:abilities",
-	"icon": "infernoreborn:inferno_spark{Abilities:[\"infernoreborn:heart\"]}",
-	"pages": [
-		{
-			"type": "text",
-			"text": "page.infernoreborn.heart.0"
-		},
-		{
-			"type": "empty"
-		},
-		{
-			"type": "text",
-			"text": "page.infernoreborn.heart.2"
-		}
-	]
+  "name": "ability.infernoreborn.heart",
+  "category": "infernoreborn:abilities",
+  "icon": "infernoreborn:inferno_spark{Abilities:[\"infernoreborn:heart\"]}",
+  "pages": [
+    {
+      "type": "text",
+      "text": "text.infernoreborn.heart.0"
+    }
+  ]
 }

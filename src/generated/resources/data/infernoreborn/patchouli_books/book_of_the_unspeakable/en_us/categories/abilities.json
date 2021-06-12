@@ -1,5 +1,6 @@
 {
-  "name": "category.infernoreborn.abilities",
-  "description": "category.infernoreborn.abilities.desc",
-  "icon": "infernoreborn:primal_inferno_spark"
+  "name": "text.infernoreborn.book_of_the_unspeakable.abilities",
+  "description": "text.infernoreborn.book_of_the_unspeakable.abilities.desc",
+  "icon": "infernoreborn:primal_inferno_spark",
+  "sortnum": 2
 }

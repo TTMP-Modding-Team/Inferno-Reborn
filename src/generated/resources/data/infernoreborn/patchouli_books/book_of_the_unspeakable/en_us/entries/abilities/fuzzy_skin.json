@@ -1,18 +1,11 @@
 {
-	"name": "ability.infernoreborn.fuzzy_skin",
-	"category": "infernoreborn:abilities",
-	"icon": "infernoreborn:inferno_spark{Abilities:[\"infernoreborn:fuzzy_skin\"]}",
-	"pages": [
-		{
-			"type": "text",
-			"text": "page.infernoreborn.fuzzy_skin.0"
-		},
-		{
-			"type": "empty"
-		},
-		{
-			"type": "text",
-			"text": "page.infernoreborn.fuzzy_skin.2"
-		}
-	]
+  "name": "ability.infernoreborn.fuzzy_skin",
+  "category": "infernoreborn:abilities",
+  "icon": "infernoreborn:inferno_spark{Abilities:[\"infernoreborn:fuzzy_skin\"]}",
+  "pages": [
+    {
+      "type": "text",
+      "text": "text.infernoreborn.fuzzy_skin.0"
+    }
+  ]
 }

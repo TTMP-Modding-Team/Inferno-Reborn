@@ -1,18 +1,11 @@
 {
-	"name": "ability.infernoreborn.spine_skin",
-	"category": "infernoreborn:abilities",
-	"icon": "infernoreborn:inferno_spark{Abilities:[\"infernoreborn:spine_skin\"]}",
-	"pages": [
-		{
-			"type": "text",
-			"text": "page.infernoreborn.spine_skin.0"
-		},
-		{
-			"type": "empty"
-		},
-		{
-			"type": "text",
-			"text": "page.infernoreborn.spine_skin.2"
-		}
-	]
+  "name": "ability.infernoreborn.spine_skin",
+  "category": "infernoreborn:abilities",
+  "icon": "infernoreborn:inferno_spark{Abilities:[\"infernoreborn:spine_skin\"]}",
+  "pages": [
+    {
+      "type": "text",
+      "text": "text.infernoreborn.spine_skin.0"
+    }
+  ]
 }

@@ -112,7 +112,6 @@ public class ServerAbilityHolder extends AbilityHolder implements INBTSerializab
 					onAbilityAdded(ability, entity);
 			}
 			for(Ability ability : removedAbilities){
-				System.out.println(entity.level.isClientSide() + ability.toString());
 				if(abilities.remove(ability))
 					onAbilityRemoved(ability, entity);
 			}
@@ -128,11 +127,11 @@ public class ServerAbilityHolder extends AbilityHolder implements INBTSerializab
 						1, newMaxHealth));
 			}
 
-			ModNet.CHANNEL.send(PacketDistributor.TRACKING_ENTITY.with(() -> entity), new SyncAbilityHolderMsg(entity.getId(), abilities, appliedGeneratorScheme));
+			syncAbilityToClient(entity);
 		}
 	}
 
-	public void updateAttributes(LivingEntity entity){
+	public void syncAbilityToClient(LivingEntity entity){
 		ModNet.CHANNEL.send(PacketDistributor.TRACKING_ENTITY.with(() -> entity), new SyncAbilityHolderMsg(entity.getId(), abilities, appliedGeneratorScheme));
 	}
 
