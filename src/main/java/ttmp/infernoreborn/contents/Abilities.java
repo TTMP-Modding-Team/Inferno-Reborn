@@ -1,11 +1,13 @@
 package ttmp.infernoreborn.contents;
 
+import com.google.common.collect.Lists;
 import net.minecraft.enchantment.ThornsEnchantment;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.ai.attributes.AttributeModifier.Operation;
 import net.minecraft.entity.ai.attributes.Attributes;
 import net.minecraft.entity.ai.attributes.ModifiableAttributeInstance;
+import net.minecraft.potion.Effect;
 import net.minecraft.potion.EffectInstance;
 import net.minecraft.potion.Effects;
 import net.minecraft.util.DamageSource;
@@ -21,8 +23,11 @@ import net.minecraftforge.registries.ForgeRegistry;
 import net.minecraftforge.registries.RegistryBuilder;
 import ttmp.infernoreborn.InfernoReborn;
 import ttmp.infernoreborn.ability.Ability;
+import ttmp.infernoreborn.ability.AbilitySkill;
 import ttmp.infernoreborn.util.AbilityUtils;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 import java.util.function.Supplier;
 
@@ -112,7 +117,7 @@ public final class Abilities{
 						}
 					})));
 	// TODO NEED TO CHANGE COLORS
-	public static final RegistryObject<Ability> SPINESKIN = REGISTER.register("spine_skin", () ->
+	public static final RegistryObject<Ability> THORN_SKIN = REGISTER.register("thorn_skin", () ->
 			new Ability(new Ability.Properties(0xC8C8C8, 0xC8C8C8)
 					.onHurt((entity, holder, event) -> {
 						if(event.getSource() instanceof EntityDamageSource&&((EntityDamageSource)event.getSource()).isThorns()) return;
@@ -166,6 +171,60 @@ public final class Abilities{
 						AbilityUtils.addStackEffect(event.getEntityLiving(), Effects.DIG_SLOWDOWN, 100, 0, 1, 5, true, true);
 					})));
 
+	public static final RegistryObject<Ability> SURVIVAL_EXPERT = REGISTER.register("survival_expert", () ->
+			new Ability(new Ability.Properties(0x2BB826, 0x00000)
+					.onUpdate((entity, holder, event) -> {
+						if(entity.isAlive()){
+							if(entity.isOnFire()) entity.clearFire();
+							if(!entity.getActiveEffects().isEmpty()){
+								List<EffectInstance> removeEffectsList = null;
+								for(EffectInstance e : entity.getActiveEffects()){
+									if(!e.getEffect().isBeneficial()){
+										if(removeEffectsList==null) removeEffectsList = new ArrayList<>();
+										removeEffectsList.add(e);
+									}
+								}
+								if(removeEffectsList!=null)
+									for(EffectInstance e : removeEffectsList)
+										entity.removeEffect(e.getEffect());
+							}
+						}
+					})));
+	public static final RegistryObject<Ability> DESTINY_BOND = REGISTER.register("destiny_bond", () ->
+			new Ability(new Ability.Properties(0x0000, 0x0000)
+					.onDeath((entity, holder, event) -> {
+						LivingEntity target = entity.getKillCredit();
+						if(event.isCanceled()||target==null) return;
+						target.hurt(DamageSource.MAGIC, (float)Math.pow(entity.position().distanceTo(target.position()), 1.5));
+					})));
+	public static final RegistryObject<Ability> FOCUS = REGISTER.register("focus", () ->
+			new Ability(new Ability.Properties(0x00, 0x00)
+					.onHurt((entity, holder, event) -> {
+						if(event.getSource().getEntity() instanceof LivingEntity){
+							LivingEntity target = (LivingEntity)event.getSource().getEntity();
+							if(target!=null&&target==event.getSource().getDirectEntity()) event.setAmount(event.getAmount()/4.0f);
+						}
+					})));
+
+	public static final RegistryObject<Ability> GUTS = REGISTER.register("guts", () ->
+			new Ability(new Ability.Properties(0xB24100, 0xB24100)
+					.onHurt((entity, holder, event) -> {
+						AbilityUtils.addStackEffect(entity, Effects.DAMAGE_RESISTANCE, 60, 0, 1, 3);
+					})));
+	public static final RegistryObject<Ability> MAGMA_SKIN = REGISTER.register("magma_skin", () ->
+			new Ability(new Ability.Properties(0x340000, 0x340000)
+					.onUpdate((entity, holder, event) -> {
+						if(entity.isAlive()){
+							AbilityUtils.addInfiniteEffect(entity, Effects.FIRE_RESISTANCE, 0);
+							entity.setSecondsOnFire(1);
+						}
+					})
+					.onHurt((entity, holder, event) -> {
+						if(event.getSource().getEntity() instanceof LivingEntity&&entity.isInWaterOrRain()){
+							((LivingEntity)event.getSource().getEntity()).setSecondsOnFire(8);
+						}
+					})
+					.addAttribute(ModAttributes.DAMAGE_RESISTANCE.get(), UUID.fromString("55a108b6-55ff-4b25-a416-afd9f806de69"), 0.2, Operation.ADDITION)));
 
 	@SubscribeEvent
 	public static void newRegistry(RegistryEvent.NewRegistry e){

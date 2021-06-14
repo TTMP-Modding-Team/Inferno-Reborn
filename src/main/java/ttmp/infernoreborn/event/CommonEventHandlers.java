@@ -17,6 +17,8 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.registries.ForgeRegistryEntry;
 import ttmp.infernoreborn.InfernoReborn;
+import ttmp.infernoreborn.ability.Ability;
+import ttmp.infernoreborn.ability.AbilitySkill;
 import ttmp.infernoreborn.ability.OnEvent;
 import ttmp.infernoreborn.capability.AbilityHolder;
 import ttmp.infernoreborn.capability.ClientAbilityHolder;
@@ -66,7 +68,15 @@ public class CommonEventHandlers{
 	public static void onLivingUpdate(LivingUpdateEvent event){
 		LivingEntity entity = event.getEntityLiving();
 		AbilityHolder h = AbilityHolder.of(entity);
-		if(h!=null) h.update(entity);
+		if(h!=null)
+			h.update(entity);
+		if(h instanceof ServerAbilityHolder){
+			for(OnEvent<LivingUpdateEvent> e : ((ServerAbilityHolder)h).getOnUpdateListeners().values())
+				e.onEvent(entity, (ServerAbilityHolder)h, event);
+			for(Ability ability : h.getAbilities())
+				for(AbilitySkill skill : ability.getSkills())
+					((ServerAbilityHolder)h).tryCast(skill, entity);
+		}
 	}
 
 	@SubscribeEvent
@@ -101,6 +111,10 @@ public class CommonEventHandlers{
 					.filter(Objects::nonNull)
 					.map(ResourceLocation::toString)
 					.collect(Collectors.joining(", ")));
+		}
+		if(h instanceof ServerAbilityHolder){
+			for(OnEvent<LivingDeathEvent> e : ((ServerAbilityHolder)h).getOnDeathListeners().values())
+				e.onEvent((LivingEntity)entity, (ServerAbilityHolder)h, event);
 		}
 	}
 

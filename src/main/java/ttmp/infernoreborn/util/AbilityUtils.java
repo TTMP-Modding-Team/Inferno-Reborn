@@ -35,4 +35,10 @@ public final class AbilityUtils{
 					showIcon));
 		}
 	}
+	public static void addInfiniteEffect(LivingEntity entity, Effect effect, int amp){
+		EffectInstance e = entity.getEffect(effect);
+		if(e==null||e.getDuration()<30||e.getAmplifier()<amp){
+			entity.addEffect(new EffectInstance(effect, 400, amp, true, false));
+		}
+	}
 }

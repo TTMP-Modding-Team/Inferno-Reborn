@@ -4,8 +4,11 @@ import net.minecraft.entity.ai.attributes.Attribute;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraftforge.event.entity.living.LivingDeathEvent;
+import net.minecraftforge.event.entity.living.LivingEvent.LivingUpdateEvent;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import net.minecraftforge.registries.ForgeRegistryEntry;
+import ttmp.infernoreborn.ability.AbilitySkill.OnSkill;
 
 import javax.annotation.Nullable;
 import java.util.HashMap;
@@ -21,6 +24,10 @@ public class Ability extends ForgeRegistryEntry<Ability>{
 
 	@Nullable private final OnEvent<LivingHurtEvent> onHurt;
 	@Nullable private final OnEvent<LivingHurtEvent> onAttack;
+	@Nullable private final OnEvent<LivingDeathEvent> onDeath;
+	@Nullable private final OnEvent<LivingUpdateEvent> onUpdate;
+
+	@Nullable private final Set<AbilitySkill> skills;
 
 	public Ability(Properties properties){
 		this.primaryColor = properties.primaryColor;
@@ -29,6 +36,10 @@ public class Ability extends ForgeRegistryEntry<Ability>{
 		this.attributes = properties.attributes;
 		this.onHurt = properties.onHurt;
 		this.onAttack = properties.onAttack;
+		this.onDeath = properties.onDeath;
+		this.onUpdate = properties.onUpdate;
+
+		this.skills = properties.skills;
 	}
 
 	public int getPrimaryColor(){
@@ -50,6 +61,16 @@ public class Ability extends ForgeRegistryEntry<Ability>{
 	}
 	@Nullable public OnEvent<LivingHurtEvent> onAttack(){
 		return onAttack;
+	}
+	@Nullable public OnEvent<LivingDeathEvent> onDeath(){
+		return onDeath;
+	}
+	@Nullable public OnEvent<LivingUpdateEvent> onUpdate(){
+		return onUpdate;
+	}
+
+	public Set<AbilitySkill> getSkills(){
+		return skills;
 	}
 
 	public TranslationTextComponent getName(){
@@ -78,9 +99,12 @@ public class Ability extends ForgeRegistryEntry<Ability>{
 	public static final class Properties{
 		private final int primaryColor, secondaryColor, highlightColor;
 		private final Map<Attribute, Set<AttributeModifier>> attributes = new HashMap<>();
+		private final Set<AbilitySkill> skills = new HashSet<>();
 
 		@Nullable private OnEvent<LivingHurtEvent> onHurt;
 		@Nullable private OnEvent<LivingHurtEvent> onAttack;
+		@Nullable private OnEvent<LivingDeathEvent> onDeath;
+		@Nullable private OnEvent<LivingUpdateEvent> onUpdate;
 
 		public Properties(int primaryColor, int secondaryColor){
 			this(primaryColor, secondaryColor, primaryColor);
@@ -97,6 +121,10 @@ public class Ability extends ForgeRegistryEntry<Ability>{
 				throw new IllegalStateException("Registration of attribute with overlapping ID "+uuid);
 			return this;
 		}
+		public Properties addSkill(@Nullable AbilitySkill skill){
+			this.skills.add(skill);
+			return this;
+		}
 
 		public Properties onHurt(@Nullable OnEvent<LivingHurtEvent> onHurt){
 			this.onHurt = onHurt;
@@ -107,5 +135,17 @@ public class Ability extends ForgeRegistryEntry<Ability>{
 			this.onAttack = onAttack;
 			return this;
 		}
+
+		public Properties onDeath(@Nullable OnEvent<LivingDeathEvent> onDeath){
+			this.onDeath = onDeath;
+			return this;
+		}
+
+		public Properties onUpdate(@Nullable OnEvent<LivingUpdateEvent> onUpdate){
+			this.onUpdate = onUpdate;
+			return this;
+		}
+
+
 	}
 }

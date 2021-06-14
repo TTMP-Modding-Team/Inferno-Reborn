@@ -14,9 +14,12 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.common.util.INBTSerializable;
+import net.minecraftforge.event.entity.living.LivingDeathEvent;
+import net.minecraftforge.event.entity.living.LivingEvent.LivingUpdateEvent;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import net.minecraftforge.fml.network.PacketDistributor;
 import ttmp.infernoreborn.ability.Ability;
+import ttmp.infernoreborn.ability.AbilitySkill;
 import ttmp.infernoreborn.ability.OnEvent;
 import ttmp.infernoreborn.ability.generator.AbilityGenerator;
 import ttmp.infernoreborn.ability.generator.AbilityGenerators;
@@ -31,6 +34,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Objects;
@@ -51,12 +55,19 @@ public class ServerAbilityHolder extends AbilityHolder implements INBTSerializab
 
 	private final Map<Ability, OnEvent<LivingHurtEvent>> onHurtListeners = new HashMap<>();
 	private final Map<Ability, OnEvent<LivingHurtEvent>> onAttackListeners = new HashMap<>();
+	private final Map<Ability, OnEvent<LivingDeathEvent>> onDeathListeners = new HashMap<>();
+	private final Map<Ability, OnEvent<LivingUpdateEvent>> onUpdateListeners = new HashMap<>();
 	private final Map<Ability, OnEvent<LivingHurtEvent>> onHurtListenersView = Collections.unmodifiableMap(onHurtListeners);
 	private final Map<Ability, OnEvent<LivingHurtEvent>> onAttackListenersView = Collections.unmodifiableMap(onAttackListeners);
+	private final Map<Ability, OnEvent<LivingDeathEvent>> onDeathListenersView = Collections.unmodifiableMap(onDeathListeners);
+	private final Map<Ability, OnEvent<LivingUpdateEvent>> onUpdateListenersView = Collections.unmodifiableMap(onUpdateListeners);
 
 	@Nullable private AbilityGeneratorScheme appliedGeneratorScheme;
 
 	private boolean generateAbility = true;
+
+	private Map<AbilitySkill, Long> cooldowns = new HashMap<>();
+	private long castingTime = 0;
 
 	@Override public Set<Ability> getAbilities(){
 		return abilitiesView;
@@ -96,7 +107,33 @@ public class ServerAbilityHolder extends AbilityHolder implements INBTSerializab
 	public Map<Ability, OnEvent<LivingHurtEvent>> getOnAttackListeners(){
 		return onAttackListenersView;
 	}
+	public Map<Ability, OnEvent<LivingDeathEvent>> getOnDeathListeners(){
+		return onDeathListenersView;
+	}
+	public Map<Ability, OnEvent<LivingUpdateEvent>> getOnUpdateListeners(){
+		return onUpdateListenersView;
+	}
 
+	public Map<AbilitySkill, Long> getCooldowns(){
+		return this.cooldowns;
+	}
+
+	public boolean isCasting(){
+		return castingTime>0;
+	}
+	public void setCastingTime(long time){
+		castingTime -= time;
+	}
+	public boolean tryCast(AbilitySkill skill, LivingEntity entity){
+		if(!cooldowns.containsKey(skill)) cooldowns.put(skill, skill.getCooldown());
+		if(cooldowns.get(skill)>=0){
+			cooldowns.put(skill, cooldowns.get(skill)-1);
+			return false;
+		}
+		skill.getOnskill().cast(entity, this);
+		cooldowns.put(skill, skill.getCooldown());
+		return true;
+	}
 	@Override
 	public void update(LivingEntity entity){
 		if(generateAbility){
@@ -151,6 +188,8 @@ public class ServerAbilityHolder extends AbilityHolder implements INBTSerializab
 		}
 		if(ability.onHurt()!=null) onHurtListeners.put(ability, ability.onHurt());
 		if(ability.onAttack()!=null) onAttackListeners.put(ability, ability.onAttack());
+		if(ability.onDeath()!=null) onDeathListeners.put(ability, ability.onDeath());
+		if(ability.onUpdate()!=null) onUpdateListeners.put(ability, ability.onUpdate());
 	}
 
 	protected void onAbilityRemoved(Ability ability, LivingEntity entity){
@@ -162,6 +201,8 @@ public class ServerAbilityHolder extends AbilityHolder implements INBTSerializab
 		}
 		onHurtListeners.remove(ability);
 		onAttackListeners.remove(ability);
+		onDeathListeners.remove(ability);
+		onUpdateListeners.remove(ability);
 	}
 
 	@Override
