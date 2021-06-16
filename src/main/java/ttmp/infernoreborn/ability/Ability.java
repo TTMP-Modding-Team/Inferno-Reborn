@@ -8,7 +8,6 @@ import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.entity.living.LivingEvent.LivingUpdateEvent;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import net.minecraftforge.registries.ForgeRegistryEntry;
-import ttmp.infernoreborn.ability.AbilitySkill.OnSkill;
 
 import javax.annotation.Nullable;
 import java.util.HashMap;
@@ -17,6 +16,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 public class Ability extends ForgeRegistryEntry<Ability>{
 	private final int primaryColor, secondaryColor, highlightColor;
@@ -27,7 +27,7 @@ public class Ability extends ForgeRegistryEntry<Ability>{
 	@Nullable private final OnEvent<LivingDeathEvent> onDeath;
 	@Nullable private final OnEvent<LivingUpdateEvent> onUpdate;
 
-	@Nullable private final Set<AbilitySkill> skills;
+	private final Set<AbilitySkill> skills;
 
 	public Ability(Properties properties){
 		this.primaryColor = properties.primaryColor;
@@ -39,7 +39,9 @@ public class Ability extends ForgeRegistryEntry<Ability>{
 		this.onDeath = properties.onDeath;
 		this.onUpdate = properties.onUpdate;
 
-		this.skills = properties.skills;
+		this.skills = properties.skillData.stream()
+				.map(x -> new AbilitySkill(x, this))
+				.collect(Collectors.toSet());
 	}
 
 	public int getPrimaryColor(){
@@ -99,7 +101,7 @@ public class Ability extends ForgeRegistryEntry<Ability>{
 	public static final class Properties{
 		private final int primaryColor, secondaryColor, highlightColor;
 		private final Map<Attribute, Set<AttributeModifier>> attributes = new HashMap<>();
-		private final Set<AbilitySkill> skills = new HashSet<>();
+		private final Set<AbilitySkill.SkillData> skillData = new HashSet<>();
 
 		@Nullable private OnEvent<LivingHurtEvent> onHurt;
 		@Nullable private OnEvent<LivingHurtEvent> onAttack;
@@ -121,8 +123,8 @@ public class Ability extends ForgeRegistryEntry<Ability>{
 				throw new IllegalStateException("Registration of attribute with overlapping ID "+uuid);
 			return this;
 		}
-		public Properties addSkill(@Nullable AbilitySkill skill){
-			this.skills.add(skill);
+		public Properties addSkill(String id, long castTime, long cooldown, AbilitySkill.SkillAction skillAction){
+			this.skillData.add(new AbilitySkill.SkillData(id, castTime, cooldown, skillAction));
 			return this;
 		}
 

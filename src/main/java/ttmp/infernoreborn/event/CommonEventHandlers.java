@@ -71,11 +71,9 @@ public class CommonEventHandlers{
 		if(h!=null)
 			h.update(entity);
 		if(h instanceof ServerAbilityHolder){
-			for(OnEvent<LivingUpdateEvent> e : ((ServerAbilityHolder)h).getOnUpdateListeners().values())
-				e.onEvent(entity, (ServerAbilityHolder)h, event);
-			for(Ability ability : h.getAbilities())
-				for(AbilitySkill skill : ability.getSkills())
-					((ServerAbilityHolder)h).tryCast(skill, entity);
+			ServerAbilityHolder ho = (ServerAbilityHolder)h;
+			for(OnEvent<LivingUpdateEvent> e : ho.getOnUpdateListeners().values())
+				e.onEvent(entity, ho, event);
 		}
 	}
 
@@ -114,7 +112,7 @@ public class CommonEventHandlers{
 		}
 		if(h instanceof ServerAbilityHolder){
 			for(OnEvent<LivingDeathEvent> e : ((ServerAbilityHolder)h).getOnDeathListeners().values())
-				e.onEvent((LivingEntity)entity, (ServerAbilityHolder)h, event);
+				e.onEvent(entity, h, event);
 		}
 	}
 

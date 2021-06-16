@@ -34,7 +34,6 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Objects;
@@ -66,7 +65,9 @@ public class ServerAbilityHolder extends AbilityHolder implements INBTSerializab
 
 	private boolean generateAbility = true;
 
-	private Map<AbilitySkill, Long> cooldowns = new HashMap<>();
+	private final Map<AbilitySkill, Long> cooldownTime = new HashMap<>();
+	private final Set<AbilitySkill> abilitySkills = new HashSet<>();
+	private AbilitySkill queuedSkill = null;
 	private long castingTime = 0;
 
 	@Override public Set<Ability> getAbilities(){
@@ -114,25 +115,27 @@ public class ServerAbilityHolder extends AbilityHolder implements INBTSerializab
 		return onUpdateListenersView;
 	}
 
-	public Map<AbilitySkill, Long> getCooldowns(){
-		return this.cooldowns;
+	public boolean isCasting(LivingEntity entity){
+		return castingTime>entity.level.getGameTime();
 	}
-
-	public boolean isCasting(){
-		return castingTime>0;
-	}
-	public void setCastingTime(long time){
-		castingTime -= time;
-	}
-	public boolean tryCast(AbilitySkill skill, LivingEntity entity){
-		if(!cooldowns.containsKey(skill)) cooldowns.put(skill, skill.getCooldown());
-		if(cooldowns.get(skill)>=0){
-			cooldowns.put(skill, cooldowns.get(skill)-1);
-			return false;
+	public boolean tryUseSkill(LivingEntity entity){
+		if(!isCasting(entity)){
+			if(queuedSkill==null){
+				AbilitySkill[] skills = abilitySkills.toArray(new AbilitySkill[0]);
+				AbilitySkill skill = skills[entity.getRandom().nextInt(skills.length)];
+				if(!cooldownTime.containsKey(skill)||cooldownTime.get(skill)<entity.level.getGameTime()){
+					castingTime = skill.getCastTime()+entity.level.getGameTime();
+					queuedSkill = skill;
+					return false;
+				}
+			}else{
+				queuedSkill.getSkillAction().useSkill(entity, this);
+				cooldownTime.put(queuedSkill, queuedSkill.getCooldown()+entity.level.getGameTime());
+				queuedSkill = null;
+				return true;
+			}
 		}
-		skill.getOnskill().cast(entity, this);
-		cooldowns.put(skill, skill.getCooldown());
-		return true;
+		return false;
 	}
 	@Override
 	public void update(LivingEntity entity){
@@ -166,6 +169,9 @@ public class ServerAbilityHolder extends AbilityHolder implements INBTSerializab
 
 			syncAbilityToClient(entity);
 		}
+		if(!abilitySkills.isEmpty()){
+			tryUseSkill(entity);
+		}
 	}
 
 	public void syncAbilityToClient(LivingEntity entity){
@@ -190,6 +196,7 @@ public class ServerAbilityHolder extends AbilityHolder implements INBTSerializab
 		if(ability.onAttack()!=null) onAttackListeners.put(ability, ability.onAttack());
 		if(ability.onDeath()!=null) onDeathListeners.put(ability, ability.onDeath());
 		if(ability.onUpdate()!=null) onUpdateListeners.put(ability, ability.onUpdate());
+		if(!ability.getSkills().isEmpty()) abilitySkills.addAll(ability.getSkills());
 	}
 
 	protected void onAbilityRemoved(Ability ability, LivingEntity entity){
@@ -203,6 +210,7 @@ public class ServerAbilityHolder extends AbilityHolder implements INBTSerializab
 		onAttackListeners.remove(ability);
 		onDeathListeners.remove(ability);
 		onUpdateListeners.remove(ability);
+		abilitySkills.removeAll(ability.getSkills());
 	}
 
 	@Override

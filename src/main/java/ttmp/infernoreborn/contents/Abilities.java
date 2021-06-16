@@ -1,29 +1,23 @@
 package ttmp.infernoreborn.contents;
 
-import com.google.common.collect.Lists;
 import net.minecraft.enchantment.ThornsEnchantment;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.ai.attributes.AttributeModifier.Operation;
 import net.minecraft.entity.ai.attributes.Attributes;
-import net.minecraft.entity.ai.attributes.ModifiableAttributeInstance;
-import net.minecraft.potion.Effect;
 import net.minecraft.potion.EffectInstance;
 import net.minecraft.potion.Effects;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.EntityDamageSource;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.event.RegistryEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.RegistryObject;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber.Bus;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistry;
 import net.minecraftforge.registries.RegistryBuilder;
-import ttmp.infernoreborn.InfernoReborn;
 import ttmp.infernoreborn.ability.Ability;
-import ttmp.infernoreborn.ability.AbilitySkill;
 import ttmp.infernoreborn.util.AbilityUtils;
 
 import java.util.ArrayList;
@@ -208,9 +202,7 @@ public final class Abilities{
 
 	public static final RegistryObject<Ability> GUTS = REGISTER.register("guts", () ->
 			new Ability(new Ability.Properties(0xB24100, 0xB24100)
-					.onHurt((entity, holder, event) -> {
-						AbilityUtils.addStackEffect(entity, Effects.DAMAGE_RESISTANCE, 60, 0, 1, 3);
-					})));
+					.onHurt((entity, holder, event) -> AbilityUtils.addStackEffect(entity, Effects.DAMAGE_RESISTANCE, 60, 0, 1, 3))));
 	public static final RegistryObject<Ability> MAGMA_SKIN = REGISTER.register("magma_skin", () ->
 			new Ability(new Ability.Properties(0x340000, 0x340000)
 					.onUpdate((entity, holder, event) -> {
@@ -221,12 +213,11 @@ public final class Abilities{
 					})
 					.onHurt((entity, holder, event) -> {
 						if(event.getSource().getEntity() instanceof LivingEntity&&entity.isInWaterOrRain()){
-							((LivingEntity)event.getSource().getEntity()).setSecondsOnFire(8);
+							event.getSource().getEntity().setSecondsOnFire(8);
 						}
 					})
 					.addAttribute(ModAttributes.DAMAGE_RESISTANCE.get(), UUID.fromString("55a108b6-55ff-4b25-a416-afd9f806de69"), 0.2, Operation.ADDITION)));
 
-	@SubscribeEvent
 	public static void newRegistry(RegistryEvent.NewRegistry e){
 		registry = (ForgeRegistry<Ability>)new RegistryBuilder<Ability>()
 				.setType(Ability.class)
