@@ -1,0 +1,11 @@
+{
+  "name": "ability.infernoreborn.toughness",
+  "category": "infernoreborn:abilities",
+  "icon": "infernoreborn:inferno_spark{Abilities:[\"infernoreborn:toughness\"]}",
+  "pages": [
+    {
+      "type": "text",
+      "text": "text.infernoreborn.toughness.0"
+    }
+  ]
+}

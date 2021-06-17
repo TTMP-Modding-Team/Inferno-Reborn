@@ -34,6 +34,11 @@ public final class ModItems{
 			return stack;
 		}
 	};
+	public static final ItemGroup SIGILS = new ItemGroup("infernoreborn.sigils"){
+		@Override public ItemStack makeIcon(){
+			return new ItemStack(TEST_SIGIL.get());
+		}
+	};
 
 	public static final RegistryObject<Item> PRIMAL_INFERNO_SPARK = REGISTER.register("primal_inferno_spark", () -> new RandomAbilityItem(new Item.Properties().tab(SPARKS).rarity(Rarity.EPIC)));
 	public static final RegistryObject<Item> GENERATOR_INFERNO_SPARK = REGISTER.register("generator_inferno_spark", () -> new GeneratorAbilityItem(new Item.Properties().tab(SPARKS).rarity(Rarity.RARE)));
@@ -59,8 +64,9 @@ public final class ModItems{
 
 	public static final RegistryObject<Item> ESSENCE_HOLDER = REGISTER.register("essence_holder", () -> new EssenceHolderItem(new Item.Properties().stacksTo(1).tab(ARTIFACTS).rarity(Rarity.UNCOMMON)));
 
-	public static final RegistryObject<Item> TEST_SIGIL = REGISTER.register("test_sigil", () -> new SigilItem(Sigils.TEST, new Item.Properties().tab(ARTIFACTS)));
-	public static final RegistryObject<Item> TEST_SIGIL_2 = REGISTER.register("test_sigil_2", () -> new SigilItem(Sigils.TEST2, new Item.Properties().tab(ARTIFACTS)));
+	public static final RegistryObject<Item> TEST_SIGIL = REGISTER.register("test_sigil", () -> new SigilItem(Sigils.TEST, new Item.Properties().tab(SIGILS)));
+	public static final RegistryObject<Item> TEST_SIGIL_2 = REGISTER.register("test_sigil_2", () -> new SigilItem(Sigils.TEST2, new Item.Properties().tab(SIGILS)));
+	public static final RegistryObject<Item> TEST_SIGIL_3 = REGISTER.register("test_sigil_3", () -> new SigilItem(Sigils.TEST2, new Item.Properties().tab(SIGILS)));
 
 	public static final RegistryObject<BlockItem> SIGIL_ENGRAVING_TABLE_3X3 = REGISTER.register("sigil_engraving_table_3x3", () -> new BlockItem(ModBlocks.SIGIL_ENGRAVING_TABLE_3X3.get(), new Item.Properties().tab(ARTIFACTS)));
 	public static final RegistryObject<BlockItem> SIGIL_ENGRAVING_TABLE_5X5 = REGISTER.register("sigil_engraving_table_5x5", () -> new BlockItem(ModBlocks.SIGIL_ENGRAVING_TABLE_5X5.get(), new Item.Properties().tab(ARTIFACTS)));

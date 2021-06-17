@@ -1,0 +1,11 @@
+{
+  "name": "ability.infernoreborn.eviolite_chansey",
+  "category": "infernoreborn:abilities",
+  "icon": "infernoreborn:inferno_spark{Abilities:[\"infernoreborn:eviolite_chansey\"]}",
+  "pages": [
+    {
+      "type": "text",
+      "text": "text.infernoreborn.eviolite_chansey.0"
+    }
+  ]
+}

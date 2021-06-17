@@ -1,0 +1,11 @@
+{
+  "name": "ability.infernoreborn.magma_skin",
+  "category": "infernoreborn:abilities",
+  "icon": "infernoreborn:inferno_spark{Abilities:[\"infernoreborn:magma_skin\"]}",
+  "pages": [
+    {
+      "type": "text",
+      "text": "text.infernoreborn.magma_skin.0"
+    }
+  ]
+}

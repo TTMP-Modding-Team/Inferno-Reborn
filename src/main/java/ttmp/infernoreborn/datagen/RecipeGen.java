@@ -86,5 +86,17 @@ public class RecipeGen extends RecipeProvider{
 				.define('1', Ingredient.of(ModItems.METAL_ESSENCE_CRYSTAL.get()))
 				.unlockedBy("fuck", has(ModItems.METAL_ESSENCE_CRYSTAL.get()))
 				.save(consumer, new ResourceLocation(MODID, "sigil_engraving/test2"));
+		new ShapedSigilEngravingRecipeBuilder(Sigils.TEST3.get())
+				.pattern("   1   ")
+				.pattern("  1 1  ")
+				.pattern(" 1   1 ")
+				.pattern("11 X 11")
+				.pattern(" 1 1   ")
+				.pattern("11111  ")
+				.pattern("   1   ")
+				.defineAsCenter('X')
+				.define('1', Ingredient.of(ModItems.BLOOD_ESSENCE_SHARD.get()))
+				.unlockedBy("fuck", has(ModItems.BLOOD_ESSENCE_SHARD.get()))
+				.save(consumer, new ResourceLocation(MODID, "sigil_engraving/test3"));
 	}
 }

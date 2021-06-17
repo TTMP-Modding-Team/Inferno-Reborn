@@ -1,0 +1,11 @@
+{
+  "name": "ability.infernoreborn.swiftness",
+  "category": "infernoreborn:abilities",
+  "icon": "infernoreborn:inferno_spark{Abilities:[\"infernoreborn:swiftness\"]}",
+  "pages": [
+    {
+      "type": "text",
+      "text": "text.infernoreborn.swiftness.0"
+    }
+  ]
+}

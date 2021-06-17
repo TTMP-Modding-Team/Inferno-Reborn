@@ -23,7 +23,7 @@ import net.minecraftforge.registries.RegistryBuilder;
 import ttmp.infernoreborn.ability.Ability;
 import ttmp.infernoreborn.ability.AbilitySkill;
 import ttmp.infernoreborn.ability.SkillCastingStateProvider;
-import ttmp.infernoreborn.util.AbilityUtils;
+import ttmp.infernoreborn.util.LivingUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -83,7 +83,7 @@ public final class Abilities{
 						DamageSource source = event.getSource();
 						Entity hitEntity = source.getEntity();
 						if(hitEntity instanceof LivingEntity&&!source.isProjectile()){
-							AbilityUtils.addStackEffect((LivingEntity)hitEntity, Effects.DIG_SLOWDOWN, 40, 0, 1, 5, true, true);
+							LivingUtils.addStackEffect((LivingEntity)hitEntity, Effects.DIG_SLOWDOWN, 40, 0, 1, 5, true, true);
 						}
 					})));
 	public static final RegistryObject<Ability> FROZEN_SKIN = REGISTER.register("frozen_skin", () ->
@@ -93,7 +93,7 @@ public final class Abilities{
 						DamageSource source = event.getSource();
 						Entity hitEntity = source.getEntity();
 						if(hitEntity instanceof LivingEntity&&!source.isProjectile()){
-							AbilityUtils.addStackEffect((LivingEntity)hitEntity, Effects.MOVEMENT_SLOWDOWN, 40, 0, 1, 5, true, true);
+							LivingUtils.addStackEffect((LivingEntity)hitEntity, Effects.MOVEMENT_SLOWDOWN, 40, 0, 1, 3, true, true);
 						}
 					})));
 	public static final RegistryObject<Ability> WOOLLY_SKIN = REGISTER.register("woolly_skin", () ->
@@ -103,7 +103,7 @@ public final class Abilities{
 						DamageSource source = event.getSource();
 						Entity hitEntity = source.getEntity();
 						if(hitEntity instanceof LivingEntity&&!source.isProjectile()){
-							AbilityUtils.addStackEffect((LivingEntity)hitEntity, Effects.WEAKNESS, 20, 0, 1, 5, true, true);
+							LivingUtils.addStackEffect((LivingEntity)hitEntity, Effects.WEAKNESS, 20, 0, 1, 5, true, true);
 						}
 					})));
 	public static final RegistryObject<Ability> FUZZY_SKIN = REGISTER.register("fuzzy_skin", () ->
@@ -168,7 +168,7 @@ public final class Abilities{
 			new Ability(new Ability.Properties(0x000000, 0x0000000)
 					.onAttack((entity, holder, event) -> {
 						event.getEntityLiving().addEffect(new EffectInstance(Effects.LEVITATION, 100));
-						AbilityUtils.addStackEffect(event.getEntityLiving(), Effects.DIG_SLOWDOWN, 100, 0, 1, 5, true, true);
+						LivingUtils.addStackEffect(event.getEntityLiving(), Effects.DIG_SLOWDOWN, 100, 0, 1, 5, true, true);
 					})));
 
 	public static final RegistryObject<Ability> SURVIVAL_EXPERT = REGISTER.register("survival_expert", () ->
@@ -207,11 +207,11 @@ public final class Abilities{
 
 	public static final RegistryObject<Ability> GUTS = REGISTER.register("guts", () ->
 			new Ability(new Ability.Properties(0xB24100, 0xB24100)
-					.onHurt((entity, holder, event) -> AbilityUtils.addStackEffect(entity, Effects.DAMAGE_RESISTANCE, 60, 0, 1, 3))));
+					.onHurt((entity, holder, event) -> LivingUtils.addStackEffect(entity, Effects.DAMAGE_RESISTANCE, 60, 0, 1, 3))));
 	public static final RegistryObject<Ability> MAGMA_SKIN = REGISTER.register("magma_skin", () ->
 			new Ability(new Ability.Properties(0x340000, 0x340000)
 					.onUpdate((entity, holder) -> {
-						AbilityUtils.addInfiniteEffect(entity, Effects.FIRE_RESISTANCE, 0);
+						LivingUtils.addInfiniteEffect(entity, Effects.FIRE_RESISTANCE, 0);
 						entity.setSecondsOnFire(1);
 					})
 					.onHurt((entity, holder, event) -> {
@@ -303,7 +303,7 @@ public final class Abilities{
 						double z = entity.getZ();
 						for(Entity e : entity.level.getEntities(entity, new AxisAlignedBB(x-7.5, y-7.5, z-7.5, x+7.5, y+7.5, z+7.5)))
 							if(e.isAlive()&&e instanceof LivingEntity)
-								AbilityUtils.addStackEffect((LivingEntity)e, Effects.DAMAGE_BOOST, 140, 0, 1, 64);
+								LivingUtils.addStackEffect((LivingEntity)e, Effects.DAMAGE_BOOST, 140, 0, 1, 64);
 					})));
 
 	@SubscribeEvent

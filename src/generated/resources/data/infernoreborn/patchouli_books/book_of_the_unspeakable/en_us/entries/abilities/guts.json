@@ -1,0 +1,11 @@
+{
+  "name": "ability.infernoreborn.guts",
+  "category": "infernoreborn:abilities",
+  "icon": "infernoreborn:inferno_spark{Abilities:[\"infernoreborn:guts\"]}",
+  "pages": [
+    {
+      "type": "text",
+      "text": "text.infernoreborn.guts.0"
+    }
+  ]
+}

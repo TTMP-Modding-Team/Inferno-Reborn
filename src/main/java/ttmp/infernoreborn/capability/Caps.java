@@ -14,4 +14,6 @@ public final class Caps{
 	public static Capability<EssenceHolder> essenceHolder;
 	@CapabilityInject(SigilHolder.class)
 	public static Capability<SigilHolder> sigilHolder;
+	@CapabilityInject(ShieldHolder.class)
+	public static Capability<ShieldHolder> shieldHolder;
 }

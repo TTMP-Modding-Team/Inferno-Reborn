@@ -13,21 +13,18 @@ import ttmp.infernoreborn.sigil.context.SigilEventContext;
 
 import javax.annotation.Nullable;
 import java.util.Objects;
-import java.util.function.Predicate;
 
 public class Sigil extends ForgeRegistryEntry<Sigil>{
 	private final int brighterColor, darkerColor;
 	private final int point;
 
 	@Nullable private final Item item;
-	@Nullable private final Predicate<SigilEventContext> restriction;
 
 	public Sigil(Properties properties){
 		this.brighterColor = properties.brighterColor;
 		this.darkerColor = properties.darkerColor;
 		this.point = properties.point;
 		this.item = properties.item;
-		this.restriction = properties.restriction;
 	}
 
 	public int getBrighterColor(){
@@ -55,10 +52,10 @@ public class Sigil extends ForgeRegistryEntry<Sigil>{
 	}
 
 	public boolean canBeAttachedTo(SigilEventContext context){
-		return restriction==null||restriction.test(context);
+		return true;
 	}
 
-	public void applyAttributes(SigilEventContext ctx, @Nullable EquipmentSlotType equipmentSlotType, ListMultimap<Attribute, AttributeModifier> modifierMap){}
+	public void applyAttributes(SigilEventContext ctx, @Nullable EquipmentSlotType equipmentSlotType, ListMultimap<Attribute, AttributeModifier> attributes){}
 
 	@Override public boolean equals(Object obj){
 		if(obj==this) return true;
@@ -80,7 +77,6 @@ public class Sigil extends ForgeRegistryEntry<Sigil>{
 		private final int point;
 
 		@Nullable private Item item;
-		@Nullable private Predicate<SigilEventContext> restriction;
 
 		public Properties(int brighterColor, int darkerColor, int point){
 			if(point<0) throw new IllegalArgumentException("point");
@@ -91,11 +87,6 @@ public class Sigil extends ForgeRegistryEntry<Sigil>{
 
 		public Properties item(Item item){
 			this.item = item;
-			return this;
-		}
-
-		public Properties restrict(Predicate<SigilEventContext> restriction){
-			this.restriction = restriction;
 			return this;
 		}
 	}

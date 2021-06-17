@@ -1,0 +1,11 @@
+{
+  "name": "ability.infernoreborn.the_brain",
+  "category": "infernoreborn:abilities",
+  "icon": "infernoreborn:inferno_spark{Abilities:[\"infernoreborn:the_brain\"]}",
+  "pages": [
+    {
+      "type": "text",
+      "text": "text.infernoreborn.the_brain.0"
+    }
+  ]
+}

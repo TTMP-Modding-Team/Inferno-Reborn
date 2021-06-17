@@ -1,0 +1,11 @@
+{
+  "name": "ability.infernoreborn.thorn_skin",
+  "category": "infernoreborn:abilities",
+  "icon": "infernoreborn:inferno_spark{Abilities:[\"infernoreborn:thorn_skin\"]}",
+  "pages": [
+    {
+      "type": "text",
+      "text": "text.infernoreborn.thorn_skin.0"
+    }
+  ]
+}

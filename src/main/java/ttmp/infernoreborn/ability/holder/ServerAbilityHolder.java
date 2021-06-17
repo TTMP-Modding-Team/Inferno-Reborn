@@ -19,7 +19,7 @@ import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import net.minecraftforge.fml.network.PacketDistributor;
-import ttmp.infernoreborn.ServerSkillCastingState;
+import ttmp.infernoreborn.ability.ServerSkillCastingState;
 import ttmp.infernoreborn.ability.Ability;
 import ttmp.infernoreborn.ability.AbilitySkill;
 import ttmp.infernoreborn.ability.OnAbilityEvent;

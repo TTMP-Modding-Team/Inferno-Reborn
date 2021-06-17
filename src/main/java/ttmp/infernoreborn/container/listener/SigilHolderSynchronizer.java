@@ -18,7 +18,7 @@ public class SigilHolderSynchronizer extends ItemSynchronizer<SigilHolderSyncMsg
 	@SuppressWarnings("ConstantConditions")
 	@Nullable @Override protected SigilHolderSyncMsg getUpdateMessage(int slot, ItemStack stack){
 		SigilHolder h = stack.getCapability(Caps.sigilHolder).orElse(null);
-		if(h==null) return null;
+		if(h==null||(h.getMaxPoints()<=0&&h.getSigils().isEmpty())) return null;
 		return new SigilHolderSyncMsg(slot, h);
 	}
 

@@ -1,0 +1,19 @@
+{
+  "type": "infernoreborn:shaped_sigil_engraving",
+  "pattern": [
+    "   1   ",
+    "  1 1  ",
+    " 1   1 ",
+    "11 X 11",
+    " 1 1   ",
+    "11111  ",
+    "   1   "
+  ],
+  "key": {
+    "1": {
+      "item": "infernoreborn:blood_essence_shard"
+    }
+  },
+  "sigil": "infernoreborn:test3",
+  "center": "X"
+}

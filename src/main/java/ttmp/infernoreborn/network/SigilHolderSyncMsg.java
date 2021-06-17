@@ -3,6 +3,7 @@ package ttmp.infernoreborn.network;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketBuffer;
+import ttmp.infernoreborn.InfernoReborn;
 import ttmp.infernoreborn.contents.Sigils;
 import ttmp.infernoreborn.sigil.holder.ItemSigilHolder;
 import ttmp.infernoreborn.sigil.holder.SigilHolder;
@@ -30,7 +31,10 @@ public class SigilHolderSyncMsg extends ItemSyncMsg{
 
 	@Override protected void doSync(PlayerEntity player, ItemStack stack){
 		SigilHolder h = SigilHolder.of(stack);
-		if(h==null) return;
+		if(h==null){
+			InfernoReborn.LOGGER.warn("Cannot apply {}", this);
+			return;
+		}
 		h.clear();
 		Arrays.stream(sigils).mapToObj(Sigils.getRegistry()::getValue).forEach(h::forceAdd);
 		if(h instanceof ItemSigilHolder) ((ItemSigilHolder)h).setGibberishSeed(gibberishSeed);

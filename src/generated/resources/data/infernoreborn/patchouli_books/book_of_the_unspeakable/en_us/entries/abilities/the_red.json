@@ -1,0 +1,11 @@
+{
+  "name": "ability.infernoreborn.the_red",
+  "category": "infernoreborn:abilities",
+  "icon": "infernoreborn:inferno_spark{Abilities:[\"infernoreborn:the_red\"]}",
+  "pages": [
+    {
+      "type": "text",
+      "text": "text.infernoreborn.the_red.0"
+    }
+  ]
+}

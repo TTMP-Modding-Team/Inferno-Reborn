@@ -31,4 +31,8 @@ public abstract class ItemSyncMsg{
 		doSync(player, stack);
 	}
 	protected abstract void doSync(PlayerEntity player, ItemStack stack);
+
+	@Override public String toString(){
+		return getClass().getSimpleName()+"{"+slot+"}";
+	}
 }

@@ -1,4 +1,4 @@
-package ttmp.infernoreborn;
+package ttmp.infernoreborn.ability;
 
 import it.unimi.dsi.fastutil.objects.Object2LongLinkedOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Object2LongMap;
@@ -8,9 +8,6 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.util.Constants;
-import ttmp.infernoreborn.ability.Ability;
-import ttmp.infernoreborn.ability.AbilitySkill;
-import ttmp.infernoreborn.ability.SkillCastingState;
 import ttmp.infernoreborn.ability.holder.AbilityHolder;
 import ttmp.infernoreborn.contents.Abilities;
 
@@ -63,10 +60,8 @@ public class ServerSkillCastingState implements SkillCastingState{
 	public void startCastSkill(AbilitySkill skill, LivingEntity entity){
 		if(isCasting()) return;
 		if(skill.getCastTime()<=0){
-			InfernoReborn.LOGGER.info("Casting instant skill {}", skill);
 			triggerSkillEffect(skill, entity, true);
 		}else{
-			InfernoReborn.LOGGER.info("Start casting skill {}", skill);
 			castingSkill = skill;
 			castingTimeLeft = skill.getCastTime();
 		}

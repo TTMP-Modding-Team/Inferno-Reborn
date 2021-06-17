@@ -1,0 +1,11 @@
+{
+  "name": "ability.infernoreborn.destiny_bond",
+  "category": "infernoreborn:abilities",
+  "icon": "infernoreborn:inferno_spark{Abilities:[\"infernoreborn:destiny_bond\"]}",
+  "pages": [
+    {
+      "type": "text",
+      "text": "text.infernoreborn.destiny_bond.0"
+    }
+  ]
+}

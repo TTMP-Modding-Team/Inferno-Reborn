@@ -8,7 +8,7 @@ import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import net.minecraftforge.registries.ForgeRegistryEntry;
-import ttmp.infernoreborn.util.AbilityUtils;
+import ttmp.infernoreborn.util.LivingUtils;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
@@ -142,10 +142,10 @@ public class Ability extends ForgeRegistryEntry<Ability>{
 
 		public Properties addTargetedSkill(long castTime, long cooldown, AbilitySkill.TargetedSkillAction skillAction, @Nullable AbilitySkill.TargetedSkillAction skillCondition){
 			this.skillData.add(new AbilitySkill.Data((byte)this.skillData.size(), castTime, cooldown, (entity, holder) -> {
-				LivingEntity target = AbilityUtils.getTarget(entity);
+				LivingEntity target = LivingUtils.getTarget(entity);
 				return target!=null&&target.isAlive()&&skillAction.useTargetedSkill(entity, holder, target);
 			}, (entity, holder) -> {
-				LivingEntity target = AbilityUtils.getTarget(entity);
+				LivingEntity target = LivingUtils.getTarget(entity);
 				return target!=null&&target.isAlive()&&(skillCondition==null||skillCondition.useTargetedSkill(entity, holder, target));
 			}));
 			return this;

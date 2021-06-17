@@ -1,0 +1,11 @@
+{
+  "name": "ability.infernoreborn.survival_expert",
+  "category": "infernoreborn:abilities",
+  "icon": "infernoreborn:inferno_spark{Abilities:[\"infernoreborn:survival_expert\"]}",
+  "pages": [
+    {
+      "type": "text",
+      "text": "text.infernoreborn.survival_expert.0"
+    }
+  ]
+}

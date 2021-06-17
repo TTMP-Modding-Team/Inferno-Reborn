@@ -29,12 +29,16 @@ public abstract class ItemSynchronizer<M extends ItemSyncMsg> implements IContai
 			if(m!=null) list.add(m);
 		}
 		if(!list.isEmpty()){
+			//InfernoReborn.LOGGER.debug("Sending {}", list.stream().map(ItemSyncMsg::toString).collect(Collectors.joining(", ")));
 			ModNet.CHANNEL.send(PacketDistributor.PLAYER.with(() -> player), toBulkSyncMessage(list));
 		}
 	}
 	@Override public void slotChanged(Container container, int slot, ItemStack stack){
 		M m = getUpdateMessage(slot, stack);
-		if(m!=null) ModNet.CHANNEL.send(PacketDistributor.PLAYER.with(() -> player), m);
+		if(m!=null){
+			//InfernoReborn.LOGGER.debug("Sending {}", m);
+			ModNet.CHANNEL.send(PacketDistributor.PLAYER.with(() -> player), m);
+		}
 	}
 	@Override public void setContainerData(Container container, int var, int val){}
 

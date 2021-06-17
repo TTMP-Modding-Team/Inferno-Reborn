@@ -1,0 +1,11 @@
+{
+  "name": "ability.infernoreborn.sentry",
+  "category": "infernoreborn:abilities",
+  "icon": "infernoreborn:inferno_spark{Abilities:[\"infernoreborn:sentry\"]}",
+  "pages": [
+    {
+      "type": "text",
+      "text": "text.infernoreborn.sentry.0"
+    }
+  ]
+}

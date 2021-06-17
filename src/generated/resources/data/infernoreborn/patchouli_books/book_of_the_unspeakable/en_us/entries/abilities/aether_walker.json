@@ -1,0 +1,11 @@
+{
+  "name": "ability.infernoreborn.aether_walker",
+  "category": "infernoreborn:abilities",
+  "icon": "infernoreborn:inferno_spark{Abilities:[\"infernoreborn:aether_walker\"]}",
+  "pages": [
+    {
+      "type": "text",
+      "text": "text.infernoreborn.aether_walker.0"
+    }
+  ]
+}

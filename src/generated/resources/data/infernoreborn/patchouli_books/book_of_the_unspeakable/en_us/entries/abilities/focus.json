@@ -1,0 +1,11 @@
+{
+  "name": "ability.infernoreborn.focus",
+  "category": "infernoreborn:abilities",
+  "icon": "infernoreborn:inferno_spark{Abilities:[\"infernoreborn:focus\"]}",
+  "pages": [
+    {
+      "type": "text",
+      "text": "text.infernoreborn.focus.0"
+    }
+  ]
+}

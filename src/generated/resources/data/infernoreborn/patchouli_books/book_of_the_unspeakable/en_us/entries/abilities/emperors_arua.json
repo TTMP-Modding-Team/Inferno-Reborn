@@ -1,0 +1,11 @@
+{
+  "name": "ability.infernoreborn.emperors_arua",
+  "category": "infernoreborn:abilities",
+  "icon": "infernoreborn:inferno_spark{Abilities:[\"infernoreborn:emperors_arua\"]}",
+  "pages": [
+    {
+      "type": "text",
+      "text": "text.infernoreborn.emperors_arua.0"
+    }
+  ]
+}

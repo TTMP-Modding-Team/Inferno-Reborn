@@ -74,12 +74,13 @@ public class GibberishFactory{
 		Random random = new Random(h.getGibberishSeed());
 		StringBuilder stb = new StringBuilder();
 		boolean first = true;
-		while(stb.length()<length){
+		for(int totalSyllable = 0; totalSyllable<length; ){
 			if(first) first = false;
 			else stb.append(' ');
-			int syllable = Math.min(random.nextInt(3)+random.nextInt(3)+random.nextInt(3)+1, length-stb.length());
+			int syllable = Math.min(random.nextInt(3)+random.nextInt(3)+random.nextInt(3)+1, length-totalSyllable);
 			for(int i = 0; i<syllable; i++)
 				stb.append(ABCDEFGHIJKLMNOPQRSTUVWXYZ.charAt(random.nextInt(ABCDEFGHIJKLMNOPQRSTUVWXYZ.length())));
+			totalSyllable += syllable;
 		}
 		String gib = stb.toString();
 		setGibberishCache(h, length, gib);

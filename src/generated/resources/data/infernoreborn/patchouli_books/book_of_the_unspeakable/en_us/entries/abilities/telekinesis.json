@@ -1,0 +1,11 @@
+{
+  "name": "ability.infernoreborn.telekinesis",
+  "category": "infernoreborn:abilities",
+  "icon": "infernoreborn:inferno_spark{Abilities:[\"infernoreborn:telekinesis\"]}",
+  "pages": [
+    {
+      "type": "text",
+      "text": "text.infernoreborn.telekinesis.0"
+    }
+  ]
+}

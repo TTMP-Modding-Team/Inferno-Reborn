@@ -1,0 +1,11 @@
+{
+  "name": "ability.infernoreborn.health_kit",
+  "category": "infernoreborn:abilities",
+  "icon": "infernoreborn:inferno_spark{Abilities:[\"infernoreborn:health_kit\"]}",
+  "pages": [
+    {
+      "type": "text",
+      "text": "text.infernoreborn.health_kit.0"
+    }
+  ]
+}

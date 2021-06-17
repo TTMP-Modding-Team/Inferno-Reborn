@@ -22,6 +22,7 @@ import ttmp.infernoreborn.ability.Ability;
 import ttmp.infernoreborn.ability.generator.scheme.AbilityGeneratorScheme;
 import ttmp.infernoreborn.ability.holder.AbilityHolder;
 import ttmp.infernoreborn.capability.EssenceHolder;
+import ttmp.infernoreborn.capability.ShieldHolder;
 import ttmp.infernoreborn.client.ItemColorUtils;
 import ttmp.infernoreborn.client.PrimalInfernoSparkColor;
 import ttmp.infernoreborn.client.screen.EssenceHolderScreen;
@@ -49,7 +50,6 @@ import javax.annotation.Nullable;
 @Mod.EventBusSubscriber(modid = InfernoReborn.MODID, bus = Bus.MOD)
 public class InfernoReborn{
 	public static final String MODID = "infernoreborn";
-	public static final String VERSION = "1";
 	public static final Logger LOGGER = LogManager.getLogger("Inferno Reborn");
 
 	public InfernoReborn(){
@@ -72,6 +72,7 @@ public class InfernoReborn{
 			registerDefaultCapability(AbilityHolder.class);
 			registerDefaultCapability(EssenceHolder.class);
 			registerDefaultCapability(SigilHolder.class);
+			registerDefaultCapability(ShieldHolder.class);
 		});
 	}
 
