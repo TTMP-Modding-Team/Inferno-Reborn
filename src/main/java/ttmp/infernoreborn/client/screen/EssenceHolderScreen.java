@@ -1,4 +1,4 @@
-package ttmp.infernoreborn.client;
+package ttmp.infernoreborn.client.screen;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;

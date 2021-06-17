@@ -3,7 +3,7 @@ package ttmp.infernoreborn.ability.generator.node.variable;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonPrimitive;
 import net.minecraft.entity.LivingEntity;
-import ttmp.infernoreborn.capability.AbilityHolder;
+import ttmp.infernoreborn.ability.holder.AbilityHolder;
 
 public class ConstantInteger implements SomeInteger{
 	private final int i;

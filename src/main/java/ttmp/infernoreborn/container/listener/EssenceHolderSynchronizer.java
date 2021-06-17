@@ -2,6 +2,7 @@ package ttmp.infernoreborn.container.listener;
 
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.ItemStack;
+import ttmp.infernoreborn.capability.Caps;
 import ttmp.infernoreborn.capability.EssenceHolder;
 import ttmp.infernoreborn.network.BulkItemSyncMsg;
 import ttmp.infernoreborn.network.EssenceHolderSyncMsg;
@@ -16,7 +17,7 @@ public class EssenceHolderSynchronizer extends ItemSynchronizer<EssenceHolderSyn
 
 	@SuppressWarnings("ConstantConditions")
 	@Nullable @Override protected EssenceHolderSyncMsg getUpdateMessage(int slot, ItemStack stack){
-		EssenceHolder h = stack.getCapability(EssenceHolder.capability).orElse(null);
+		EssenceHolder h = stack.getCapability(Caps.essenceHolder).orElse(null);
 		if(h==null) return null;
 		return new EssenceHolderSyncMsg(slot, h);
 	}

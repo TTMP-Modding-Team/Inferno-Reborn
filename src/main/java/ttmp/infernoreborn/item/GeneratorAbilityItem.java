@@ -16,12 +16,12 @@ import net.minecraftforge.common.util.Constants;
 import ttmp.infernoreborn.ability.generator.AbilityGenerator;
 import ttmp.infernoreborn.ability.generator.AbilityGenerators;
 import ttmp.infernoreborn.ability.generator.scheme.AbilityGeneratorScheme;
-import ttmp.infernoreborn.capability.ServerAbilityHolder;
+import ttmp.infernoreborn.ability.holder.ServerAbilityHolder;
 
 import javax.annotation.Nullable;
 import java.util.List;
 
-public class GeneratorAbilityItem extends BaseAbilityItem{
+public class GeneratorAbilityItem extends AbstractAbilityItem{
 	public GeneratorAbilityItem(Properties properties){
 		super(properties);
 	}

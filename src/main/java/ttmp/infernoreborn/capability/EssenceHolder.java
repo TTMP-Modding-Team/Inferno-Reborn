@@ -3,7 +3,6 @@ package ttmp.infernoreborn.capability;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.Direction;
 import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.capabilities.CapabilityInject;
 import net.minecraftforge.common.capabilities.ICapabilitySerializable;
 import net.minecraftforge.common.util.LazyOptional;
 import ttmp.infernoreborn.util.EssenceType;
@@ -12,9 +11,6 @@ import javax.annotation.Nullable;
 import java.util.Arrays;
 
 public class EssenceHolder implements ICapabilitySerializable<CompoundNBT>{
-	@CapabilityInject(EssenceHolder.class)
-	public static Capability<EssenceHolder> capability;
-
 	public static final int MAX = Integer.MAX_VALUE;
 
 	private final int[] essences = new int[EssenceType.values().length];
@@ -52,7 +48,7 @@ public class EssenceHolder implements ICapabilitySerializable<CompoundNBT>{
 	private final LazyOptional<EssenceHolder> self = LazyOptional.of(() -> this);
 
 	@Override public <T> LazyOptional<T> getCapability(Capability<T> cap, @Nullable Direction side){
-		return capability==cap ? self.cast() : LazyOptional.empty();
+		return Caps.essenceHolder==cap ? self.cast() : LazyOptional.empty();
 	}
 
 	@Override public CompoundNBT serializeNBT(){

@@ -1,4 +1,4 @@
-package ttmp.infernoreborn.capability;
+package ttmp.infernoreborn.ability.holder;
 
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.ai.attributes.Attribute;
@@ -6,42 +6,40 @@ import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.entity.ai.attributes.ModifiableAttributeInstance;
 import net.minecraft.entity.monster.IMob;
 import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.nbt.INBT;
 import net.minecraft.nbt.ListNBT;
-import net.minecraft.nbt.StringNBT;
+import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.MathHelper;
+import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
+import net.minecraftforge.common.capabilities.ICapabilitySerializable;
 import net.minecraftforge.common.util.Constants;
-import net.minecraftforge.common.util.INBTSerializable;
+import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.entity.living.LivingEvent.LivingUpdateEvent;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import net.minecraftforge.fml.network.PacketDistributor;
 import ttmp.infernoreborn.ability.Ability;
 import ttmp.infernoreborn.ability.AbilitySkill;
-import ttmp.infernoreborn.ability.OnEvent;
+import ttmp.infernoreborn.ability.OnAbilityEvent;
 import ttmp.infernoreborn.ability.generator.AbilityGenerator;
 import ttmp.infernoreborn.ability.generator.AbilityGenerators;
 import ttmp.infernoreborn.ability.generator.scheme.AbilityGeneratorScheme;
+import ttmp.infernoreborn.capability.Caps;
 import ttmp.infernoreborn.contents.Abilities;
 import ttmp.infernoreborn.network.ModNet;
 import ttmp.infernoreborn.network.SyncAbilityHolderMsg;
+import ttmp.infernoreborn.util.StupidUtils;
 
 import javax.annotation.Nullable;
-import java.util.AbstractList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.Objects;
 import java.util.Set;
-import java.util.function.Consumer;
-import java.util.function.Predicate;
 
-public class ServerAbilityHolder extends AbilityHolder implements INBTSerializable<CompoundNBT>{
+public class ServerAbilityHolder implements AbilityHolder, ICapabilitySerializable<CompoundNBT>{
 	@Nullable
 	public static ServerAbilityHolder of(ICapabilityProvider provider){
 		AbilityHolder of = AbilityHolder.of(provider);
@@ -53,14 +51,14 @@ public class ServerAbilityHolder extends AbilityHolder implements INBTSerializab
 	private final Set<Ability> removedAbilities = new HashSet<>();
 	private final Set<Ability> abilitiesView = Collections.unmodifiableSet(abilities);
 
-	private final Map<Ability, OnEvent<LivingHurtEvent>> onHurtListeners = new HashMap<>();
-	private final Map<Ability, OnEvent<LivingHurtEvent>> onAttackListeners = new HashMap<>();
-	private final Map<Ability, OnEvent<LivingDeathEvent>> onDeathListeners = new HashMap<>();
-	private final Map<Ability, OnEvent<LivingUpdateEvent>> onUpdateListeners = new HashMap<>();
-	private final Map<Ability, OnEvent<LivingHurtEvent>> onHurtListenersView = Collections.unmodifiableMap(onHurtListeners);
-	private final Map<Ability, OnEvent<LivingHurtEvent>> onAttackListenersView = Collections.unmodifiableMap(onAttackListeners);
-	private final Map<Ability, OnEvent<LivingDeathEvent>> onDeathListenersView = Collections.unmodifiableMap(onDeathListeners);
-	private final Map<Ability, OnEvent<LivingUpdateEvent>> onUpdateListenersView = Collections.unmodifiableMap(onUpdateListeners);
+	private final Map<Ability, OnAbilityEvent<LivingHurtEvent>> onHurtListeners = new HashMap<>();
+	private final Map<Ability, OnAbilityEvent<LivingHurtEvent>> onAttackListeners = new HashMap<>();
+	private final Map<Ability, OnAbilityEvent<LivingDeathEvent>> onDeathListeners = new HashMap<>();
+	private final Map<Ability, OnAbilityEvent<LivingUpdateEvent>> onUpdateListeners = new HashMap<>();
+	private final Map<Ability, OnAbilityEvent<LivingHurtEvent>> onHurtListenersView = Collections.unmodifiableMap(onHurtListeners);
+	private final Map<Ability, OnAbilityEvent<LivingHurtEvent>> onAttackListenersView = Collections.unmodifiableMap(onAttackListeners);
+	private final Map<Ability, OnAbilityEvent<LivingDeathEvent>> onDeathListenersView = Collections.unmodifiableMap(onDeathListeners);
+	private final Map<Ability, OnAbilityEvent<LivingUpdateEvent>> onUpdateListenersView = Collections.unmodifiableMap(onUpdateListeners);
 
 	@Nullable private AbilityGeneratorScheme appliedGeneratorScheme;
 
@@ -103,28 +101,27 @@ public class ServerAbilityHolder extends AbilityHolder implements INBTSerializab
 		this.generateAbility = generateAbility;
 	}
 
-	public Map<Ability, OnEvent<LivingHurtEvent>> getOnHurtListeners(){
+	public Map<Ability, OnAbilityEvent<LivingHurtEvent>> getOnHurtListeners(){
 		return onHurtListenersView;
 	}
-	public Map<Ability, OnEvent<LivingHurtEvent>> getOnAttackListeners(){
+	public Map<Ability, OnAbilityEvent<LivingHurtEvent>> getOnAttackListeners(){
 		return onAttackListenersView;
 	}
-	public Map<Ability, OnEvent<LivingDeathEvent>> getOnDeathListeners(){
+	public Map<Ability, OnAbilityEvent<LivingDeathEvent>> getOnDeathListeners(){
 		return onDeathListenersView;
 	}
-	public Map<Ability, OnEvent<LivingUpdateEvent>> getOnUpdateListeners(){
+	public Map<Ability, OnAbilityEvent<LivingUpdateEvent>> getOnUpdateListeners(){
 		return onUpdateListenersView;
 	}
 
-	public Set<AbilitySkill> getAbilitySkills() {return abilitySkills;}
+	public Set<AbilitySkill> getAbilitySkills(){return abilitySkills;}
 	public Map<AbilitySkill, Long> getCooldownTime(){
 		return cooldownTime;
 	}
-	public void setCooldownTime(AbilitySkill skill, Long time) {cooldownTime.put(skill, time);}
+	public void setCooldownTime(AbilitySkill skill, Long time){cooldownTime.put(skill, time);}
 	public boolean isCasting(LivingEntity entity){
 		return castingTime>entity.level.getGameTime();
 	}
-
 
 	public boolean tryUseSkill(LivingEntity entity){
 		if(!isCasting(entity)){
@@ -145,6 +142,7 @@ public class ServerAbilityHolder extends AbilityHolder implements INBTSerializab
 		}
 		return false;
 	}
+
 	@Override
 	public void update(LivingEntity entity){
 		if(generateAbility){
@@ -221,10 +219,16 @@ public class ServerAbilityHolder extends AbilityHolder implements INBTSerializab
 		abilitySkills.removeAll(ability.getSkills());
 	}
 
+	private final LazyOptional<AbilityHolder> self = LazyOptional.of(() -> this);
+
+	@Override public <T> LazyOptional<T> getCapability(Capability<T> cap, @Nullable Direction side){
+		return cap==Caps.abilityHolder ? self.cast() : LazyOptional.empty();
+	}
+
 	@Override
 	public CompoundNBT serializeNBT(){
 		CompoundNBT nbt = new CompoundNBT();
-		if(!abilities.isEmpty()) nbt.put("abilities", serializeAbilities(abilities));
+		if(!abilities.isEmpty()) nbt.put("abilities", StupidUtils.writeToNbt(abilities, Abilities.getRegistry()));
 		if(this.generateAbility) nbt.putBoolean("generateAbility", true);
 		if(appliedGeneratorScheme!=null) nbt.putString("appliedGeneratorScheme", appliedGeneratorScheme.getId().toString());
 		return nbt;
@@ -235,28 +239,10 @@ public class ServerAbilityHolder extends AbilityHolder implements INBTSerializab
 		this.clear();
 
 		ListNBT abilities = nbt.getList("abilities", Constants.NBT.TAG_STRING);
-		deserializeAbilities(abilities, this::add);
+		StupidUtils.read(abilities, Abilities.getRegistry(), this::add);
 		this.generateAbility = nbt.getBoolean("generateAbility");
 		this.appliedGeneratorScheme = nbt.contains("appliedGeneratorScheme", Constants.NBT.TAG_STRING) ?
 				AbilityGenerators.findSchemeWithId(new ResourceLocation(nbt.getString("appliedGeneratorScheme"))) :
 				null;
-	}
-
-	private static ListNBT serializeAbilities(Collection<Ability> abilities){
-		return abilities.stream()
-				.map(Abilities.getRegistry()::getKey)
-				.filter(Objects::nonNull)
-				.map(ResourceLocation::toString)
-				.map(StringNBT::valueOf)
-				.collect(ListNBT::new, AbstractList::add, (l1, l2) -> {});
-	}
-
-	private static void deserializeAbilities(ListNBT nbt, Consumer<Ability> forEach){
-		if(!nbt.isEmpty()) nbt.stream()
-				.map(INBT::getAsString)
-				.map(ResourceLocation::new)
-				.map(Abilities.getRegistry()::getValue)
-				.filter(Objects::nonNull)
-				.forEach(forEach);
 	}
 }

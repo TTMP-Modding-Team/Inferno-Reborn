@@ -12,6 +12,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.IntReferenceHolder;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fml.network.PacketDistributor;
+import ttmp.infernoreborn.capability.Caps;
 import ttmp.infernoreborn.capability.EssenceHolder;
 import ttmp.infernoreborn.contents.ModContainers;
 import ttmp.infernoreborn.network.EssenceHolderScreenEssenceSyncMsg;
@@ -37,7 +38,7 @@ public class EssenceHolderContainer extends Container{
 		this.essenceHolder = EssenceHolderItemHandler.withLazyOptional(() -> {
 			int holderSlot = this.holderSlot.get();
 			return holderSlot>=0&&holderSlot<this.playerInventory.getContainerSize() ?
-					this.playerInventory.getItem(holderSlot).getCapability(EssenceHolder.capability) : LazyOptional.empty();
+					this.playerInventory.getItem(holderSlot).getCapability(Caps.essenceHolder) : LazyOptional.empty();
 		});
 
 		this.addSlot(new Slot(new Inventory(0), 0, 0, 0){

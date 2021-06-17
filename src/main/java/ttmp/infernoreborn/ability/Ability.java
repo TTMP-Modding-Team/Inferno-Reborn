@@ -22,10 +22,10 @@ public class Ability extends ForgeRegistryEntry<Ability>{
 	private final int primaryColor, secondaryColor, highlightColor;
 	private final Map<Attribute, Set<AttributeModifier>> attributes;
 
-	@Nullable private final OnEvent<LivingHurtEvent> onHurt;
-	@Nullable private final OnEvent<LivingHurtEvent> onAttack;
-	@Nullable private final OnEvent<LivingDeathEvent> onDeath;
-	@Nullable private final OnEvent<LivingUpdateEvent> onUpdate;
+	@Nullable private final OnAbilityEvent<LivingHurtEvent> onHurt;
+	@Nullable private final OnAbilityEvent<LivingHurtEvent> onAttack;
+	@Nullable private final OnAbilityEvent<LivingDeathEvent> onDeath;
+	@Nullable private final OnAbilityEvent<LivingUpdateEvent> onUpdate;
 
 	private final Set<AbilitySkill> skills;
 
@@ -58,16 +58,16 @@ public class Ability extends ForgeRegistryEntry<Ability>{
 		return attributes;
 	}
 
-	@Nullable public OnEvent<LivingHurtEvent> onHurt(){
+	@Nullable public OnAbilityEvent<LivingHurtEvent> onHurt(){
 		return onHurt;
 	}
-	@Nullable public OnEvent<LivingHurtEvent> onAttack(){
+	@Nullable public OnAbilityEvent<LivingHurtEvent> onAttack(){
 		return onAttack;
 	}
-	@Nullable public OnEvent<LivingDeathEvent> onDeath(){
+	@Nullable public OnAbilityEvent<LivingDeathEvent> onDeath(){
 		return onDeath;
 	}
-	@Nullable public OnEvent<LivingUpdateEvent> onUpdate(){
+	@Nullable public OnAbilityEvent<LivingUpdateEvent> onUpdate(){
 		return onUpdate;
 	}
 
@@ -103,10 +103,10 @@ public class Ability extends ForgeRegistryEntry<Ability>{
 		private final Map<Attribute, Set<AttributeModifier>> attributes = new HashMap<>();
 		private final Set<AbilitySkill.SkillData> skillData = new HashSet<>();
 
-		@Nullable private OnEvent<LivingHurtEvent> onHurt;
-		@Nullable private OnEvent<LivingHurtEvent> onAttack;
-		@Nullable private OnEvent<LivingDeathEvent> onDeath;
-		@Nullable private OnEvent<LivingUpdateEvent> onUpdate;
+		@Nullable private OnAbilityEvent<LivingHurtEvent> onHurt;
+		@Nullable private OnAbilityEvent<LivingHurtEvent> onAttack;
+		@Nullable private OnAbilityEvent<LivingDeathEvent> onDeath;
+		@Nullable private OnAbilityEvent<LivingUpdateEvent> onUpdate;
 
 		public Properties(int primaryColor, int secondaryColor){
 			this(primaryColor, secondaryColor, primaryColor);
@@ -128,22 +128,22 @@ public class Ability extends ForgeRegistryEntry<Ability>{
 			return this;
 		}
 
-		public Properties onHurt(@Nullable OnEvent<LivingHurtEvent> onHurt){
+		public Properties onHurt(@Nullable OnAbilityEvent<LivingHurtEvent> onHurt){
 			this.onHurt = onHurt;
 			return this;
 		}
 
-		public Properties onAttack(@Nullable OnEvent<LivingHurtEvent> onAttack){
+		public Properties onAttack(@Nullable OnAbilityEvent<LivingHurtEvent> onAttack){
 			this.onAttack = onAttack;
 			return this;
 		}
 
-		public Properties onDeath(@Nullable OnEvent<LivingDeathEvent> onDeath){
+		public Properties onDeath(@Nullable OnAbilityEvent<LivingDeathEvent> onDeath){
 			this.onDeath = onDeath;
 			return this;
 		}
 
-		public Properties onUpdate(@Nullable OnEvent<LivingUpdateEvent> onUpdate){
+		public Properties onUpdate(@Nullable OnAbilityEvent<LivingUpdateEvent> onUpdate){
 			this.onUpdate = onUpdate;
 			return this;
 		}

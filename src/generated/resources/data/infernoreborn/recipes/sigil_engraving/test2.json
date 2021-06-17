@@ -1,0 +1,17 @@
+{
+  "type": "infernoreborn:shaped_sigil_engraving",
+  "pattern": [
+    "  1  ",
+    "1 1 1",
+    " 1X1 ",
+    "  1  ",
+    "  1  "
+  ],
+  "key": {
+    "1": {
+      "item": "infernoreborn:metal_essence_crystal"
+    }
+  },
+  "sigil": "infernoreborn:test2",
+  "center": "X"
+}

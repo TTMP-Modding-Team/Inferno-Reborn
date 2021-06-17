@@ -1,19 +1,23 @@
-package ttmp.infernoreborn.capability;
+package ttmp.infernoreborn.ability.holder;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.particle.Particle;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.particles.ParticleTypes;
+import net.minecraft.util.Direction;
+import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
+import net.minecraftforge.common.util.LazyOptional;
 import ttmp.infernoreborn.ability.Ability;
 import ttmp.infernoreborn.ability.generator.scheme.AbilityGeneratorScheme;
+import ttmp.infernoreborn.capability.Caps;
 
 import javax.annotation.Nullable;
 import java.util.HashSet;
 import java.util.Random;
 import java.util.Set;
 
-public class ClientAbilityHolder extends AbilityHolder{
+public class ClientAbilityHolder implements AbilityHolder, ICapabilityProvider{
 	@Nullable
 	public static ClientAbilityHolder of(ICapabilityProvider provider){
 		AbilityHolder of = AbilityHolder.of(provider);
@@ -60,6 +64,12 @@ public class ClientAbilityHolder extends AbilityHolder{
 				if(particle!=null) particle.setColor(r, g, b);
 			}
 		}
+	}
+
+	private final LazyOptional<AbilityHolder> self = LazyOptional.of(() -> this);
+
+	@Override public <T> LazyOptional<T> getCapability(Capability<T> cap, @Nullable Direction side){
+		return cap==Caps.abilityHolder ? self.cast() : LazyOptional.empty();
 	}
 
 	@Nullable public AbilityGeneratorScheme getAppliedGeneratorScheme(){
