@@ -1,5 +1,6 @@
 package ttmp.infernoreborn.ability.holder;
 
+import com.google.common.collect.ImmutableList;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.ai.attributes.Attribute;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
@@ -16,12 +17,15 @@ import net.minecraftforge.common.capabilities.ICapabilitySerializable;
 import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
-import net.minecraftforge.event.entity.living.LivingEvent.LivingUpdateEvent;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import net.minecraftforge.fml.network.PacketDistributor;
+import ttmp.infernoreborn.ServerSkillCastingState;
 import ttmp.infernoreborn.ability.Ability;
 import ttmp.infernoreborn.ability.AbilitySkill;
 import ttmp.infernoreborn.ability.OnAbilityEvent;
+import ttmp.infernoreborn.ability.OnAbilityUpdate;
+import ttmp.infernoreborn.ability.SkillCastingState;
+import ttmp.infernoreborn.ability.SkillCastingStateProvider;
 import ttmp.infernoreborn.ability.generator.AbilityGenerator;
 import ttmp.infernoreborn.ability.generator.AbilityGenerators;
 import ttmp.infernoreborn.ability.generator.scheme.AbilityGeneratorScheme;
@@ -29,17 +33,17 @@ import ttmp.infernoreborn.capability.Caps;
 import ttmp.infernoreborn.contents.Abilities;
 import ttmp.infernoreborn.network.ModNet;
 import ttmp.infernoreborn.network.SyncAbilityHolderMsg;
+import ttmp.infernoreborn.util.LazyPopulatedList;
 import ttmp.infernoreborn.util.StupidUtils;
 
 import javax.annotation.Nullable;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Objects;
 import java.util.Set;
 
-public class ServerAbilityHolder implements AbilityHolder, ICapabilitySerializable<CompoundNBT>{
+public class ServerAbilityHolder implements AbilityHolder, ICapabilitySerializable<CompoundNBT>, SkillCastingStateProvider{
 	@Nullable
 	public static ServerAbilityHolder of(ICapabilityProvider provider){
 		AbilityHolder of = AbilityHolder.of(provider);
@@ -51,23 +55,37 @@ public class ServerAbilityHolder implements AbilityHolder, ICapabilitySerializab
 	private final Set<Ability> removedAbilities = new HashSet<>();
 	private final Set<Ability> abilitiesView = Collections.unmodifiableSet(abilities);
 
-	private final Map<Ability, OnAbilityEvent<LivingHurtEvent>> onHurtListeners = new HashMap<>();
-	private final Map<Ability, OnAbilityEvent<LivingHurtEvent>> onAttackListeners = new HashMap<>();
-	private final Map<Ability, OnAbilityEvent<LivingDeathEvent>> onDeathListeners = new HashMap<>();
-	private final Map<Ability, OnAbilityEvent<LivingUpdateEvent>> onUpdateListeners = new HashMap<>();
-	private final Map<Ability, OnAbilityEvent<LivingHurtEvent>> onHurtListenersView = Collections.unmodifiableMap(onHurtListeners);
-	private final Map<Ability, OnAbilityEvent<LivingHurtEvent>> onAttackListenersView = Collections.unmodifiableMap(onAttackListeners);
-	private final Map<Ability, OnAbilityEvent<LivingDeathEvent>> onDeathListenersView = Collections.unmodifiableMap(onDeathListeners);
-	private final Map<Ability, OnAbilityEvent<LivingUpdateEvent>> onUpdateListenersView = Collections.unmodifiableMap(onUpdateListeners);
+	public final LazyPopulatedList<Ability, OnAbilityEvent<LivingHurtEvent>> onHurtListeners = new LazyPopulatedList<Ability, OnAbilityEvent<LivingHurtEvent>>(abilities){
+		@Override protected void populate(Ability o, ImmutableList.Builder<OnAbilityEvent<LivingHurtEvent>> b){
+			if(o.onHurt()!=null) b.add(Objects.requireNonNull(o.onHurt()));
+		}
+	};
+	public final LazyPopulatedList<Ability, OnAbilityEvent<LivingHurtEvent>> onAttackListeners = new LazyPopulatedList<Ability, OnAbilityEvent<LivingHurtEvent>>(abilities){
+		@Override protected void populate(Ability o, ImmutableList.Builder<OnAbilityEvent<LivingHurtEvent>> b){
+			if(o.onAttack()!=null) b.add(Objects.requireNonNull(o.onAttack()));
+		}
+	};
+	public final LazyPopulatedList<Ability, OnAbilityEvent<LivingDeathEvent>> onDeathListeners = new LazyPopulatedList<Ability, OnAbilityEvent<LivingDeathEvent>>(abilities){
+		@Override protected void populate(Ability o, ImmutableList.Builder<OnAbilityEvent<LivingDeathEvent>> b){
+			if(o.onDeath()!=null) b.add(Objects.requireNonNull(o.onDeath()));
+		}
+	};
+	public final LazyPopulatedList<Ability, OnAbilityUpdate> onUpdateListeners = new LazyPopulatedList<Ability, OnAbilityUpdate>(abilities){
+		@Override protected void populate(Ability o, ImmutableList.Builder<OnAbilityUpdate> b){
+			if(o.onUpdate()!=null) b.add(Objects.requireNonNull(o.onUpdate()));
+		}
+	};
+	public final LazyPopulatedList<Ability, AbilitySkill> abilitySkills = new LazyPopulatedList<Ability, AbilitySkill>(abilities){
+		@Override protected void populate(Ability o, ImmutableList.Builder<AbilitySkill> b){
+			b.addAll(o.getSkills());
+		}
+	};
 
 	@Nullable private AbilityGeneratorScheme appliedGeneratorScheme;
 
 	private boolean generateAbility = true;
 
-	private final Map<AbilitySkill, Long> cooldownTime = new HashMap<>();
-	private final Set<AbilitySkill> abilitySkills = new HashSet<>();
-	private AbilitySkill queuedSkill = null;
-	private long castingTime = 0;
+	private final ServerSkillCastingState skillCastingState = new ServerSkillCastingState(this);
 
 	@Override public Set<Ability> getAbilities(){
 		return abilitiesView;
@@ -101,48 +119,6 @@ public class ServerAbilityHolder implements AbilityHolder, ICapabilitySerializab
 		this.generateAbility = generateAbility;
 	}
 
-	public Map<Ability, OnAbilityEvent<LivingHurtEvent>> getOnHurtListeners(){
-		return onHurtListenersView;
-	}
-	public Map<Ability, OnAbilityEvent<LivingHurtEvent>> getOnAttackListeners(){
-		return onAttackListenersView;
-	}
-	public Map<Ability, OnAbilityEvent<LivingDeathEvent>> getOnDeathListeners(){
-		return onDeathListenersView;
-	}
-	public Map<Ability, OnAbilityEvent<LivingUpdateEvent>> getOnUpdateListeners(){
-		return onUpdateListenersView;
-	}
-
-	public Set<AbilitySkill> getAbilitySkills(){return abilitySkills;}
-	public Map<AbilitySkill, Long> getCooldownTime(){
-		return cooldownTime;
-	}
-	public void setCooldownTime(AbilitySkill skill, Long time){cooldownTime.put(skill, time);}
-	public boolean isCasting(LivingEntity entity){
-		return castingTime>entity.level.getGameTime();
-	}
-
-	public boolean tryUseSkill(LivingEntity entity){
-		if(!isCasting(entity)){
-			if(queuedSkill==null){
-				AbilitySkill[] skills = abilitySkills.toArray(new AbilitySkill[0]);
-				AbilitySkill skill = skills[entity.getRandom().nextInt(skills.length)];
-				if(!cooldownTime.containsKey(skill)||cooldownTime.get(skill)<entity.level.getGameTime()){
-					castingTime = skill.getCastTime()+entity.level.getGameTime();
-					queuedSkill = skill;
-					return false;
-				}
-			}else{
-				queuedSkill.getSkillAction().useSkill(entity, this);
-				cooldownTime.put(queuedSkill, queuedSkill.getCooldown()+entity.level.getGameTime());
-				queuedSkill = null;
-				return true;
-			}
-		}
-		return false;
-	}
-
 	@Override
 	public void update(LivingEntity entity){
 		if(generateAbility){
@@ -164,6 +140,12 @@ public class ServerAbilityHolder implements AbilityHolder, ICapabilitySerializab
 			addedAbilities.clear();
 			removedAbilities.clear();
 
+			onHurtListeners.sync();
+			onAttackListeners.sync();
+			onDeathListeners.sync();
+			onUpdateListeners.sync();
+			abilitySkills.sync();
+
 			float newMaxHealth = entity.getMaxHealth();
 			if(Float.compare(maxHealth, newMaxHealth)!=0){
 				entity.setHealth(MathHelper.clamp(
@@ -175,9 +157,24 @@ public class ServerAbilityHolder implements AbilityHolder, ICapabilitySerializab
 
 			syncAbilityToClient(entity);
 		}
-		if(!abilitySkills.isEmpty()){
-			tryUseSkill(entity);
+		skillCastingState.update(entity);
+		if(!abilitySkills.isEmpty()&&!skillCastingState.isCasting()){
+			AbilitySkill[] validSkills = this.abilitySkills.stream()
+					.filter(abilitySkill -> !skillCastingState.hasCooldown(abilitySkill)&&
+							(abilitySkill.getSkillCondition()==null||abilitySkill.getSkillCondition().useSkill(entity, this)))
+					.toArray(AbilitySkill[]::new);
+			if(validSkills.length>0){
+				skillCastingState.startCastSkill(validSkills[entity.getRandom().nextInt(validSkills.length)], entity);
+			}
 		}
+		if(entity.isAlive()){
+			for(OnAbilityUpdate e : onUpdateListeners)
+				e.onUpdate(entity, this);
+		}
+	}
+
+	@Override public SkillCastingState getSkillCastingState(){
+		return skillCastingState;
 	}
 
 	public void syncAbilityToClient(LivingEntity entity){
@@ -198,11 +195,6 @@ public class ServerAbilityHolder implements AbilityHolder, ICapabilitySerializab
 			for(AttributeModifier m : entry.getValue())
 				instance.addTransientModifier(m);
 		}
-		if(ability.onHurt()!=null) onHurtListeners.put(ability, ability.onHurt());
-		if(ability.onAttack()!=null) onAttackListeners.put(ability, ability.onAttack());
-		if(ability.onDeath()!=null) onDeathListeners.put(ability, ability.onDeath());
-		if(ability.onUpdate()!=null) onUpdateListeners.put(ability, ability.onUpdate());
-		if(!ability.getSkills().isEmpty()) abilitySkills.addAll(ability.getSkills());
 	}
 
 	protected void onAbilityRemoved(Ability ability, LivingEntity entity){
@@ -212,11 +204,6 @@ public class ServerAbilityHolder implements AbilityHolder, ICapabilitySerializab
 			for(AttributeModifier m : entry.getValue())
 				instance.removeModifier(m.getId());
 		}
-		onHurtListeners.remove(ability);
-		onAttackListeners.remove(ability);
-		onDeathListeners.remove(ability);
-		onUpdateListeners.remove(ability);
-		abilitySkills.removeAll(ability.getSkills());
 	}
 
 	private final LazyOptional<AbilityHolder> self = LazyOptional.of(() -> this);
@@ -231,6 +218,7 @@ public class ServerAbilityHolder implements AbilityHolder, ICapabilitySerializab
 		if(!abilities.isEmpty()) nbt.put("abilities", StupidUtils.writeToNbt(abilities, Abilities.getRegistry()));
 		if(this.generateAbility) nbt.putBoolean("generateAbility", true);
 		if(appliedGeneratorScheme!=null) nbt.putString("appliedGeneratorScheme", appliedGeneratorScheme.getId().toString());
+		this.skillCastingState.save(nbt);
 		return nbt;
 	}
 
@@ -244,5 +232,6 @@ public class ServerAbilityHolder implements AbilityHolder, ICapabilitySerializab
 		this.appliedGeneratorScheme = nbt.contains("appliedGeneratorScheme", Constants.NBT.TAG_STRING) ?
 				AbilityGenerators.findSchemeWithId(new ResourceLocation(nbt.getString("appliedGeneratorScheme"))) :
 				null;
+		this.skillCastingState.load(nbt);
 	}
 }

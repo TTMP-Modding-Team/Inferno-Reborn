@@ -1,17 +1,20 @@
 package ttmp.infernoreborn.ability;
 
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.ai.attributes.Attribute;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
-import net.minecraftforge.event.entity.living.LivingEvent.LivingUpdateEvent;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import net.minecraftforge.registries.ForgeRegistryEntry;
+import ttmp.infernoreborn.util.AbilityUtils;
 
 import javax.annotation.Nullable;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
@@ -25,7 +28,7 @@ public class Ability extends ForgeRegistryEntry<Ability>{
 	@Nullable private final OnAbilityEvent<LivingHurtEvent> onHurt;
 	@Nullable private final OnAbilityEvent<LivingHurtEvent> onAttack;
 	@Nullable private final OnAbilityEvent<LivingDeathEvent> onDeath;
-	@Nullable private final OnAbilityEvent<LivingUpdateEvent> onUpdate;
+	@Nullable private final OnAbilityUpdate onUpdate;
 
 	private final Set<AbilitySkill> skills;
 
@@ -40,7 +43,7 @@ public class Ability extends ForgeRegistryEntry<Ability>{
 		this.onUpdate = properties.onUpdate;
 
 		this.skills = properties.skillData.stream()
-				.map(x -> new AbilitySkill(x, this))
+				.map(x -> new AbilitySkill(this, x))
 				.collect(Collectors.toSet());
 	}
 
@@ -67,7 +70,7 @@ public class Ability extends ForgeRegistryEntry<Ability>{
 	@Nullable public OnAbilityEvent<LivingDeathEvent> onDeath(){
 		return onDeath;
 	}
-	@Nullable public OnAbilityEvent<LivingUpdateEvent> onUpdate(){
+	@Nullable public OnAbilityUpdate onUpdate(){
 		return onUpdate;
 	}
 
@@ -101,12 +104,12 @@ public class Ability extends ForgeRegistryEntry<Ability>{
 	public static final class Properties{
 		private final int primaryColor, secondaryColor, highlightColor;
 		private final Map<Attribute, Set<AttributeModifier>> attributes = new HashMap<>();
-		private final Set<AbilitySkill.SkillData> skillData = new HashSet<>();
+		private final List<AbilitySkill.Data> skillData = new ArrayList<>();
 
 		@Nullable private OnAbilityEvent<LivingHurtEvent> onHurt;
 		@Nullable private OnAbilityEvent<LivingHurtEvent> onAttack;
 		@Nullable private OnAbilityEvent<LivingDeathEvent> onDeath;
-		@Nullable private OnAbilityEvent<LivingUpdateEvent> onUpdate;
+		@Nullable private OnAbilityUpdate onUpdate;
 
 		public Properties(int primaryColor, int secondaryColor){
 			this(primaryColor, secondaryColor, primaryColor);
@@ -123,8 +126,28 @@ public class Ability extends ForgeRegistryEntry<Ability>{
 				throw new IllegalStateException("Registration of attribute with overlapping ID "+uuid);
 			return this;
 		}
-		public Properties addSkill(String id, long castTime, long cooldown, AbilitySkill.SkillAction skillAction){
-			this.skillData.add(new AbilitySkill.SkillData(id, castTime, cooldown, skillAction));
+
+		public Properties addSkill(long castTime, long cooldown, AbilitySkill.SkillAction skillAction){
+			return addSkill(castTime, cooldown, skillAction, null);
+		}
+
+		public Properties addSkill(long castTime, long cooldown, AbilitySkill.SkillAction skillAction, @Nullable AbilitySkill.SkillAction skillCondition){
+			this.skillData.add(new AbilitySkill.Data((byte)this.skillData.size(), castTime, cooldown, skillAction, skillCondition));
+			return this;
+		}
+
+		public Properties addTargetedSkill(long castTime, long cooldown, AbilitySkill.TargetedSkillAction skillAction){
+			return addTargetedSkill(castTime, cooldown, skillAction, null);
+		}
+
+		public Properties addTargetedSkill(long castTime, long cooldown, AbilitySkill.TargetedSkillAction skillAction, @Nullable AbilitySkill.TargetedSkillAction skillCondition){
+			this.skillData.add(new AbilitySkill.Data((byte)this.skillData.size(), castTime, cooldown, (entity, holder) -> {
+				LivingEntity target = AbilityUtils.getTarget(entity);
+				return target!=null&&target.isAlive()&&skillAction.useTargetedSkill(entity, holder, target);
+			}, (entity, holder) -> {
+				LivingEntity target = AbilityUtils.getTarget(entity);
+				return target!=null&&target.isAlive()&&(skillCondition==null||skillCondition.useTargetedSkill(entity, holder, target));
+			}));
 			return this;
 		}
 
@@ -143,11 +166,9 @@ public class Ability extends ForgeRegistryEntry<Ability>{
 			return this;
 		}
 
-		public Properties onUpdate(@Nullable OnAbilityEvent<LivingUpdateEvent> onUpdate){
+		public Properties onUpdate(@Nullable OnAbilityUpdate onUpdate){
 			this.onUpdate = onUpdate;
 			return this;
 		}
-
-
 	}
 }

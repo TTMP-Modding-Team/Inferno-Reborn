@@ -3,27 +3,31 @@ package ttmp.infernoreborn.ability;
 import net.minecraft.entity.LivingEntity;
 import ttmp.infernoreborn.ability.holder.AbilityHolder;
 
+import javax.annotation.Nullable;
 import java.util.Objects;
 
 
 public class AbilitySkill{
-	private final String id;
+	private final Ability ability;
+	private final byte id;
 	private final long castTime;
 	private final long cooldown;
 	private final SkillAction skillAction;
-	private final Ability ability;
+	@Nullable private final SkillAction skillCondition;
 
-	public AbilitySkill(SkillData skillData, Ability ability){
-		this.id = Objects.requireNonNull(skillData.getId());
-		this.skillAction = Objects.requireNonNull(skillData.getSkillAction());
+	public AbilitySkill(Ability ability, Data skillData){
+		this.ability = Objects.requireNonNull(ability);
+		this.id = skillData.id;
 		this.castTime = skillData.getCastTime();
 		this.cooldown = skillData.getCooldown();
-		if(this.castTime<0||this.cooldown<0)
-			throw new IllegalArgumentException();
-		this.ability = ability;
+		this.skillAction = skillData.getSkillAction();
+		this.skillCondition = skillData.getSkillCondition();
 	}
 
-	public String getId(){
+	public Ability getAbility(){
+		return ability;
+	}
+	public byte getId(){
 		return id;
 	}
 	public long getCastTime(){
@@ -35,32 +39,52 @@ public class AbilitySkill{
 	public SkillAction getSkillAction(){
 		return skillAction;
 	}
+	@Nullable public SkillAction getSkillCondition(){
+		return skillCondition;
+	}
 
 	@Override public boolean equals(Object o){
 		if(this==o) return true;
 		if(o==null||getClass()!=o.getClass()) return false;
 		AbilitySkill that = (AbilitySkill)o;
-		return id.equals(that.id)&&ability.equals(that.ability);
+		return id==that.id&&ability.equals(that.ability);
 	}
 	@Override public int hashCode(){
 		return Objects.hash(id, ability);
 	}
-	@FunctionalInterface
-	public interface SkillAction{
-		void useSkill(LivingEntity entity, AbilityHolder holder);
+
+	@Override public String toString(){
+		return ability.getRegistryName()+":"+id;
 	}
 
-	public static class SkillData{
-		private final String id;
+	@FunctionalInterface
+	public interface SkillAction{
+		boolean useSkill(LivingEntity entity, AbilityHolder holder);
+	}
+
+	@FunctionalInterface
+	public interface TargetedSkillAction{
+		boolean useTargetedSkill(LivingEntity entity, AbilityHolder holder, LivingEntity target);
+	}
+
+	public static class Data{
+		private final byte id;
 		private final long castTime;
 		private final long cooldown;
 		private final SkillAction skillAction;
+		@Nullable private final SkillAction skillCondition;
 
-		public String getId(){
-			return id;
+		public Data(byte id, long castTime, long cooldown, SkillAction skillAction, @Nullable SkillAction skillCondition){
+			if(castTime<0||cooldown<0) throw new IllegalArgumentException();
+			this.id = id;
+			this.castTime = castTime;
+			this.cooldown = cooldown;
+			this.skillAction = Objects.requireNonNull(skillAction);
+			this.skillCondition = skillCondition;
 		}
-		public SkillAction getSkillAction(){
-			return skillAction;
+
+		public byte getId(){
+			return id;
 		}
 		public long getCastTime(){
 			return castTime;
@@ -68,14 +92,11 @@ public class AbilitySkill{
 		public long getCooldown(){
 			return cooldown;
 		}
-
-		public SkillData(String id, long castTime, long cooldown, SkillAction skillAction){
-			this.id = Objects.requireNonNull(id);
-			this.skillAction = Objects.requireNonNull(skillAction);
-			if(castTime<0||cooldown<0)
-				throw new IllegalArgumentException();
-			this.castTime = castTime;
-			this.cooldown = cooldown;
+		public SkillAction getSkillAction(){
+			return skillAction;
+		}
+		@Nullable public SkillAction getSkillCondition(){
+			return skillCondition;
 		}
 	}
 }
