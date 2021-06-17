@@ -1,10 +1,12 @@
 package ttmp.infernoreborn.ability;
 
 import net.minecraft.entity.LivingEntity;
+import net.minecraftforge.eventbus.api.Event;
 import ttmp.infernoreborn.InfernoReborn;
 import ttmp.infernoreborn.capability.AbilityHolder;
 
 import java.util.Objects;
+import java.util.function.Predicate;
 
 
 public class AbilitySkill{

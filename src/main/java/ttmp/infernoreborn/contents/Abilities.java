@@ -1,28 +1,41 @@
 package ttmp.infernoreborn.contents;
 
+import net.minecraft.advancements.criterion.EntityTypePredicate;
 import net.minecraft.enchantment.ThornsEnchantment;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityPredicate;
+import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.ai.attributes.AttributeModifier.Operation;
 import net.minecraft.entity.ai.attributes.Attributes;
+import net.minecraft.entity.effect.LightningBoltEntity;
 import net.minecraft.potion.EffectInstance;
 import net.minecraft.potion.Effects;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.EntityDamageSource;
+import net.minecraft.util.EntityPredicates;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraftforge.event.RegistryEvent;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.RegistryObject;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber.Bus;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistry;
 import net.minecraftforge.registries.RegistryBuilder;
+import org.apache.logging.log4j.core.jmx.Server;
+import ttmp.infernoreborn.InfernoReborn;
 import ttmp.infernoreborn.ability.Ability;
+import ttmp.infernoreborn.ability.AbilitySkill;
+import ttmp.infernoreborn.capability.ServerAbilityHolder;
 import ttmp.infernoreborn.util.AbilityUtils;
 
+import java.rmi.registry.Registry;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import java.util.function.Predicate;
 import java.util.function.Supplier;
 
 import static ttmp.infernoreborn.InfernoReborn.MODID;
@@ -217,7 +230,105 @@ public final class Abilities{
 						}
 					})
 					.addAttribute(ModAttributes.DAMAGE_RESISTANCE.get(), UUID.fromString("55a108b6-55ff-4b25-a416-afd9f806de69"), 0.2, Operation.ADDITION)));
+	public static final RegistryObject<Ability> THE_BRAIN = REGISTER.register("the_brain", () ->
+			new Ability(new Ability.Properties(0x00, 0x00)
+			.addSkill("the_brain", 10, 300, (entity, holder) ->{
+				if(entity.isAlive() && entity.getLastHurtByMob()!=null){
+					List<LivingEntity> entityList = null;
+					for(Entity e : entity.level.getEntities(entity, entity.getBoundingBox().expandTowards(16, 8, 16)))
+						if(e instanceof LivingEntity)
+							entityList.add((LivingEntity) e);
+					entityList.forEach(ent -> ent.setLastHurtByMob(entity.getLastHurtByMob()));
+				}
+			}).addAttribute(Attributes.MAX_HEALTH, UUID.fromString("2d145dfc-dda4-4fc0-aa35-6666eae0a776"), 0.25, Operation.ADDITION)));
+	public static final RegistryObject<Ability> SENTRY = REGISTER.register("sentry" ,() ->
+		new Ability(new Ability.Properties(0x8000, 0x80000)
+		.onUpdate((entity, holder, event) -> {
+			if(entity.isAlive()){
+				ServerAbilityHolder h = (ServerAbilityHolder) holder;
+				for(AbilitySkill skill : h.getAbilitySkills())
+					h.setCooldownTime(skill, h.getCooldownTime().get(skill) - 4);
+			}
+		}).addAttribute(Attributes.MOVEMENT_SPEED, UUID.fromString("41669826-6fde-4dc6-b67f-28a28a1f2dbb"), -0.9, Operation.MULTIPLY_BASE)));
+	public static final RegistryObject<Ability> HEALTH_KIT = REGISTER.register("health_kit", () ->
+			new Ability(new Ability.Properties(0x00, 0x00)
+			.addSkill("health_kit", 10, 500, (entity, holder) -> {
+				if(entity.isAlive() && entity.getHealth() + 10 < entity.getMaxHealth()) {
+					entity.heal(10);
+				}
+			}).addAttribute(Attributes.MAX_HEALTH, UUID.fromString("25261e88-72c5-49b9-8680-8253f3c73a30"), 10, Operation.ADDITION)));
+	public static final RegistryObject<Ability> EVIOLITE_CHANSEY = REGISTER.register("eviolite_chansey", () ->
+			new Ability(new Ability.Properties(0xFFCFF, 0xFFCFF)
+					.addAttribute(Attributes.ATTACK_DAMAGE, UUID.fromString("ba20b5e3-e189-444f-9233-c710d7ac810e"), -0.8, Operation.MULTIPLY_TOTAL)
+					.addAttribute(Attributes.MAX_HEALTH, UUID.fromString("f72d69be-39ff-4dbc-b938-ff0740ad528c"), 1.5, Operation.MULTIPLY_TOTAL)
+					.addAttribute(ModAttributes.DAMAGE_RESISTANCE.get(), UUID.fromString("41bd35ff-0f02-434c-81a2-be6791739e00"), 0.4, Operation.ADDITION)
+			));
+	public static final RegistryObject<Ability> TOUGHNESS = REGISTER.register("toughness", () ->
+			new Ability(new Ability.Properties(0x3F3F3F, 0x003FCF)
+			.addAttribute(Attributes.MOVEMENT_SPEED, UUID.fromString("ec3aa988-af1f-4ae9-8cf6-b1d5e62addaa"), -0.2, Operation.MULTIPLY_TOTAL)
+			.addAttribute(ModAttributes.DAMAGE_RESISTANCE.get(), UUID.fromString("9c03cdb9-bb2d-4d03-8766-26632b0966df"), 0.2, Operation.ADDITION)));
+	public static final RegistryObject<Ability> SWIFTNESS = REGISTER.register("swiftness", () ->
+			new Ability(new Ability.Properties(0x003FCF, 0x3F3F3F)
+					.addAttribute(Attributes.MOVEMENT_SPEED, UUID.fromString("0759550c-3e02-4dee-89b8-2d490347da5e"), 0.3, Operation.MULTIPLY_TOTAL)
+					.addAttribute(ModAttributes.DAMAGE_RESISTANCE.get(), UUID.fromString("3db07150-8675-4c9e-acf1-c35100cf76b8"), -0.1, Operation.ADDITION)));
+	public static final RegistryObject<Ability> TELEKINESIS = REGISTER.register("telekinesis", () ->
+			new Ability(new Ability.Properties(0xB71100, 0xB71100)
+			.addSkill("telekinesis", 5, 250, (entity, holder) -> {
+				if(entity.isAlive()) {
+					LivingEntity target = entity.getCombatTracker().getKiller();
+					if(target != null && target.isAlive()) {
+						double rlxp = (entity.getX() - target.getX());
+						double rlzp = (entity.getZ() - target.getZ());
+						double dist = Math.sqrt(rlxp*rlxp+rlzp*rlzp);
+						double pow = (1.5+(0.6*target.distanceTo(entity)))/7.0;
 
+						target.push(rlxp/dist*pow, 1.3/dist*pow, rlzp/dist*pow);
+						target.fallDistance -= 1.3/dist*pow;
+						target.hurt(DamageSource.MAGIC, 2.5f);
+					}
+				}
+			})));
+	public static final RegistryObject<Ability> AETHER_WALKER = REGISTER.register("aether_walker", () ->
+			new Ability(new Ability.Properties(0xC0E4FF, 0xC0E4FF)
+			.addSkill("aether_walker", 5, 5, (entity, holder) -> {
+				LivingEntity target = entity.getKillCredit();
+				if(target != null && target.isAlive() && (target.getY() - entity.getY() > 1 || target.position().distanceTo(entity.position()) > 5)){
+					double rlxp = (target.getZ()-entity.getX()), rlzp = (target.getZ()-entity.getZ()),
+							dist = Math.sqrt(rlxp*rlxp+rlzp*rlzp);
+					entity.push(rlxp/dist/16, (target.getY()-entity.getY())*0.15, rlzp/dist/16);
+				}
+			}).addAttribute(ModAttributes.FALLING_DAMAGE_RESISTANCE.get(), UUID.fromString("9ec4bc3d-d8a0-4b1a-a185-c34ca05e9175"), 1, Operation.ADDITION)));
+	/*public static final RegistryObject<Ability> THUNDERBOLT = REGISTER.register("thunderbolt", () ->
+			new Ability(new Ability.Properties(0xFFFF00, 0xFFFF00)
+			.addSkill("thunderbolt", 10, 400, (entity, holder) -> {
+				if(entity.isAlive()) {
+					LivingEntity target = entity.getKillCredit();
+					if(target != null && target.isAlive()) {
+						LightningBoltEntity e = new LightningBoltEntity(EntityType.LIGHTNING_BOLT, entity.level);
+						e.setPos(entity.getX(), entity.getY(), entity.getZ())
+					}
+				}
+			})));*/
+	public static final RegistryObject<Ability> THE_RED = REGISTER.register("the_red", () ->
+			new Ability(new Ability.Properties(0xC80000, 0xC80000)
+			.addAttribute(Attributes.MOVEMENT_SPEED, UUID.fromString("33a6142f-5b04-490c-85ce-11cc79510f9a"), 2, Operation.MULTIPLY_BASE)
+			.addAttribute(ModAttributes.FALLING_DAMAGE_RESISTANCE.get(), UUID.fromString("5cb842c2-beb3-4da0-b4c6-aa0323fe292a"), 1, Operation.ADDITION)));
+	public static final RegistryObject<Ability> EMPERORS_ARUA = REGISTER.register("emperors_arua", () ->
+			new Ability(new Ability.Properties(0xDCB600, 0xDCB600)
+			.onAttack((entity, holder, event) -> {
+				double x = entity.getX();
+				double y = entity.getY();
+				double z = entity.getZ();
+				List<LivingEntity> entityList = null;
+				for(Entity e : entity.level.getEntities(entity, new AxisAlignedBB(x-7.5, y-7.5, z-7.5, x+7.5, y+7.5, z+7.5)))
+					if(e instanceof LivingEntity)
+						entityList.add((LivingEntity) e);
+				for(LivingEntity e  : entityList){
+					if(e.isAlive()) AbilityUtils.addStackEffect(e, Effects.DAMAGE_BOOST, 140, 0, 1, 64);
+				}
+			})));
+
+	@SubscribeEvent
 	public static void newRegistry(RegistryEvent.NewRegistry e){
 		registry = (ForgeRegistry<Ability>)new RegistryBuilder<Ability>()
 				.setType(Ability.class)

@@ -39,6 +39,7 @@ import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.Set;
 import java.util.function.Consumer;
+import java.util.function.Predicate;
 
 public class ServerAbilityHolder extends AbilityHolder implements INBTSerializable<CompoundNBT>{
 	@Nullable
@@ -115,9 +116,16 @@ public class ServerAbilityHolder extends AbilityHolder implements INBTSerializab
 		return onUpdateListenersView;
 	}
 
+	public Set<AbilitySkill> getAbilitySkills() {return abilitySkills;}
+	public Map<AbilitySkill, Long> getCooldownTime(){
+		return cooldownTime;
+	}
+	public void setCooldownTime(AbilitySkill skill, Long time) {cooldownTime.put(skill, time);}
 	public boolean isCasting(LivingEntity entity){
 		return castingTime>entity.level.getGameTime();
 	}
+
+
 	public boolean tryUseSkill(LivingEntity entity){
 		if(!isCasting(entity)){
 			if(queuedSkill==null){
