@@ -4,7 +4,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.util.JSONUtils;
-import ttmp.infernoreborn.capability.AbilityHolder;
+import ttmp.infernoreborn.ability.holder.AbilityHolder;
 
 public class RangedInteger implements SomeInteger{
 	public static RangedInteger parse(JsonObject object){

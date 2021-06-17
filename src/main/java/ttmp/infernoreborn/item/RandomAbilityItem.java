@@ -2,9 +2,9 @@ package ttmp.infernoreborn.item;
 
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.ItemStack;
-import ttmp.infernoreborn.capability.ServerAbilityHolder;
+import ttmp.infernoreborn.ability.holder.ServerAbilityHolder;
 
-public class RandomAbilityItem extends BaseAbilityItem{
+public class RandomAbilityItem extends AbstractAbilityItem{
 	public RandomAbilityItem(Properties properties){
 		super(properties);
 	}

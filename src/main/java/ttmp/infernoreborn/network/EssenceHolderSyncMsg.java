@@ -3,6 +3,7 @@ package ttmp.infernoreborn.network;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketBuffer;
+import ttmp.infernoreborn.capability.Caps;
 import ttmp.infernoreborn.capability.EssenceHolder;
 import ttmp.infernoreborn.util.EssenceType;
 
@@ -25,7 +26,7 @@ public class EssenceHolderSyncMsg extends ItemSyncMsg{
 	}
 
 	@Override protected void doSync(PlayerEntity player, ItemStack stack){
-		stack.getCapability(EssenceHolder.capability).ifPresent(essenceHolder -> {
+		stack.getCapability(Caps.essenceHolder).ifPresent(essenceHolder -> {
 			for(EssenceType type : EssenceType.values())
 				essenceHolder.setEssence(type, essences[type.ordinal()]);
 		});

@@ -19,8 +19,8 @@ public class Ability extends ForgeRegistryEntry<Ability>{
 	private final int primaryColor, secondaryColor, highlightColor;
 	private final Map<Attribute, Set<AttributeModifier>> attributes;
 
-	@Nullable private final OnEvent<LivingHurtEvent> onHurt;
-	@Nullable private final OnEvent<LivingHurtEvent> onAttack;
+	@Nullable private final OnAbilityEvent<LivingHurtEvent> onHurt;
+	@Nullable private final OnAbilityEvent<LivingHurtEvent> onAttack;
 
 	public Ability(Properties properties){
 		this.primaryColor = properties.primaryColor;
@@ -45,10 +45,10 @@ public class Ability extends ForgeRegistryEntry<Ability>{
 		return attributes;
 	}
 
-	@Nullable public OnEvent<LivingHurtEvent> onHurt(){
+	@Nullable public OnAbilityEvent<LivingHurtEvent> onHurt(){
 		return onHurt;
 	}
-	@Nullable public OnEvent<LivingHurtEvent> onAttack(){
+	@Nullable public OnAbilityEvent<LivingHurtEvent> onAttack(){
 		return onAttack;
 	}
 
@@ -79,8 +79,8 @@ public class Ability extends ForgeRegistryEntry<Ability>{
 		private final int primaryColor, secondaryColor, highlightColor;
 		private final Map<Attribute, Set<AttributeModifier>> attributes = new HashMap<>();
 
-		@Nullable private OnEvent<LivingHurtEvent> onHurt;
-		@Nullable private OnEvent<LivingHurtEvent> onAttack;
+		@Nullable private OnAbilityEvent<LivingHurtEvent> onHurt;
+		@Nullable private OnAbilityEvent<LivingHurtEvent> onAttack;
 
 		public Properties(int primaryColor, int secondaryColor){
 			this(primaryColor, secondaryColor, primaryColor);
@@ -98,12 +98,12 @@ public class Ability extends ForgeRegistryEntry<Ability>{
 			return this;
 		}
 
-		public Properties onHurt(@Nullable OnEvent<LivingHurtEvent> onHurt){
+		public Properties onHurt(@Nullable OnAbilityEvent<LivingHurtEvent> onHurt){
 			this.onHurt = onHurt;
 			return this;
 		}
 
-		public Properties onAttack(@Nullable OnEvent<LivingHurtEvent> onAttack){
+		public Properties onAttack(@Nullable OnAbilityEvent<LivingHurtEvent> onAttack){
 			this.onAttack = onAttack;
 			return this;
 		}

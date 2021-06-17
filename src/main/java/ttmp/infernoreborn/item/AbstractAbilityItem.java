@@ -7,8 +7,8 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Hand;
 
-public abstract class BaseAbilityItem extends Item{
-	public BaseAbilityItem(Properties properties){
+public abstract class AbstractAbilityItem extends Item{
+	public AbstractAbilityItem(Properties properties){
 		super(properties);
 	}
 

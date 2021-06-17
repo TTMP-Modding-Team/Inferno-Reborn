@@ -5,11 +5,7 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.nbt.INBT;
-import net.minecraft.nbt.ListNBT;
-import net.minecraft.nbt.StringNBT;
 import net.minecraft.util.NonNullList;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.Style;
@@ -17,18 +13,15 @@ import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.Constants;
-import net.minecraftforge.registries.IForgeRegistry;
 import ttmp.infernoreborn.ability.Ability;
-import ttmp.infernoreborn.capability.AbilityHolder;
+import ttmp.infernoreborn.ability.holder.AbilityHolder;
 import ttmp.infernoreborn.contents.Abilities;
+import ttmp.infernoreborn.util.StupidUtils;
 
 import javax.annotation.Nullable;
-import java.util.AbstractList;
-import java.util.Arrays;
 import java.util.List;
-import java.util.Objects;
 
-public class FixedAbilityItem extends BaseAbilityItem{
+public class FixedAbilityItem extends AbstractAbilityItem{
 	public FixedAbilityItem(Properties properties){
 		super(properties);
 	}
@@ -82,23 +75,10 @@ public class FixedAbilityItem extends BaseAbilityItem{
 	public static Ability[] getAbilities(ItemStack stack){
 		CompoundNBT tag = stack.getTag();
 		if(tag==null||!tag.contains("Abilities", Constants.NBT.TAG_LIST)) return EMPTY_ABILITY;
-		IForgeRegistry<Ability> registry = Abilities.getRegistry();
-		return tag.getList("Abilities", Constants.NBT.TAG_STRING).stream()
-				.map(INBT::getAsString)
-				.map(ResourceLocation::new)
-				.map(registry::getValue)
-				.filter(Objects::nonNull)
-				.toArray(Ability[]::new);
+		return StupidUtils.readToArray(tag.getList("Abilities", Constants.NBT.TAG_STRING), Abilities.getRegistry(), Ability[]::new);
 	}
 
 	public static void setAbilities(ItemStack stack, Ability[] abilities){
-		CompoundNBT tag = stack.getOrCreateTag();
-		IForgeRegistry<Ability> registry = Abilities.getRegistry();
-		tag.put("Abilities", Arrays.stream(abilities)
-				.map(registry::getKey)
-				.filter(Objects::nonNull)
-				.map(ResourceLocation::toString)
-				.map(StringNBT::valueOf)
-				.collect(ListNBT::new, AbstractList::add, (l1, l2) -> {}));
+		stack.getOrCreateTag().put("Abilities", StupidUtils.writeToNbt(abilities, Abilities.getRegistry()));
 	}
 }

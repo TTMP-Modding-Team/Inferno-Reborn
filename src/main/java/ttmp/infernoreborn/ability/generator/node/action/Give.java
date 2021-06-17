@@ -7,7 +7,7 @@ import ttmp.infernoreborn.ability.generator.node.variable.SomeAbility;
 import ttmp.infernoreborn.ability.generator.node.variable.SomeInteger;
 import ttmp.infernoreborn.ability.generator.node.condition.Condition;
 import ttmp.infernoreborn.ability.generator.parser.Parsers;
-import ttmp.infernoreborn.capability.AbilityHolder;
+import ttmp.infernoreborn.ability.holder.AbilityHolder;
 
 import javax.annotation.Nullable;
 

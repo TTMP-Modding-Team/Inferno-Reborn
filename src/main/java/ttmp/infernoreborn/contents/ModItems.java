@@ -1,5 +1,6 @@
 package ttmp.infernoreborn.contents;
 
+import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
@@ -7,12 +8,11 @@ import net.minecraft.item.Rarity;
 import net.minecraftforge.fml.RegistryObject;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
-import ttmp.infernoreborn.item.DebugStickAbilityItem;
-import ttmp.infernoreborn.item.DebugStickAttributeItem;
 import ttmp.infernoreborn.item.EssenceHolderItem;
 import ttmp.infernoreborn.item.FixedAbilityItem;
 import ttmp.infernoreborn.item.GeneratorAbilityItem;
 import ttmp.infernoreborn.item.RandomAbilityItem;
+import ttmp.infernoreborn.item.SigilItem;
 import ttmp.infernoreborn.item.TheBookItem;
 
 import static ttmp.infernoreborn.InfernoReborn.MODID;
@@ -59,6 +59,10 @@ public final class ModItems{
 
 	public static final RegistryObject<Item> ESSENCE_HOLDER = REGISTER.register("essence_holder", () -> new EssenceHolderItem(new Item.Properties().stacksTo(1).tab(ARTIFACTS).rarity(Rarity.UNCOMMON)));
 
-	public static final RegistryObject<Item> DEBUG_STICK_ATTRIBUTE = REGISTER.register("debug_stick_attribute", () -> new DebugStickAttributeItem(new Item.Properties().tab(ARTIFACTS)));
-	public static final RegistryObject<Item> DEBUG_STICK_ABILITY = REGISTER.register("debug_stick_ability", () -> new DebugStickAbilityItem(new Item.Properties().tab(ARTIFACTS)));
+	public static final RegistryObject<Item> TEST_SIGIL = REGISTER.register("test_sigil", () -> new SigilItem(Sigils.TEST, new Item.Properties().tab(ARTIFACTS)));
+	public static final RegistryObject<Item> TEST_SIGIL_2 = REGISTER.register("test_sigil_2", () -> new SigilItem(Sigils.TEST2, new Item.Properties().tab(ARTIFACTS)));
+
+	public static final RegistryObject<BlockItem> SIGIL_ENGRAVING_TABLE_3X3 = REGISTER.register("sigil_engraving_table_3x3", () -> new BlockItem(ModBlocks.SIGIL_ENGRAVING_TABLE_3X3.get(), new Item.Properties().tab(ARTIFACTS)));
+	public static final RegistryObject<BlockItem> SIGIL_ENGRAVING_TABLE_5X5 = REGISTER.register("sigil_engraving_table_5x5", () -> new BlockItem(ModBlocks.SIGIL_ENGRAVING_TABLE_5X5.get(), new Item.Properties().tab(ARTIFACTS)));
+	public static final RegistryObject<BlockItem> SIGIL_ENGRAVING_TABLE_7X7 = REGISTER.register("sigil_engraving_table_7x7", () -> new BlockItem(ModBlocks.SIGIL_ENGRAVING_TABLE_7X7.get(), new Item.Properties().tab(ARTIFACTS)));
 }

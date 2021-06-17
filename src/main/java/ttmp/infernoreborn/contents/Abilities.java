@@ -166,7 +166,6 @@ public final class Abilities{
 						AbilityUtils.addStackEffect(event.getEntityLiving(), Effects.DIG_SLOWDOWN, 100, 0, 1, 5, true, true);
 					})));
 
-
 	@SubscribeEvent
 	public static void newRegistry(RegistryEvent.NewRegistry e){
 		registry = (ForgeRegistry<Ability>)new RegistryBuilder<Ability>()

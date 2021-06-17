@@ -17,6 +17,7 @@ import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
+import ttmp.infernoreborn.capability.Caps;
 import ttmp.infernoreborn.capability.EssenceHolder;
 import ttmp.infernoreborn.container.EssenceHolderContainerProvider;
 import ttmp.infernoreborn.util.EssenceType;
@@ -69,7 +70,7 @@ public class TheBookItem extends Item{
 
 		text.add(new TranslationTextComponent("item.infernoreborn.book_of_the_unspeakable.desc.essence_holder").setStyle(Style.EMPTY.applyFormat(TextFormatting.YELLOW)));
 		if(ExpandKey.SHIFT.isKeyDown()){
-			stack.getCapability(EssenceHolder.capability).ifPresent(essenceHolder -> {
+			stack.getCapability(Caps.essenceHolder).ifPresent(essenceHolder -> {
 				for(EssenceType type : EssenceType.values()){
 					int essence = essenceHolder.getEssence(type);
 					if(essence>0) text.add(new TranslationTextComponent("item.infernoreborn.essence_holder.desc.essences."+type.id, essence));
@@ -81,7 +82,7 @@ public class TheBookItem extends Item{
 	@Nullable @Override public CompoundNBT getShareTag(ItemStack stack){
 		CompoundNBT nbt = stack.getTag();
 		@SuppressWarnings("ConstantConditions")
-		EssenceHolder h = stack.getCapability(EssenceHolder.capability).orElse(null);
+		EssenceHolder h = stack.getCapability(Caps.essenceHolder).orElse(null);
 		//noinspection ConstantConditions
 		if(h!=null){
 			CompoundNBT capNbt = h.serializeNBT();
@@ -95,7 +96,7 @@ public class TheBookItem extends Item{
 
 	@Override public void readShareTag(ItemStack stack, @Nullable CompoundNBT nbt){
 		stack.setTag(nbt);
-		stack.getCapability(EssenceHolder.capability).ifPresent(h -> {
+		stack.getCapability(Caps.essenceHolder).ifPresent(h -> {
 			if(nbt!=null) h.deserializeNBT(nbt.getCompound("Essence"));
 			else h.clear();
 		});

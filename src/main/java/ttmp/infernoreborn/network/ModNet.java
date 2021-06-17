@@ -6,6 +6,7 @@ import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.network.NetworkDirection;
 import net.minecraftforge.fml.network.NetworkEvent;
@@ -14,13 +15,14 @@ import net.minecraftforge.fml.network.simple.SimpleChannel;
 import ttmp.infernoreborn.InfernoReborn;
 import ttmp.infernoreborn.ability.Ability;
 import ttmp.infernoreborn.ability.generator.AbilityGenerators;
-import ttmp.infernoreborn.capability.ClientAbilityHolder;
+import ttmp.infernoreborn.ability.holder.ClientAbilityHolder;
 import ttmp.infernoreborn.capability.EssenceHolder;
-import ttmp.infernoreborn.client.EssenceHolderScreen;
+import ttmp.infernoreborn.client.screen.EssenceHolderScreen;
 import ttmp.infernoreborn.container.EssenceHolderContainer;
 import ttmp.infernoreborn.util.EssenceType;
 
 import java.util.Optional;
+import java.util.function.Function;
 import java.util.function.Supplier;
 
 import static ttmp.infernoreborn.InfernoReborn.MODID;
@@ -41,18 +43,24 @@ public final class ModNet{
 		CHANNEL.registerMessage(1, SyncAbilityHolderMsg.class,
 				SyncAbilityHolderMsg::write, SyncAbilityHolderMsg::read,
 				Client::handleSyncAbilityHolderMsg);
-		CHANNEL.registerMessage(2, EssenceHolderSyncMsg.class,
-				EssenceHolderSyncMsg::write, EssenceHolderSyncMsg::new,
-				Client::handleItemSync, Optional.of(NetworkDirection.PLAY_TO_CLIENT));
-		CHANNEL.registerMessage(3, EssenceHolderSyncMsg.Bulk.class,
-				EssenceHolderSyncMsg.Bulk::write, EssenceHolderSyncMsg.Bulk::new,
-				Client::handleBulkItemSync, Optional.of(NetworkDirection.PLAY_TO_CLIENT));
-		CHANNEL.registerMessage(4, EssenceHolderSlotClickMsg.class,
+		CHANNEL.registerMessage(2, EssenceHolderSlotClickMsg.class,
 				EssenceHolderSlotClickMsg::write, EssenceHolderSlotClickMsg::read,
 				Server::handleEssenceHolderSlotClick, Optional.of(NetworkDirection.PLAY_TO_SERVER));
-		CHANNEL.registerMessage(5, EssenceHolderScreenEssenceSyncMsg.class,
+		CHANNEL.registerMessage(3, EssenceHolderScreenEssenceSyncMsg.class,
 				EssenceHolderScreenEssenceSyncMsg::write, EssenceHolderScreenEssenceSyncMsg::new,
 				Client::handleEssenceHolderScreenEssenceSyncMsg, Optional.of(NetworkDirection.PLAY_TO_CLIENT));
+
+		registerItemSyncMsg(32, EssenceHolderSyncMsg.class, EssenceHolderSyncMsg.Bulk.class, EssenceHolderSyncMsg::new, EssenceHolderSyncMsg.Bulk::new);
+		registerItemSyncMsg(34, SigilHolderSyncMsg.class, SigilHolderSyncMsg.Bulk.class, SigilHolderSyncMsg::new, SigilHolderSyncMsg.Bulk::new);
+	}
+
+	private static <M extends ItemSyncMsg, B extends BulkItemSyncMsg<M>> void registerItemSyncMsg(int index,
+	                                                                                              Class<M> msg,
+	                                                                                              Class<B> bulkMsg,
+	                                                                                              Function<PacketBuffer, M> decoder,
+	                                                                                              Function<PacketBuffer, B> bulkMsgDecoder){
+		CHANNEL.registerMessage(index, msg, ItemSyncMsg::write, decoder, Client::handleItemSync, Optional.of(NetworkDirection.PLAY_TO_CLIENT));
+		CHANNEL.registerMessage(index+1, bulkMsg, BulkItemSyncMsg::write, bulkMsgDecoder, Client::handleBulkItemSync, Optional.of(NetworkDirection.PLAY_TO_CLIENT));
 	}
 
 	private static final class Server{

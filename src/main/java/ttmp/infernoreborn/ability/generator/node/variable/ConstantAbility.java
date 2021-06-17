@@ -6,7 +6,7 @@ import com.google.gson.JsonPrimitive;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.util.ResourceLocation;
 import ttmp.infernoreborn.ability.Ability;
-import ttmp.infernoreborn.capability.AbilityHolder;
+import ttmp.infernoreborn.ability.holder.AbilityHolder;
 import ttmp.infernoreborn.contents.Abilities;
 
 import javax.annotation.Nullable;

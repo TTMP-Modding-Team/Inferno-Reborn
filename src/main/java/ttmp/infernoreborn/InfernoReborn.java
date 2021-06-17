@@ -20,23 +20,28 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import ttmp.infernoreborn.ability.Ability;
 import ttmp.infernoreborn.ability.generator.scheme.AbilityGeneratorScheme;
-import ttmp.infernoreborn.capability.AbilityHolder;
+import ttmp.infernoreborn.ability.holder.AbilityHolder;
 import ttmp.infernoreborn.capability.EssenceHolder;
-import ttmp.infernoreborn.client.EssenceHolderScreen;
 import ttmp.infernoreborn.client.ItemColorUtils;
 import ttmp.infernoreborn.client.PrimalInfernoSparkColor;
+import ttmp.infernoreborn.client.screen.EssenceHolderScreen;
+import ttmp.infernoreborn.client.screen.SigilEngravingTableScreen;
 import ttmp.infernoreborn.contents.Abilities;
 import ttmp.infernoreborn.contents.ModAttributes;
+import ttmp.infernoreborn.contents.ModBlocks;
 import ttmp.infernoreborn.contents.ModContainers;
 import ttmp.infernoreborn.contents.ModItems;
 import ttmp.infernoreborn.contents.ModRecipes;
-import ttmp.infernoreborn.datagen.BookDataProvider;
+import ttmp.infernoreborn.contents.ModTileEntities;
+import ttmp.infernoreborn.contents.Sigils;
 import ttmp.infernoreborn.datagen.AbilityGeneratorDataProvider;
+import ttmp.infernoreborn.datagen.BookDataProvider;
 import ttmp.infernoreborn.datagen.ItemModelGen;
 import ttmp.infernoreborn.datagen.RecipeGen;
 import ttmp.infernoreborn.item.FixedAbilityItem;
 import ttmp.infernoreborn.item.GeneratorAbilityItem;
 import ttmp.infernoreborn.network.ModNet;
+import ttmp.infernoreborn.sigil.holder.SigilHolder;
 
 import javax.annotation.Nullable;
 
@@ -51,9 +56,12 @@ public class InfernoReborn{
 		IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
 		Abilities.REGISTER.register(modEventBus);
 		ModAttributes.REGISTER.register(modEventBus);
+		ModBlocks.REGISTER.register(modEventBus);
 		ModContainers.REGISTER.register(modEventBus);
 		ModItems.REGISTER.register(modEventBus);
 		ModRecipes.REGISTER.register(modEventBus);
+		ModTileEntities.REGISTER.register(modEventBus);
+		Sigils.REGISTER.register(modEventBus);
 
 		ModNet.init();
 	}
@@ -63,6 +71,7 @@ public class InfernoReborn{
 		event.enqueueWork(() -> {
 			registerDefaultCapability(AbilityHolder.class);
 			registerDefaultCapability(EssenceHolder.class);
+			registerDefaultCapability(SigilHolder.class);
 		});
 	}
 
@@ -98,6 +107,9 @@ public class InfernoReborn{
 		public static void clientSetup(FMLClientSetupEvent event){
 			event.enqueueWork(() -> {
 				ScreenManager.register(ModContainers.ESSENCE_HOLDER.get(), EssenceHolderScreen::new);
+				ScreenManager.register(ModContainers.SIGIL_ENGRAVING_TABLE_3X3.get(), SigilEngravingTableScreen.X3::new);
+				ScreenManager.register(ModContainers.SIGIL_ENGRAVING_TABLE_5X5.get(), SigilEngravingTableScreen.X5::new);
+				ScreenManager.register(ModContainers.SIGIL_ENGRAVING_TABLE_7X7.get(), SigilEngravingTableScreen.X7::new);
 			});
 		}
 

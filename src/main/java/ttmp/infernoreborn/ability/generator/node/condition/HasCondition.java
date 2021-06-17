@@ -7,7 +7,7 @@ import net.minecraft.util.JSONUtils;
 import net.minecraft.util.ResourceLocation;
 import ttmp.infernoreborn.ability.Ability;
 import ttmp.infernoreborn.ability.generator.node.Node;
-import ttmp.infernoreborn.capability.AbilityHolder;
+import ttmp.infernoreborn.ability.holder.AbilityHolder;
 import ttmp.infernoreborn.contents.Abilities;
 
 import java.util.Objects;

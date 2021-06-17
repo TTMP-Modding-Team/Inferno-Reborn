@@ -8,6 +8,7 @@ import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
+import ttmp.infernoreborn.capability.Caps;
 import ttmp.infernoreborn.capability.EssenceHolder;
 import ttmp.infernoreborn.contents.ModItems;
 import ttmp.infernoreborn.contents.ModRecipes;
@@ -56,9 +57,9 @@ public class EssenceHolderBookRecipe implements ICraftingRecipe{
 		ItemStack out = book.copy();
 		TheBookItem.setHasEssenceHolder(out, true);
 		//noinspection ConstantConditions
-		EssenceHolder h = out.getCapability(EssenceHolder.capability).orElse(null);
+		EssenceHolder h = out.getCapability(Caps.essenceHolder).orElse(null);
 		//noinspection ConstantConditions
-		EssenceHolder h2 = essenceHolder.getCapability(EssenceHolder.capability).orElse(null);
+		EssenceHolder h2 = essenceHolder.getCapability(Caps.essenceHolder).orElse(null);
 		//noinspection ConstantConditions
 		if(h!=null&&h2!=null){
 			for(EssenceType type : EssenceType.values())

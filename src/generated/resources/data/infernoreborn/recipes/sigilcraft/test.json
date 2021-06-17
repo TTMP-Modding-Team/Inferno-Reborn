@@ -1,0 +1,22 @@
+{
+  "type": "infernoreborn:shaped_sigil_table_crafting",
+  "pattern": [
+    "2X2",
+    "121"
+  ],
+  "key": {
+    "1": {
+      "item": "infernoreborn:greater_metal_essence_crystal"
+    },
+    "2": {
+      "item": "infernoreborn:greater_earth_essence_crystal"
+    },
+    "X": {
+      "item": "minecraft:stone"
+    }
+  },
+  "result": {
+    "item": "minecraft:bedrock"
+  },
+  "center": "X"
+}

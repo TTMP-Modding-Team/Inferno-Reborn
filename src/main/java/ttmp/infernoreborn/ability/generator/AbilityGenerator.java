@@ -13,7 +13,7 @@ import ttmp.infernoreborn.ability.generator.node.Node;
 import ttmp.infernoreborn.ability.generator.node.action.Action;
 import ttmp.infernoreborn.ability.generator.parser.Parsers;
 import ttmp.infernoreborn.ability.generator.scheme.AbilityGeneratorScheme;
-import ttmp.infernoreborn.capability.AbilityHolder;
+import ttmp.infernoreborn.ability.holder.AbilityHolder;
 
 import javax.annotation.Nullable;
 import java.util.Objects;

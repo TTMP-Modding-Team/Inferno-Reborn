@@ -1,4 +1,4 @@
-package ttmp.infernoreborn.datagen;
+package ttmp.infernoreborn.datagen.builder;
 
 import com.google.gson.JsonObject;
 import net.minecraft.advancements.Advancement;
