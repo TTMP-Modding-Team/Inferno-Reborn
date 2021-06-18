@@ -16,14 +16,15 @@ import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.common.capabilities.ICapabilitySerializable;
 import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.common.util.LazyOptional;
+import net.minecraftforge.event.entity.living.LivingAttackEvent;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import net.minecraftforge.fml.network.PacketDistributor;
-import ttmp.infernoreborn.ability.ServerSkillCastingState;
 import ttmp.infernoreborn.ability.Ability;
 import ttmp.infernoreborn.ability.AbilitySkill;
 import ttmp.infernoreborn.ability.OnAbilityEvent;
 import ttmp.infernoreborn.ability.OnAbilityUpdate;
+import ttmp.infernoreborn.ability.ServerSkillCastingState;
 import ttmp.infernoreborn.ability.SkillCastingState;
 import ttmp.infernoreborn.ability.SkillCastingStateProvider;
 import ttmp.infernoreborn.ability.generator.AbilityGenerator;
@@ -55,14 +56,19 @@ public class ServerAbilityHolder implements AbilityHolder, ICapabilitySerializab
 	private final Set<Ability> removedAbilities = new HashSet<>();
 	private final Set<Ability> abilitiesView = Collections.unmodifiableSet(abilities);
 
+	public final LazyPopulatedList<Ability, OnAbilityEvent<LivingAttackEvent>> onAttackedListeners = new LazyPopulatedList<Ability, OnAbilityEvent<LivingAttackEvent>>(abilities){
+		@Override protected void populate(Ability o, ImmutableList.Builder<OnAbilityEvent<LivingAttackEvent>> b){
+			if(o.onAttacked()!=null) b.add(Objects.requireNonNull(o.onAttacked()));
+		}
+	};
 	public final LazyPopulatedList<Ability, OnAbilityEvent<LivingHurtEvent>> onHurtListeners = new LazyPopulatedList<Ability, OnAbilityEvent<LivingHurtEvent>>(abilities){
 		@Override protected void populate(Ability o, ImmutableList.Builder<OnAbilityEvent<LivingHurtEvent>> b){
 			if(o.onHurt()!=null) b.add(Objects.requireNonNull(o.onHurt()));
 		}
 	};
-	public final LazyPopulatedList<Ability, OnAbilityEvent<LivingHurtEvent>> onAttackListeners = new LazyPopulatedList<Ability, OnAbilityEvent<LivingHurtEvent>>(abilities){
+	public final LazyPopulatedList<Ability, OnAbilityEvent<LivingHurtEvent>> onHitListeners = new LazyPopulatedList<Ability, OnAbilityEvent<LivingHurtEvent>>(abilities){
 		@Override protected void populate(Ability o, ImmutableList.Builder<OnAbilityEvent<LivingHurtEvent>> b){
-			if(o.onAttack()!=null) b.add(Objects.requireNonNull(o.onAttack()));
+			if(o.onHit()!=null) b.add(Objects.requireNonNull(o.onHit()));
 		}
 	};
 	public final LazyPopulatedList<Ability, OnAbilityEvent<LivingDeathEvent>> onDeathListeners = new LazyPopulatedList<Ability, OnAbilityEvent<LivingDeathEvent>>(abilities){
@@ -140,8 +146,9 @@ public class ServerAbilityHolder implements AbilityHolder, ICapabilitySerializab
 			addedAbilities.clear();
 			removedAbilities.clear();
 
+			onAttackedListeners.sync();
 			onHurtListeners.sync();
-			onAttackListeners.sync();
+			onHitListeners.sync();
 			onDeathListeners.sync();
 			onUpdateListeners.sync();
 			abilitySkills.sync();

@@ -12,8 +12,11 @@ import net.minecraft.inventory.container.Container;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.world.Explosion;
+import net.minecraft.world.World;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.event.ItemAttributeModifierEvent;
+import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.living.LivingAttackEvent;
 import net.minecraftforge.event.entity.living.LivingDamageEvent;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
@@ -21,6 +24,7 @@ import net.minecraftforge.event.entity.living.LivingEvent.LivingUpdateEvent;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import net.minecraftforge.event.entity.player.PlayerContainerEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
+import net.minecraftforge.event.world.ExplosionEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -29,11 +33,14 @@ import ttmp.infernoreborn.ability.holder.AbilityHolder;
 import ttmp.infernoreborn.ability.holder.ClientAbilityHolder;
 import ttmp.infernoreborn.ability.holder.ServerAbilityHolder;
 import ttmp.infernoreborn.capability.ShieldHolder;
+import ttmp.infernoreborn.capability.SimpleTickingTaskHandler;
+import ttmp.infernoreborn.capability.TickingTaskHandler;
 import ttmp.infernoreborn.container.listener.SigilHolderSynchronizer;
 import ttmp.infernoreborn.contents.ModAttributes;
 import ttmp.infernoreborn.sigil.holder.ItemSigilHolder;
 import ttmp.infernoreborn.sigil.holder.PlayerSigilHolder;
 import ttmp.infernoreborn.sigil.holder.SigilHolder;
+import ttmp.infernoreborn.util.CannotHurtNonLiving;
 import ttmp.infernoreborn.util.LivingUtils;
 
 import static ttmp.infernoreborn.InfernoReborn.MODID;
@@ -45,6 +52,7 @@ public class CommonEventHandlers{
 	private static final ResourceLocation ABILITY_HOLDER_KEY = new ResourceLocation(MODID, "ability_holder");
 	private static final ResourceLocation SIGIL_HOLDER_KEY = new ResourceLocation(MODID, "sigil_holder");
 	private static final ResourceLocation SHIELD_HOLDER_KEY = new ResourceLocation(MODID, "shield_holder");
+	private static final ResourceLocation TICKING_TASK_HANDLER_KEY = new ResourceLocation(MODID, "ticking_task_handler");
 
 	@SubscribeEvent
 	public static void attachEntityCapabilities(AttachCapabilitiesEvent<Entity> event){
@@ -58,6 +66,11 @@ public class CommonEventHandlers{
 	@SubscribeEvent
 	public static void attachItemCapabilities(AttachCapabilitiesEvent<ItemStack> event){
 		event.addCapability(SIGIL_HOLDER_KEY, new ItemSigilHolder(event.getObject()));
+	}
+
+	@SubscribeEvent
+	public static void attachWorldCapabilities(AttachCapabilitiesEvent<World> event){
+		event.addCapability(TICKING_TASK_HANDLER_KEY, new SimpleTickingTaskHandler());
 	}
 
 	@SubscribeEvent
@@ -103,6 +116,12 @@ public class CommonEventHandlers{
 	public static void onLivingAttack(LivingAttackEvent event){
 		if(event.getSource()==DamageSource.FALL&&LivingUtils.getAttrib(event.getEntityLiving(), ModAttributes.FALLING_DAMAGE_RESISTANCE.get())>=2)
 			event.setCanceled(true);
+
+		ServerAbilityHolder h = ServerAbilityHolder.of(event.getEntityLiving());
+		if(h!=null){
+			for(OnAbilityEvent<LivingAttackEvent> e : h.onAttackedListeners)
+				e.onEvent(event.getEntityLiving(), h, event);
+		}
 	}
 
 	@SubscribeEvent
@@ -144,7 +163,7 @@ public class CommonEventHandlers{
 			if(!entity.isAlive()) return;
 			ServerAbilityHolder h = ServerAbilityHolder.of(entity);
 			if(h!=null){
-				for(OnAbilityEvent<LivingHurtEvent> e : h.onAttackListeners)
+				for(OnAbilityEvent<LivingHurtEvent> e : h.onHitListeners)
 					e.onEvent((LivingEntity)entity, h, event);
 			}
 		}
@@ -192,5 +211,20 @@ public class CommonEventHandlers{
 		h.applyAttributes(event.getSlotType(), m);
 		event.clearModifiers();
 		m.forEach(event::addModifier);
+	}
+
+	@SubscribeEvent
+	public static void onWorldTick(TickEvent.WorldTickEvent event){
+		if(event.phase!=TickEvent.Phase.START) return;
+		TickingTaskHandler h = TickingTaskHandler.of(event.world);
+		if(h instanceof SimpleTickingTaskHandler) ((SimpleTickingTaskHandler)h).update();
+	}
+
+	@SubscribeEvent
+	public static void onExplosionDetonate(ExplosionEvent.Detonate event){
+		Explosion explosion = event.getExplosion();
+		if(explosion.getDamageSource() instanceof CannotHurtNonLiving){
+			event.getAffectedEntities().removeIf(entity -> !(entity instanceof LivingEntity));
+		}
 	}
 }

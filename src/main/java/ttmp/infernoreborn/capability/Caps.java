@@ -16,4 +16,6 @@ public final class Caps{
 	public static Capability<SigilHolder> sigilHolder;
 	@CapabilityInject(ShieldHolder.class)
 	public static Capability<ShieldHolder> shieldHolder;
+	@CapabilityInject(TickingTaskHandler.class)
+	public static Capability<TickingTaskHandler> tickingTaskHandler;
 }

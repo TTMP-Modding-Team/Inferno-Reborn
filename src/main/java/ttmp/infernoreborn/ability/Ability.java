@@ -5,6 +5,7 @@ import net.minecraft.entity.ai.attributes.Attribute;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraftforge.event.entity.living.LivingAttackEvent;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import net.minecraftforge.registries.ForgeRegistryEntry;
@@ -25,8 +26,9 @@ public class Ability extends ForgeRegistryEntry<Ability>{
 	private final int primaryColor, secondaryColor, highlightColor;
 	private final Map<Attribute, Set<AttributeModifier>> attributes;
 
+	@Nullable private final OnAbilityEvent<LivingAttackEvent> onAttacked;
 	@Nullable private final OnAbilityEvent<LivingHurtEvent> onHurt;
-	@Nullable private final OnAbilityEvent<LivingHurtEvent> onAttack;
+	@Nullable private final OnAbilityEvent<LivingHurtEvent> onHit;
 	@Nullable private final OnAbilityEvent<LivingDeathEvent> onDeath;
 	@Nullable private final OnAbilityUpdate onUpdate;
 
@@ -37,8 +39,10 @@ public class Ability extends ForgeRegistryEntry<Ability>{
 		this.secondaryColor = properties.secondaryColor;
 		this.highlightColor = properties.highlightColor;
 		this.attributes = properties.attributes;
+
+		this.onAttacked = properties.onAttacked;
 		this.onHurt = properties.onHurt;
-		this.onAttack = properties.onAttack;
+		this.onHit = properties.onHit;
 		this.onDeath = properties.onDeath;
 		this.onUpdate = properties.onUpdate;
 
@@ -61,11 +65,14 @@ public class Ability extends ForgeRegistryEntry<Ability>{
 		return attributes;
 	}
 
+	@Nullable public OnAbilityEvent<LivingAttackEvent> onAttacked(){
+		return onAttacked;
+	}
 	@Nullable public OnAbilityEvent<LivingHurtEvent> onHurt(){
 		return onHurt;
 	}
-	@Nullable public OnAbilityEvent<LivingHurtEvent> onAttack(){
-		return onAttack;
+	@Nullable public OnAbilityEvent<LivingHurtEvent> onHit(){
+		return onHit;
 	}
 	@Nullable public OnAbilityEvent<LivingDeathEvent> onDeath(){
 		return onDeath;
@@ -106,8 +113,9 @@ public class Ability extends ForgeRegistryEntry<Ability>{
 		private final Map<Attribute, Set<AttributeModifier>> attributes = new HashMap<>();
 		private final List<AbilitySkill.Data> skillData = new ArrayList<>();
 
+		@Nullable private OnAbilityEvent<LivingAttackEvent> onAttacked;
 		@Nullable private OnAbilityEvent<LivingHurtEvent> onHurt;
-		@Nullable private OnAbilityEvent<LivingHurtEvent> onAttack;
+		@Nullable private OnAbilityEvent<LivingHurtEvent> onHit;
 		@Nullable private OnAbilityEvent<LivingDeathEvent> onDeath;
 		@Nullable private OnAbilityUpdate onUpdate;
 
@@ -151,13 +159,18 @@ public class Ability extends ForgeRegistryEntry<Ability>{
 			return this;
 		}
 
+		public Properties onAttacked(@Nullable OnAbilityEvent<LivingAttackEvent> onAttacked){
+			this.onAttacked = onAttacked;
+			return this;
+		}
+
 		public Properties onHurt(@Nullable OnAbilityEvent<LivingHurtEvent> onHurt){
 			this.onHurt = onHurt;
 			return this;
 		}
 
-		public Properties onAttack(@Nullable OnAbilityEvent<LivingHurtEvent> onAttack){
-			this.onAttack = onAttack;
+		public Properties onHit(@Nullable OnAbilityEvent<LivingHurtEvent> onHit){
+			this.onHit = onHit;
 			return this;
 		}
 

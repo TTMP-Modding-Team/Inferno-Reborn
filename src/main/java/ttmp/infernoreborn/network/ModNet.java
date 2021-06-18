@@ -17,6 +17,8 @@ import ttmp.infernoreborn.ability.Ability;
 import ttmp.infernoreborn.ability.generator.AbilityGenerators;
 import ttmp.infernoreborn.ability.holder.ClientAbilityHolder;
 import ttmp.infernoreborn.capability.EssenceHolder;
+import ttmp.infernoreborn.capability.TickingTaskHandler;
+import ttmp.infernoreborn.client.ParticlePlacingTask;
 import ttmp.infernoreborn.client.screen.EssenceHolderScreen;
 import ttmp.infernoreborn.container.EssenceHolderContainer;
 import ttmp.infernoreborn.util.EssenceType;
@@ -49,6 +51,9 @@ public final class ModNet{
 		CHANNEL.registerMessage(3, EssenceHolderScreenEssenceSyncMsg.class,
 				EssenceHolderScreenEssenceSyncMsg::write, EssenceHolderScreenEssenceSyncMsg::new,
 				Client::handleEssenceHolderScreenEssenceSyncMsg, Optional.of(NetworkDirection.PLAY_TO_CLIENT));
+		CHANNEL.registerMessage(4, ParticleMsg.class,
+				ParticleMsg::write, ParticleMsg::read,
+				Client::handleParticle, Optional.of(NetworkDirection.PLAY_TO_CLIENT));
 
 		registerItemSyncMsg(32, EssenceHolderSyncMsg.class, EssenceHolderSyncMsg.Bulk.class, EssenceHolderSyncMsg::new, EssenceHolderSyncMsg.Bulk::new);
 		registerItemSyncMsg(34, SigilHolderSyncMsg.class, SigilHolderSyncMsg.Bulk.class, SigilHolderSyncMsg::new, SigilHolderSyncMsg.Bulk::new);
@@ -130,6 +135,18 @@ public final class ModNet{
 				EssenceHolder h = ((EssenceHolderScreen)screen).getMenu().getEssenceHolder().getEssenceHolder();
 				for(EssenceType type : EssenceType.values())
 					h.setEssence(type, msg.getEssences()[type.ordinal()]);
+			});
+		}
+
+		public static void handleParticle(ParticleMsg msg, Supplier<NetworkEvent.Context> ctx){
+			ctx.get().setPacketHandled(true);
+			ctx.get().enqueueWork(() -> {
+				ClientWorld level = Minecraft.getInstance().level;
+				if(level==null) return;
+				TickingTaskHandler h = TickingTaskHandler.of(level);
+				if(h==null) return;
+				ParticlePlacingTask p = ParticlePlacingTask.from(msg);
+				if(p!=null) h.add(p);
 			});
 		}
 	}

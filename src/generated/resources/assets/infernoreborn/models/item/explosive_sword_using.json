@@ -1,0 +1,42 @@
+{
+  "parent": "minecraft:item/handheld",
+  "display": {
+    "firstperson_righthand": {
+      "rotation": [
+        0,
+        -90,
+        14
+      ],
+      "translation": [
+        -9,
+        13,
+        2.25
+      ],
+      "scale": [
+        0.68,
+        0.68,
+        0.68
+      ]
+    },
+    "firstperson_lefthand": {
+      "rotation": [
+        0,
+        -90,
+        14
+      ],
+      "translation": [
+        -9,
+        13,
+        2.25
+      ],
+      "scale": [
+        0.68,
+        0.68,
+        0.68
+      ]
+    }
+  },
+  "textures": {
+    "layer0": "infernoreborn:item/explosive_sword"
+  }
+}

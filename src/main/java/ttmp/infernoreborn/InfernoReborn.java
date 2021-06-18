@@ -2,8 +2,10 @@ package ttmp.infernoreborn;
 
 import net.minecraft.client.gui.ScreenManager;
 import net.minecraft.data.DataGenerator;
+import net.minecraft.item.ItemModelsProperties;
 import net.minecraft.nbt.INBT;
 import net.minecraft.util.Direction;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.ColorHandlerEvent;
 import net.minecraftforge.common.capabilities.Capability;
@@ -21,6 +23,7 @@ import org.apache.logging.log4j.Logger;
 import ttmp.infernoreborn.ability.Ability;
 import ttmp.infernoreborn.ability.generator.scheme.AbilityGeneratorScheme;
 import ttmp.infernoreborn.ability.holder.AbilityHolder;
+import ttmp.infernoreborn.capability.TickingTaskHandler;
 import ttmp.infernoreborn.capability.EssenceHolder;
 import ttmp.infernoreborn.capability.ShieldHolder;
 import ttmp.infernoreborn.client.ItemColorUtils;
@@ -73,6 +76,7 @@ public class InfernoReborn{
 			registerDefaultCapability(EssenceHolder.class);
 			registerDefaultCapability(SigilHolder.class);
 			registerDefaultCapability(ShieldHolder.class);
+			registerDefaultCapability(TickingTaskHandler.class);
 		});
 	}
 
@@ -111,6 +115,9 @@ public class InfernoReborn{
 				ScreenManager.register(ModContainers.SIGIL_ENGRAVING_TABLE_3X3.get(), SigilEngravingTableScreen.X3::new);
 				ScreenManager.register(ModContainers.SIGIL_ENGRAVING_TABLE_5X5.get(), SigilEngravingTableScreen.X5::new);
 				ScreenManager.register(ModContainers.SIGIL_ENGRAVING_TABLE_7X7.get(), SigilEngravingTableScreen.X7::new);
+
+				ItemModelsProperties.register(ModItems.EXPLOSIVE_SWORD.get(), new ResourceLocation("using"),
+						(stack, world, entity) -> entity!=null&&entity.isUsingItem()&&entity.getUseItem()==stack ? 1 : 0);
 			});
 		}
 

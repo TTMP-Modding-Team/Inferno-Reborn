@@ -27,6 +27,17 @@ public final class SigilHolderConfig{
 		maxPoints.removeInt(item.getRegistryName());
 	}
 
+	public boolean appendMissingEntry(SigilHolderConfig another){
+		boolean succeed = false;
+		for(Object2IntMap.Entry<ResourceLocation> e : another.maxPoints.object2IntEntrySet()){
+			if(!maxPoints.containsKey(e.getKey())){
+				maxPoints.put(e.getKey(), e.getIntValue());
+				succeed = true;
+			}
+		}
+		return succeed;
+	}
+
 	public void read(JsonObject object){
 		for(Entry<String, JsonElement> e : object.entrySet())
 			maxPoints.put(new ResourceLocation(e.getKey()), e.getValue().getAsInt());

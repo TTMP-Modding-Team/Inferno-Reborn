@@ -7,9 +7,12 @@ import net.minecraft.util.math.EntityRayTraceResult;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
+import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import ttmp.infernoreborn.ability.holder.ClientAbilityHolder;
+import ttmp.infernoreborn.capability.SimpleTickingTaskHandler;
+import ttmp.infernoreborn.capability.TickingTaskHandler;
 
 import static ttmp.infernoreborn.InfernoReborn.MODID;
 
@@ -35,5 +38,13 @@ public final class ClientEventHandlers{
 				.map(ability -> ability.getName().getString())
 				.sorted(String::compareTo)
 				.forEach(s -> event.getLeft().add(s));
+	}
+
+	@SubscribeEvent
+	public static void onClientTick(TickEvent.ClientTickEvent event){
+		if(event.phase!=TickEvent.Phase.START) return;
+		if(Minecraft.getInstance().level==null) return;
+		TickingTaskHandler h = TickingTaskHandler.of(Minecraft.getInstance().level);
+		if(h instanceof SimpleTickingTaskHandler) ((SimpleTickingTaskHandler)h).update();
 	}
 }

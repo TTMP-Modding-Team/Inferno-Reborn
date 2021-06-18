@@ -3,26 +3,35 @@ package ttmp.infernoreborn.contents;
 import it.unimi.dsi.fastutil.objects.Object2LongMap;
 import net.minecraft.enchantment.ThornsEnchantment;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.ai.attributes.AttributeModifier.Operation;
 import net.minecraft.entity.ai.attributes.Attributes;
+import net.minecraft.entity.effect.LightningBoltEntity;
+import net.minecraft.particles.ParticleTypes;
 import net.minecraft.potion.EffectInstance;
 import net.minecraft.potion.Effects;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.EntityDamageSource;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.world.World;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.RegistryObject;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber.Bus;
+import net.minecraftforge.fml.network.PacketDistributor;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistry;
 import net.minecraftforge.registries.RegistryBuilder;
 import ttmp.infernoreborn.ability.Ability;
 import ttmp.infernoreborn.ability.AbilitySkill;
 import ttmp.infernoreborn.ability.SkillCastingStateProvider;
+import ttmp.infernoreborn.capability.TickingTaskHandler;
+import ttmp.infernoreborn.network.ModNet;
+import ttmp.infernoreborn.network.ParticleMsg;
 import ttmp.infernoreborn.util.LivingUtils;
 
 import java.util.ArrayList;
@@ -128,21 +137,21 @@ public final class Abilities{
 
 	public static final RegistryObject<Ability> MELEE_VETERAN = REGISTER.register("melee_veteran", () ->
 			new Ability(new Ability.Properties(0xe0c1ad, 0x694d40)
-					.onAttack((entity, holder, event) -> {
+					.onHit((entity, holder, event) -> {
 						if(entity==event.getSource().getDirectEntity()){
 							event.setAmount(event.getAmount()*(1.1f));
 						}
 					})));
 	public static final RegistryObject<Ability> RANGE_VETERAN = REGISTER.register("range_veteran", () ->
 			new Ability(new Ability.Properties(0xe0c1ad, 0x694d40)
-					.onAttack((entity, holder, event) -> {
+					.onHit((entity, holder, event) -> {
 						if(entity!=event.getSource().getDirectEntity()&&event.getSource().isProjectile()&&!event.getSource().isMagic()){
 							event.setAmount(event.getAmount()*(1.1f));
 						}
 					})));
 	public static final RegistryObject<Ability> MAGIC_VETERAN = REGISTER.register("magic_veteran", () ->
 			new Ability(new Ability.Properties(0xe0c1ad, 0x694d40)
-					.onAttack((entity, holder, event) -> {
+					.onHit((entity, holder, event) -> {
 						if(event.getSource().isMagic()){
 							event.setAmount(event.getAmount()*(1.1f));
 						}
@@ -158,7 +167,7 @@ public final class Abilities{
 
 	public static final RegistryObject<Ability> VAMPIRE = REGISTER.register("vampire", () ->
 			new Ability(new Ability.Properties(0x800000, 0x800000)
-					.onAttack((entity, holder, event) -> {
+					.onHit((entity, holder, event) -> {
 						float amount = event.getAmount();
 						if(entity!=event.getSource().getDirectEntity()) amount /= 2;
 						entity.heal(amount);
@@ -166,7 +175,7 @@ public final class Abilities{
 
 	public static final RegistryObject<Ability> CROWD_CONTROL = REGISTER.register("crowd_control", () ->
 			new Ability(new Ability.Properties(0x000000, 0x0000000)
-					.onAttack((entity, holder, event) -> {
+					.onHit((entity, holder, event) -> {
 						event.getEntityLiving().addEffect(new EffectInstance(Effects.LEVITATION, 100));
 						LivingUtils.addStackEffect(event.getEntityLiving(), Effects.DIG_SLOWDOWN, 100, 0, 1, 5, true, true);
 					})));
@@ -191,7 +200,6 @@ public final class Abilities{
 	public static final RegistryObject<Ability> DESTINY_BOND = REGISTER.register("destiny_bond", () ->
 			new Ability(new Ability.Properties(0x0000, 0x0000)
 					.onDeath((entity, holder, event) -> {
-						if(event.isCanceled()) return;
 						Entity target = event.getSource().getEntity();
 						if(!(target instanceof LivingEntity)) return;
 						target.hurt(DamageSource.MAGIC, (float)Math.pow(entity.position().distanceTo(target.position()), 1.5));
@@ -210,9 +218,9 @@ public final class Abilities{
 					.onHurt((entity, holder, event) -> LivingUtils.addStackEffect(entity, Effects.DAMAGE_RESISTANCE, 60, 0, 1, 3))));
 	public static final RegistryObject<Ability> MAGMA_SKIN = REGISTER.register("magma_skin", () ->
 			new Ability(new Ability.Properties(0x340000, 0x340000)
-					.onUpdate((entity, holder) -> {
-						LivingUtils.addInfiniteEffect(entity, Effects.FIRE_RESISTANCE, 0);
-						entity.setSecondsOnFire(1);
+					.onUpdate((entity, holder) -> entity.setSecondsOnFire(1))
+					.onAttacked((entity, holder, event) -> {
+						if(event.getSource().isFire()) event.setCanceled(true);
 					})
 					.onHurt((entity, holder, event) -> {
 						if(event.getSource().getEntity() instanceof LivingEntity&&entity.isInWaterOrRain()){
@@ -247,8 +255,7 @@ public final class Abilities{
 			new Ability(new Ability.Properties(0xFFCFF, 0xFFCFF)
 					.addAttribute(Attributes.ATTACK_DAMAGE, UUID.fromString("ba20b5e3-e189-444f-9233-c710d7ac810e"), -0.8, Operation.MULTIPLY_TOTAL)
 					.addAttribute(Attributes.MAX_HEALTH, UUID.fromString("f72d69be-39ff-4dbc-b938-ff0740ad528c"), 1.5, Operation.MULTIPLY_TOTAL)
-					.addAttribute(ModAttributes.DAMAGE_RESISTANCE.get(), UUID.fromString("41bd35ff-0f02-434c-81a2-be6791739e00"), 1.4, Operation.MULTIPLY_BASE)
-			));
+					.addAttribute(ModAttributes.DAMAGE_RESISTANCE.get(), UUID.fromString("41bd35ff-0f02-434c-81a2-be6791739e00"), 1.4, Operation.MULTIPLY_BASE)));
 	public static final RegistryObject<Ability> TOUGHNESS = REGISTER.register("toughness", () ->
 			new Ability(new Ability.Properties(0x3F3F3F, 0x003FCF)
 					.addAttribute(Attributes.MOVEMENT_SPEED, UUID.fromString("ec3aa988-af1f-4ae9-8cf6-b1d5e62addaa"), -0.2, Operation.MULTIPLY_TOTAL)
@@ -280,24 +287,39 @@ public final class Abilities{
 						return true;
 					}, (entity, holder, target) -> target.getY()-entity.getY()>1||target.position().distanceTo(entity.position())>5)
 					.addAttribute(ModAttributes.FALLING_DAMAGE_RESISTANCE.get(), UUID.fromString("9ec4bc3d-d8a0-4b1a-a185-c34ca05e9175"), 2, Operation.MULTIPLY_BASE)));
-	/*public static final RegistryObject<Ability> THUNDERBOLT = REGISTER.register("thunderbolt", () ->
+	public static final RegistryObject<Ability> THUNDERBOLT = REGISTER.register("thunderbolt", () ->
 			new Ability(new Ability.Properties(0xFFFF00, 0xFFFF00)
-			.addSkill("thunderbolt", 10, 400, (entity, holder) -> {
-				if(entity.isAlive()) {
-					LivingEntity target = entity.getKillCredit();
-					if(target != null && target.isAlive()) {
-						LightningBoltEntity e = new LightningBoltEntity(EntityType.LIGHTNING_BOLT, entity.level);
-						e.setPos(entity.getX(), entity.getY(), entity.getZ())
-					}
-				}
-			})));*/
+					.addTargetedSkill(10, 400, (entity, holder, target) -> {
+						TickingTaskHandler h = TickingTaskHandler.of(target.level);
+						if(h==null) return false;
+						World world = target.level;
+						Vector3d dest = new Vector3d(target.getX(), target.getY(), target.getZ());
+						h.add(80, () -> {
+							LightningBoltEntity e = new LightningBoltEntity(EntityType.LIGHTNING_BOLT, world);
+							e.moveTo(dest);
+							world.addFreshEntity(e);
+						});
+						ModNet.CHANNEL.send(PacketDistributor.TRACKING_ENTITY.with(() -> entity), new ParticleMsg(80,
+								1,
+								1,
+								ParticleTypes.FIREWORK,
+								dest.add(0, .5, 0),
+								new Vector3d(.2, .5, .2),
+								Vector3d.ZERO,
+								new Vector3d(.1, .2, .1),
+								new int[0]));
+						return true;
+					})
+					.onAttacked((entity, holder, event) -> {
+						if(event.getSource().isFire()||event.getSource()==DamageSource.LIGHTNING_BOLT) event.setCanceled(true);
+					})));
 	public static final RegistryObject<Ability> THE_RED = REGISTER.register("the_red", () ->
 			new Ability(new Ability.Properties(0xC80000, 0xC80000)
 					.addAttribute(Attributes.MOVEMENT_SPEED, UUID.fromString("33a6142f-5b04-490c-85ce-11cc79510f9a"), 2, Operation.MULTIPLY_BASE)
 					.addAttribute(ModAttributes.FALLING_DAMAGE_RESISTANCE.get(), UUID.fromString("5cb842c2-beb3-4da0-b4c6-aa0323fe292a"), 2, Operation.MULTIPLY_BASE)));
 	public static final RegistryObject<Ability> EMPERORS_ARUA = REGISTER.register("emperors_arua", () ->
 			new Ability(new Ability.Properties(0xDCB600, 0xDCB600)
-					.onAttack((entity, holder, event) -> {
+					.onHit((entity, holder, event) -> {
 						double x = entity.getX();
 						double y = entity.getY();
 						double z = entity.getZ();

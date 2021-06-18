@@ -9,6 +9,7 @@ import net.minecraftforge.fml.RegistryObject;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import ttmp.infernoreborn.item.EssenceHolderItem;
+import ttmp.infernoreborn.item.ExplosiveSwordItem;
 import ttmp.infernoreborn.item.FixedAbilityItem;
 import ttmp.infernoreborn.item.GeneratorAbilityItem;
 import ttmp.infernoreborn.item.RandomAbilityItem;
@@ -63,6 +64,8 @@ public final class ModItems{
 	public static final RegistryObject<Item> GREATER_EARTH_ESSENCE_CRYSTAL = REGISTER.register("greater_earth_essence_crystal", () -> new Item(new Item.Properties().tab(ARTIFACTS).rarity(Rarity.UNCOMMON)));
 
 	public static final RegistryObject<Item> ESSENCE_HOLDER = REGISTER.register("essence_holder", () -> new EssenceHolderItem(new Item.Properties().stacksTo(1).tab(ARTIFACTS).rarity(Rarity.UNCOMMON)));
+
+	public static final RegistryObject<Item> EXPLOSIVE_SWORD = REGISTER.register("explosive_sword", () -> new ExplosiveSwordItem(new Item.Properties().stacksTo(1).tab(ARTIFACTS).rarity(Rarity.RARE)));
 
 	public static final RegistryObject<Item> TEST_SIGIL = REGISTER.register("test_sigil", () -> new SigilItem(Sigils.TEST, new Item.Properties().tab(SIGILS)));
 	public static final RegistryObject<Item> TEST_SIGIL_2 = REGISTER.register("test_sigil_2", () -> new SigilItem(Sigils.TEST2, new Item.Properties().tab(SIGILS)));
