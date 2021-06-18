@@ -1,7 +1,7 @@
 package ttmp.infernoreborn.network;
 
 import net.minecraft.network.PacketBuffer;
-import ttmp.infernoreborn.ability.generator.scheme.AbilityGeneratorScheme;
+import ttmp.infernoreborn.contents.ability.generator.scheme.AbilityGeneratorScheme;
 
 import java.util.HashSet;
 import java.util.Set;

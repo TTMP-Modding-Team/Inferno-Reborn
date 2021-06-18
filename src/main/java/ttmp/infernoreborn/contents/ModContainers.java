@@ -4,8 +4,8 @@ import net.minecraft.inventory.container.ContainerType;
 import net.minecraftforge.fml.RegistryObject;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
-import ttmp.infernoreborn.container.EssenceHolderContainer;
-import ttmp.infernoreborn.container.SigilEngravingTableContainer;
+import ttmp.infernoreborn.contents.container.EssenceHolderContainer;
+import ttmp.infernoreborn.contents.container.SigilEngravingTableContainer;
 
 import static ttmp.infernoreborn.InfernoReborn.MODID;
 

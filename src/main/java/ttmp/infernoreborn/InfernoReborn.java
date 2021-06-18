@@ -20,9 +20,9 @@ import net.minecraftforge.fml.event.lifecycle.GatherDataEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import ttmp.infernoreborn.ability.Ability;
-import ttmp.infernoreborn.ability.generator.scheme.AbilityGeneratorScheme;
-import ttmp.infernoreborn.ability.holder.AbilityHolder;
+import ttmp.infernoreborn.contents.ability.Ability;
+import ttmp.infernoreborn.contents.ability.generator.scheme.AbilityGeneratorScheme;
+import ttmp.infernoreborn.contents.ability.holder.AbilityHolder;
 import ttmp.infernoreborn.capability.TickingTaskHandler;
 import ttmp.infernoreborn.capability.EssenceHolder;
 import ttmp.infernoreborn.capability.ShieldHolder;
@@ -42,10 +42,10 @@ import ttmp.infernoreborn.datagen.AbilityGeneratorDataProvider;
 import ttmp.infernoreborn.datagen.BookDataProvider;
 import ttmp.infernoreborn.datagen.ItemModelGen;
 import ttmp.infernoreborn.datagen.RecipeGen;
-import ttmp.infernoreborn.item.FixedAbilityItem;
-import ttmp.infernoreborn.item.GeneratorAbilityItem;
+import ttmp.infernoreborn.contents.item.FixedAbilityItem;
+import ttmp.infernoreborn.contents.item.GeneratorAbilityItem;
 import ttmp.infernoreborn.network.ModNet;
-import ttmp.infernoreborn.sigil.holder.SigilHolder;
+import ttmp.infernoreborn.contents.sigil.holder.SigilHolder;
 
 import javax.annotation.Nullable;
 

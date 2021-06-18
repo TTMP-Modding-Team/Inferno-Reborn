@@ -5,8 +5,8 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketBuffer;
 import ttmp.infernoreborn.InfernoReborn;
 import ttmp.infernoreborn.contents.Sigils;
-import ttmp.infernoreborn.sigil.holder.ItemSigilHolder;
-import ttmp.infernoreborn.sigil.holder.SigilHolder;
+import ttmp.infernoreborn.contents.sigil.holder.ItemSigilHolder;
+import ttmp.infernoreborn.contents.sigil.holder.SigilHolder;
 
 import java.util.Arrays;
 

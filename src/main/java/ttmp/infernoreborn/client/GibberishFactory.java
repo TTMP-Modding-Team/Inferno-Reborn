@@ -9,8 +9,8 @@ import net.minecraft.util.text.Color;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.Style;
 import net.minecraftforge.registries.ForgeRegistryEntry;
-import ttmp.infernoreborn.sigil.Sigil;
-import ttmp.infernoreborn.sigil.holder.SigilHolder;
+import ttmp.infernoreborn.contents.sigil.Sigil;
+import ttmp.infernoreborn.contents.sigil.holder.SigilHolder;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;

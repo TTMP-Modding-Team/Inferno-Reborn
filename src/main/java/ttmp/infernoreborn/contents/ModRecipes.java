@@ -6,12 +6,12 @@ import net.minecraft.item.crafting.SpecialRecipeSerializer;
 import net.minecraftforge.fml.RegistryObject;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
-import ttmp.infernoreborn.recipe.ApplySigilRecipe;
-import ttmp.infernoreborn.recipe.CombineSparkRecipe;
-import ttmp.infernoreborn.recipe.EssenceHolderBookRecipe;
-import ttmp.infernoreborn.recipe.sigilcraft.ShapedSigilEngravingRecipe;
-import ttmp.infernoreborn.recipe.sigilcraft.ShapedSigilTableCraftingRecipe;
-import ttmp.infernoreborn.recipe.sigilcraft.SigilcraftRecipe;
+import ttmp.infernoreborn.contents.recipe.ApplySigilRecipe;
+import ttmp.infernoreborn.contents.recipe.CombineSparkRecipe;
+import ttmp.infernoreborn.contents.recipe.EssenceHolderBookRecipe;
+import ttmp.infernoreborn.contents.recipe.sigilcraft.ShapedSigilEngravingRecipe;
+import ttmp.infernoreborn.contents.recipe.sigilcraft.ShapedSigilTableCraftingRecipe;
+import ttmp.infernoreborn.contents.recipe.sigilcraft.SigilcraftRecipe;
 
 import static ttmp.infernoreborn.InfernoReborn.MODID;
 

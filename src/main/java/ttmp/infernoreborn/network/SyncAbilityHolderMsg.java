@@ -1,9 +1,9 @@
 package ttmp.infernoreborn.network;
 
 import net.minecraft.network.PacketBuffer;
-import ttmp.infernoreborn.ability.Ability;
-import ttmp.infernoreborn.ability.generator.AbilityGenerators;
-import ttmp.infernoreborn.ability.generator.scheme.AbilityGeneratorScheme;
+import ttmp.infernoreborn.contents.ability.Ability;
+import ttmp.infernoreborn.contents.ability.generator.AbilityGenerators;
+import ttmp.infernoreborn.contents.ability.generator.scheme.AbilityGeneratorScheme;
 import ttmp.infernoreborn.contents.Abilities;
 
 import javax.annotation.Nullable;

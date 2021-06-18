@@ -10,9 +10,9 @@ import net.minecraft.util.math.vector.Matrix3f;
 import net.minecraft.util.math.vector.Matrix4f;
 import net.minecraft.util.text.ITextComponent;
 import ttmp.infernoreborn.client.GibberishFactory;
-import ttmp.infernoreborn.container.SigilEngravingTableContainer;
-import ttmp.infernoreborn.sigil.Sigil;
-import ttmp.infernoreborn.sigil.holder.SigilHolder;
+import ttmp.infernoreborn.contents.container.SigilEngravingTableContainer;
+import ttmp.infernoreborn.contents.sigil.Sigil;
+import ttmp.infernoreborn.contents.sigil.holder.SigilHolder;
 
 import static ttmp.infernoreborn.InfernoReborn.MODID;
 

@@ -12,7 +12,7 @@ import net.minecraft.tags.ITag;
 import net.minecraft.util.IItemProvider;
 import net.minecraft.util.ResourceLocation;
 import ttmp.infernoreborn.contents.ModRecipes;
-import ttmp.infernoreborn.sigil.Sigil;
+import ttmp.infernoreborn.contents.sigil.Sigil;
 
 import javax.annotation.Nullable;
 import java.util.List;

@@ -13,14 +13,14 @@ import net.minecraftforge.fml.network.NetworkEvent;
 import net.minecraftforge.fml.network.NetworkRegistry;
 import net.minecraftforge.fml.network.simple.SimpleChannel;
 import ttmp.infernoreborn.InfernoReborn;
-import ttmp.infernoreborn.ability.Ability;
-import ttmp.infernoreborn.ability.generator.AbilityGenerators;
-import ttmp.infernoreborn.ability.holder.ClientAbilityHolder;
+import ttmp.infernoreborn.contents.ability.Ability;
+import ttmp.infernoreborn.contents.ability.generator.AbilityGenerators;
+import ttmp.infernoreborn.contents.ability.holder.ClientAbilityHolder;
 import ttmp.infernoreborn.capability.EssenceHolder;
 import ttmp.infernoreborn.capability.TickingTaskHandler;
 import ttmp.infernoreborn.client.ParticlePlacingTask;
 import ttmp.infernoreborn.client.screen.EssenceHolderScreen;
-import ttmp.infernoreborn.container.EssenceHolderContainer;
+import ttmp.infernoreborn.contents.container.EssenceHolderContainer;
 import ttmp.infernoreborn.util.EssenceType;
 
 import java.util.Optional;

@@ -2,8 +2,8 @@ package ttmp.infernoreborn.capability;
 
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityInject;
-import ttmp.infernoreborn.ability.holder.AbilityHolder;
-import ttmp.infernoreborn.sigil.holder.SigilHolder;
+import ttmp.infernoreborn.contents.ability.holder.AbilityHolder;
+import ttmp.infernoreborn.contents.sigil.holder.SigilHolder;
 
 public final class Caps{
 	private Caps(){}

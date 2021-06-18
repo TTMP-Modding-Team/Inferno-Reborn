@@ -1,7 +1,7 @@
 package ttmp.infernoreborn.client;
 
 import net.minecraft.util.math.MathHelper;
-import ttmp.infernoreborn.ability.Ability;
+import ttmp.infernoreborn.contents.ability.Ability;
 
 public final class ItemColorUtils{
 	private ItemColorUtils(){}

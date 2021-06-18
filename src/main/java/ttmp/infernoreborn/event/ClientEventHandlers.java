@@ -10,7 +10,7 @@ import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
-import ttmp.infernoreborn.ability.holder.ClientAbilityHolder;
+import ttmp.infernoreborn.contents.ability.holder.ClientAbilityHolder;
 import ttmp.infernoreborn.capability.SimpleTickingTaskHandler;
 import ttmp.infernoreborn.capability.TickingTaskHandler;
 

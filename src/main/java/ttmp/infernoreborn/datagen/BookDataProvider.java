@@ -10,7 +10,7 @@ import net.minecraft.data.IDataProvider;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import ttmp.infernoreborn.InfernoReborn;
-import ttmp.infernoreborn.ability.Ability;
+import ttmp.infernoreborn.contents.ability.Ability;
 import ttmp.infernoreborn.contents.Abilities;
 import ttmp.infernoreborn.contents.ModItems;
 import ttmp.infernoreborn.datagen.book.BookBuilder;
@@ -19,7 +19,7 @@ import ttmp.infernoreborn.datagen.book.BookEntry;
 import ttmp.infernoreborn.datagen.book.BookFileGenerator;
 import ttmp.infernoreborn.datagen.book.Stack;
 import ttmp.infernoreborn.datagen.book.TextPage;
-import ttmp.infernoreborn.item.FixedAbilityItem;
+import ttmp.infernoreborn.contents.item.FixedAbilityItem;
 
 import java.io.IOException;
 import java.nio.file.Path;

@@ -9,9 +9,9 @@ import net.minecraftforge.fml.common.Mod.EventBusSubscriber.Bus;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistry;
 import net.minecraftforge.registries.RegistryBuilder;
-import ttmp.infernoreborn.sigil.ShieldSigil;
-import ttmp.infernoreborn.sigil.Sigil;
-import ttmp.infernoreborn.sigil.AttackDamageSigil;
+import ttmp.infernoreborn.contents.sigil.ShieldSigil;
+import ttmp.infernoreborn.contents.sigil.Sigil;
+import ttmp.infernoreborn.contents.sigil.AttackDamageSigil;
 
 import static ttmp.infernoreborn.InfernoReborn.MODID;
 

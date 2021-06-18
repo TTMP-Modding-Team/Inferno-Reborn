@@ -8,13 +8,13 @@ import net.minecraft.item.Rarity;
 import net.minecraftforge.fml.RegistryObject;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
-import ttmp.infernoreborn.item.EssenceHolderItem;
-import ttmp.infernoreborn.item.ExplosiveSwordItem;
-import ttmp.infernoreborn.item.FixedAbilityItem;
-import ttmp.infernoreborn.item.GeneratorAbilityItem;
-import ttmp.infernoreborn.item.RandomAbilityItem;
-import ttmp.infernoreborn.item.SigilItem;
-import ttmp.infernoreborn.item.TheBookItem;
+import ttmp.infernoreborn.contents.item.EssenceHolderItem;
+import ttmp.infernoreborn.contents.item.ExplosiveSwordItem;
+import ttmp.infernoreborn.contents.item.FixedAbilityItem;
+import ttmp.infernoreborn.contents.item.GeneratorAbilityItem;
+import ttmp.infernoreborn.contents.item.RandomAbilityItem;
+import ttmp.infernoreborn.contents.item.SigilItem;
+import ttmp.infernoreborn.contents.item.TheBookItem;
 
 import static ttmp.infernoreborn.InfernoReborn.MODID;
 

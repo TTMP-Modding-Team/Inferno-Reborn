@@ -8,8 +8,8 @@ import net.minecraft.world.IBlockReader;
 import net.minecraftforge.fml.RegistryObject;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
-import ttmp.infernoreborn.block.SigilEngravingTableBlock;
-import ttmp.infernoreborn.tile.SigilEngravingTableTile;
+import ttmp.infernoreborn.contents.block.SigilEngravingTableBlock;
+import ttmp.infernoreborn.contents.tile.SigilEngravingTableTile;
 
 import static ttmp.infernoreborn.InfernoReborn.MODID;
 
