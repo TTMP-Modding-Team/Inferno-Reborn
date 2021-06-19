@@ -60,10 +60,10 @@ public final class LivingUtils{
 		EffectInstance instance = entity.getEffect(effect);
 		if(instance==null){
 			entity.addEffect(new EffectInstance(effect, duration, startAmplifier, false, visible, showIcon));
-		}else if(instance.getAmplifier()<maxAmplifier||instance.getDuration()<duration){
+		}else if(instance.getAmplifier()<=maxAmplifier&&instance.getDuration()<duration){
 			entity.addEffect(new EffectInstance(effect,
 					duration,
-					Math.max(instance.getAmplifier()+amplifierGrow, maxAmplifier),
+					Math.min(instance.getAmplifier()+amplifierGrow, maxAmplifier),
 					false,
 					visible,
 					showIcon));

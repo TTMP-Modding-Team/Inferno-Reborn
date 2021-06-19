@@ -10,6 +10,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.inventory.container.Container;
 import net.minecraft.item.ItemStack;
+import net.minecraft.potion.EffectInstance;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.Explosion;
@@ -28,18 +29,21 @@ import net.minecraftforge.event.world.ExplosionEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
+import ttmp.infernoreborn.capability.ShieldHolder;
+import ttmp.infernoreborn.capability.SimpleTickingTaskHandler;
+import ttmp.infernoreborn.capability.TickingTaskHandler;
+import ttmp.infernoreborn.contents.ModAttributes;
+import ttmp.infernoreborn.contents.ModEffects;
+import ttmp.infernoreborn.contents.ModItems;
 import ttmp.infernoreborn.contents.ability.OnAbilityEvent;
 import ttmp.infernoreborn.contents.ability.holder.AbilityHolder;
 import ttmp.infernoreborn.contents.ability.holder.ClientAbilityHolder;
 import ttmp.infernoreborn.contents.ability.holder.ServerAbilityHolder;
-import ttmp.infernoreborn.capability.ShieldHolder;
-import ttmp.infernoreborn.capability.SimpleTickingTaskHandler;
-import ttmp.infernoreborn.capability.TickingTaskHandler;
 import ttmp.infernoreborn.contents.container.listener.SigilHolderSynchronizer;
-import ttmp.infernoreborn.contents.ModAttributes;
 import ttmp.infernoreborn.contents.sigil.holder.ItemSigilHolder;
 import ttmp.infernoreborn.contents.sigil.holder.PlayerSigilHolder;
 import ttmp.infernoreborn.contents.sigil.holder.SigilHolder;
+import ttmp.infernoreborn.util.ArmorSet;
 import ttmp.infernoreborn.util.CannotHurtNonLiving;
 import ttmp.infernoreborn.util.LivingUtils;
 
@@ -53,6 +57,8 @@ public class CommonEventHandlers{
 	private static final ResourceLocation SIGIL_HOLDER_KEY = new ResourceLocation(MODID, "sigil_holder");
 	private static final ResourceLocation SHIELD_HOLDER_KEY = new ResourceLocation(MODID, "shield_holder");
 	private static final ResourceLocation TICKING_TASK_HANDLER_KEY = new ResourceLocation(MODID, "ticking_task_handler");
+
+	private static final ArmorSet CRIMSON_ARMOR_SET = new ArmorSet.ItemSet(null, ModItems.CRIMSON_CHESTPLATE, ModItems.CRIMSON_LEGGINGS, ModItems.CRIMSON_BOOTS);
 
 	@SubscribeEvent
 	public static void attachEntityCapabilities(AttachCapabilitiesEvent<Entity> event){
@@ -180,6 +186,25 @@ public class CommonEventHandlers{
 			}else{
 				event.setAmount(event.getAmount()-h.getShield());
 				h.setShield(0);
+			}
+		}
+		if(event.getAmount()>0){
+			Entity directEntity = event.getSource().getDirectEntity();
+			if(entity!=directEntity){
+				if(CRIMSON_ARMOR_SET.qualifies(entity)){
+					LivingUtils.addStackEffect(entity, ModEffects.BLOOD_FRENZY.get(), 80, 0, 1, 3);
+				}
+				if(directEntity instanceof LivingEntity){
+					LivingEntity e = (LivingEntity)directEntity;
+					EffectInstance bloodFrenzy = e.getEffect(ModEffects.BLOOD_FRENZY.get());
+					if(bloodFrenzy!=null){
+						float drainPortion = (float)(1+bloodFrenzy.getAmplifier())/(2+bloodFrenzy.getAmplifier());
+						e.heal(event.getAmount()*drainPortion);
+					}
+					if(CRIMSON_ARMOR_SET.qualifies(e)){
+						LivingUtils.addStackEffect(e, ModEffects.BLOOD_FRENZY.get(), 80, 0, 1, 3);
+					}
+				}
 			}
 		}
 	}

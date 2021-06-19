@@ -1,6 +1,7 @@
 package ttmp.infernoreborn.datagen;
 
 import net.minecraft.data.DataGenerator;
+import net.minecraft.item.Item;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.model.generators.ItemModelBuilder;
 import net.minecraftforge.client.model.generators.ItemModelProvider;
@@ -28,7 +29,7 @@ public class ItemModelGen extends ItemModelProvider{
 			item(Objects.requireNonNull(type.getGreaterShardItem().getRegistryName()).getPath(),
 					new ResourceLocation(MODID, "item/essence/greater_"+type.id+"_crystal"));
 		}
-		item(ModItems.ESSENCE_HOLDER.getId().getPath(), new ResourceLocation(MODID, "item/essence_holder"));
+		simpleItem(ModItems.ESSENCE_HOLDER.get());
 		item(ModItems.BOOK_OF_THE_UNSPEAKABLE.getId().getPath(), new ResourceLocation(MODID, "item/book_of_the_unspeakable"));
 		held(ModItems.EXPLOSIVE_SWORD.getId().getPath(), new ResourceLocation(MODID, "item/explosive_sword"))
 				.override()
@@ -47,8 +48,21 @@ public class ItemModelGen extends ItemModelProvider{
 				.translation(-9, 13, 2.25f)
 				.scale(.68f)
 				.end();
+		simpleHeld(ModItems.CRIMSON_CLAYMORE.get());
+		simpleItem(ModItems.CRIMSON_CHESTPLATE.get());
+		simpleItem(ModItems.CRIMSON_LEGGINGS.get());
+		simpleItem(ModItems.CRIMSON_BOOTS.get());
+		simpleItem(ModItems.CRIMSON_METAL_SCRAP.get());
 	}
 
+	protected ItemModelBuilder simpleItem(Item item){
+		ResourceLocation id = Objects.requireNonNull(item.getRegistryName());
+		return item(id.getPath(), new ResourceLocation(id.getNamespace(), "item/"+id.getPath()));
+	}
+	protected ItemModelBuilder simpleHeld(Item item){
+		ResourceLocation id = Objects.requireNonNull(item.getRegistryName());
+		return held(id.getPath(), new ResourceLocation(id.getNamespace(), "item/"+id.getPath()));
+	}
 	protected ItemModelBuilder item(String name, ResourceLocation... textures){
 		ItemModelBuilder b = withExistingParent(name, new ResourceLocation("item/generated"));
 		for(int i = 0; i<textures.length; i++)

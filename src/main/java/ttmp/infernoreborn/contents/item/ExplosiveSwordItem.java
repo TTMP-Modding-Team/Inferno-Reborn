@@ -22,34 +22,35 @@ import ttmp.infernoreborn.util.LivingOnlyIndirectEntityDamageSource;
 import javax.annotation.Nullable;
 
 public class ExplosiveSwordItem extends SwordItem{
+	private static final IItemTier MAT = new IItemTier(){
+		@Override public int getUses(){
+			return 1561;
+		}
+		@Override public float getSpeed(){
+			return 9;
+		}
+		@Override public float getAttackDamageBonus(){
+			return 5;
+		}
+		@Override public int getLevel(){
+			return 4;
+		}
+		@Override public int getEnchantmentValue(){
+			return 18;
+		}
+		@Nullable private Ingredient repairIngredient;
+		@Override public Ingredient getRepairIngredient(){
+			if(repairIngredient==null) repairIngredient = Ingredient.of(Items.GUNPOWDER);
+			return repairIngredient;
+		}
+	};
 	private static final int E1 = 40;
 	private static final int E2 = 80;
 	private static final int E3 = 120;
 	private static final int MAX_USE = 140;
 
 	public ExplosiveSwordItem(Properties properties){
-		super(new IItemTier(){
-			@Override public int getUses(){
-				return 1561;
-			}
-			@Override public float getSpeed(){
-				return 9;
-			}
-			@Override public float getAttackDamageBonus(){
-				return 5;
-			}
-			@Override public int getLevel(){
-				return 4;
-			}
-			@Override public int getEnchantmentValue(){
-				return 18;
-			}
-			@Nullable private Ingredient repairIngredient;
-			@Override public Ingredient getRepairIngredient(){
-				if(repairIngredient==null) repairIngredient = Ingredient.of(Items.GUNPOWDER);
-				return repairIngredient;
-			}
-		}, 3, -2.4f, properties);
+		super(MAT, 3, -2.4f, properties);
 	}
 
 	@Override public ActionResult<ItemStack> use(World world, PlayerEntity player, Hand hand){

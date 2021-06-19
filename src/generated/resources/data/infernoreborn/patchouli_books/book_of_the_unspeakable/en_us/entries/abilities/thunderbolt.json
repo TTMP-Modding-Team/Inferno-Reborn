@@ -1,0 +1,11 @@
+{
+  "name": "ability.infernoreborn.thunderbolt",
+  "category": "infernoreborn:abilities",
+  "icon": "infernoreborn:inferno_spark{Abilities:[\"infernoreborn:thunderbolt\"]}",
+  "pages": [
+    {
+      "type": "text",
+      "text": "text.infernoreborn.thunderbolt.0"
+    }
+  ]
+}

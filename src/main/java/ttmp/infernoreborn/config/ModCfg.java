@@ -53,25 +53,28 @@ public final class ModCfg{
 		try{
 			Path parent = config.getParent();
 			if(!Files.exists(parent)) Files.createDirectory(parent);
+			boolean write;
 			if(!Files.exists(config)){
-				sigilHolderConfig = createDefaultSigilHolderConfig();
-				Files.write(config, Collections.singleton(GSON.toJson(sigilHolderConfig.write())), new StandardOpenOption[]{StandardOpenOption.CREATE_NEW});
+				sigilHolderConfig = getDefaultSigilHolderConfig();
+				write = true;
 			}else{
 				sigilHolderConfig = new SigilHolderConfig();
 				try(InputStream in = Files.newInputStream(config);
 				    BufferedReader r = new BufferedReader(new InputStreamReader(in, StandardCharsets.UTF_8))){
 					sigilHolderConfig.read(GSON.fromJson(r, JsonObject.class));
 				}
+				write = sigilHolderConfig.appendMissingEntry(getDefaultSigilHolderConfig());
 			}
+			if(write) Files.write(config, Collections.singleton(GSON.toJson(sigilHolderConfig.write())), new StandardOpenOption[]{StandardOpenOption.CREATE_NEW});
 		}catch(IOException e){
 			InfernoReborn.LOGGER.error("Cannot read or write sigil holder config file", e);
-			sigilHolderConfig = createDefaultSigilHolderConfig();
+			sigilHolderConfig = getDefaultSigilHolderConfig();
 		}
 	}
 
 	@Nullable private static SigilHolderConfig defaultSigilHolderConfig;
 
-	private static SigilHolderConfig createDefaultSigilHolderConfig(){
+	private static SigilHolderConfig getDefaultSigilHolderConfig(){
 		if(defaultSigilHolderConfig==null){
 			defaultSigilHolderConfig = new SigilHolderConfig();
 
@@ -143,6 +146,11 @@ public final class ModCfg{
 
 			// More Shitz
 			defaultSigilHolderConfig.setMaxPoints(ModItems.EXPLOSIVE_SWORD.get(), 13);
+			defaultSigilHolderConfig.setMaxPoints(ModItems.CRIMSON_CLAYMORE.get(), 15);
+
+			defaultSigilHolderConfig.setMaxPoints(ModItems.CRIMSON_CHESTPLATE.get(), 15);
+			defaultSigilHolderConfig.setMaxPoints(ModItems.CRIMSON_LEGGINGS.get(), 15);
+			defaultSigilHolderConfig.setMaxPoints(ModItems.CRIMSON_BOOTS.get(), 15);
 
 			for(Item item : ForgeRegistries.ITEMS){
 				if(defaultSigilHolderConfig.has(item)) continue;
