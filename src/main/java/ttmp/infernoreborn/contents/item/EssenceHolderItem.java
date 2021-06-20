@@ -31,25 +31,28 @@ public class EssenceHolderItem extends Item{
 
 	@Override public ActionResult<ItemStack> use(World world, PlayerEntity player, Hand hand){
 		ItemStack stack = player.getItemInHand(hand);
-		if(!world.isClientSide){
-			player.openMenu(new EssenceHolderContainerProvider(
-					new TranslationTextComponent("container.infernoreborn.essence_holder"),
-					player,
-					hand));
-		}
+		if(!world.isClientSide) openGui(player, hand);
 		return ActionResult.success(stack);
 	}
 
 	@Override public void appendHoverText(ItemStack stack, @Nullable World world, List<ITextComponent> text, ITooltipFlag flags){
 		text.add(new TranslationTextComponent("item.infernoreborn.essence_holder.desc.0"));
-		if(ExpandKey.SHIFT.isKeyDown()){
-			stack.getCapability(Caps.essenceHolder).ifPresent(essenceHolder -> {
-				for(EssenceType type : EssenceType.values()){
-					int essence = essenceHolder.getEssence(type);
-					if(essence>0) text.add(new TranslationTextComponent("item.infernoreborn.essence_holder.desc.essences."+type.id, essence));
-				}
-			});
-		}else text.add(ExpandKey.SHIFT.getCollapsedText());
+		if(ExpandKey.SHIFT.isKeyDown()) listEssences(stack, text);
+		else text.add(ExpandKey.SHIFT.getCollapsedText());
+	}
+
+	protected void openGui(PlayerEntity player, Hand hand){
+		ItemStack stack = player.getItemInHand(hand);
+		player.openMenu(new EssenceHolderContainerProvider(stack.getHoverName(), player, hand));
+	}
+
+	protected void listEssences(ItemStack stack, List<ITextComponent> text){
+		stack.getCapability(Caps.essenceHolder).ifPresent(essenceHolder -> {
+			for(EssenceType type : EssenceType.values()){
+				int essence = essenceHolder.getEssence(type);
+				if(essence>0) text.add(new TranslationTextComponent("item.infernoreborn.essence_holder.desc.essences."+type.id, essence));
+			}
+		});
 	}
 
 	@Nullable @Override public CompoundNBT getShareTag(ItemStack stack){

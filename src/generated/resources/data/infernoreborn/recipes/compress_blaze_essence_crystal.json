@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "111",
+    "111",
+    "111"
+  ],
+  "key": {
+    "1": {
+      "item": "infernoreborn:blaze_essence_crystal"
+    }
+  },
+  "result": {
+    "item": "infernoreborn:greater_blaze_essence_crystal"
+  }
+}

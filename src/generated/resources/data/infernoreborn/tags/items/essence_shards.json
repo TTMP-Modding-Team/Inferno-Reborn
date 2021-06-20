@@ -1,0 +1,11 @@
+{
+  "replace": false,
+  "values": [
+    "infernoreborn:blood_essence_shard",
+    "infernoreborn:metal_essence_shard",
+    "infernoreborn:frost_essence_shard",
+    "infernoreborn:earth_essence_shard",
+    "infernoreborn:arcane_essence_shard",
+    "infernoreborn:blaze_essence_shard"
+  ]
+}

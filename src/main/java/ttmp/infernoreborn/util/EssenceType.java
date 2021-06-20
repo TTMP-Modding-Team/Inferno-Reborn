@@ -5,27 +5,19 @@ import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
 
 import java.util.Locale;
-import java.util.Objects;
 import java.util.function.Supplier;
 
-import static ttmp.infernoreborn.contents.ModItems.*;
-
 public enum EssenceType{
-	BLOOD(BLOOD_ESSENCE_SHARD, BLOOD_ESSENCE_CRYSTAL, GREATER_BLOOD_ESSENCE_CRYSTAL),
-	METAL(METAL_ESSENCE_SHARD, METAL_ESSENCE_CRYSTAL, GREATER_METAL_ESSENCE_CRYSTAL),
-	FROST(FROST_ESSENCE_SHARD, FROST_ESSENCE_CRYSTAL, GREATER_FROST_ESSENCE_CRYSTAL),
-	EARTH(EARTH_ESSENCE_SHARD, EARTH_ESSENCE_CRYSTAL, GREATER_EARTH_ESSENCE_CRYSTAL);
+	BLOOD, METAL, FROST, EARTH, ARCANE, BLAZE;
 
 	public final String id = name().toLowerCase(Locale.ROOT);
 
-	private final Supplier<Item> shardItemSupplier;
-	private final Supplier<Item> crystalItemSupplier;
-	private final Supplier<Item> greaterShardItemSupplier;
+	private Supplier<Item> shardItemSupplier;
+	private Supplier<Item> crystalItemSupplier;
+	private Supplier<Item> greaterCrystalItemSupplier;
 
-	EssenceType(Supplier<Item> shardItemSupplier, Supplier<Item> crystalItemSupplier, Supplier<Item> greaterShardItemSupplier){
-		this.shardItemSupplier = Objects.requireNonNull(shardItemSupplier);
-		this.crystalItemSupplier = Objects.requireNonNull(crystalItemSupplier);
-		this.greaterShardItemSupplier = Objects.requireNonNull(greaterShardItemSupplier);
+	public ITextComponent getName(){
+		return new TranslationTextComponent("infernoreborn.essence."+id);
 	}
 
 	public Item getShardItem(){
@@ -34,12 +26,8 @@ public enum EssenceType{
 	public Item getCrystalItem(){
 		return crystalItemSupplier.get();
 	}
-	public Item getGreaterShardItem(){
-		return greaterShardItemSupplier.get();
-	}
-
-	public ITextComponent getName(){
-		return new TranslationTextComponent("infernoreborn.essence."+id);
+	public Item getGreaterCrystalItem(){
+		return greaterCrystalItemSupplier.get();
 	}
 
 	public Item getItem(EssenceSize size){
@@ -49,7 +37,29 @@ public enum EssenceType{
 			case CRYSTAL:
 				return crystalItemSupplier.get();
 			case GREATER_CRYSTAL:
-				return greaterShardItemSupplier.get();
+				return greaterCrystalItemSupplier.get();
+			default:
+				throw new IllegalStateException("Unreachable");
+		}
+	}
+
+	/**
+	 * Don't ever call this, I'll cut your throat
+	 */
+	public void setItem(Supplier<Item> item, EssenceSize size){
+		switch(size){
+			case SHARD:
+				if(shardItemSupplier!=null) throw new IllegalStateException("Duplicated item set for "+size);
+				shardItemSupplier = item;
+				break;
+			case CRYSTAL:
+				if(crystalItemSupplier!=null) throw new IllegalStateException("Duplicated item set for "+size);
+				crystalItemSupplier = item;
+				break;
+			case GREATER_CRYSTAL:
+				if(greaterCrystalItemSupplier!=null) throw new IllegalStateException("Duplicated item set for "+size);
+				greaterCrystalItemSupplier = item;
+				break;
 			default:
 				throw new IllegalStateException("Unreachable");
 		}

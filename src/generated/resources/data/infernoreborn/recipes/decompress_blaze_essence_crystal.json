@@ -1,0 +1,12 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    {
+      "item": "infernoreborn:blaze_essence_crystal"
+    }
+  ],
+  "result": {
+    "item": "infernoreborn:blaze_essence_shard",
+    "count": 9
+  }
+}

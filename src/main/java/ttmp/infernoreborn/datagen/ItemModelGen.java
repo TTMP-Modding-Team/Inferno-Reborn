@@ -26,11 +26,14 @@ public class ItemModelGen extends ItemModelProvider{
 					new ResourceLocation(MODID, "item/essence/"+type.id+"_shard"));
 			item(Objects.requireNonNull(type.getCrystalItem().getRegistryName()).getPath(),
 					new ResourceLocation(MODID, "item/essence/"+type.id+"_crystal"));
-			item(Objects.requireNonNull(type.getGreaterShardItem().getRegistryName()).getPath(),
+			item(Objects.requireNonNull(type.getGreaterCrystalItem().getRegistryName()).getPath(),
 					new ResourceLocation(MODID, "item/essence/greater_"+type.id+"_crystal"));
 		}
 		simpleItem(ModItems.ESSENCE_HOLDER.get());
 		item(ModItems.BOOK_OF_THE_UNSPEAKABLE.getId().getPath(), new ResourceLocation(MODID, "item/book_of_the_unspeakable"));
+		item(ModItems.BOOK_OF_THE_UNSPEAKABLE_COMBINED.getId().getPath(),
+				new ResourceLocation(MODID, "item/book_of_the_unspeakable_combined"),
+				new ResourceLocation(MODID, "item/book_of_the_unspeakable_combined_2"));
 		held(ModItems.EXPLOSIVE_SWORD.getId().getPath(), new ResourceLocation(MODID, "item/explosive_sword"))
 				.override()
 				.predicate(new ResourceLocation("using"), 1)
@@ -59,6 +62,8 @@ public class ItemModelGen extends ItemModelProvider{
 		simpleItem(ModItems.BERSERKER_CHESTPLATE.get());
 		simpleItem(ModItems.BERSERKER_LEGGINGS.get());
 		simpleItem(ModItems.BERSERKER_BOOTS.get());
+
+		simpleItem(ModItems.DAMASCUS_STEEL_INGOT.get());
 	}
 
 	protected ItemModelBuilder simpleItem(Item item){

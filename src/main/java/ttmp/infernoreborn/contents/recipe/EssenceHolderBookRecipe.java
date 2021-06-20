@@ -12,7 +12,6 @@ import ttmp.infernoreborn.capability.Caps;
 import ttmp.infernoreborn.capability.EssenceHolder;
 import ttmp.infernoreborn.contents.ModItems;
 import ttmp.infernoreborn.contents.ModRecipes;
-import ttmp.infernoreborn.contents.item.TheBookItem;
 import ttmp.infernoreborn.util.EssenceType;
 
 public class EssenceHolderBookRecipe implements ICraftingRecipe{
@@ -29,7 +28,6 @@ public class EssenceHolderBookRecipe implements ICraftingRecipe{
 			if(stack.isEmpty()) continue;
 			if(stack.getItem()==ModItems.BOOK_OF_THE_UNSPEAKABLE.get()){
 				if(bookSeen) return false;
-				else if(TheBookItem.hasEssenceHolder(stack)) return false;
 				bookSeen = true;
 			}else if(stack.getItem()==ModItems.ESSENCE_HOLDER.get()){
 				if(essenceHolderSeen) return false;
@@ -54,8 +52,8 @@ public class EssenceHolderBookRecipe implements ICraftingRecipe{
 		if(book==null) return ItemStack.EMPTY;
 		else if(essenceHolder==null) return book;
 
-		ItemStack out = book.copy();
-		TheBookItem.setHasEssenceHolder(out, true);
+		ItemStack out = new ItemStack(ModItems.BOOK_OF_THE_UNSPEAKABLE_COMBINED.get());
+		out.setTag(book.getTag());
 		//noinspection ConstantConditions
 		EssenceHolder h = out.getCapability(Caps.essenceHolder).orElse(null);
 		//noinspection ConstantConditions
@@ -75,9 +73,7 @@ public class EssenceHolderBookRecipe implements ICraftingRecipe{
 		return NonNullList.of(Ingredient.EMPTY, Ingredient.of(ModItems.BOOK_OF_THE_UNSPEAKABLE.get()), Ingredient.of(ModItems.ESSENCE_HOLDER.get()));
 	}
 	@Override public ItemStack getResultItem(){
-		ItemStack stack = new ItemStack(ModItems.BOOK_OF_THE_UNSPEAKABLE.get());
-		TheBookItem.setHasEssenceHolder(stack, true);
-		return stack;
+		return new ItemStack(ModItems.BOOK_OF_THE_UNSPEAKABLE_COMBINED.get());
 	}
 	@Override public ResourceLocation getId(){
 		return id;

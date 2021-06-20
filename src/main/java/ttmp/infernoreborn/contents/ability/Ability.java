@@ -9,6 +9,7 @@ import net.minecraftforge.event.entity.living.LivingAttackEvent;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import net.minecraftforge.registries.ForgeRegistryEntry;
+import ttmp.infernoreborn.util.EssenceType;
 import ttmp.infernoreborn.util.LivingUtils;
 
 import javax.annotation.Nullable;
@@ -25,6 +26,7 @@ import java.util.stream.Collectors;
 public class Ability extends ForgeRegistryEntry<Ability>{
 	private final int primaryColor, secondaryColor, highlightColor;
 	private final Map<Attribute, Set<AttributeModifier>> attributes;
+	private final int[] drops;
 
 	@Nullable private final OnAbilityEvent<LivingAttackEvent> onAttacked;
 	@Nullable private final OnAbilityEvent<LivingHurtEvent> onHurt;
@@ -39,6 +41,7 @@ public class Ability extends ForgeRegistryEntry<Ability>{
 		this.secondaryColor = properties.secondaryColor;
 		this.highlightColor = properties.highlightColor;
 		this.attributes = properties.attributes;
+		this.drops = properties.drops;
 
 		this.onAttacked = properties.onAttacked;
 		this.onHurt = properties.onHurt;
@@ -63,6 +66,10 @@ public class Ability extends ForgeRegistryEntry<Ability>{
 
 	public Map<Attribute, Set<AttributeModifier>> getAttributes(){
 		return attributes;
+	}
+
+	public int getDrop(EssenceType type){
+		return drops[type.ordinal()];
 	}
 
 	@Nullable public OnAbilityEvent<LivingAttackEvent> onAttacked(){
@@ -112,6 +119,7 @@ public class Ability extends ForgeRegistryEntry<Ability>{
 		private final int primaryColor, secondaryColor, highlightColor;
 		private final Map<Attribute, Set<AttributeModifier>> attributes = new HashMap<>();
 		private final List<AbilitySkill.Data> skillData = new ArrayList<>();
+		private final int[] drops = new int[EssenceType.values().length];
 
 		@Nullable private OnAbilityEvent<LivingAttackEvent> onAttacked;
 		@Nullable private OnAbilityEvent<LivingHurtEvent> onHurt;
@@ -181,6 +189,11 @@ public class Ability extends ForgeRegistryEntry<Ability>{
 
 		public Properties onUpdate(@Nullable OnAbilityUpdate onUpdate){
 			this.onUpdate = onUpdate;
+			return this;
+		}
+
+		public Properties drops(EssenceType type, int amount){
+			this.drops[type.ordinal()] = Math.max(0, amount);
 			return this;
 		}
 	}

@@ -1,0 +1,7 @@
+{
+  "parent": "minecraft:item/generated",
+  "textures": {
+    "layer0": "infernoreborn:item/book_of_the_unspeakable_combined",
+    "layer1": "infernoreborn:item/book_of_the_unspeakable_combined_2"
+  }
+}

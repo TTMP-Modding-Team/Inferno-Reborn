@@ -23,6 +23,7 @@ import org.apache.logging.log4j.Logger;
 import ttmp.infernoreborn.capability.EssenceHolder;
 import ttmp.infernoreborn.capability.ShieldHolder;
 import ttmp.infernoreborn.capability.TickingTaskHandler;
+import ttmp.infernoreborn.client.EssenceHolderBookSparkColor;
 import ttmp.infernoreborn.client.ItemColorUtils;
 import ttmp.infernoreborn.client.PrimalInfernoSparkColor;
 import ttmp.infernoreborn.client.screen.EssenceHolderScreen;
@@ -47,6 +48,7 @@ import ttmp.infernoreborn.datagen.BlockTagGen;
 import ttmp.infernoreborn.datagen.BookDataProvider;
 import ttmp.infernoreborn.datagen.ItemModelGen;
 import ttmp.infernoreborn.datagen.ItemTagGen;
+import ttmp.infernoreborn.datagen.McmetaGen;
 import ttmp.infernoreborn.datagen.RecipeGen;
 import ttmp.infernoreborn.network.ModNet;
 
@@ -108,6 +110,7 @@ public class InfernoReborn{
 		}
 		if(event.includeClient()){
 			generator.addProvider(new ItemModelGen(event.getGenerator(), event.getExistingFileHelper()));
+			generator.addProvider(new McmetaGen(event.getGenerator(), event.getExistingFileHelper()));
 		}
 	}
 
@@ -159,6 +162,7 @@ public class InfernoReborn{
 				}
 			}, ModItems.GENERATOR_INFERNO_SPARK.get());
 			event.getItemColors().register(new PrimalInfernoSparkColor(), ModItems.PRIMAL_INFERNO_SPARK.get());
+			event.getItemColors().register(new EssenceHolderBookSparkColor(), ModItems.BOOK_OF_THE_UNSPEAKABLE_COMBINED.get());
 		}
 	}
 }

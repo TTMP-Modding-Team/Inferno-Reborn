@@ -13,6 +13,7 @@ import ttmp.infernoreborn.contents.item.BerserkerArmorItem;
 import ttmp.infernoreborn.contents.item.CrimsonArmorItem;
 import ttmp.infernoreborn.contents.item.CrimsonClaymoreItem;
 import ttmp.infernoreborn.contents.item.DragonSlayerItem;
+import ttmp.infernoreborn.contents.item.EssenceHolderBookItem;
 import ttmp.infernoreborn.contents.item.EssenceHolderItem;
 import ttmp.infernoreborn.contents.item.ExplosiveSwordItem;
 import ttmp.infernoreborn.contents.item.FixedAbilityItem;
@@ -20,6 +21,8 @@ import ttmp.infernoreborn.contents.item.GeneratorAbilityItem;
 import ttmp.infernoreborn.contents.item.RandomAbilityItem;
 import ttmp.infernoreborn.contents.item.SigilItem;
 import ttmp.infernoreborn.contents.item.TheBookItem;
+import ttmp.infernoreborn.util.EssenceSize;
+import ttmp.infernoreborn.util.EssenceType;
 
 import static ttmp.infernoreborn.InfernoReborn.MODID;
 
@@ -35,9 +38,7 @@ public final class ModItems{
 	};
 	public static final ItemGroup ARTIFACTS = new ItemGroup("infernoreborn.artifacts"){
 		@Override public ItemStack makeIcon(){
-			ItemStack stack = new ItemStack(BOOK_OF_THE_UNSPEAKABLE.get());
-			TheBookItem.setHasEssenceHolder(stack, true);
-			return stack;
+			return new ItemStack(BOOK_OF_THE_UNSPEAKABLE_COMBINED.get());
 		}
 	};
 	public static final ItemGroup MATERIALS = new ItemGroup("infernoreborn.materials"){
@@ -81,6 +82,7 @@ public final class ModItems{
 	public static final RegistryObject<Item> INFERNO_SPARK = REGISTER.register("inferno_spark", () -> new FixedAbilityItem(sparks(Rarity.RARE)));
 
 	public static final RegistryObject<Item> BOOK_OF_THE_UNSPEAKABLE = REGISTER.register("book_of_the_unspeakable", () -> new TheBookItem(artifacts().stacksTo(1)));
+	public static final RegistryObject<Item> BOOK_OF_THE_UNSPEAKABLE_COMBINED = REGISTER.register("book_of_the_unspeakable_combined", () -> new EssenceHolderBookItem(artifacts().stacksTo(1)));
 
 	public static final RegistryObject<Item> ESSENCE_HOLDER = REGISTER.register("essence_holder", () -> new EssenceHolderItem(artifacts(Rarity.UNCOMMON).stacksTo(1)));
 
@@ -101,21 +103,29 @@ public final class ModItems{
 	public static final RegistryObject<BlockItem> SIGIL_ENGRAVING_TABLE_5X5 = REGISTER.register("sigil_engraving_table_5x5", () -> new BlockItem(ModBlocks.SIGIL_ENGRAVING_TABLE_5X5.get(), artifacts()));
 	public static final RegistryObject<BlockItem> SIGIL_ENGRAVING_TABLE_7X7 = REGISTER.register("sigil_engraving_table_7x7", () -> new BlockItem(ModBlocks.SIGIL_ENGRAVING_TABLE_7X7.get(), artifacts()));
 
-	public static final RegistryObject<Item> BLOOD_ESSENCE_SHARD = REGISTER.register("blood_essence_shard", () -> new Item(materials(Rarity.UNCOMMON)));
-	public static final RegistryObject<Item> BLOOD_ESSENCE_CRYSTAL = REGISTER.register("blood_essence_crystal", () -> new Item(materials(Rarity.UNCOMMON)));
-	public static final RegistryObject<Item> GREATER_BLOOD_ESSENCE_CRYSTAL = REGISTER.register("greater_blood_essence_crystal", () -> new Item(materials(Rarity.UNCOMMON)));
+	public static final RegistryObject<Item> BLOOD_ESSENCE_SHARD = essence(EssenceType.BLOOD, EssenceSize.SHARD);
+	public static final RegistryObject<Item> BLOOD_ESSENCE_CRYSTAL = essence(EssenceType.BLOOD, EssenceSize.CRYSTAL);
+	public static final RegistryObject<Item> GREATER_BLOOD_ESSENCE_CRYSTAL = essence(EssenceType.BLOOD, EssenceSize.GREATER_CRYSTAL);
 
-	public static final RegistryObject<Item> METAL_ESSENCE_SHARD = REGISTER.register("metal_essence_shard", () -> new Item(materials(Rarity.UNCOMMON)));
-	public static final RegistryObject<Item> METAL_ESSENCE_CRYSTAL = REGISTER.register("metal_essence_crystal", () -> new Item(materials(Rarity.UNCOMMON)));
-	public static final RegistryObject<Item> GREATER_METAL_ESSENCE_CRYSTAL = REGISTER.register("greater_metal_essence_crystal", () -> new Item(materials(Rarity.UNCOMMON)));
+	public static final RegistryObject<Item> METAL_ESSENCE_SHARD = essence(EssenceType.METAL, EssenceSize.SHARD);
+	public static final RegistryObject<Item> METAL_ESSENCE_CRYSTAL = essence(EssenceType.METAL, EssenceSize.CRYSTAL);
+	public static final RegistryObject<Item> GREATER_METAL_ESSENCE_CRYSTAL = essence(EssenceType.METAL, EssenceSize.GREATER_CRYSTAL);
 
-	public static final RegistryObject<Item> FROST_ESSENCE_SHARD = REGISTER.register("frost_essence_shard", () -> new Item(materials(Rarity.UNCOMMON)));
-	public static final RegistryObject<Item> FROST_ESSENCE_CRYSTAL = REGISTER.register("frost_essence_crystal", () -> new Item(materials(Rarity.UNCOMMON)));
-	public static final RegistryObject<Item> GREATER_FROST_ESSENCE_CRYSTAL = REGISTER.register("greater_frost_essence_crystal", () -> new Item(materials(Rarity.UNCOMMON)));
+	public static final RegistryObject<Item> FROST_ESSENCE_SHARD = essence(EssenceType.FROST, EssenceSize.SHARD);
+	public static final RegistryObject<Item> FROST_ESSENCE_CRYSTAL = essence(EssenceType.FROST, EssenceSize.CRYSTAL);
+	public static final RegistryObject<Item> GREATER_FROST_ESSENCE_CRYSTAL = essence(EssenceType.FROST, EssenceSize.GREATER_CRYSTAL);
 
-	public static final RegistryObject<Item> EARTH_ESSENCE_SHARD = REGISTER.register("earth_essence_shard", () -> new Item(materials(Rarity.UNCOMMON)));
-	public static final RegistryObject<Item> EARTH_ESSENCE_CRYSTAL = REGISTER.register("earth_essence_crystal", () -> new Item(materials(Rarity.UNCOMMON)));
-	public static final RegistryObject<Item> GREATER_EARTH_ESSENCE_CRYSTAL = REGISTER.register("greater_earth_essence_crystal", () -> new Item(materials(Rarity.UNCOMMON)));
+	public static final RegistryObject<Item> EARTH_ESSENCE_SHARD = essence(EssenceType.EARTH, EssenceSize.SHARD);
+	public static final RegistryObject<Item> EARTH_ESSENCE_CRYSTAL = essence(EssenceType.EARTH, EssenceSize.CRYSTAL);
+	public static final RegistryObject<Item> GREATER_EARTH_ESSENCE_CRYSTAL = essence(EssenceType.EARTH, EssenceSize.GREATER_CRYSTAL);
+
+	public static final RegistryObject<Item> ARCANE_ESSENCE_SHARD = essence(EssenceType.ARCANE, EssenceSize.SHARD);
+	public static final RegistryObject<Item> ARCANE_ESSENCE_CRYSTAL = essence(EssenceType.ARCANE, EssenceSize.CRYSTAL);
+	public static final RegistryObject<Item> GREATER_ARCANE_ESSENCE_CRYSTAL = essence(EssenceType.ARCANE, EssenceSize.GREATER_CRYSTAL);
+
+	public static final RegistryObject<Item> BLAZE_ESSENCE_SHARD = essence(EssenceType.BLAZE, EssenceSize.SHARD);
+	public static final RegistryObject<Item> BLAZE_ESSENCE_CRYSTAL = essence(EssenceType.BLAZE, EssenceSize.CRYSTAL);
+	public static final RegistryObject<Item> GREATER_BLAZE_ESSENCE_CRYSTAL = essence(EssenceType.BLAZE, EssenceSize.GREATER_CRYSTAL);
 
 	public static final RegistryObject<Item> CRIMSON_METAL_SCRAP = REGISTER.register("crimson_metal_scrap", () -> new Item(materials(Rarity.RARE)));
 	public static final RegistryObject<Item> DAMASCUS_STEEL_INGOT = REGISTER.register("damascus_steel_ingot", () -> new Item(materials(Rarity.UNCOMMON)));
@@ -125,4 +135,24 @@ public final class ModItems{
 	public static final RegistryObject<Item> TEST_SIGIL = REGISTER.register("test_sigil", () -> new SigilItem(Sigils.TEST, sigils()));
 	public static final RegistryObject<Item> TEST_SIGIL_2 = REGISTER.register("test_sigil_2", () -> new SigilItem(Sigils.TEST2, sigils()));
 	public static final RegistryObject<Item> TEST_SIGIL_3 = REGISTER.register("test_sigil_3", () -> new SigilItem(Sigils.TEST2, sigils()));
+
+	private static RegistryObject<Item> essence(EssenceType type, EssenceSize size){
+		String id;
+		switch(size){
+			case SHARD:
+				id = type.id+"_essence_shard";
+				break;
+			case CRYSTAL:
+				id = type.id+"_essence_crystal";
+				break;
+			case GREATER_CRYSTAL:
+				id = "greater_"+type.id+"_essence_crystal";
+				break;
+			default:
+				throw new IllegalStateException("Unreachable");
+		}
+		RegistryObject<Item> item = REGISTER.register(id, () -> new Item(materials(Rarity.UNCOMMON)));
+		type.setItem(item, size);
+		return item;
+	}
 }

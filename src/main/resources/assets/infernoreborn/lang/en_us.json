@@ -24,14 +24,25 @@
 	"item.infernoreborn.earth_essence_crystal": "Crystal of Earth Essence",
 	"item.infernoreborn.greater_earth_essence_crystal": "Greater Crystal of Earth Essence",
 
+	"item.infernoreborn.arcane_essence_shard": "Shard of Arcane Essence",
+	"item.infernoreborn.arcane_essence_crystal": "Crystal of Arcane Essence",
+	"item.infernoreborn.greater_arcane_essence_crystal": "Greater Crystal of Arcane Essence",
+
+	"item.infernoreborn.blaze_essence_shard": "Shard of Blaze Essence",
+	"item.infernoreborn.blaze_essence_crystal": "Crystal of Blaze Essence",
+	"item.infernoreborn.greater_blaze_essence_crystal": "Greater Crystal of Blaze Essence",
+
 	"item.infernoreborn.essence_holder": "Essence Holder",
 	"item.infernoreborn.essence_holder.desc.0": "Holds essence",
 	"item.infernoreborn.essence_holder.desc.essences.blood": "%s Blood Essences",
 	"item.infernoreborn.essence_holder.desc.essences.metal": "%s Metal Essences",
 	"item.infernoreborn.essence_holder.desc.essences.frost": "%s Frost Essences",
 	"item.infernoreborn.essence_holder.desc.essences.earth": "%s Earth Essences",
+	"item.infernoreborn.essence_holder.desc.essences.arcane": "%s Arcane Essences",
+	"item.infernoreborn.essence_holder.desc.essences.blaze": "%s Blaze Essences",
 
 	"item.infernoreborn.book_of_the_unspeakable": "Book of the Unspeakable",
+	"item.infernoreborn.book_of_the_unspeakable_combined": "Book of the Unspeakable",
 	"item.infernoreborn.book_of_the_unspeakable.desc.essence_holder": "+ Essence Holder",
 
 	"tooltip.infernoreborn.expand": "[%s]",

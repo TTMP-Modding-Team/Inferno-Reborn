@@ -1,0 +1,11 @@
+{
+  "replace": false,
+  "values": [
+    "infernoreborn:greater_blood_essence_crystal",
+    "infernoreborn:greater_metal_essence_crystal",
+    "infernoreborn:greater_frost_essence_crystal",
+    "infernoreborn:greater_earth_essence_crystal",
+    "infernoreborn:greater_arcane_essence_crystal",
+    "infernoreborn:greater_blaze_essence_crystal"
+  ]
+}
