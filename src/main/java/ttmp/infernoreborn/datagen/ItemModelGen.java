@@ -53,6 +53,12 @@ public class ItemModelGen extends ItemModelProvider{
 		simpleItem(ModItems.CRIMSON_LEGGINGS.get());
 		simpleItem(ModItems.CRIMSON_BOOTS.get());
 		simpleItem(ModItems.CRIMSON_METAL_SCRAP.get());
+
+		simpleHeld(ModItems.DRAGON_SLAYER.get());
+		simpleItem(ModItems.BERSERKER_HELMET.get());
+		simpleItem(ModItems.BERSERKER_CHESTPLATE.get());
+		simpleItem(ModItems.BERSERKER_LEGGINGS.get());
+		simpleItem(ModItems.BERSERKER_BOOTS.get());
 	}
 
 	protected ItemModelBuilder simpleItem(Item item){

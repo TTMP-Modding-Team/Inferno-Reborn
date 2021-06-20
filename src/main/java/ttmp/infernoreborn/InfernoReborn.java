@@ -43,8 +43,10 @@ import ttmp.infernoreborn.contents.item.FixedAbilityItem;
 import ttmp.infernoreborn.contents.item.GeneratorAbilityItem;
 import ttmp.infernoreborn.contents.sigil.holder.SigilHolder;
 import ttmp.infernoreborn.datagen.AbilityGeneratorDataProvider;
+import ttmp.infernoreborn.datagen.BlockTagGen;
 import ttmp.infernoreborn.datagen.BookDataProvider;
 import ttmp.infernoreborn.datagen.ItemModelGen;
+import ttmp.infernoreborn.datagen.ItemTagGen;
 import ttmp.infernoreborn.datagen.RecipeGen;
 import ttmp.infernoreborn.network.ModNet;
 
@@ -100,6 +102,9 @@ public class InfernoReborn{
 			generator.addProvider(new AbilityGeneratorDataProvider(event.getGenerator()));
 			generator.addProvider(new BookDataProvider(event.getGenerator()));
 			generator.addProvider(new RecipeGen(event.getGenerator()));
+			BlockTagGen blockTagGen = new BlockTagGen(event.getGenerator(), event.getExistingFileHelper());
+			generator.addProvider(blockTagGen);
+			generator.addProvider(new ItemTagGen(event.getGenerator(), blockTagGen, event.getExistingFileHelper()));
 		}
 		if(event.includeClient()){
 			generator.addProvider(new ItemModelGen(event.getGenerator(), event.getExistingFileHelper()));

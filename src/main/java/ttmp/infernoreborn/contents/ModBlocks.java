@@ -33,4 +33,6 @@ public final class ModBlocks{
 			return SigilEngravingTableTile.new7x7();
 		}
 	});
+
+	public static final RegistryObject<Block> DAMASCUS_STEEL_BLOCK = REGISTER.register("damascus_steel_block", () -> new Block(Properties.of(Material.METAL)));
 }

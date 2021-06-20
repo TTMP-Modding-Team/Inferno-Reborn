@@ -12,6 +12,7 @@ import net.minecraft.inventory.container.Container;
 import net.minecraft.item.ItemStack;
 import net.minecraft.potion.EffectInstance;
 import net.minecraft.util.DamageSource;
+import net.minecraft.util.Hand;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.Explosion;
 import net.minecraft.world.World;
@@ -23,6 +24,7 @@ import net.minecraftforge.event.entity.living.LivingDamageEvent;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.entity.living.LivingEvent.LivingUpdateEvent;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
+import net.minecraftforge.event.entity.player.CriticalHitEvent;
 import net.minecraftforge.event.entity.player.PlayerContainerEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.event.world.ExplosionEvent;
@@ -59,6 +61,7 @@ public class CommonEventHandlers{
 	private static final ResourceLocation TICKING_TASK_HANDLER_KEY = new ResourceLocation(MODID, "ticking_task_handler");
 
 	private static final ArmorSet CRIMSON_ARMOR_SET = new ArmorSet.ItemSet(null, ModItems.CRIMSON_CHESTPLATE, ModItems.CRIMSON_LEGGINGS, ModItems.CRIMSON_BOOTS);
+	private static final ArmorSet BERSERKER_ARMOR_SET = new ArmorSet.ItemSet(ModItems.BERSERKER_HELMET, ModItems.BERSERKER_CHESTPLATE, ModItems.BERSERKER_LEGGINGS, ModItems.BERSERKER_BOOTS);
 
 	@SubscribeEvent
 	public static void attachEntityCapabilities(AttachCapabilitiesEvent<Entity> event){
@@ -250,6 +253,18 @@ public class CommonEventHandlers{
 		Explosion explosion = event.getExplosion();
 		if(explosion.getDamageSource() instanceof CannotHurtNonLiving){
 			event.getAffectedEntities().removeIf(entity -> !(entity instanceof LivingEntity));
+		}
+	}
+
+	@SubscribeEvent
+	public static void onCriticalHit(CriticalHitEvent event){
+		ItemStack itemInHand = event.getPlayer().getItemInHand(Hand.MAIN_HAND);
+		if(itemInHand.getItem()==ModItems.DRAGON_SLAYER.get()){
+			if(BERSERKER_ARMOR_SET.qualifies(event.getPlayer())){
+				event.setDamageModifier(event.getDamageModifier()+1.5f);
+			}else if(event.getTarget() instanceof LivingEntity&&((LivingEntity)event.getTarget()).getMaxHealth()>=30){
+				event.setDamageModifier(event.getDamageModifier()+.5f);
+			}
 		}
 	}
 }

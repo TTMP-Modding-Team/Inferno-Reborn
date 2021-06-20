@@ -52,14 +52,14 @@ public class CrimsonClaymoreItem extends SwordItem{ // TODO insta kill ability g
 	}
 
 	@Override public void inventoryTick(ItemStack stack, World world, Entity entity, int slot, boolean selected){
-		if(entity instanceof LivingEntity&&selected){
+		if(selected){
+			if(!(entity instanceof LivingEntity)) return;
 			EffectInstance effect = ((LivingEntity)entity).getEffect(ModEffects.BLOOD_FRENZY.get());
 			float damageBonus = getDamageBonus(stack);
 			float calculatedDamageBonus = effect!=null ? (effect.getAmplifier()+1)*3 : 0;
-			if(damageBonus!=calculatedDamageBonus){
+			if(damageBonus!=calculatedDamageBonus)
 				setDamageBonus(stack, calculatedDamageBonus);
-			}
-		}
+		}else setDamageBonus(stack, 0);
 	}
 
 	@Override public boolean shouldCauseReequipAnimation(ItemStack oldStack, ItemStack newStack, boolean slotChanged){
