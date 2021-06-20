@@ -77,7 +77,7 @@ public class ExplosiveSwordItem extends SwordItem{
 	}
 
 	protected void detonate(ItemStack stack, World world, LivingEntity entity, int ticks){
-		if(ticks<E1) return;
+		if(world.isClientSide||ticks<E1) return;
 		TickingTaskHandler h = TickingTaskHandler.of(world);
 		if(h==null) return;
 		Vector3d lookAngle = entity.getLookAngle();

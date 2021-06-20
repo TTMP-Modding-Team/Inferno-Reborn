@@ -3,18 +3,12 @@ package ttmp.infernoreborn.config;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
-import net.minecraft.item.ArmorItem;
-import net.minecraft.item.Item;
 import net.minecraft.item.Items;
-import net.minecraft.item.ShootableItem;
-import net.minecraft.item.SwordItem;
-import net.minecraft.item.ToolItem;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.storage.FolderName;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.server.FMLServerAboutToStartEvent;
-import net.minecraftforge.registries.ForgeRegistries;
 import ttmp.infernoreborn.InfernoReborn;
 import ttmp.infernoreborn.contents.ModItems;
 
@@ -65,7 +59,9 @@ public final class ModCfg{
 				}
 				write = sigilHolderConfig.appendMissingEntry(getDefaultSigilHolderConfig());
 			}
-			if(write) Files.write(config, Collections.singleton(GSON.toJson(sigilHolderConfig.write())), new StandardOpenOption[]{StandardOpenOption.CREATE_NEW});
+			if(write) Files.write(config, Collections.singleton(GSON.toJson(sigilHolderConfig.write())), new StandardOpenOption[]{
+					StandardOpenOption.CREATE, StandardOpenOption.WRITE, StandardOpenOption.TRUNCATE_EXISTING
+			});
 		}catch(IOException e){
 			InfernoReborn.LOGGER.error("Cannot read or write sigil holder config file", e);
 			sigilHolderConfig = getDefaultSigilHolderConfig();
@@ -104,18 +100,19 @@ public final class ModCfg{
 			defaultSigilHolderConfig.setMaxPoints(Items.NETHERITE_LEGGINGS, 9);
 			defaultSigilHolderConfig.setMaxPoints(Items.NETHERITE_BOOTS, 9);
 			defaultSigilHolderConfig.setMaxPoints(Items.ELYTRA, 4);
+			defaultSigilHolderConfig.setMaxPoints(Items.TURTLE_HELMET, 3);
 
 			// TOols
-			defaultSigilHolderConfig.setMaxPoints(Items.WOODEN_SWORD, 2);
-			defaultSigilHolderConfig.setMaxPoints(Items.WOODEN_PICKAXE, 2);
-			defaultSigilHolderConfig.setMaxPoints(Items.WOODEN_AXE, 2);
-			defaultSigilHolderConfig.setMaxPoints(Items.WOODEN_SHOVEL, 2);
-			defaultSigilHolderConfig.setMaxPoints(Items.WOODEN_HOE, 2);
-			defaultSigilHolderConfig.setMaxPoints(Items.STONE_SWORD, 3);
-			defaultSigilHolderConfig.setMaxPoints(Items.STONE_PICKAXE, 3);
-			defaultSigilHolderConfig.setMaxPoints(Items.STONE_AXE, 3);
-			defaultSigilHolderConfig.setMaxPoints(Items.STONE_SHOVEL, 3);
-			defaultSigilHolderConfig.setMaxPoints(Items.STONE_HOE, 3);
+			defaultSigilHolderConfig.setMaxPoints(Items.WOODEN_SWORD, 3);
+			defaultSigilHolderConfig.setMaxPoints(Items.WOODEN_PICKAXE, 3);
+			defaultSigilHolderConfig.setMaxPoints(Items.WOODEN_AXE, 3);
+			defaultSigilHolderConfig.setMaxPoints(Items.WOODEN_SHOVEL, 3);
+			defaultSigilHolderConfig.setMaxPoints(Items.WOODEN_HOE, 3);
+			defaultSigilHolderConfig.setMaxPoints(Items.STONE_SWORD, 2);
+			defaultSigilHolderConfig.setMaxPoints(Items.STONE_PICKAXE, 2);
+			defaultSigilHolderConfig.setMaxPoints(Items.STONE_AXE, 2);
+			defaultSigilHolderConfig.setMaxPoints(Items.STONE_SHOVEL, 2);
+			defaultSigilHolderConfig.setMaxPoints(Items.STONE_HOE, 2);
 			defaultSigilHolderConfig.setMaxPoints(Items.IRON_SWORD, 4);
 			defaultSigilHolderConfig.setMaxPoints(Items.IRON_PICKAXE, 4);
 			defaultSigilHolderConfig.setMaxPoints(Items.IRON_AXE, 4);
@@ -146,21 +143,17 @@ public final class ModCfg{
 
 			// More Shitz
 			defaultSigilHolderConfig.setMaxPoints(ModItems.EXPLOSIVE_SWORD.get(), 13);
-			defaultSigilHolderConfig.setMaxPoints(ModItems.CRIMSON_CLAYMORE.get(), 15);
 
+			defaultSigilHolderConfig.setMaxPoints(ModItems.CRIMSON_CLAYMORE.get(), 15);
 			defaultSigilHolderConfig.setMaxPoints(ModItems.CRIMSON_CHESTPLATE.get(), 15);
 			defaultSigilHolderConfig.setMaxPoints(ModItems.CRIMSON_LEGGINGS.get(), 15);
 			defaultSigilHolderConfig.setMaxPoints(ModItems.CRIMSON_BOOTS.get(), 15);
 
-			for(Item item : ForgeRegistries.ITEMS){
-				if(defaultSigilHolderConfig.has(item)) continue;
-				if(item instanceof ArmorItem||
-						item instanceof ToolItem||
-						item instanceof SwordItem||
-						item instanceof ShootableItem){
-					defaultSigilHolderConfig.setMaxPoints(item, 0);
-				}
-			}
+			defaultSigilHolderConfig.setMaxPoints(ModItems.DRAGON_SLAYER.get(), 15);
+			defaultSigilHolderConfig.setMaxPoints(ModItems.BERSERKER_HELMET.get(), 15);
+			defaultSigilHolderConfig.setMaxPoints(ModItems.BERSERKER_CHESTPLATE.get(), 15);
+			defaultSigilHolderConfig.setMaxPoints(ModItems.BERSERKER_LEGGINGS.get(), 15);
+			defaultSigilHolderConfig.setMaxPoints(ModItems.BERSERKER_BOOTS.get(), 15);
 		}
 		return defaultSigilHolderConfig;
 	}
