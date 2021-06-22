@@ -1,0 +1,11 @@
+{
+  "name": "ability.infernoreborn.ranged_veteran",
+  "category": "infernoreborn:abilities",
+  "icon": "infernoreborn:inferno_spark{Abilities:[\"infernoreborn:ranged_veteran\"]}",
+  "pages": [
+    {
+      "type": "text",
+      "text": "text.infernoreborn.ranged_veteran.0"
+    }
+  ]
+}

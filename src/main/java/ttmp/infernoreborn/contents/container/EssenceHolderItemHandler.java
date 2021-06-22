@@ -4,7 +4,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.items.IItemHandler;
-import ttmp.infernoreborn.capability.EssenceHolder;
+import ttmp.infernoreborn.util.EssenceHolder;
 import ttmp.infernoreborn.util.EssenceSize;
 import ttmp.infernoreborn.util.EssenceType;
 

@@ -136,9 +136,9 @@ public class Ability extends ForgeRegistryEntry<Ability>{
 			this.highlightColor = highlightColor;
 		}
 
-		public Properties addAttribute(Attribute attribute, UUID uuid, double amount, AttributeModifier.Operation operation){
+		public Properties addAttribute(Attribute attribute, String uuid, double amount, AttributeModifier.Operation operation){
 			Set<AttributeModifier> m = attributes.computeIfAbsent(attribute, a -> new HashSet<>());
-			if(!m.add(new AttributeModifier(uuid, "Ability Attributes", amount, operation)))
+			if(!m.add(new AttributeModifier(UUID.fromString(uuid), "Ability Attributes", amount, operation)))
 				throw new IllegalStateException("Registration of attribute with overlapping ID "+uuid);
 			return this;
 		}

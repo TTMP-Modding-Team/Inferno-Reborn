@@ -9,6 +9,7 @@ import net.minecraft.util.text.Color;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.Style;
 import net.minecraftforge.registries.ForgeRegistryEntry;
+import ttmp.infernoreborn.client.color.ColorUtils;
 import ttmp.infernoreborn.contents.sigil.Sigil;
 import ttmp.infernoreborn.contents.sigil.holder.SigilHolder;
 
@@ -46,7 +47,7 @@ public class GibberishFactory{
 			Sigil sigil = l.get(i);
 			if(sigil.getPoint()<=0) continue;
 			StringTextComponent subtext = new StringTextComponent(gib.substring(point, point = crunch(gib, point, sigil.getPoint())));
-			subtext.setStyle(subtext.getStyle().withColor(Color.fromRgb(ItemColorUtils.blend(sigil.getBrighterColor(), sigil.getDarkerColor(), blend))));
+			subtext.setStyle(subtext.getStyle().withColor(Color.fromRgb(ColorUtils.blend(sigil.getBrighterColor(), sigil.getDarkerColor(), blend))));
 			text.append(subtext);
 		}
 		if(h2!=null){
@@ -55,7 +56,7 @@ public class GibberishFactory{
 				Sigil sigil = it.next();
 				if(h.has(sigil)) continue;
 				StringTextComponent subtext = new StringTextComponent(gib.substring(point, point = crunch(gib, point, sigil.getPoint())));
-				subtext.setStyle(subtext.getStyle().withColor(Color.fromRgb(ItemColorUtils.blend(sigil.getBrighterColor(), sigil.getDarkerColor(), blend2))));
+				subtext.setStyle(subtext.getStyle().withColor(Color.fromRgb(ColorUtils.blend(sigil.getBrighterColor(), sigil.getDarkerColor(), blend2))));
 				text.append(subtext);
 			}
 		}

@@ -6,6 +6,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.ai.attributes.Attribute;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
+import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.inventory.container.Container;
@@ -22,6 +23,7 @@ import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.living.LivingAttackEvent;
 import net.minecraftforge.event.entity.living.LivingDamageEvent;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
+import net.minecraftforge.event.entity.living.LivingDropsEvent;
 import net.minecraftforge.event.entity.living.LivingEvent.LivingUpdateEvent;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import net.minecraftforge.event.entity.player.CriticalHitEvent;
@@ -37,6 +39,7 @@ import ttmp.infernoreborn.capability.TickingTaskHandler;
 import ttmp.infernoreborn.contents.ModAttributes;
 import ttmp.infernoreborn.contents.ModEffects;
 import ttmp.infernoreborn.contents.ModItems;
+import ttmp.infernoreborn.contents.ability.Ability;
 import ttmp.infernoreborn.contents.ability.OnAbilityEvent;
 import ttmp.infernoreborn.contents.ability.holder.AbilityHolder;
 import ttmp.infernoreborn.contents.ability.holder.ClientAbilityHolder;
@@ -47,7 +50,10 @@ import ttmp.infernoreborn.contents.sigil.holder.PlayerSigilHolder;
 import ttmp.infernoreborn.contents.sigil.holder.SigilHolder;
 import ttmp.infernoreborn.util.ArmorSet;
 import ttmp.infernoreborn.util.CannotHurtNonLiving;
+import ttmp.infernoreborn.util.EssenceType;
 import ttmp.infernoreborn.util.LivingUtils;
+
+import java.util.Collection;
 
 import static ttmp.infernoreborn.InfernoReborn.MODID;
 
@@ -150,13 +156,14 @@ public class CommonEventHandlers{
 			if(attacker!=null&&event.getSource().getDirectEntity()==attacker){
 				res += LivingUtils.getAttrib(event.getEntityLiving(), ModAttributes.MELEE_DAMAGE_RESISTANCE.get())-1;
 			}
-			if(event.getSource().isProjectile()){
+			if(!event.getSource().isMagic()&&event.getSource().isProjectile()){
 				res += LivingUtils.getAttrib(event.getEntityLiving(), ModAttributes.RANGED_DAMAGE_RESISTANCE.get())-1;
 				if(attacker!=null) mod += LivingUtils.getAttrib(attacker, ModAttributes.RANGED_ATTACK.get());
 			}
 		}
 
-		event.setAmount(Math.max(0, event.getAmount()*res+mod));
+		float dmg = event.getAmount()+mod;
+		event.setAmount(Math.max(Math.min(1, dmg), dmg*(2-res)));
 
 		ServerAbilityHolder h = ServerAbilityHolder.of(entity);
 		if(h!=null){
@@ -194,7 +201,7 @@ public class CommonEventHandlers{
 		if(event.getAmount()>0){
 			Entity directEntity = event.getSource().getDirectEntity();
 			if(entity!=directEntity){
-				if(CRIMSON_ARMOR_SET.qualifies(entity)){
+				if(CRIMSON_ARMOR_SET.qualifies(entity)){ // TODO no "spam to full stack"
 					LivingUtils.addStackEffect(entity, ModEffects.BLOOD_FRENZY.get(), 80, 0, 1, 3);
 				}
 				if(directEntity instanceof LivingEntity){
@@ -266,5 +273,33 @@ public class CommonEventHandlers{
 				event.setDamageModifier(event.getDamageModifier()+.5f);
 			}
 		}
+	}
+
+	@SubscribeEvent
+	public static void onLivingDrops(LivingDropsEvent event){
+		AbilityHolder h = AbilityHolder.of(event.getEntityLiving());
+		if(h==null) return;
+		for(EssenceType type : EssenceType.values()){
+			int amount = 0;
+			for(Ability a : h.getAbilities()) amount += a.getDrop(type);
+
+			if(amount>=9*9){
+				addDrop(event.getEntityLiving(), event.getDrops(), new ItemStack(type.getGreaterCrystalItem(), amount/9*9));
+				amount %= 9*9;
+			}
+			if(amount>=9){
+				addDrop(event.getEntityLiving(), event.getDrops(), new ItemStack(type.getCrystalItem(), amount/9));
+				amount %= 9;
+			}
+			if(amount>=1){
+				addDrop(event.getEntityLiving(), event.getDrops(), new ItemStack(type.getShardItem(), amount));
+			}
+		}
+	}
+
+	private static void addDrop(LivingEntity entity, Collection<ItemEntity> entities, ItemStack stack){
+		ItemEntity itemEntity = new ItemEntity(entity.level, entity.getX(), entity.getY(), entity.getZ(), stack);
+		itemEntity.setDefaultPickUpDelay();
+		entities.add(itemEntity);
 	}
 }

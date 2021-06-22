@@ -70,6 +70,10 @@ public final class AbilityGenerator{
 		if(action!=null) action.act(entity, h);
 	}
 
+	public boolean canGenerate(LivingEntity entity){
+		return AbilityHolder.of(entity)!=null&&(target==null||target.contains(entity.getType()));
+	}
+
 	public JsonObject serialize(){
 		JsonObject o = action!=null ? action.serialize() : new JsonObject();
 		scheme.serialize(o);

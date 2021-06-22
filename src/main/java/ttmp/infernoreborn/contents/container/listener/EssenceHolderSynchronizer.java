@@ -3,7 +3,7 @@ package ttmp.infernoreborn.contents.container.listener;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.ItemStack;
 import ttmp.infernoreborn.capability.Caps;
-import ttmp.infernoreborn.capability.EssenceHolder;
+import ttmp.infernoreborn.util.EssenceHolder;
 import ttmp.infernoreborn.network.BulkItemSyncMsg;
 import ttmp.infernoreborn.network.EssenceHolderSyncMsg;
 

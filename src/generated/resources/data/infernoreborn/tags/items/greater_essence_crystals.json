@@ -3,9 +3,12 @@
   "values": [
     "infernoreborn:greater_blood_essence_crystal",
     "infernoreborn:greater_metal_essence_crystal",
-    "infernoreborn:greater_frost_essence_crystal",
     "infernoreborn:greater_earth_essence_crystal",
-    "infernoreborn:greater_arcane_essence_crystal",
-    "infernoreborn:greater_blaze_essence_crystal"
+    "infernoreborn:greater_magic_essence_crystal",
+    "infernoreborn:greater_fire_essence_crystal",
+    "infernoreborn:greater_air_essence_crystal",
+    "infernoreborn:greater_water_essence_crystal",
+    "infernoreborn:greater_death_essence_crystal",
+    "infernoreborn:greater_dominance_essence_crystal"
   ]
 }

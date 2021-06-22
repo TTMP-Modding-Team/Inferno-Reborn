@@ -16,7 +16,7 @@ import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.network.PacketDistributor;
-import ttmp.infernoreborn.contents.ability.generator.pool.WeightedPool;
+import ttmp.infernoreborn.util.WeightedPool;
 import ttmp.infernoreborn.contents.ability.generator.scheme.AbilityGeneratorScheme;
 import ttmp.infernoreborn.network.ModNet;
 import ttmp.infernoreborn.network.SyncAbilitySchemeMsg;

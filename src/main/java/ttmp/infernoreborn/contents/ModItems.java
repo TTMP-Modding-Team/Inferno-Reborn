@@ -111,21 +111,33 @@ public final class ModItems{
 	public static final RegistryObject<Item> METAL_ESSENCE_CRYSTAL = essence(EssenceType.METAL, EssenceSize.CRYSTAL);
 	public static final RegistryObject<Item> GREATER_METAL_ESSENCE_CRYSTAL = essence(EssenceType.METAL, EssenceSize.GREATER_CRYSTAL);
 
-	public static final RegistryObject<Item> FROST_ESSENCE_SHARD = essence(EssenceType.FROST, EssenceSize.SHARD);
-	public static final RegistryObject<Item> FROST_ESSENCE_CRYSTAL = essence(EssenceType.FROST, EssenceSize.CRYSTAL);
-	public static final RegistryObject<Item> GREATER_FROST_ESSENCE_CRYSTAL = essence(EssenceType.FROST, EssenceSize.GREATER_CRYSTAL);
-
 	public static final RegistryObject<Item> EARTH_ESSENCE_SHARD = essence(EssenceType.EARTH, EssenceSize.SHARD);
 	public static final RegistryObject<Item> EARTH_ESSENCE_CRYSTAL = essence(EssenceType.EARTH, EssenceSize.CRYSTAL);
 	public static final RegistryObject<Item> GREATER_EARTH_ESSENCE_CRYSTAL = essence(EssenceType.EARTH, EssenceSize.GREATER_CRYSTAL);
 
-	public static final RegistryObject<Item> ARCANE_ESSENCE_SHARD = essence(EssenceType.ARCANE, EssenceSize.SHARD);
-	public static final RegistryObject<Item> ARCANE_ESSENCE_CRYSTAL = essence(EssenceType.ARCANE, EssenceSize.CRYSTAL);
-	public static final RegistryObject<Item> GREATER_ARCANE_ESSENCE_CRYSTAL = essence(EssenceType.ARCANE, EssenceSize.GREATER_CRYSTAL);
+	public static final RegistryObject<Item> MAGIC_ESSENCE_SHARD = essence(EssenceType.MAGIC, EssenceSize.SHARD);
+	public static final RegistryObject<Item> MAGIC_ESSENCE_CRYSTAL = essence(EssenceType.MAGIC, EssenceSize.CRYSTAL);
+	public static final RegistryObject<Item> GREATER_MAGIC_ESSENCE_CRYSTAL = essence(EssenceType.MAGIC, EssenceSize.GREATER_CRYSTAL);
 
-	public static final RegistryObject<Item> BLAZE_ESSENCE_SHARD = essence(EssenceType.BLAZE, EssenceSize.SHARD);
-	public static final RegistryObject<Item> BLAZE_ESSENCE_CRYSTAL = essence(EssenceType.BLAZE, EssenceSize.CRYSTAL);
-	public static final RegistryObject<Item> GREATER_BLAZE_ESSENCE_CRYSTAL = essence(EssenceType.BLAZE, EssenceSize.GREATER_CRYSTAL);
+	public static final RegistryObject<Item> FIRE_ESSENCE_SHARD = essence(EssenceType.FIRE, EssenceSize.SHARD);
+	public static final RegistryObject<Item> FIRE_ESSENCE_CRYSTAL = essence(EssenceType.FIRE, EssenceSize.CRYSTAL);
+	public static final RegistryObject<Item> GREATER_FIRE_ESSENCE_CRYSTAL = essence(EssenceType.FIRE, EssenceSize.GREATER_CRYSTAL);
+
+	public static final RegistryObject<Item> AIR_ESSENCE_SHARD = essence(EssenceType.AIR, EssenceSize.SHARD);
+	public static final RegistryObject<Item> AIR_ESSENCE_CRYSTAL = essence(EssenceType.AIR, EssenceSize.CRYSTAL);
+	public static final RegistryObject<Item> GREATER_AIR_ESSENCE_CRYSTAL = essence(EssenceType.AIR, EssenceSize.GREATER_CRYSTAL);
+
+	public static final RegistryObject<Item> WATER_ESSENCE_SHARD = essence(EssenceType.WATER, EssenceSize.SHARD);
+	public static final RegistryObject<Item> WATER_ESSENCE_CRYSTAL = essence(EssenceType.WATER, EssenceSize.CRYSTAL);
+	public static final RegistryObject<Item> GREATER_WATER_ESSENCE_CRYSTAL = essence(EssenceType.WATER, EssenceSize.GREATER_CRYSTAL);
+
+	public static final RegistryObject<Item> DEATH_ESSENCE_SHARD = essence(EssenceType.DEATH, EssenceSize.SHARD);
+	public static final RegistryObject<Item> DEATH_ESSENCE_CRYSTAL = essence(EssenceType.DEATH, EssenceSize.CRYSTAL);
+	public static final RegistryObject<Item> GREATER_DEATH_ESSENCE_CRYSTAL = essence(EssenceType.DEATH, EssenceSize.GREATER_CRYSTAL);
+
+	public static final RegistryObject<Item> DOMINANCE_ESSENCE_SHARD = essence(EssenceType.DOMINANCE, EssenceSize.SHARD);
+	public static final RegistryObject<Item> DOMINANCE_ESSENCE_CRYSTAL = essence(EssenceType.DOMINANCE, EssenceSize.CRYSTAL);
+	public static final RegistryObject<Item> GREATER_DOMINANCE_ESSENCE_CRYSTAL = essence(EssenceType.DOMINANCE, EssenceSize.GREATER_CRYSTAL);
 
 	public static final RegistryObject<Item> CRIMSON_METAL_SCRAP = REGISTER.register("crimson_metal_scrap", () -> new Item(materials(Rarity.RARE)));
 	public static final RegistryObject<Item> DAMASCUS_STEEL_INGOT = REGISTER.register("damascus_steel_ingot", () -> new Item(materials(Rarity.UNCOMMON)));

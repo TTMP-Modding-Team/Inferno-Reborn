@@ -4,6 +4,7 @@ import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityInject;
 import ttmp.infernoreborn.contents.ability.holder.AbilityHolder;
 import ttmp.infernoreborn.contents.sigil.holder.SigilHolder;
+import ttmp.infernoreborn.util.EssenceHolder;
 
 public final class Caps{
 	private Caps(){}

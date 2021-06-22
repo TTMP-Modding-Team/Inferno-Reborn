@@ -1,19 +1,19 @@
 package ttmp.infernoreborn.network;
 
 import net.minecraft.network.PacketBuffer;
+import ttmp.infernoreborn.contents.Abilities;
 import ttmp.infernoreborn.contents.ability.Ability;
 import ttmp.infernoreborn.contents.ability.generator.AbilityGenerators;
 import ttmp.infernoreborn.contents.ability.generator.scheme.AbilityGeneratorScheme;
-import ttmp.infernoreborn.contents.Abilities;
 
 import javax.annotation.Nullable;
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.Set;
 
 public class SyncAbilityHolderMsg{
 	public static SyncAbilityHolderMsg read(PacketBuffer buf){
 		int entityId = buf.readInt();
-		Set<Ability> set = new HashSet<>();
+		Set<Ability> set = new LinkedHashSet<>();
 		for(int i = buf.readVarInt(); i>0; i--){
 			Ability ability = Abilities.getRegistry().getValue(buf.readVarInt());
 			if(ability!=null) set.add(ability);

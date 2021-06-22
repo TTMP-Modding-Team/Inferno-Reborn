@@ -3,8 +3,8 @@ package ttmp.infernoreborn.contents.ability.generator.node.action;
 import com.google.gson.JsonObject;
 import net.minecraft.entity.LivingEntity;
 import ttmp.infernoreborn.contents.ability.generator.node.Node;
-import ttmp.infernoreborn.contents.ability.generator.node.variable.SomeInteger;
 import ttmp.infernoreborn.contents.ability.generator.node.condition.Condition;
+import ttmp.infernoreborn.contents.ability.generator.node.variable.SomeInteger;
 import ttmp.infernoreborn.contents.ability.generator.parser.Parsers;
 import ttmp.infernoreborn.contents.ability.holder.AbilityHolder;
 
@@ -31,11 +31,15 @@ public abstract class Action implements Node{
 	}
 
 	public void act(LivingEntity entity, AbilityHolder holder){
-		if(condition!=null&&!condition.matches(entity, holder)) return;
+		if(!canAct(entity, holder)) return;
 		for(int i = 0, j = repeat!=null ? repeat.getInt(entity, holder) : 1; i<j; i++)
 			doAct(entity, holder);
 	}
 	protected abstract void doAct(LivingEntity entity, AbilityHolder holder);
+
+	public boolean canAct(LivingEntity entity, AbilityHolder holder){
+		return condition==null||condition.matches(entity, holder);
+	}
 
 	@Override public JsonObject serialize(){
 		JsonObject o = new JsonObject();

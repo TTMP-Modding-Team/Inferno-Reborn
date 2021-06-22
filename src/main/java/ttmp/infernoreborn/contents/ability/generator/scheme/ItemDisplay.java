@@ -6,56 +6,35 @@ import net.minecraft.util.JSONUtils;
 
 public final class ItemDisplay{
 	public static ItemDisplay parse(JsonObject object){
-		int primaryColor = JSONUtils.getAsInt(object, "primaryColor", 0xFFFFFF);
-		return new ItemDisplay(
-				primaryColor,
-				JSONUtils.getAsInt(object, "secondaryColor", 0xFFFFFF),
-				JSONUtils.getAsInt(object, "highlightColor", primaryColor)
-		);
+		return new ItemDisplay(JSONUtils.getAsInt(object, "color", 0xFFFFFF));
 	}
 	public static ItemDisplay read(PacketBuffer buf){
-		return new ItemDisplay(buf.readInt(), buf.readInt(), buf.readInt());
+		return new ItemDisplay(buf.readInt());
 	}
 
-	private final int primaryColor;
-	private final int secondaryColor;
-	private final int highlightColor;
+	private final int color;
 
-	public ItemDisplay(int primaryColor, int secondaryColor, int highlightColor){
-		this.primaryColor = primaryColor;
-		this.secondaryColor = secondaryColor;
-		this.highlightColor = highlightColor;
+	public ItemDisplay(int color){
+		this.color = color;
 	}
 
-	public int getPrimaryColor(){
-		return primaryColor;
-	}
-	public int getSecondaryColor(){
-		return secondaryColor;
-	}
-	public int getHighlightColor(){
-		return highlightColor;
+	public int getColor(){
+		return color;
 	}
 
 	public JsonObject serialize(){
 		JsonObject o = new JsonObject();
-		if(primaryColor!=0xFFFFFF) o.addProperty("primaryColor", primaryColor);
-		if(secondaryColor!=0xFFFFFF) o.addProperty("secondaryColor", secondaryColor);
-		if(highlightColor!=primaryColor) o.addProperty("highlightColor", highlightColor);
+		if(color!=0xFFFFFF) o.addProperty("color", color);
 		return o;
 	}
 
 	public void write(PacketBuffer buf){
-		buf.writeInt(primaryColor);
-		buf.writeInt(secondaryColor);
-		buf.writeInt(highlightColor);
+		buf.writeInt(color);
 	}
 
 	@Override public String toString(){
 		return "ItemDisplay{"+
-				"primaryColor="+primaryColor+
-				", secondaryColor="+secondaryColor+
-				", highlightColor="+highlightColor+
+				"color="+color+
 				'}';
 	}
 }

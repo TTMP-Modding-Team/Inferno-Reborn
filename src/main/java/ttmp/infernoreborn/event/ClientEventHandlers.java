@@ -1,6 +1,7 @@
 package ttmp.infernoreborn.event;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.util.math.EntityRayTraceResult;
@@ -10,9 +11,9 @@ import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
-import ttmp.infernoreborn.contents.ability.holder.ClientAbilityHolder;
 import ttmp.infernoreborn.capability.SimpleTickingTaskHandler;
 import ttmp.infernoreborn.capability.TickingTaskHandler;
+import ttmp.infernoreborn.contents.ability.holder.ClientAbilityHolder;
 
 import static ttmp.infernoreborn.InfernoReborn.MODID;
 
@@ -31,13 +32,16 @@ public final class ClientEventHandlers{
 		LivingEntity living = (LivingEntity)entity;
 		event.getLeft().add(entity.getDisplayName().getString()+" "+living.getHealth()+" / "+living.getMaxHealth());
 
+		living.getAttributes().getSyncableAttributes().stream()
+				.map(a -> a.getValue()+" "+I18n.get(a.getAttribute().getDescriptionId()))
+				.forEach(event.getRight()::add);
+
 		ClientAbilityHolder h = ClientAbilityHolder.of(entity);
 		if(h==null) return;
-		event.getLeft().add("Applied Generator Scheme: "+h.getAppliedGeneratorScheme());
+		event.getLeft().add("Applied Generator Scheme: "+(h.getAppliedGeneratorScheme()!=null ? h.getAppliedGeneratorScheme().getId() : "None"));
 		h.getAbilities().stream()
 				.map(ability -> ability.getName().getString())
-				.sorted(String::compareTo)
-				.forEach(s -> event.getLeft().add(s));
+				.forEach(event.getLeft()::add);
 	}
 
 	@SubscribeEvent

@@ -12,11 +12,29 @@
     {
       "give": {
         "infernoreborn:iron_skin": 2,
-        "infernoreborn:mud_skin": 1,
         "infernoreborn:rock_skin": 4,
-        "infernoreborn:wood_skin": 8,
+        "infernoreborn:wood_skin": 8
+      }
+    },
+    {
+      "repeat": {
+        "min": 1,
+        "max": 4
+      },
+      "give": {
+        "infernoreborn:eviolite_chansey": 1,
+        "infernoreborn:swiftness": 1,
+        "infernoreborn:bulletproof": 1,
+        "infernoreborn:toughness": 1,
+        "infernoreborn:vampire": 1,
+        "infernoreborn:mud_skin": 1,
         "infernoreborn:frozen_skin": 1,
-        "infernoreborn:woolly_skin": 1
+        "infernoreborn:survival_expert": 1,
+        "infernoreborn:thorn_skin": 1,
+        "infernoreborn:fuzzy_skin": 1,
+        "infernoreborn:the_brain": 1,
+        "infernoreborn:woolly_skin": 1,
+        "infernoreborn:crowd_control": 1
       }
     }
   ],

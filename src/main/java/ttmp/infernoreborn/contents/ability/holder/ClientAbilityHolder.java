@@ -8,12 +8,12 @@ import net.minecraft.util.Direction;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.common.util.LazyOptional;
+import ttmp.infernoreborn.capability.Caps;
 import ttmp.infernoreborn.contents.ability.Ability;
 import ttmp.infernoreborn.contents.ability.generator.scheme.AbilityGeneratorScheme;
-import ttmp.infernoreborn.capability.Caps;
 
 import javax.annotation.Nullable;
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.Random;
 import java.util.Set;
 
@@ -24,7 +24,7 @@ public class ClientAbilityHolder implements AbilityHolder, ICapabilityProvider{
 		return of instanceof ClientAbilityHolder ? (ClientAbilityHolder)of : null;
 	}
 
-	private final Set<Ability> abilities = new HashSet<>();
+	private final Set<Ability> abilities = new LinkedHashSet<>();
 
 	@Nullable private AbilityGeneratorScheme appliedGeneratorScheme;
 

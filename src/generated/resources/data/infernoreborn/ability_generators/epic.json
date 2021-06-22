@@ -1,0 +1,172 @@
+{
+  "choose": [
+    {
+      "do": [
+        {
+          "give": "infernoreborn:heart8"
+        },
+        {
+          "give": {
+            "infernoreborn:iron_skin": 2,
+            "infernoreborn:diamond_skin": 2,
+            "infernoreborn:netherite_skin": 1
+          }
+        },
+        {
+          "repeat": {
+            "min": 10,
+            "max": 12
+          },
+          "give": {
+            "infernoreborn:eviolite_chansey": 1,
+            "infernoreborn:swiftness": 1,
+            "infernoreborn:bulletproof": 1,
+            "infernoreborn:toughness": 1,
+            "infernoreborn:vampire": 1,
+            "infernoreborn:mud_skin": 1,
+            "infernoreborn:frozen_skin": 1,
+            "infernoreborn:survival_expert": 1,
+            "infernoreborn:thorn_skin": 1,
+            "infernoreborn:fuzzy_skin": 1,
+            "infernoreborn:the_brain": 1,
+            "infernoreborn:woolly_skin": 1,
+            "infernoreborn:crowd_control": 1
+          }
+        },
+        {
+          "repeat": {
+            "min": 5,
+            "max": 6
+          },
+          "give": {
+            "infernoreborn:guts": 1,
+            "infernoreborn:focus": 1,
+            "infernoreborn:aether_walker": 1,
+            "infernoreborn:health_kit": 1,
+            "infernoreborn:telekinesis": 1,
+            "infernoreborn:emperors_aura": 1,
+            "infernoreborn:magma_skin": 1,
+            "infernoreborn:thunderbolt": 1,
+            "infernoreborn:the_red": 1,
+            "infernoreborn:destiny_bond": 1
+          }
+        }
+      ]
+    },
+    {
+      "do": [
+        {
+          "give": "infernoreborn:heart9"
+        },
+        {
+          "give": {
+            "infernoreborn:iron_skin": 2,
+            "infernoreborn:diamond_skin": 2,
+            "infernoreborn:netherite_skin": 1
+          }
+        },
+        {
+          "repeat": {
+            "min": 8,
+            "max": 10
+          },
+          "give": {
+            "infernoreborn:eviolite_chansey": 1,
+            "infernoreborn:swiftness": 1,
+            "infernoreborn:bulletproof": 1,
+            "infernoreborn:toughness": 1,
+            "infernoreborn:vampire": 1,
+            "infernoreborn:mud_skin": 1,
+            "infernoreborn:frozen_skin": 1,
+            "infernoreborn:survival_expert": 1,
+            "infernoreborn:thorn_skin": 1,
+            "infernoreborn:fuzzy_skin": 1,
+            "infernoreborn:the_brain": 1,
+            "infernoreborn:woolly_skin": 1,
+            "infernoreborn:crowd_control": 1
+          }
+        },
+        {
+          "repeat": {
+            "min": 4,
+            "max": 6
+          },
+          "give": {
+            "infernoreborn:guts": 1,
+            "infernoreborn:focus": 1,
+            "infernoreborn:aether_walker": 1,
+            "infernoreborn:health_kit": 1,
+            "infernoreborn:telekinesis": 1,
+            "infernoreborn:emperors_aura": 1,
+            "infernoreborn:magma_skin": 1,
+            "infernoreborn:thunderbolt": 1,
+            "infernoreborn:the_red": 1,
+            "infernoreborn:destiny_bond": 1
+          }
+        }
+      ]
+    },
+    {
+      "do": [
+        {
+          "give": "infernoreborn:heart10"
+        },
+        {
+          "give": {
+            "infernoreborn:iron_skin": 2,
+            "infernoreborn:diamond_skin": 2,
+            "infernoreborn:netherite_skin": 1
+          }
+        },
+        {
+          "repeat": {
+            "min": 6,
+            "max": 8
+          },
+          "give": {
+            "infernoreborn:eviolite_chansey": 1,
+            "infernoreborn:swiftness": 1,
+            "infernoreborn:bulletproof": 1,
+            "infernoreborn:toughness": 1,
+            "infernoreborn:vampire": 1,
+            "infernoreborn:mud_skin": 1,
+            "infernoreborn:frozen_skin": 1,
+            "infernoreborn:survival_expert": 1,
+            "infernoreborn:thorn_skin": 1,
+            "infernoreborn:fuzzy_skin": 1,
+            "infernoreborn:the_brain": 1,
+            "infernoreborn:woolly_skin": 1,
+            "infernoreborn:crowd_control": 1
+          }
+        },
+        {
+          "repeat": {
+            "min": 3,
+            "max": 5
+          },
+          "give": {
+            "infernoreborn:guts": 1,
+            "infernoreborn:focus": 1,
+            "infernoreborn:aether_walker": 1,
+            "infernoreborn:health_kit": 1,
+            "infernoreborn:telekinesis": 1,
+            "infernoreborn:emperors_aura": 1,
+            "infernoreborn:magma_skin": 1,
+            "infernoreborn:thunderbolt": 1,
+            "infernoreborn:the_red": 1,
+            "infernoreborn:destiny_bond": 1
+          }
+        }
+      ]
+    }
+  ],
+  "specialEffect": {
+    "colors": [
+      0
+    ]
+  },
+  "itemDisplay": {
+    "color": 4473924
+  },
+  "weight": 1
+}

@@ -13,7 +13,7 @@ import net.minecraft.util.IntReferenceHolder;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fml.network.PacketDistributor;
 import ttmp.infernoreborn.capability.Caps;
-import ttmp.infernoreborn.capability.EssenceHolder;
+import ttmp.infernoreborn.util.EssenceHolder;
 import ttmp.infernoreborn.contents.ModContainers;
 import ttmp.infernoreborn.network.EssenceHolderScreenEssenceSyncMsg;
 import ttmp.infernoreborn.network.ModNet;

@@ -12,15 +12,14 @@ import net.minecraftforge.fml.network.NetworkDirection;
 import net.minecraftforge.fml.network.NetworkEvent;
 import net.minecraftforge.fml.network.NetworkRegistry;
 import net.minecraftforge.fml.network.simple.SimpleChannel;
-import ttmp.infernoreborn.InfernoReborn;
-import ttmp.infernoreborn.contents.ability.Ability;
-import ttmp.infernoreborn.contents.ability.generator.AbilityGenerators;
-import ttmp.infernoreborn.contents.ability.holder.ClientAbilityHolder;
-import ttmp.infernoreborn.capability.EssenceHolder;
 import ttmp.infernoreborn.capability.TickingTaskHandler;
 import ttmp.infernoreborn.client.ParticlePlacingTask;
 import ttmp.infernoreborn.client.screen.EssenceHolderScreen;
+import ttmp.infernoreborn.contents.ability.Ability;
+import ttmp.infernoreborn.contents.ability.generator.AbilityGenerators;
+import ttmp.infernoreborn.contents.ability.holder.ClientAbilityHolder;
 import ttmp.infernoreborn.contents.container.EssenceHolderContainer;
+import ttmp.infernoreborn.util.EssenceHolder;
 import ttmp.infernoreborn.util.EssenceType;
 
 import java.util.Optional;
@@ -89,7 +88,6 @@ public final class ModNet{
 		private Client(){}
 
 		public static void handleSyncAbilityGeneratorList(SyncAbilitySchemeMsg msg, Supplier<NetworkEvent.Context> ctx){
-			InfernoReborn.LOGGER.debug("Re-syncing ability schemes");
 			ctx.get().setPacketHandled(true);
 			ctx.get().enqueueWork(() -> AbilityGenerators.setSchemes(msg.getSchemes()));
 		}

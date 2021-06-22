@@ -1,0 +1,12 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    {
+      "item": "infernoreborn:death_essence_crystal"
+    }
+  ],
+  "result": {
+    "item": "infernoreborn:death_essence_shard",
+    "count": 9
+  }
+}

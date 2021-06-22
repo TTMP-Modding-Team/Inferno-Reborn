@@ -1,7 +1,7 @@
 package ttmp.infernoreborn.network;
 
 import net.minecraft.network.PacketBuffer;
-import ttmp.infernoreborn.capability.EssenceHolder;
+import ttmp.infernoreborn.util.EssenceHolder;
 import ttmp.infernoreborn.util.EssenceType;
 
 public class EssenceHolderScreenEssenceSyncMsg{

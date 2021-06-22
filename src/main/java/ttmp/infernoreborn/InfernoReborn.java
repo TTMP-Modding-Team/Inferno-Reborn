@@ -20,12 +20,12 @@ import net.minecraftforge.fml.event.lifecycle.GatherDataEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import ttmp.infernoreborn.capability.EssenceHolder;
 import ttmp.infernoreborn.capability.ShieldHolder;
 import ttmp.infernoreborn.capability.TickingTaskHandler;
-import ttmp.infernoreborn.client.EssenceHolderBookSparkColor;
-import ttmp.infernoreborn.client.ItemColorUtils;
-import ttmp.infernoreborn.client.PrimalInfernoSparkColor;
+import ttmp.infernoreborn.client.color.EssenceHolderBookSparkColor;
+import ttmp.infernoreborn.client.color.GeneratorInfernoSparkColor;
+import ttmp.infernoreborn.client.color.PrimalInfernoSparkColor;
+import ttmp.infernoreborn.client.color.SparkColor;
 import ttmp.infernoreborn.client.screen.EssenceHolderScreen;
 import ttmp.infernoreborn.client.screen.SigilEngravingTableScreen;
 import ttmp.infernoreborn.contents.Abilities;
@@ -37,11 +37,7 @@ import ttmp.infernoreborn.contents.ModItems;
 import ttmp.infernoreborn.contents.ModRecipes;
 import ttmp.infernoreborn.contents.ModTileEntities;
 import ttmp.infernoreborn.contents.Sigils;
-import ttmp.infernoreborn.contents.ability.Ability;
-import ttmp.infernoreborn.contents.ability.generator.scheme.AbilityGeneratorScheme;
 import ttmp.infernoreborn.contents.ability.holder.AbilityHolder;
-import ttmp.infernoreborn.contents.item.FixedAbilityItem;
-import ttmp.infernoreborn.contents.item.GeneratorAbilityItem;
 import ttmp.infernoreborn.contents.sigil.holder.SigilHolder;
 import ttmp.infernoreborn.datagen.AbilityGeneratorDataProvider;
 import ttmp.infernoreborn.datagen.BlockTagGen;
@@ -51,6 +47,7 @@ import ttmp.infernoreborn.datagen.ItemTagGen;
 import ttmp.infernoreborn.datagen.McmetaGen;
 import ttmp.infernoreborn.datagen.RecipeGen;
 import ttmp.infernoreborn.network.ModNet;
+import ttmp.infernoreborn.util.EssenceHolder;
 
 import javax.annotation.Nullable;
 
@@ -133,34 +130,8 @@ public class InfernoReborn{
 
 		@SubscribeEvent
 		public static void onItemColor(ColorHandlerEvent.Item event){
-			event.getItemColors().register((stack, layer) -> {
-				Ability[] abilities = FixedAbilityItem.getAbilities(stack);
-
-				switch(layer){
-					case 0:
-						return ItemColorUtils.getPrimaryColorBlend(abilities);
-					case 1:
-						return ItemColorUtils.getSecondaryColorBlend(abilities);
-					case 2:
-						return ItemColorUtils.getHighlightColorBlend(abilities);
-					default:
-						return -1;
-				}
-			}, ModItems.INFERNO_SPARK.get());
-			event.getItemColors().register((stack, layer) -> {
-				AbilityGeneratorScheme scheme = GeneratorAbilityItem.getScheme(stack);
-
-				switch(layer){
-					case 0:
-						return scheme==null||scheme.getItemDisplay()==null ? 0x3a3a3a : scheme.getItemDisplay().getPrimaryColor();
-					case 1:
-						return scheme==null||scheme.getItemDisplay()==null ? 0xff00ff : scheme.getItemDisplay().getSecondaryColor();
-					case 2:
-						return scheme==null||scheme.getItemDisplay()==null ? 0x3a3a3a : scheme.getItemDisplay().getHighlightColor();
-					default:
-						return -1;
-				}
-			}, ModItems.GENERATOR_INFERNO_SPARK.get());
+			event.getItemColors().register(new SparkColor(), ModItems.INFERNO_SPARK.get());
+			event.getItemColors().register(new GeneratorInfernoSparkColor(), ModItems.GENERATOR_INFERNO_SPARK.get());
 			event.getItemColors().register(new PrimalInfernoSparkColor(), ModItems.PRIMAL_INFERNO_SPARK.get());
 			event.getItemColors().register(new EssenceHolderBookSparkColor(), ModItems.BOOK_OF_THE_UNSPEAKABLE_COMBINED.get());
 		}

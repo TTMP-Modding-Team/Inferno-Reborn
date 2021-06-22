@@ -14,6 +14,10 @@ public final class ModEffects{
 
 	public static final DeferredRegister<Effect> REGISTER = DeferredRegister.create(ForgeRegistries.POTIONS, MODID);
 
-	public static final RegistryObject<Effect> BLOOD_FRENZY = REGISTER.register("blood_frenzy", () -> new Effect(EffectType.BENEFICIAL, 0xFFFFFF){}
+	public static final RegistryObject<Effect> BLOOD_FRENZY = REGISTER.register("blood_frenzy", () -> effect(EffectType.BENEFICIAL, 0xFFFFFF)
 			.addAttributeModifier(ModAttributes.REGENERATION.get(), "285f126c-14d4-48e7-a13d-443851d85b4c", 1.0/60, ADDITION));
+
+	private static Effect effect(EffectType effectType, int color){
+		return new Effect(effectType, color){};
+	}
 }

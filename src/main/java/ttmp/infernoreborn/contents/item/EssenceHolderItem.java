@@ -6,13 +6,17 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.ActionResult;
+import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
+import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
+import net.minecraftforge.common.capabilities.ICapabilitySerializable;
+import net.minecraftforge.common.util.LazyOptional;
 import ttmp.infernoreborn.capability.Caps;
-import ttmp.infernoreborn.capability.EssenceHolder;
+import ttmp.infernoreborn.util.EssenceHolder;
 import ttmp.infernoreborn.contents.container.EssenceHolderContainerProvider;
 import ttmp.infernoreborn.util.EssenceType;
 import ttmp.infernoreborn.util.ExpandKey;
@@ -26,7 +30,21 @@ public class EssenceHolderItem extends Item{
 	}
 
 	@Nullable @Override public ICapabilityProvider initCapabilities(ItemStack stack, @Nullable CompoundNBT nbt){
-		return new EssenceHolder();
+		return new ICapabilitySerializable<CompoundNBT>(){
+			private final EssenceHolder essenceHolder = new EssenceHolder();
+			private final LazyOptional<EssenceHolder> self = LazyOptional.of(() -> essenceHolder);
+
+			@Override public <T> LazyOptional<T> getCapability(Capability<T> cap, @Nullable Direction side){
+				return Caps.essenceHolder==cap ? self.cast() : LazyOptional.empty();
+			}
+
+			@Override public CompoundNBT serializeNBT(){
+				return essenceHolder.serializeNBT();
+			}
+			@Override public void deserializeNBT(CompoundNBT nbt){
+				essenceHolder.deserializeNBT(nbt);
+			}
+		};
 	}
 
 	@Override public ActionResult<ItemStack> use(World world, PlayerEntity player, Hand hand){

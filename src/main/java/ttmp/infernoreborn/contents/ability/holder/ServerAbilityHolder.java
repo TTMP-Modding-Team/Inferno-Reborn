@@ -20,6 +20,8 @@ import net.minecraftforge.event.entity.living.LivingAttackEvent;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import net.minecraftforge.fml.network.PacketDistributor;
+import ttmp.infernoreborn.capability.Caps;
+import ttmp.infernoreborn.contents.Abilities;
 import ttmp.infernoreborn.contents.ability.Ability;
 import ttmp.infernoreborn.contents.ability.AbilitySkill;
 import ttmp.infernoreborn.contents.ability.OnAbilityEvent;
@@ -30,8 +32,6 @@ import ttmp.infernoreborn.contents.ability.SkillCastingStateProvider;
 import ttmp.infernoreborn.contents.ability.generator.AbilityGenerator;
 import ttmp.infernoreborn.contents.ability.generator.AbilityGenerators;
 import ttmp.infernoreborn.contents.ability.generator.scheme.AbilityGeneratorScheme;
-import ttmp.infernoreborn.capability.Caps;
-import ttmp.infernoreborn.contents.Abilities;
 import ttmp.infernoreborn.network.ModNet;
 import ttmp.infernoreborn.network.SyncAbilityHolderMsg;
 import ttmp.infernoreborn.util.LazyPopulatedList;
@@ -40,6 +40,7 @@ import ttmp.infernoreborn.util.StupidUtils;
 import javax.annotation.Nullable;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.Set;
@@ -51,7 +52,7 @@ public class ServerAbilityHolder implements AbilityHolder, ICapabilitySerializab
 		return of instanceof ServerAbilityHolder ? (ServerAbilityHolder)of : null;
 	}
 
-	private final Set<Ability> abilities = new HashSet<>();
+	private final Set<Ability> abilities = new LinkedHashSet<>();
 	private final Set<Ability> addedAbilities = new HashSet<>();
 	private final Set<Ability> removedAbilities = new HashSet<>();
 	private final Set<Ability> abilitiesView = Collections.unmodifiableSet(abilities);
@@ -100,14 +101,20 @@ public class ServerAbilityHolder implements AbilityHolder, ICapabilitySerializab
 		return this.abilities.contains(ability);
 	}
 	@Override public boolean add(Ability ability){
-		return !this.abilities.contains(ability)&&addedAbilities.add(ability);
+		if(!this.abilities.add(ability)) return false;
+		if(!removedAbilities.remove(ability)) addedAbilities.add(ability);
+		return true;
 	}
 	@Override public boolean remove(Ability ability){
-		return this.abilities.contains(ability)&&removedAbilities.add(ability);
+		if(!this.abilities.remove(ability)) return false;
+		if(!addedAbilities.remove(ability)) removedAbilities.add(ability);
+		return true;
 	}
 	@Override public void clear(){
 		if(this.abilities.isEmpty()) return;
+		this.addedAbilities.clear();
 		this.removedAbilities.addAll(this.abilities);
+		this.abilities.clear();
 		this.appliedGeneratorScheme = null;
 	}
 
@@ -135,14 +142,8 @@ public class ServerAbilityHolder implements AbilityHolder, ICapabilitySerializab
 		if(!addedAbilities.isEmpty()||!removedAbilities.isEmpty()){
 			float maxHealth = entity.getMaxHealth();
 
-			for(Ability ability : addedAbilities){
-				if(abilities.add(ability))
-					onAbilityAdded(ability, entity);
-			}
-			for(Ability ability : removedAbilities){
-				if(abilities.remove(ability))
-					onAbilityRemoved(ability, entity);
-			}
+			for(Ability ability : addedAbilities) onAbilityAdded(ability, entity);
+			for(Ability ability : removedAbilities) onAbilityRemoved(ability, entity);
 			addedAbilities.clear();
 			removedAbilities.clear();
 
@@ -185,13 +186,16 @@ public class ServerAbilityHolder implements AbilityHolder, ICapabilitySerializab
 	}
 
 	public void syncAbilityToClient(LivingEntity entity){
-		ModNet.CHANNEL.send(PacketDistributor.TRACKING_ENTITY.with(() -> entity), new SyncAbilityHolderMsg(entity.getId(), abilities, appliedGeneratorScheme));
+		ModNet.CHANNEL.send(PacketDistributor.TRACKING_ENTITY.with(() -> entity),
+				new SyncAbilityHolderMsg(entity.getId(),
+						abilities,
+						appliedGeneratorScheme!=null&&appliedGeneratorScheme.getSpecialEffect()!=null ? appliedGeneratorScheme : null));
 	}
 
 	public void generate(LivingEntity entity, @Nullable AbilityGenerator generator){
 		clear();
-		if(generator==null) generator = AbilityGenerators.getWeightedPool().nextItem(entity.getRandom());
-		if(generator!=null) generator.generate(entity); // TODO target 체크 위로 밀어넣어야함
+		if(generator==null) generator = AbilityGenerators.getWeightedPool().nextItem(entity.getRandom(), g -> g.canGenerate(entity));
+		if(generator!=null) generator.generate(entity);
 		this.appliedGeneratorScheme = generator!=null ? generator.getScheme() : null;
 	}
 

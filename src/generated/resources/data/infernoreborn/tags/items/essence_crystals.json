@@ -3,9 +3,12 @@
   "values": [
     "infernoreborn:blood_essence_crystal",
     "infernoreborn:metal_essence_crystal",
-    "infernoreborn:frost_essence_crystal",
     "infernoreborn:earth_essence_crystal",
-    "infernoreborn:arcane_essence_crystal",
-    "infernoreborn:blaze_essence_crystal"
+    "infernoreborn:magic_essence_crystal",
+    "infernoreborn:fire_essence_crystal",
+    "infernoreborn:air_essence_crystal",
+    "infernoreborn:water_essence_crystal",
+    "infernoreborn:death_essence_crystal",
+    "infernoreborn:dominance_essence_crystal"
   ]
 }

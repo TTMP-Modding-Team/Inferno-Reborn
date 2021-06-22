@@ -56,7 +56,7 @@ public class CrimsonClaymoreItem extends SwordItem{ // TODO insta kill ability g
 			if(!(entity instanceof LivingEntity)) return;
 			EffectInstance effect = ((LivingEntity)entity).getEffect(ModEffects.BLOOD_FRENZY.get());
 			float damageBonus = getDamageBonus(stack);
-			float calculatedDamageBonus = effect!=null ? (effect.getAmplifier()+1)*3 : 0;
+			float calculatedDamageBonus = effect!=null ? (effect.getAmplifier()+1)*6 : 0;
 			if(damageBonus!=calculatedDamageBonus)
 				setDamageBonus(stack, calculatedDamageBonus);
 		}else setDamageBonus(stack, 0);
