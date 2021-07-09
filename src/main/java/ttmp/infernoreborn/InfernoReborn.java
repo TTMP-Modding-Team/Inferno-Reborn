@@ -1,5 +1,6 @@
 package ttmp.infernoreborn;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.ScreenManager;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.item.ItemModelsProperties;
@@ -12,6 +13,7 @@ import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityManager;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.client.registry.RenderingRegistry;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber.Bus;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
@@ -33,11 +35,14 @@ import ttmp.infernoreborn.contents.ModAttributes;
 import ttmp.infernoreborn.contents.ModBlocks;
 import ttmp.infernoreborn.contents.ModContainers;
 import ttmp.infernoreborn.contents.ModEffects;
+import ttmp.infernoreborn.contents.ModEntities;
 import ttmp.infernoreborn.contents.ModItems;
 import ttmp.infernoreborn.contents.ModRecipes;
 import ttmp.infernoreborn.contents.ModTileEntities;
 import ttmp.infernoreborn.contents.Sigils;
 import ttmp.infernoreborn.contents.ability.holder.AbilityHolder;
+import ttmp.infernoreborn.contents.entity.WindProjectileEntity;
+import ttmp.infernoreborn.contents.render.WindProjectileEntityRenderer;
 import ttmp.infernoreborn.contents.sigil.holder.SigilHolder;
 import ttmp.infernoreborn.datagen.AbilityGeneratorDataProvider;
 import ttmp.infernoreborn.datagen.BlockTagGen;
@@ -67,6 +72,7 @@ public class InfernoReborn{
 		ModItems.REGISTER.register(modEventBus);
 		ModRecipes.REGISTER.register(modEventBus);
 		ModTileEntities.REGISTER.register(modEventBus);
+		ModEntities.REGISTER.register(modEventBus);
 		Sigils.REGISTER.register(modEventBus);
 
 		ModNet.init();
@@ -126,6 +132,8 @@ public class InfernoReborn{
 				ItemModelsProperties.register(ModItems.EXPLOSIVE_SWORD.get(), new ResourceLocation("using"),
 						(stack, world, entity) -> entity!=null&&entity.isUsingItem()&&entity.getUseItem()==stack ? 1 : 0);
 			});
+			RenderingRegistry.registerEntityRenderingHandler(ModEntities.WIND_ENTITY.get(), WindProjectileEntityRenderer::new);
+
 		}
 
 		@SubscribeEvent

@@ -1,6 +1,12 @@
 package ttmp.infernoreborn.contents;
 
 import it.unimi.dsi.fastutil.objects.Object2LongMap;
+import net.minecraft.block.AbstractBlock;
+import net.minecraft.block.AnvilBlock;
+import net.minecraft.block.Block;
+import net.minecraft.block.BlockState;
+import net.minecraft.block.Blocks;
+import net.minecraft.data.BlockStateProvider;
 import net.minecraft.enchantment.ThornsEnchantment;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
@@ -8,14 +14,23 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.ai.attributes.AttributeModifier.Operation;
 import net.minecraft.entity.ai.attributes.Attributes;
 import net.minecraft.entity.effect.LightningBoltEntity;
+import net.minecraft.entity.item.FallingBlockEntity;
+import net.minecraft.entity.monster.BlazeEntity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.projectile.PotionEntity;
+import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
 import net.minecraft.particles.ParticleTypes;
 import net.minecraft.potion.EffectInstance;
 import net.minecraft.potion.Effects;
+import net.minecraft.potion.Potion;
+import net.minecraft.potion.PotionUtils;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.EntityDamageSource;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.World;
 import net.minecraftforge.event.RegistryEvent;
@@ -24,6 +39,7 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.RegistryObject;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber.Bus;
+import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.network.PacketDistributor;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistry;
@@ -39,6 +55,7 @@ import ttmp.infernoreborn.util.EssenceType;
 import ttmp.infernoreborn.util.LivingUtils;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.function.Supplier;
 
@@ -359,6 +376,35 @@ public final class Abilities{
 					.addAttribute(Attributes.ATTACK_DAMAGE, "4b220817-9f85-432f-9ce8-ac9d282b5d38", 2, Operation.MULTIPLY_BASE)
 					.addAttribute(Attributes.MAX_HEALTH, "1b071763-1bae-4c09-8c95-58c06629b9a3", 1.5, Operation.MULTIPLY_BASE)
 					.drops(EssenceType.DOMINANCE, 9*9)));
+
+	public static final RegistryObject<Ability> POISONED_MIND = REGISTER.register("poisoned_mind", () ->
+			new Ability(new Ability.Properties(0x00, 0x00)
+					.onDeath((entity, holder, event) -> {
+						Collection<Potion> potionCollection = GameRegistry.findRegistry(Potion.class).getValues();
+						Potion potion = potionCollection.toArray(new Potion[0])[entity.getRandom().nextInt(potionCollection.size())];
+						PotionEntity potionEntity = new PotionEntity(entity.level, entity);
+						potionEntity.setItem(PotionUtils.setPotion(new ItemStack(Items.SPLASH_POTION), potion));
+						Float xRot = (float)(entity.getRandom().nextDouble()*2*Math.PI);
+						potionEntity.setDeltaMovement(new Vector3d(MathHelper.sin(xRot), entity.getRandom().nextDouble()*0.5, MathHelper.cos(xRot)).normalize().multiply(.5, .5, .5));
+						entity.level.addFreshEntity(potionEntity);
+					}).drops(EssenceType.MAGIC, 9)));
+
+	public static final RegistryObject<Ability> DAE_KAE_MOB = REGISTER.register("dae_kae_mob", () ->
+			new Ability(new Ability.Properties(0xED1C27, 0x004EA1, 0x00A0E2)
+					.addTargetedSkill(10, 600, (entity, holder, target) -> {
+						World world = target.level;
+						Vector3d pos = target.position();
+						for(int i = 0; i<=20; i++){
+							if(!world.isEmptyBlock(target.blockPosition().above(i))){
+								FallingBlockEntity anvil = new FallingBlockEntity(world, pos.x()+.5D, pos.y()+20, pos.z()+.5D, Blocks.ANVIL.defaultBlockState());
+								anvil.cancelDrop = true;
+								anvil.time = 1;
+								world.addFreshEntity(anvil);
+								return true;
+							}
+						}
+						return false;
+					})));
 
 	@SubscribeEvent
 	public static void newRegistry(RegistryEvent.NewRegistry e){
