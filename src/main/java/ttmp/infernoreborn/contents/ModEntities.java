@@ -5,6 +5,7 @@ import net.minecraft.entity.EntityType;
 import net.minecraftforge.fml.RegistryObject;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
+import ttmp.infernoreborn.contents.entity.AnvilEntity;
 import ttmp.infernoreborn.contents.entity.WindProjectileEntity;
 
 import static ttmp.infernoreborn.InfernoReborn.MODID;
@@ -18,5 +19,9 @@ public final class ModEntities{
 			EntityType.Builder.<WindProjectileEntity>of(WindProjectileEntity::new, EntityClassification.MISC)
 					.sized(0.3125F, 0.3125F).clientTrackingRange(64).updateInterval(1)
 					.build("inferno_wind"));
+	public static final RegistryObject<EntityType<AnvilEntity>> ANVIL = REGISTER.register("anvil", () ->
+			EntityType.Builder.<AnvilEntity>of(AnvilEntity::new, EntityClassification.MISC)
+					.sized(0.3125F, 0.3125F).clientTrackingRange(64).updateInterval(1)
+					.build("inferno_anvil"));
 
 }

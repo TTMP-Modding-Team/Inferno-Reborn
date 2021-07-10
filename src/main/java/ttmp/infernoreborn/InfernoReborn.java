@@ -1,6 +1,5 @@
 package ttmp.infernoreborn;
 
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.ScreenManager;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.item.ItemModelsProperties;
@@ -41,7 +40,7 @@ import ttmp.infernoreborn.contents.ModRecipes;
 import ttmp.infernoreborn.contents.ModTileEntities;
 import ttmp.infernoreborn.contents.Sigils;
 import ttmp.infernoreborn.contents.ability.holder.AbilityHolder;
-import ttmp.infernoreborn.contents.entity.WindProjectileEntity;
+import ttmp.infernoreborn.contents.render.AnvilEntityRenderer;
 import ttmp.infernoreborn.contents.render.WindProjectileEntityRenderer;
 import ttmp.infernoreborn.contents.sigil.holder.SigilHolder;
 import ttmp.infernoreborn.datagen.AbilityGeneratorDataProvider;
@@ -133,6 +132,7 @@ public class InfernoReborn{
 						(stack, world, entity) -> entity!=null&&entity.isUsingItem()&&entity.getUseItem()==stack ? 1 : 0);
 			});
 			RenderingRegistry.registerEntityRenderingHandler(ModEntities.WIND_ENTITY.get(), WindProjectileEntityRenderer::new);
+			RenderingRegistry.registerEntityRenderingHandler(ModEntities.ANVIL.get(), AnvilEntityRenderer::new);
 
 		}
 
