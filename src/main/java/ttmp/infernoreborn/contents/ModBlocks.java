@@ -8,6 +8,7 @@ import net.minecraft.world.IBlockReader;
 import net.minecraftforge.fml.RegistryObject;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
+import ttmp.infernoreborn.contents.block.FoundryBlock;
 import ttmp.infernoreborn.contents.block.SigilEngravingTableBlock;
 import ttmp.infernoreborn.contents.tile.SigilEngravingTableTile;
 
@@ -33,6 +34,8 @@ public final class ModBlocks{
 			return SigilEngravingTableTile.new7x7();
 		}
 	});
+
+	public static final RegistryObject<Block> FOUNDRY = REGISTER.register("foundry", () -> new FoundryBlock(Properties.of(Material.STONE)));
 
 	public static final RegistryObject<Block> DAMASCUS_STEEL_BLOCK = REGISTER.register("damascus_steel_block", () -> new Block(Properties.of(Material.METAL)));
 }
