@@ -31,10 +31,8 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.RegistryObject;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber.Bus;
-import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.network.PacketDistributor;
 import net.minecraftforge.registries.DeferredRegister;
-import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.ForgeRegistry;
 import net.minecraftforge.registries.RegistryBuilder;
 import ttmp.infernoreborn.capability.TickingTaskHandler;
@@ -43,14 +41,16 @@ import ttmp.infernoreborn.contents.ability.AbilitySkill;
 import ttmp.infernoreborn.contents.ability.OnAbilityEvent;
 import ttmp.infernoreborn.contents.ability.SkillCastingStateProvider;
 import ttmp.infernoreborn.contents.entity.AnvilEntity;
+import ttmp.infernoreborn.contents.entity.wind.AbstractWindEntity;
+import ttmp.infernoreborn.contents.entity.wind.TestWindEntity;
 import ttmp.infernoreborn.network.ModNet;
 import ttmp.infernoreborn.network.ParticleMsg;
 import ttmp.infernoreborn.util.EssenceType;
 import ttmp.infernoreborn.util.LivingUtils;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
+import java.util.function.Function;
 import java.util.function.Supplier;
 
 import static ttmp.infernoreborn.InfernoReborn.MODID;
@@ -422,6 +422,23 @@ public final class Abilities{
 			if(hitEntity instanceof LivingEntity&&hitEntity.isAlive()&&!event.getSource().isProjectile()){
 				effect.apply(event, (LivingEntity)hitEntity);
 			}
+		};
+	}
+	private static AbilitySkill.SkillAction wind(Function<World, AbstractWindEntity> constructor, float velocity, float inaccuracy, int color){
+		return (entity, holder) -> {
+			AbstractWindEntity wind = constructor.apply(entity.level);
+			LivingEntity target = LivingUtils.getTarget(entity);
+			if(target==null) return false;
+			wind.setOwner(entity);
+			wind.setColor(color);
+			wind.setPos(entity.getX(), entity.getY(), entity.getZ());
+			double d0 = target.getX()-entity.getX();
+			double d1 = target.getY(0.3333333333333333D)-wind.getY();
+			double d2 = target.getZ()-entity.getZ();
+			double d3 = MathHelper.sqrt(d0*d0+d2*d2);
+			wind.shoot(d0, d1+d3*(double)0.2F, d2, velocity, inaccuracy);
+			entity.level.addFreshEntity(wind);
+			return true;
 		};
 	}
 

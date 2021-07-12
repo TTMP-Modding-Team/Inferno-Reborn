@@ -6,7 +6,7 @@ import net.minecraftforge.fml.RegistryObject;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import ttmp.infernoreborn.contents.entity.AnvilEntity;
-import ttmp.infernoreborn.contents.entity.WindProjectileEntity;
+import ttmp.infernoreborn.contents.entity.wind.TestWindEntity;
 
 import static ttmp.infernoreborn.InfernoReborn.MODID;
 
@@ -15,8 +15,12 @@ public final class ModEntities{
 
 	public static final DeferredRegister<EntityType<?>> REGISTER = DeferredRegister.create(ForgeRegistries.ENTITIES, MODID);
 
-	public static final RegistryObject<EntityType<WindProjectileEntity>> WIND_ENTITY = REGISTER.register("wind_entity", () ->
-			EntityType.Builder.<WindProjectileEntity>of(WindProjectileEntity::new, EntityClassification.MISC)
+	/*public static final RegistryObject<EntityType<WindEntity>> WIND_ENTITY = REGISTER.register("wind_entity", () ->
+			EntityType.Builder.<WindEntity>of(WindEntity::new, EntityClassification.MISC)
+					.sized(0.3125F, 0.3125F).clientTrackingRange(64).updateInterval(1)
+					.build("inferno_wind"));*/
+	public static final RegistryObject<EntityType<TestWindEntity>> TEST_WIND_ENTITY = REGISTER.register("test_wind_entity", () ->
+			EntityType.Builder.<TestWindEntity>of(TestWindEntity::new, EntityClassification.MISC)
 					.sized(0.3125F, 0.3125F).clientTrackingRange(64).updateInterval(1)
 					.build("inferno_wind"));
 	public static final RegistryObject<EntityType<AnvilEntity>> ANVIL = REGISTER.register("anvil", () ->

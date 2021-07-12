@@ -41,7 +41,7 @@ import ttmp.infernoreborn.contents.ModTileEntities;
 import ttmp.infernoreborn.contents.Sigils;
 import ttmp.infernoreborn.contents.ability.holder.AbilityHolder;
 import ttmp.infernoreborn.contents.render.AnvilEntityRenderer;
-import ttmp.infernoreborn.contents.render.WindProjectileEntityRenderer;
+import ttmp.infernoreborn.contents.render.WindEntityRenderer;
 import ttmp.infernoreborn.contents.sigil.holder.SigilHolder;
 import ttmp.infernoreborn.datagen.AbilityGeneratorDataProvider;
 import ttmp.infernoreborn.datagen.BlockTagGen;
@@ -131,7 +131,7 @@ public class InfernoReborn{
 				ItemModelsProperties.register(ModItems.EXPLOSIVE_SWORD.get(), new ResourceLocation("using"),
 						(stack, world, entity) -> entity!=null&&entity.isUsingItem()&&entity.getUseItem()==stack ? 1 : 0);
 			});
-			RenderingRegistry.registerEntityRenderingHandler(ModEntities.WIND_ENTITY.get(), WindProjectileEntityRenderer::new);
+			RenderingRegistry.registerEntityRenderingHandler(ModEntities.TEST_WIND_ENTITY.get(), WindEntityRenderer::new);
 			RenderingRegistry.registerEntityRenderingHandler(ModEntities.ANVIL.get(), AnvilEntityRenderer::new);
 
 		}
