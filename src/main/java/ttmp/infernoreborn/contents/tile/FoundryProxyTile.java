@@ -1,10 +1,16 @@
 package ttmp.infernoreborn.contents.tile;
 
 import net.minecraft.block.BlockState;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.inventory.container.Container;
+import net.minecraft.inventory.container.INamedContainerProvider;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
@@ -20,7 +26,7 @@ import java.util.Objects;
 
 import static net.minecraft.state.properties.BlockStateProperties.HORIZONTAL_FACING;
 
-public class FoundryProxyTile extends TileEntity{
+public class FoundryProxyTile extends TileEntity implements INamedContainerProvider{
 	public FoundryProxyTile(){
 		this(ModTileEntities.FOUNDRY_PROXY.get());
 	}
@@ -34,14 +40,8 @@ public class FoundryProxyTile extends TileEntity{
 	@Override public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable Direction side){
 		if(cap!=CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) return super.getCapability(cap, side);
 		if(itemLO==null||!itemLO.isPresent()||placeholder){
-			World level = getLevel();
-			if(level==null) return setPlaceholder();
-			BlockPos estimatedHeadPos = getEstimatedHeadPos();
-			if(!level.isLoaded(estimatedHeadPos)) return setPlaceholder();
-			TileEntity t = level.getBlockEntity(estimatedHeadPos);
-			if(!(t instanceof FoundryTile)) return setPlaceholder();
-
-			FoundryTile foundry = (FoundryTile)t;
+			FoundryTile foundry = findFoundry();
+			if(foundry==null) return setPlaceholder();
 			switch(getBlockState().getValue(FoundryBlock.PART)){
 				case B000_FIREBOX:
 				case B001_FIREBOX:
@@ -61,13 +61,25 @@ public class FoundryProxyTile extends TileEntity{
 		return itemLO.cast();
 	}
 
+	@Nullable private FoundryTile findFoundry(){
+		World level = getLevel();
+		if(level==null) return null;
+		BlockPos estimatedHeadPos = getEstimatedHeadPos();
+		if(!level.isLoaded(estimatedHeadPos)) return null;
+		TileEntity t = level.getBlockEntity(estimatedHeadPos);
+		return t instanceof FoundryTile ? (FoundryTile)t : null;
+	}
+
 	private BlockPos getEstimatedHeadPos(){
-		BlockPos pos = getBlockPos();
+		BlockPos.Mutable mpos = new BlockPos.Mutable();
+		mpos.set(getBlockPos());
 		BlockState state = getBlockState();
 		Direction dir = state.getValue(HORIZONTAL_FACING);
 		FoundryBlock.Part part = state.getValue(FoundryBlock.PART);
-		// TODO
-		return pos;
+		mpos.move(dir.getClockWise(), part.x);
+		mpos.move(Direction.DOWN, part.y);
+		mpos.move(dir, part.z);
+		return mpos;
 	}
 
 	private <T> LazyOptional<T> setPlaceholder(){
@@ -80,5 +92,13 @@ public class FoundryProxyTile extends TileEntity{
 
 	private static LazyOptional<IItemHandler> createPlaceholder(){
 		return LazyOptional.of(() -> EmptyHandler.INSTANCE);
+	}
+
+	@Override public ITextComponent getDisplayName(){
+		return new TranslationTextComponent("container.infernoreborn.foundry");
+	}
+	@Nullable @Override public Container createMenu(int id, PlayerInventory playerInventory, PlayerEntity player){
+		FoundryTile foundry = findFoundry();
+		return foundry!=null ? foundry.createMenu(id, playerInventory, player) : null;
 	}
 }

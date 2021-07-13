@@ -1,0 +1,22 @@
+{
+  "type": "infernoreborn:foundry",
+  "ingredients": [
+    {
+      "ingredient": {
+        "tag": "forge:ingots/iron"
+      }
+    },
+    {
+      "ingredient": {
+        "tag": "minecraft:coals"
+      },
+      "quantity": 4
+    }
+  ],
+  "essences": {
+    "metal": 9
+  },
+  "result": {
+    "item": "infernoreborn:damascus_steel_ingot"
+  }
+}

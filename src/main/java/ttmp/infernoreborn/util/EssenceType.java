@@ -1,6 +1,7 @@
 package ttmp.infernoreborn.util;
 
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
 
@@ -63,5 +64,15 @@ public enum EssenceType{
 			default:
 				throw new IllegalStateException("Unreachable");
 		}
+	}
+
+	public static boolean isEssenceItem(ItemStack stack){
+		return isEssenceItem(stack.getItem());
+	}
+	public static boolean isEssenceItem(Item item){
+		for(EssenceType t : EssenceType.values())
+			for(EssenceSize s : EssenceSize.values())
+				if(t.getItem(s)==item) return true;
+		return false;
 	}
 }

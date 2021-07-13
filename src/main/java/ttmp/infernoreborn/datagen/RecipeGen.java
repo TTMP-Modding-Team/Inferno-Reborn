@@ -6,12 +6,16 @@ import net.minecraft.data.IFinishedRecipe;
 import net.minecraft.data.RecipeProvider;
 import net.minecraft.data.ShapedRecipeBuilder;
 import net.minecraft.data.ShapelessRecipeBuilder;
+import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.item.crafting.Ingredient;
+import net.minecraft.tags.ItemTags;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.common.Tags;
 import ttmp.infernoreborn.contents.ModItems;
 import ttmp.infernoreborn.contents.ModRecipes;
 import ttmp.infernoreborn.contents.Sigils;
+import ttmp.infernoreborn.datagen.builder.FoundryRecipeBuilder;
 import ttmp.infernoreborn.datagen.builder.NotSoSpecialRecipeBuilder;
 import ttmp.infernoreborn.datagen.builder.ShapedSigilEngravingRecipeBuilder;
 import ttmp.infernoreborn.datagen.builder.ShapedSigilTableCraftingRecipeBuilder;
@@ -98,5 +102,17 @@ public class RecipeGen extends RecipeProvider{
 				.define('1', Ingredient.of(ModItems.BLOOD_ESSENCE_SHARD.get()))
 				.unlockedBy("fuck", has(ModItems.BLOOD_ESSENCE_SHARD.get()))
 				.save(consumer, new ResourceLocation(MODID, "sigil_engraving/test3"));
+
+		new FoundryRecipeBuilder(new ItemStack(ModItems.DAMASCUS_STEEL_INGOT.get()))
+				.ingredient(Ingredient.of(Tags.Items.INGOTS_IRON), 1)
+				.ingredient(Ingredient.of(ItemTags.COALS), 4)
+				.essence(EssenceType.METAL, 9)
+				.unlockedBy("iron", has(Tags.Items.INGOTS_IRON))
+				.save(consumer, new ResourceLocation(MODID, "foundry/damascus_steel_ingot"));
+		new FoundryRecipeBuilder(new ItemStack(Items.ACACIA_BOAT), new ItemStack(Items.COBBLESTONE, 5))
+				.ingredient(Ingredient.of(Items.BEDROCK), 1)
+				.essence(EssenceType.DEATH, 1)
+				.unlockedBy("bedrock", has(Items.BEDROCK))
+				.save(consumer, new ResourceLocation(MODID, "foundry/test"));
 	}
 }

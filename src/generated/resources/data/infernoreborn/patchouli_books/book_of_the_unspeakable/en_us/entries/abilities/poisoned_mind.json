@@ -1,0 +1,11 @@
+{
+  "name": "ability.infernoreborn.poisoned_mind",
+  "category": "infernoreborn:abilities",
+  "icon": "infernoreborn:inferno_spark{Abilities:[\"infernoreborn:poisoned_mind\"]}",
+  "pages": [
+    {
+      "type": "text",
+      "text": "text.infernoreborn.poisoned_mind.0"
+    }
+  ]
+}

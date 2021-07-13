@@ -2,7 +2,6 @@ package ttmp.infernoreborn.contents.block;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
-import net.minecraft.block.HorizontalBlock;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.state.EnumProperty;
 import net.minecraft.state.StateContainer;
@@ -39,15 +38,19 @@ public class FoundryBlock extends Block{
 		return state.getValue(PART)==Part.B000_FIREBOX ? new FoundryTile() : new FoundryProxyTile();
 	}
 
-
 	@SuppressWarnings("deprecation")
 	@Override
 	public ActionResultType use(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult result){
-		if(!world.isClientSide){
-			TileEntity blockEntity = world.getBlockEntity(pos);
-
+		if(world.isClientSide) return ActionResultType.SUCCESS;
+		TileEntity te = world.getBlockEntity(pos);
+		if(state.getValue(PART)==Part.B000_FIREBOX){
+			if(!(te instanceof FoundryTile)) return ActionResultType.CONSUME;
+			player.openMenu((FoundryTile)te);
+		}else{
+			if(!(te instanceof FoundryProxyTile)) return ActionResultType.CONSUME;
+			player.openMenu((FoundryProxyTile)te);
 		}
-		return ActionResultType.SUCCESS;
+		return ActionResultType.CONSUME;
 	}
 
 	public enum Part implements IStringSerializable{

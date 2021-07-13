@@ -9,6 +9,7 @@ import net.minecraftforge.registries.ForgeRegistries;
 import ttmp.infernoreborn.contents.recipe.ApplySigilRecipe;
 import ttmp.infernoreborn.contents.recipe.CombineSparkRecipe;
 import ttmp.infernoreborn.contents.recipe.EssenceHolderBookRecipe;
+import ttmp.infernoreborn.contents.recipe.foundry.FoundryRecipe;
 import ttmp.infernoreborn.contents.recipe.sigilcraft.ShapedSigilEngravingRecipe;
 import ttmp.infernoreborn.contents.recipe.sigilcraft.ShapedSigilTableCraftingRecipe;
 import ttmp.infernoreborn.contents.recipe.sigilcraft.SigilcraftRecipe;
@@ -19,6 +20,7 @@ public final class ModRecipes{
 	private ModRecipes(){}
 
 	public static final IRecipeType<SigilcraftRecipe> SIGILCRAFT_RECIPE_TYPE = IRecipeType.register(MODID+":sigilcraft");
+	public static final IRecipeType<FoundryRecipe> FOUNDRY_RECIPE_TYPE = IRecipeType.register(MODID+":foundry");
 
 	public static final DeferredRegister<IRecipeSerializer<?>> REGISTER = DeferredRegister.create(ForgeRegistries.RECIPE_SERIALIZERS, MODID);
 
@@ -28,4 +30,6 @@ public final class ModRecipes{
 
 	public static final RegistryObject<IRecipeSerializer<ShapedSigilTableCraftingRecipe>> SHAPED_SIGIL_TABLE_CRAFTING = REGISTER.register("shaped_sigil_table_crafting", ShapedSigilTableCraftingRecipe.Serializer::new);
 	public static final RegistryObject<IRecipeSerializer<ShapedSigilEngravingRecipe>> SHAPED_SIGIL_ENGRAVING = REGISTER.register("shaped_sigil_engraving", ShapedSigilEngravingRecipe.Serializer::new);
+
+	public static final RegistryObject<IRecipeSerializer<FoundryRecipe>> FOUNDRY = REGISTER.register("foundry", FoundryRecipe.Serializer::new);
 }
