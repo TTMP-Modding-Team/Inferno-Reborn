@@ -132,6 +132,8 @@ public class InfernoReborn{
 						(stack, world, entity) -> entity!=null&&entity.isUsingItem()&&entity.getUseItem()==stack ? 1 : 0);
 			});
 			RenderingRegistry.registerEntityRenderingHandler(ModEntities.TEST_WIND_ENTITY.get(), WindEntityRenderer::new);
+			RenderingRegistry.registerEntityRenderingHandler(ModEntities.DAMAGING_WIND_ENTITY.get(), WindEntityRenderer::new);
+			RenderingRegistry.registerEntityRenderingHandler(ModEntities.EFFECT_WIND_ENTITY.get(), WindEntityRenderer::new);
 			RenderingRegistry.registerEntityRenderingHandler(ModEntities.ANVIL.get(), AnvilEntityRenderer::new);
 
 		}
