@@ -1,0 +1,11 @@
+{
+  "name": "ability.infernoreborn.evil_trick",
+  "category": "infernoreborn:abilities",
+  "icon": "infernoreborn:inferno_spark{Abilities:[\"infernoreborn:evil_trick\"]}",
+  "pages": [
+    {
+      "type": "text",
+      "text": "text.infernoreborn.evil_trick.0"
+    }
+  ]
+}

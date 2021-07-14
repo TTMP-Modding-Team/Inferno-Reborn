@@ -1,4 +1,4 @@
-package ttmp.infernoreborn.contents.container;
+package ttmp.infernoreborn.inventory;
 
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;

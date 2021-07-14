@@ -1,0 +1,21 @@
+{
+  "type": "infernoreborn:foundry",
+  "ingredients": [
+    {
+      "ingredient": {
+        "item": "minecraft:bedrock"
+      }
+    }
+  ],
+  "essences": {
+    "death": 1
+  },
+  "processingTime": 100,
+  "result": {
+    "item": "minecraft:acacia_boat"
+  },
+  "byproduct": {
+    "item": "minecraft:cobblestone",
+    "count": 5
+  }
+}

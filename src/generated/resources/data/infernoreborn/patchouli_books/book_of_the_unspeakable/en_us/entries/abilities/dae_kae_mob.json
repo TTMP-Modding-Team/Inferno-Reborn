@@ -1,0 +1,11 @@
+{
+  "name": "ability.infernoreborn.dae_kae_mob",
+  "category": "infernoreborn:abilities",
+  "icon": "infernoreborn:inferno_spark{Abilities:[\"infernoreborn:dae_kae_mob\"]}",
+  "pages": [
+    {
+      "type": "text",
+      "text": "text.infernoreborn.dae_kae_mob.0"
+    }
+  ]
+}

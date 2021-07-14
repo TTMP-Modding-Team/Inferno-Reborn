@@ -5,21 +5,27 @@ import net.minecraftforge.common.util.INBTSerializable;
 
 import java.util.Arrays;
 
-public class EssenceHolder implements INBTSerializable<CompoundNBT>{
-	public static final int MAX = Integer.MAX_VALUE;
-
+public final class EssenceHolder implements INBTSerializable<CompoundNBT>{
 	private final int[] essences = new int[EssenceType.values().length];
+	private final int max;
+
+	public EssenceHolder(){
+		this(Integer.MAX_VALUE);
+	}
+	public EssenceHolder(int max){
+		this.max = max;
+	}
 
 	public int getEssence(EssenceType type){
 		return essences[type.ordinal()];
 	}
 	public void setEssence(EssenceType type, int essence){
-		this.essences[type.ordinal()] = Math.max(0, essence);
+		this.essences[type.ordinal()] = Math.min(Math.max(0, essence), max);
 	}
 
 	public int insertEssence(EssenceType type, int essence, boolean simulate){
 		if(essence<=0) return essence;
-		int toInsert = Math.min(MAX-this.essences[type.ordinal()], essence);
+		int toInsert = Math.min(max-this.essences[type.ordinal()], essence);
 		if(!simulate) this.essences[type.ordinal()] += toInsert;
 		return toInsert;
 	}
@@ -28,6 +34,33 @@ public class EssenceHolder implements INBTSerializable<CompoundNBT>{
 		int toExtract = Math.min(this.essences[type.ordinal()], essence);
 		if(!simulate) this.essences[type.ordinal()] -= toExtract;
 		return toExtract;
+	}
+
+	public boolean insertEssences(EssenceHolder holder, boolean simulate){
+		for(EssenceType type : EssenceType.values()){
+			int essence = holder.getEssence(type);
+			if(essence>0&&insertEssence(type, essence, true)!=essence) return false;
+		}
+		if(!simulate){
+			for(EssenceType type : EssenceType.values()){
+				int essence = holder.getEssence(type);
+				if(essence>0) insertEssence(type, essence, false);
+			}
+		}
+		return true;
+	}
+	public boolean extractEssences(EssenceHolder holder, boolean simulate){
+		for(EssenceType type : EssenceType.values()){
+			int essence = holder.getEssence(type);
+			if(essence>0&&extractEssence(type, essence, true)!=essence) return false;
+		}
+		if(!simulate){
+			for(EssenceType type : EssenceType.values()){
+				int essence = holder.getEssence(type);
+				if(essence>0) extractEssence(type, essence, false);
+			}
+		}
+		return true;
 	}
 
 	public boolean isEmpty(){

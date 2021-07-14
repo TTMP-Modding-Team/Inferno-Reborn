@@ -122,11 +122,7 @@ public class ShapedSigilTableCraftingRecipeBuilder{
 				jsonobject.add(String.valueOf(e.getKey()), e.getValue().toJson());
 
 			o.add("key", jsonobject);
-			JsonObject result = new JsonObject();
-			result.addProperty("item", Objects.requireNonNull(this.result.getRegistryName()).toString());
-			if(this.count>1) result.addProperty("count", this.count);
-
-			o.add("result", result);
+			o.add("result", BuilderUtils.result(this.result, this.count));
 			o.addProperty("center", center);
 		}
 

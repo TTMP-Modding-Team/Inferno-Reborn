@@ -1,0 +1,11 @@
+{
+  "name": "ability.infernoreborn.freeze_wave",
+  "category": "infernoreborn:abilities",
+  "icon": "infernoreborn:inferno_spark{Abilities:[\"infernoreborn:freeze_wave\"]}",
+  "pages": [
+    {
+      "type": "text",
+      "text": "text.infernoreborn.freeze_wave.0"
+    }
+  ]
+}

@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "rewards": {
+    "recipes": [
+      "infernoreborn:foundry/test"
+    ]
+  },
+  "criteria": {
+    "bedrock": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "item": "minecraft:bedrock"
+          }
+        ]
+      }
+    },
+    "has_the_recipe": {
+      "trigger": "minecraft:recipe_unlocked",
+      "conditions": {
+        "recipe": "infernoreborn:foundry/test"
+      }
+    }
+  },
+  "requirements": [
+    [
+      "bedrock",
+      "has_the_recipe"
+    ]
+  ]
+}

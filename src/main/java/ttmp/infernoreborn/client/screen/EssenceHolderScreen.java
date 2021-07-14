@@ -11,7 +11,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextFormatting;
 import ttmp.infernoreborn.contents.container.EssenceHolderContainer;
-import ttmp.infernoreborn.contents.container.EssenceHolderItemHandler;
+import ttmp.infernoreborn.inventory.EssenceHolderItemHandler;
 import ttmp.infernoreborn.network.EssenceHolderSlotClickMsg;
 import ttmp.infernoreborn.network.ModNet;
 
