@@ -1,0 +1,23 @@
+{
+  "variants": {
+    "facing=north": {
+      "model": "infernoreborn:block/foundry/grate",
+      "y": 180,
+      "uvlock": true
+    },
+    "facing=south": {
+      "model": "infernoreborn:block/foundry/grate",
+      "uvlock": true
+    },
+    "facing=west": {
+      "model": "infernoreborn:block/foundry/grate",
+      "y": 90,
+      "uvlock": true
+    },
+    "facing=east": {
+      "model": "infernoreborn:block/foundry/grate",
+      "y": 270,
+      "uvlock": true
+    }
+  }
+}

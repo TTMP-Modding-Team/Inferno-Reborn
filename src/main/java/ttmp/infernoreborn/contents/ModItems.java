@@ -17,6 +17,7 @@ import ttmp.infernoreborn.contents.item.EssenceHolderBookItem;
 import ttmp.infernoreborn.contents.item.EssenceHolderItem;
 import ttmp.infernoreborn.contents.item.ExplosiveSwordItem;
 import ttmp.infernoreborn.contents.item.FixedAbilityItem;
+import ttmp.infernoreborn.contents.item.FoundryBlockItem;
 import ttmp.infernoreborn.contents.item.GeneratorAbilityItem;
 import ttmp.infernoreborn.contents.item.RandomAbilityItem;
 import ttmp.infernoreborn.contents.item.SigilItem;
@@ -143,6 +144,9 @@ public final class ModItems{
 	public static final RegistryObject<Item> DAMASCUS_STEEL_INGOT = REGISTER.register("damascus_steel_ingot", () -> new Item(materials(Rarity.UNCOMMON)));
 	public static final RegistryObject<Item> DAMASCUS_STEEL_NUGGET = REGISTER.register("damascus_steel_nugget", () -> new Item(materials(Rarity.UNCOMMON)));
 	public static final RegistryObject<BlockItem> DAMASCUS_STEEL_BLOCK = REGISTER.register("damascus_steel_block", () -> new BlockItem(ModBlocks.DAMASCUS_STEEL_BLOCK.get(), materials(Rarity.UNCOMMON)));
+
+	public static final RegistryObject<Item> FOUNDRY_TILE = REGISTER.register("foundry_tile", () -> new BlockItem(ModBlocks.FOUNDRY_TILE.get(), artifacts()));
+	public static final RegistryObject<Item> FOUNDRY = REGISTER.register("foundry", () -> new FoundryBlockItem(ModBlocks.FOUNDRY.get(), artifacts()));
 
 	public static final RegistryObject<Item> TEST_SIGIL = REGISTER.register("test_sigil", () -> new SigilItem(Sigils.TEST, sigils()));
 	public static final RegistryObject<Item> TEST_SIGIL_2 = REGISTER.register("test_sigil_2", () -> new SigilItem(Sigils.TEST2, sigils()));

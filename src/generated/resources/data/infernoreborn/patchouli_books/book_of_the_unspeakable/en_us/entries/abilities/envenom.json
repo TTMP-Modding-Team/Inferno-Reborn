@@ -1,0 +1,11 @@
+{
+  "name": "ability.infernoreborn.envenom",
+  "category": "infernoreborn:abilities",
+  "icon": "infernoreborn:inferno_spark{Abilities:[\"infernoreborn:envenom\"]}",
+  "pages": [
+    {
+      "type": "text",
+      "text": "text.infernoreborn.envenom.0"
+    }
+  ]
+}

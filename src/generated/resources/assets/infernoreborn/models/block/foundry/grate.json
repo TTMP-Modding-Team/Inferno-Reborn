@@ -1,0 +1,12 @@
+{
+  "parent": "minecraft:block/cube",
+  "textures": {
+    "down": "infernoreborn:block/foundry/tile",
+    "up": "infernoreborn:block/foundry/tile",
+    "north": "infernoreborn:block/foundry/grate",
+    "south": "infernoreborn:block/foundry/grate",
+    "east": "infernoreborn:block/foundry/tile",
+    "west": "infernoreborn:block/foundry/grate",
+    "particle": "infernoreborn:block/foundry/tile"
+  }
+}

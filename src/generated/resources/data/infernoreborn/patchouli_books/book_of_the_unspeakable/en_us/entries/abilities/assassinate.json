@@ -1,0 +1,11 @@
+{
+  "name": "ability.infernoreborn.assassinate",
+  "category": "infernoreborn:abilities",
+  "icon": "infernoreborn:inferno_spark{Abilities:[\"infernoreborn:assassinate\"]}",
+  "pages": [
+    {
+      "type": "text",
+      "text": "text.infernoreborn.assassinate.0"
+    }
+  ]
+}

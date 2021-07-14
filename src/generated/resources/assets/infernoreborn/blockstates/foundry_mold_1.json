@@ -1,0 +1,19 @@
+{
+  "variants": {
+    "facing=north": {
+      "model": "infernoreborn:block/foundry/mold_1",
+      "y": 90
+    },
+    "facing=south": {
+      "model": "infernoreborn:block/foundry/mold_1",
+      "y": -90
+    },
+    "facing=west": {
+      "model": "infernoreborn:block/foundry/mold_1"
+    },
+    "facing=east": {
+      "model": "infernoreborn:block/foundry/mold_1",
+      "y": 180
+    }
+  }
+}

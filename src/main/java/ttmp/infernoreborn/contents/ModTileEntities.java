@@ -25,6 +25,10 @@ public final class ModTileEntities{
 
 	public static final RegistryObject<TileEntityType<FoundryTile>> FOUNDRY = REGISTER.register("foundry", () ->
 			TileEntityType.Builder.of(FoundryTile::new, ModBlocks.FOUNDRY.get()).build(null));
-	public static final RegistryObject<TileEntityType<FoundryProxyTile>> FOUNDRY_PROXY = REGISTER.register("foundry_proxy", () ->
-			TileEntityType.Builder.of(FoundryProxyTile::new, ModBlocks.FOUNDRY.get()).build(null));
+	public static final RegistryObject<TileEntityType<FoundryProxyTile>> FOUNDRY_FIREBOX_PROXY = REGISTER.register("foundry_firebox_proxy", () ->
+			TileEntityType.Builder.of(FoundryProxyTile::fireboxProxy, ModBlocks.FOUNDRY_FIREBOX.get()).build(null));
+	public static final RegistryObject<TileEntityType<FoundryProxyTile>> FOUNDRY_GRATE_PROXY = REGISTER.register("foundry_grate_proxy", () ->
+			TileEntityType.Builder.of(FoundryProxyTile::grateProxy, ModBlocks.FOUNDRY_GRATE_1.get(), ModBlocks.FOUNDRY_GRATE_2.get()).build(null));
+	public static final RegistryObject<TileEntityType<FoundryProxyTile>> FOUNDRY_MOLD_PROXY = REGISTER.register("foundry_mold_proxy", () ->
+			TileEntityType.Builder.of(FoundryProxyTile::moldProxy, ModBlocks.FOUNDRY_MOLD_1.get(), ModBlocks.FOUNDRY_MOLD_2.get()).build(null));
 }

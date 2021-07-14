@@ -3,6 +3,7 @@ package ttmp.infernoreborn.contents.tile;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.inventory.InventoryHelper;
 import net.minecraft.inventory.container.Container;
 import net.minecraft.inventory.container.INamedContainerProvider;
 import net.minecraft.item.ItemStack;
@@ -14,12 +15,13 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
-import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.common.util.LazyOptional;
+import net.minecraftforge.fml.server.ServerLifecycleHooks;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.IItemHandlerModifiable;
@@ -62,8 +64,22 @@ public class FoundryTile extends TileEntity implements ITickableTileEntity, INam
 		super(type);
 	}
 
+	@Nullable public FoundryRecipe getCurrentRecipe(){
+		return currentRecipe;
+	}
 	public int getProcess(){
 		return process;
+	}
+
+	public void dropAllContents(){
+		BlockPos pos = getBlockPos();
+		for(int i = 0; i<inv.getSlots(); i++){
+			ItemStack stackInSlot = inv.getStackInSlot(i);
+			if(!stackInSlot.isEmpty()){
+				InventoryHelper.dropItemStack(Objects.requireNonNull(getLevel()), pos.getX(), pos.getY(), pos.getZ(), stackInSlot);
+				inv.setStackInSlot(i, ItemStack.EMPTY);
+			}
+		}
 	}
 
 	@Override public void tick(){
@@ -86,23 +102,24 @@ public class FoundryTile extends TileEntity implements ITickableTileEntity, INam
 		if(currentRecipe!=null){
 			if(process<currentRecipe.getProcessingTime()) process++;
 			if(process>=currentRecipe.getProcessingTime()){
-				if(insertItems(currentRecipe, false)) updateCurrentRecipe();
+				if(insertItems(currentRecipe, false)) searchRecipe();
 			}
-		}
+		}else searchRecipe();
 	}
 
-	private void updateCurrentRecipe(){
+	private void searchRecipe(){
+		this.process = 0;
+		if(inv.getStackInSlot(INPUT_SLOT_1).isEmpty()&&inv.getStackInSlot(INPUT_SLOT_2).isEmpty()) return;
 		MinecraftServer server = Objects.requireNonNull(level).getServer();
 		if(server==null){
 			InfernoReborn.LOGGER.warn("Foundry is trying to search for recipes in client side!");
 			return;
 		}
-		this.process = 0;
 
 		if(currentRecipe!=null)
 			if(startIfCanHandleResult(currentRecipe)) return;
 		for(FoundryRecipe r : server.getRecipeManager().getRecipesFor(ModRecipes.FOUNDRY_RECIPE_TYPE, foundryInventory, level))
-			if(startIfCanHandleResult(r)) return;
+			if(r!=currentRecipe&&startIfCanHandleResult(r)) return;
 
 		this.currentRecipe = null;
 	}
@@ -115,70 +132,22 @@ public class FoundryTile extends TileEntity implements ITickableTileEntity, INam
 	}
 
 	private boolean insertItems(FoundryRecipe recipe, boolean simulate){
-		int[] insertions = new int[2];
-		ItemStack result = recipe.getResultItem();
-		int resultLeft = result.getCount();
-		ItemStack byproduct = recipe.getByproduct();
-		int byproductLeft = byproduct.getCount();
+		ItemStackHandler ish = new ItemStackHandler(2);
+		ish.setStackInSlot(0, inv.getStackInSlot(OUTPUT_SLOT_1).copy());
+		ish.setStackInSlot(1, inv.getStackInSlot(OUTPUT_SLOT_2).copy());
+		ItemStack result = recipe.getResultItem().copy();
+		ItemStack byproduct = recipe.getByproduct().copy();
 
-		for(int i = 0; i<insertions.length; i++){
-			int slot = i+OUTPUT_SLOT_1;
-
-			int inserted = simulateInsert(slot, result, resultLeft, insertions[i]);
-			if(inserted>0){
-				insertions[i] += inserted;
-				resultLeft -= inserted;
-			}
-			inserted = simulateInsert(slot, byproduct, byproductLeft, insertions[i]);
-			if(inserted>0){
-				insertions[i] += inserted;
-				byproductLeft -= inserted;
-			}
+		for(int i = 0; i<ish.getSlots(); i++){
+			result = ish.insertItem(i, result, false);
+			byproduct = ish.insertItem(i, byproduct, false);
 		}
-		if(resultLeft>0||byproductLeft>0) return false;
+		if(!result.isEmpty()||!byproduct.isEmpty()) return false;
 		if(!simulate){
-			resultLeft = result.getCount();
-			byproductLeft = byproduct.getCount();
-
-			for(int i = 0; i<insertions.length; i++){
-				int slot = i+OUTPUT_SLOT_1;
-
-				int inserted = insert(slot, result, resultLeft);
-				if(inserted>0){
-					resultLeft -= inserted;
-				}
-				inserted = insert(slot, byproduct, byproductLeft);
-				if(inserted>0){
-					byproductLeft -= inserted;
-				}
-			}
-			if(resultLeft>0||byproductLeft>0){
-				InfernoReborn.LOGGER.error("Failed to insert result items into Foundry inventory, resultLeft = {}, byproductLeft = {}", resultLeft, byproductLeft);
-			}
+			inv.setStackInSlot(OUTPUT_SLOT_1, ish.getStackInSlot(0));
+			inv.setStackInSlot(OUTPUT_SLOT_2, ish.getStackInSlot(1));
 		}
 		return true;
-	}
-
-	private int simulateInsert(int slot, ItemStack stack, int amountToInsert, int amountInserted){
-		if(amountToInsert<=0) return 0;
-		ItemStack stackInSlot = inv.getStackInSlot(slot);
-		if(stackInSlot.isEmpty()) return amountToInsert;
-		else if(!Container.consideredTheSameItem(stackInSlot, stack)) return 0;
-		return Math.min(amountToInsert, stackInSlot.getMaxStackSize()-stackInSlot.getCount()-amountInserted);
-	}
-
-	private int insert(int slot, ItemStack stack, int amountToInsert){
-		if(amountToInsert<=0) return 0;
-		ItemStack stackInSlot = inv.getStackInSlot(slot);
-		if(stackInSlot.isEmpty()){
-			ItemStack copy = stack.copy();
-			copy.setCount(amountToInsert);
-			inv.setStackInSlot(slot, copy);
-			return amountToInsert;
-		}else if(!Container.consideredTheSameItem(stackInSlot, stack)) return 0;
-		int toInsert = Math.min(amountToInsert, stackInSlot.getMaxStackSize()-stackInSlot.getCount());
-		stackInSlot.grow(toInsert);
-		return toInsert;
 	}
 
 	@Nullable private IItemHandler essenceInput;
@@ -186,15 +155,27 @@ public class FoundryTile extends TileEntity implements ITickableTileEntity, INam
 	@Nullable private IItemHandler output;
 
 	public IItemHandler getEssenceInput(){
-		if(essenceInput==null) essenceInput = new RangedWrapper(inv, ESSENCE_INPUT_SLOT, ESSENCE_INPUT_SLOT+1);
+		if(essenceInput==null) essenceInput = new RangedWrapper(inv, ESSENCE_INPUT_SLOT, ESSENCE_INPUT_SLOT+1){
+			@Override public ItemStack extractItem(int slot, int amount, boolean simulate){
+				return ItemStack.EMPTY;
+			}
+		};
 		return essenceInput;
 	}
 	public IItemHandler getInput(){
-		if(input==null) input = new RangedWrapper(inv, INPUT_SLOT_1, INPUT_SLOT_2+1);
+		if(input==null) input = new RangedWrapper(inv, INPUT_SLOT_1, INPUT_SLOT_2+1){
+			@Override public ItemStack extractItem(int slot, int amount, boolean simulate){
+				return ItemStack.EMPTY;
+			}
+		};
 		return input;
 	}
 	public IItemHandler getOutput(){
-		if(output==null) output = new RangedWrapper(inv, OUTPUT_SLOT_1, OUTPUT_SLOT_2+1);
+		if(output==null) output = new RangedWrapper(inv, OUTPUT_SLOT_1, OUTPUT_SLOT_2+1){
+			@Override public ItemStack insertItem(int slot, ItemStack stack, boolean simulate){
+				return stack;
+			}
+		};
 		return output;
 	}
 
@@ -241,9 +222,7 @@ public class FoundryTile extends TileEntity implements ITickableTileEntity, INam
 	}
 
 	@Nullable private FoundryRecipe getFoundryRecipe(ResourceLocation id){
-		World level = getLevel();
-		if(level==null) return null;
-		MinecraftServer server = level.getServer();
+		MinecraftServer server = ServerLifecycleHooks.getCurrentServer();
 		if(server==null) return null;
 		IRecipe<?> r = server.getRecipeManager().byKey(id).orElse(null);
 		return r instanceof FoundryRecipe ? (FoundryRecipe)r : null;
@@ -286,7 +265,7 @@ public class FoundryTile extends TileEntity implements ITickableTileEntity, INam
 		}
 
 		@SuppressWarnings("ConstantConditions") @Nullable @Override public EssenceHolder getEssenceHolder(){
-			return inv.getStackInSlot(ESSENCE_HOLDER_SLOT).getCapability(Caps.essenceHolder).orElse(null);
+			return FoundryTile.this.inv.getStackInSlot(ESSENCE_HOLDER_SLOT).getCapability(Caps.essenceHolder).orElse(null);
 		}
 	}
 }

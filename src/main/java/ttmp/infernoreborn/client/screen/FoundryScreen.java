@@ -24,6 +24,12 @@ public class FoundryScreen extends ContainerScreen<FoundryContainer>{
 		super.init();
 	}
 
+	@Override public void render(MatrixStack matrixStack, int mx, int my, float partialTicks){
+		renderBg(matrixStack, partialTicks, mx, my);
+		super.render(matrixStack, mx, my, partialTicks);
+		renderTooltip(matrixStack, mx, my);
+	}
+
 	@Override protected void renderBg(MatrixStack matrixStack, float partialTicks, int mx, int my){
 		//noinspection deprecation
 		RenderSystem.color4f(1, 1, 1, 1);
@@ -31,16 +37,16 @@ public class FoundryScreen extends ContainerScreen<FoundryContainer>{
 		this.minecraft.getTextureManager().bind(TEXTURE);
 		blit(matrixStack, leftPos, topPos, 0, 0, imageWidth, imageHeight);
 
-		if(!menu.getFoundry().getStackInSlot(FoundryTile.ESSENCE_HOLDER_SLOT).isEmpty()){
-			blit(matrixStack, leftPos+8, topPos+38, 256-16, 0, 16, 16);
+		if(menu.getFoundry().getStackInSlot(FoundryTile.ESSENCE_HOLDER_SLOT).isEmpty()){
+			blit(matrixStack, leftPos+8, topPos+38, 0, 256-16, 16, 16);
 		}
-		if(!menu.getFoundry().getStackInSlot(FoundryTile.ESSENCE_INPUT_SLOT).isEmpty()){
-			blit(matrixStack, leftPos+8, topPos+56, 256-16, 16, 16, 16);
+		if(menu.getFoundry().getStackInSlot(FoundryTile.ESSENCE_INPUT_SLOT).isEmpty()){
+			blit(matrixStack, leftPos+8, topPos+56, 16, 256-16, 16, 16);
 		}
 		double process = menu.getProcessPercentage();
 		if(process>0){
 			int width = (int)(process*28);
-			if(width>0) blit(matrixStack, leftPos+82, topPos+49, 0, 256-width, width, 7);
+			if(width>0) blit(matrixStack, leftPos+82, topPos+49, 256-28, 0, width, 7);
 		}
 	}
 }

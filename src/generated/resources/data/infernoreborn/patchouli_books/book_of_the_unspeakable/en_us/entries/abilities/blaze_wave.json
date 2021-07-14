@@ -1,0 +1,11 @@
+{
+  "name": "ability.infernoreborn.blaze_wave",
+  "category": "infernoreborn:abilities",
+  "icon": "infernoreborn:inferno_spark{Abilities:[\"infernoreborn:blaze_wave\"]}",
+  "pages": [
+    {
+      "type": "text",
+      "text": "text.infernoreborn.blaze_wave.0"
+    }
+  ]
+}

@@ -1,0 +1,11 @@
+{
+  "name": "ability.infernoreborn.battle_momentum",
+  "category": "infernoreborn:abilities",
+  "icon": "infernoreborn:inferno_spark{Abilities:[\"infernoreborn:battle_momentum\"]}",
+  "pages": [
+    {
+      "type": "text",
+      "text": "text.infernoreborn.battle_momentum.0"
+    }
+  ]
+}

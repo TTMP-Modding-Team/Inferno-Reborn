@@ -112,6 +112,7 @@ public class RecipeGen extends RecipeProvider{
 		new FoundryRecipeBuilder(new ItemStack(Items.ACACIA_BOAT), new ItemStack(Items.COBBLESTONE, 5))
 				.ingredient(Ingredient.of(Items.BEDROCK), 1)
 				.essence(EssenceType.DEATH, 1)
+				.processingTime(100)
 				.unlockedBy("bedrock", has(Items.BEDROCK))
 				.save(consumer, new ResourceLocation(MODID, "foundry/test"));
 	}

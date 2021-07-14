@@ -71,7 +71,7 @@ public class FoundryContainer extends Container{
 		int maxProcess = getMaxProcess();
 		if(maxProcess==0) return 0;
 		int process = getProcess();
-		return MathHelper.clamp(process/maxProcess, 0, 1);
+		return MathHelper.clamp((double)process/maxProcess, 0, 1);
 	}
 
 	@Override public void broadcastChanges(){

@@ -1,6 +1,8 @@
 package ttmp.infernoreborn;
 
 import net.minecraft.client.gui.ScreenManager;
+import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.RenderTypeLookup;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.item.ItemModelsProperties;
 import net.minecraft.nbt.INBT;
@@ -28,6 +30,7 @@ import ttmp.infernoreborn.client.color.GeneratorInfernoSparkColor;
 import ttmp.infernoreborn.client.color.PrimalInfernoSparkColor;
 import ttmp.infernoreborn.client.color.SparkColor;
 import ttmp.infernoreborn.client.screen.EssenceHolderScreen;
+import ttmp.infernoreborn.client.screen.FoundryScreen;
 import ttmp.infernoreborn.client.screen.SigilEngravingTableScreen;
 import ttmp.infernoreborn.contents.Abilities;
 import ttmp.infernoreborn.contents.ModAttributes;
@@ -44,6 +47,7 @@ import ttmp.infernoreborn.contents.render.AnvilEntityRenderer;
 import ttmp.infernoreborn.contents.render.WindEntityRenderer;
 import ttmp.infernoreborn.contents.sigil.holder.SigilHolder;
 import ttmp.infernoreborn.datagen.AbilityGeneratorDataProvider;
+import ttmp.infernoreborn.datagen.BlockModelGen;
 import ttmp.infernoreborn.datagen.BlockTagGen;
 import ttmp.infernoreborn.datagen.BookDataProvider;
 import ttmp.infernoreborn.datagen.ItemModelGen;
@@ -112,6 +116,7 @@ public class InfernoReborn{
 		}
 		if(event.includeClient()){
 			generator.addProvider(new ItemModelGen(event.getGenerator(), event.getExistingFileHelper()));
+			generator.addProvider(new BlockModelGen(event.getGenerator(), event.getExistingFileHelper()));
 			generator.addProvider(new McmetaGen(event.getGenerator(), event.getExistingFileHelper()));
 		}
 	}
@@ -127,9 +132,13 @@ public class InfernoReborn{
 				ScreenManager.register(ModContainers.SIGIL_ENGRAVING_TABLE_3X3.get(), SigilEngravingTableScreen.X3::new);
 				ScreenManager.register(ModContainers.SIGIL_ENGRAVING_TABLE_5X5.get(), SigilEngravingTableScreen.X5::new);
 				ScreenManager.register(ModContainers.SIGIL_ENGRAVING_TABLE_7X7.get(), SigilEngravingTableScreen.X7::new);
+				ScreenManager.register(ModContainers.FOUNDRY.get(), FoundryScreen::new);
 
 				ItemModelsProperties.register(ModItems.EXPLOSIVE_SWORD.get(), new ResourceLocation("using"),
 						(stack, world, entity) -> entity!=null&&entity.isUsingItem()&&entity.getUseItem()==stack ? 1 : 0);
+
+				RenderTypeLookup.setRenderLayer(ModBlocks.FOUNDRY_MOLD_1.get(), RenderType.cutout());
+				RenderTypeLookup.setRenderLayer(ModBlocks.FOUNDRY_MOLD_2.get(), RenderType.cutout());
 			});
 			RenderingRegistry.registerEntityRenderingHandler(ModEntities.TEST_WIND_ENTITY.get(), WindEntityRenderer::new);
 			RenderingRegistry.registerEntityRenderingHandler(ModEntities.DAMAGING_WIND_ENTITY.get(), WindEntityRenderer::new);

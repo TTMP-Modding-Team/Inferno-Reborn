@@ -1,6 +1,5 @@
 package ttmp.infernoreborn.contents.tile;
 
-import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.Container;
@@ -24,13 +23,30 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.Objects;
 
-import static net.minecraft.state.properties.BlockStateProperties.HORIZONTAL_FACING;
-
-public class FoundryProxyTile extends TileEntity implements INamedContainerProvider{
-	public FoundryProxyTile(){
-		this(ModTileEntities.FOUNDRY_PROXY.get());
+public abstract class FoundryProxyTile extends TileEntity implements INamedContainerProvider{
+	public static FoundryProxyTile fireboxProxy(){
+		return new FoundryProxyTile(ModTileEntities.FOUNDRY_FIREBOX_PROXY.get()){
+			@Override protected LazyOptional<IItemHandler> getProxyItemHandler(FoundryTile tile){
+				return tile.getEssenceInputLO();
+			}
+		};
 	}
-	public FoundryProxyTile(TileEntityType<?> tile){
+	public static FoundryProxyTile grateProxy(){
+		return new FoundryProxyTile(ModTileEntities.FOUNDRY_GRATE_PROXY.get()){
+			@Override protected LazyOptional<IItemHandler> getProxyItemHandler(FoundryTile tile){
+				return tile.getInputLO();
+			}
+		};
+	}
+	public static FoundryProxyTile moldProxy(){
+		return new FoundryProxyTile(ModTileEntities.FOUNDRY_MOLD_PROXY.get()){
+			@Override protected LazyOptional<IItemHandler> getProxyItemHandler(FoundryTile tile){
+				return tile.getOutputLO();
+			}
+		};
+	}
+
+	protected FoundryProxyTile(TileEntityType<?> tile){
 		super(tile);
 	}
 
@@ -42,24 +58,13 @@ public class FoundryProxyTile extends TileEntity implements INamedContainerProvi
 		if(itemLO==null||!itemLO.isPresent()||placeholder){
 			FoundryTile foundry = findFoundry();
 			if(foundry==null) return setPlaceholder();
-			switch(getBlockState().getValue(FoundryBlock.PART)){
-				case B000_FIREBOX:
-				case B001_FIREBOX:
-					itemLO = foundry.getEssenceInputLO();
-					break;
-				case B010_GRATE:
-				case B011_GRATE:
-					itemLO = foundry.getInputLO();
-					break;
-				case B100_MOLD:
-				case B101_MOLD:
-					itemLO = foundry.getOutputLO();
-					break;
-			}
+			itemLO = getProxyItemHandler(foundry);
 			placeholder = false;
 		}
 		return itemLO.cast();
 	}
+
+	protected abstract LazyOptional<IItemHandler> getProxyItemHandler(FoundryTile tile);
 
 	@Nullable private FoundryTile findFoundry(){
 		World level = getLevel();
@@ -73,13 +78,7 @@ public class FoundryProxyTile extends TileEntity implements INamedContainerProvi
 	private BlockPos getEstimatedHeadPos(){
 		BlockPos.Mutable mpos = new BlockPos.Mutable();
 		mpos.set(getBlockPos());
-		BlockState state = getBlockState();
-		Direction dir = state.getValue(HORIZONTAL_FACING);
-		FoundryBlock.Part part = state.getValue(FoundryBlock.PART);
-		mpos.move(dir.getClockWise(), part.x);
-		mpos.move(Direction.DOWN, part.y);
-		mpos.move(dir, part.z);
-		return mpos;
+		return FoundryBlock.moveToOrigin(mpos, getBlockState());
 	}
 
 	private <T> LazyOptional<T> setPlaceholder(){

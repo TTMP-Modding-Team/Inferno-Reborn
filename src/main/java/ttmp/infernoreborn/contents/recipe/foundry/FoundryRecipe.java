@@ -63,7 +63,7 @@ public class FoundryRecipe implements IRecipe<FoundryInventory>{
 		if(consumptions==null) return false;
 		if(essences!=null&&!essences.isEmpty()){
 			EssenceHolder essenceHolder = inv.getEssenceHolder();
-			if(essenceHolder!=null&&!essenceHolder.extractEssences(essences, simulate)) return false;
+			if(essenceHolder==null||!essenceHolder.extractEssences(essences, simulate)) return false;
 		}
 		if(!simulate){
 			for(int i = 0; i<consumptions.length; i++)
