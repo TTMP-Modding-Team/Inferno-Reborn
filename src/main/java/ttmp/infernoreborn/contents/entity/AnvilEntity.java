@@ -77,12 +77,12 @@ public class AnvilEntity extends Entity{
 		this.move(MoverType.SELF, this.getDeltaMovement());
 		if(!this.level.isClientSide){
 			if(!this.onGround){
-				if(yo<1||yo>256)
+				if(this.getY()<1||this.getY()>256)
 					this.remove();
 			}else{
 				this.setDeltaMovement(this.getDeltaMovement().multiply(0.7D, -0.5D, 0.7D));
 				if(!this.isSilent())
-					this.level.playSound(null, xo, yo, zo, SoundEvents.ANVIL_LAND, SoundCategory.BLOCKS, 0.3F, this.level.random.nextFloat()*0.1F+0.9F);
+					this.level.playSound(null, this.getX(), this.getY(), this.getZ(), SoundEvents.ANVIL_LAND, SoundCategory.BLOCKS, 0.3F, this.level.random.nextFloat()*0.1F+0.9F);
 				this.remove();
 			}
 		}
