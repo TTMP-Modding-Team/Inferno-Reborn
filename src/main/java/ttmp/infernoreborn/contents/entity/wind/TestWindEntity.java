@@ -7,11 +7,9 @@ import net.minecraft.world.World;
 import ttmp.infernoreborn.contents.ModEntities;
 
 public class TestWindEntity extends AbstractWindEntity{
-
 	public TestWindEntity(World world){
 		this(ModEntities.TEST_WIND_ENTITY.get(), world);
 	}
-
 	public TestWindEntity(EntityType<? extends AbstractWindEntity> type, World world){
 		super(type, world);
 	}

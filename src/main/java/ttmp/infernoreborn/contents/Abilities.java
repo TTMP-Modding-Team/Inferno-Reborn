@@ -53,7 +53,6 @@ import ttmp.infernoreborn.util.LivingUtils;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
@@ -86,20 +85,24 @@ public final class Abilities{
 			new Ability(new Ability.Properties(0x917142, 0x5f4a2b, 0xc29d62)
 					.addAttribute(Attributes.ARMOR, "7c68dd04-64b6-4509-8ded-e3507560e8f0", 2, Operation.ADDITION)
 					.drops(EssenceType.METAL, 2)));
+
 	public static final RegistryObject<Ability> ROCK_SKIN = REGISTER.register("rock_skin", () ->
 			new Ability(new Ability.Properties(0x8a8a8a, 0x525252)
 					.addAttribute(Attributes.ARMOR, "a2ab4bdf-760c-464e-ad56-d21bd367ffb3", 4, Operation.ADDITION)
 					.drops(EssenceType.METAL, 4)));
+
 	public static final RegistryObject<Ability> IRON_SKIN = REGISTER.register("iron_skin", () ->
 			new Ability(new Ability.Properties(0xdbdbdb, 0x686868, 0xeeeeee)
 					.addAttribute(Attributes.ARMOR, "1fc727a2-4aed-4578-9c0e-47dce56f6785", 4, Operation.ADDITION)
 					.drops(EssenceType.METAL, 9)));
+
 	public static final RegistryObject<Ability> DIAMOND_SKIN = REGISTER.register("diamond_skin", () ->
 			new Ability(new Ability.Properties(0x4deeec, 0x239180, 0xa1ecf3)
 					.addAttribute(Attributes.ARMOR, "6319cb70-cb20-40ca-928b-c6d52ff30598", 10, Operation.ADDITION)
 					.addAttribute(Attributes.ARMOR_TOUGHNESS, "1fc727a2-4aed-4578-9c0e-47dce56f6785", 4, Operation.ADDITION)
 					.addAttribute(ModAttributes.DAMAGE_RESISTANCE.get(), "1e9c7ee4-7419-4fd3-ab09-81b8dfa8c763", .1, Operation.MULTIPLY_BASE)
 					.drops(EssenceType.METAL, 2*9)));
+
 	public static final RegistryObject<Ability> NETHERITE_SKIN = REGISTER.register("netherite_skin", () ->
 			new Ability(new Ability.Properties(0x4f3c3e, 0x4a2940, 0xcdbccd)
 					.addAttribute(Attributes.ARMOR, "22ab3354-54fd-452f-8505-fce3eb7d2645", 14, Operation.ADDITION)
@@ -113,25 +116,28 @@ public final class Abilities{
 					.onHurt(skin((event, hit) -> LivingUtils.addStackEffect(hit, Effects.DIG_SLOWDOWN, 40, 0, 1, 5, true, true)))
 					.drops(EssenceType.METAL, 5)
 					.drops(EssenceType.EARTH, 5)));
+
 	public static final RegistryObject<Ability> FROZEN_SKIN = REGISTER.register("frozen_skin", () ->
 			new Ability(new Ability.Properties(0x2979bd, 0x2979bd)
 					.addAttribute(Attributes.ARMOR, "66fc401d-84e0-45f2-9abf-9a0fb7dee78a", 1, Operation.ADDITION)
 					.onHurt(skin((event, hit) -> LivingUtils.addStackEffect(hit, Effects.MOVEMENT_SLOWDOWN, 40, 0, 1, 3, true, true)))
 					.drops(EssenceType.METAL, 5)
 					.drops(EssenceType.WATER, 5)));
+
 	public static final RegistryObject<Ability> WOOLLY_SKIN = REGISTER.register("woolly_skin", () ->
 			new Ability(new Ability.Properties(0xe0c1ad, 0x694d40)
 					.addAttribute(Attributes.ARMOR, "8d4b6252-301f-40db-93dc-96e78f199a53", 1, Operation.ADDITION)
 					.onHurt(skin((event, hit) -> LivingUtils.addStackEffect(hit, Effects.WEAKNESS, 20, 0, 1, 5, true, true)))
 					.drops(EssenceType.METAL, 5)
 					.drops(EssenceType.AIR, 5)));
+
 	public static final RegistryObject<Ability> FUZZY_SKIN = REGISTER.register("fuzzy_skin", () ->
 			new Ability(new Ability.Properties(0xf2f5cd, 0xeaaeee)
 					.addAttribute(Attributes.ARMOR, "5fe9045c-0976-4faa-b5a7-d5b7c407723f", 1, Operation.ADDITION)
 					.onHurt(skin((event, hit) -> hit.addEffect(new EffectInstance(Effects.CONFUSION, 200))))
 					.drops(EssenceType.METAL, 5)
 					.drops(EssenceType.MAGIC, 5)));
-	// TODO NEED TO CHANGE COLORS
+
 	public static final RegistryObject<Ability> THORN_SKIN = REGISTER.register("thorn_skin", () ->
 			new Ability(new Ability.Properties(0xC8C8C8, 0xC8C8C8)
 					.onHurt(skin((event, hit) -> {
@@ -152,6 +158,7 @@ public final class Abilities{
 					})
 					.drops(EssenceType.FIRE, 5)
 					.drops(EssenceType.DOMINANCE, 2)));
+
 	public static final RegistryObject<Ability> RANGED_VETERAN = REGISTER.register("ranged_veteran", () ->
 			new Ability(new Ability.Properties(0xe0c1ad, 0x694d40)
 					.onHit((entity, holder, event) -> {
@@ -161,6 +168,7 @@ public final class Abilities{
 					})
 					.drops(EssenceType.AIR, 5)
 					.drops(EssenceType.DOMINANCE, 2)));
+
 	public static final RegistryObject<Ability> MAGIC_VETERAN = REGISTER.register("magic_veteran", () ->
 			new Ability(new Ability.Properties(0xe0c1ad, 0x694d40)
 					.onHit((entity, holder, event) -> {
@@ -214,6 +222,7 @@ public final class Abilities{
 					.addAttribute(ModAttributes.FALLING_DAMAGE_RESISTANCE.get(), "f7868c95-cd1a-4919-9d8e-55f2f4a646d1", 1, Operation.MULTIPLY_BASE)
 					.drops(EssenceType.EARTH, 5)
 					.drops(EssenceType.AIR, 5)));
+
 	public static final RegistryObject<Ability> DESTINY_BOND = REGISTER.register("destiny_bond", () ->
 			new Ability(new Ability.Properties(0x0000, 0x0000)
 					.onDeath((entity, holder, event) -> {
@@ -223,6 +232,7 @@ public final class Abilities{
 					})
 					.drops(EssenceType.MAGIC, 5)
 					.drops(EssenceType.DEATH, 5)));
+
 	public static final RegistryObject<Ability> FOCUS = REGISTER.register("focus", () ->
 			new Ability(new Ability.Properties(0x00, 0x00)
 					.onHurt((entity, holder, event) -> {
@@ -239,6 +249,7 @@ public final class Abilities{
 			new Ability(new Ability.Properties(0xB24100, 0xB24100)
 					.onHurt((entity, holder, event) -> LivingUtils.addStackEffect(entity, Effects.DAMAGE_RESISTANCE, 60, 0, 1, 3))
 					.drops(EssenceType.METAL, 4*9)));
+
 	public static final RegistryObject<Ability> MAGMA_SKIN = REGISTER.register("magma_skin", () ->
 			new Ability(new Ability.Properties(0x340000, 0x340000)
 					.onUpdate((entity, holder) -> entity.setSecondsOnFire(1))
@@ -251,6 +262,7 @@ public final class Abilities{
 					.addAttribute(ModAttributes.DAMAGE_RESISTANCE.get(), "55a108b6-55ff-4b25-a416-afd9f806de69", .2, Operation.MULTIPLY_BASE)
 					.drops(EssenceType.METAL, 9)
 					.drops(EssenceType.FIRE, 9)));
+
 	public static final RegistryObject<Ability> THE_BRAIN = REGISTER.register("the_brain", () ->
 			new Ability(new Ability.Properties(0x00, 0x00)
 					.addSkill(10, 300, (entity, holder) -> {
@@ -262,6 +274,7 @@ public final class Abilities{
 					.addAttribute(Attributes.MAX_HEALTH, "2d145dfc-dda4-4fc0-aa35-6666eae0a776", 0.25, Operation.ADDITION)
 					.drops(EssenceType.DOMINANCE, 2*9)
 					.drops(EssenceType.DEATH, 9)));
+
 	public static final RegistryObject<Ability> SENTRY = REGISTER.register("sentry", () ->
 			new Ability(new Ability.Properties(0x8000, 0x80000)
 					.onUpdate((entity, holder) -> {
@@ -270,6 +283,7 @@ public final class Abilities{
 								e.setValue(e.getLongValue()-4);
 					}).addAttribute(Attributes.MOVEMENT_SPEED, "41669826-6fde-4dc6-b67f-28a28a1f2dbb", -0.9, Operation.MULTIPLY_BASE)
 					.drops(EssenceType.EARTH, 5)));
+
 	public static final RegistryObject<Ability> HEALTH_KIT = REGISTER.register("health_kit", () ->
 			new Ability(new Ability.Properties(0x00, 0x00)
 					.addSkill(10, 500, (entity, holder) -> {
@@ -279,6 +293,7 @@ public final class Abilities{
 					}, (entity, holder) -> entity.getHealth()+10<entity.getMaxHealth()).addAttribute(Attributes.MAX_HEALTH, "25261e88-72c5-49b9-8680-8253f3c73a30", 10, Operation.ADDITION)
 					.drops(EssenceType.BLOOD, 3*9)
 					.drops(EssenceType.WATER, 9)));
+
 	public static final RegistryObject<Ability> EVIOLITE_CHANSEY = REGISTER.register("eviolite_chansey", () ->
 			new Ability(new Ability.Properties(0xFFCFF, 0xFFCFF)
 					.addAttribute(Attributes.ATTACK_DAMAGE, "ba20b5e3-e189-444f-9233-c710d7ac810e", -0.8, Operation.MULTIPLY_TOTAL)
@@ -287,18 +302,21 @@ public final class Abilities{
 					.drops(EssenceType.METAL, 2*9)
 					.drops(EssenceType.BLOOD, 9)
 					.drops(EssenceType.DEATH, 9)));
+
 	public static final RegistryObject<Ability> TOUGHNESS = REGISTER.register("toughness", () ->
 			new Ability(new Ability.Properties(0x3F3F3F, 0x003FCF)
 					.addAttribute(Attributes.MOVEMENT_SPEED, "ec3aa988-af1f-4ae9-8cf6-b1d5e62addaa", -0.2, Operation.MULTIPLY_TOTAL)
 					.addAttribute(ModAttributes.DAMAGE_RESISTANCE.get(), "9c03cdb9-bb2d-4d03-8766-26632b0966df", .2, Operation.MULTIPLY_BASE)
 					.drops(EssenceType.EARTH, 9)
 					.drops(EssenceType.WATER, 9)));
+
 	public static final RegistryObject<Ability> SWIFTNESS = REGISTER.register("swiftness", () ->
 			new Ability(new Ability.Properties(0x003FCF, 0x3F3F3F)
 					.addAttribute(Attributes.MOVEMENT_SPEED, "0759550c-3e02-4dee-89b8-2d490347da5e", 0.3, Operation.MULTIPLY_TOTAL)
 					.addAttribute(ModAttributes.DAMAGE_RESISTANCE.get(), "3db07150-8675-4c9e-acf1-c35100cf76b8", -.1, Operation.MULTIPLY_BASE)
 					.drops(EssenceType.AIR, 9)
 					.drops(EssenceType.FIRE, 9)));
+
 	public static final RegistryObject<Ability> TELEKINESIS = REGISTER.register("telekinesis", () ->
 			new Ability(new Ability.Properties(0xB71100, 0xB71100)
 					.addTargetedSkill(5, 250, (entity, holder, target) -> {
@@ -314,6 +332,7 @@ public final class Abilities{
 					})
 					.drops(EssenceType.MAGIC, 2*9)
 					.drops(EssenceType.DEATH, 2*9)));
+
 	public static final RegistryObject<Ability> AETHER_WALKER = REGISTER.register("aether_walker", () ->
 			new Ability(new Ability.Properties(0xC0E4FF, 0xC0E4FF)
 					.addTargetedSkill(0, 7, (entity, holder, target) -> {
@@ -326,6 +345,7 @@ public final class Abilities{
 					.addAttribute(ModAttributes.FALLING_DAMAGE_RESISTANCE.get(), "9ec4bc3d-d8a0-4b1a-a185-c34ca05e9175", 1, Operation.MULTIPLY_BASE)
 					.drops(EssenceType.MAGIC, 2*9)
 					.drops(EssenceType.AIR, 2*9)));
+
 	public static final RegistryObject<Ability> THUNDERBOLT = REGISTER.register("thunderbolt", () ->
 			new Ability(new Ability.Properties(0xFFFF00, 0xFFFF00)
 					.addTargetedSkill(10, 400, (entity, holder, target) -> {
@@ -355,12 +375,14 @@ public final class Abilities{
 					.drops(EssenceType.MAGIC, 2*9)
 					.drops(EssenceType.FIRE, 9)
 					.drops(EssenceType.AIR, 9)));
+
 	public static final RegistryObject<Ability> THE_RED = REGISTER.register("the_red", () ->
 			new Ability(new Ability.Properties(0xC80000, 0xC80000)
 					.addAttribute(Attributes.MOVEMENT_SPEED, "33a6142f-5b04-490c-85ce-11cc79510f9a", 2, Operation.MULTIPLY_BASE)
 					.addAttribute(ModAttributes.FALLING_DAMAGE_RESISTANCE.get(), "5cb842c2-beb3-4da0-b4c6-aa0323fe292a", 1, Operation.MULTIPLY_BASE)
 					.drops(EssenceType.BLOOD, 2*9)
 					.drops(EssenceType.FIRE, 2*9)));
+
 	public static final RegistryObject<Ability> EMPERORS_AURA = REGISTER.register("emperors_aura", () ->
 			new Ability(new Ability.Properties(0xDCB600, 0xDCB600)
 					.onHit((entity, holder, event) -> {
@@ -374,78 +396,76 @@ public final class Abilities{
 					.addAttribute(Attributes.ATTACK_DAMAGE, "4b220817-9f85-432f-9ce8-ac9d282b5d38", 2, Operation.MULTIPLY_BASE)
 					.addAttribute(Attributes.MAX_HEALTH, "1b071763-1bae-4c09-8c95-58c06629b9a3", 1.5, Operation.MULTIPLY_BASE)
 					.drops(EssenceType.DOMINANCE, 9*9)));
+
 	public static final RegistryObject<Ability> POISONED_MIND = REGISTER.register("poisoned_mind", () ->
 			new Ability(new Ability.Properties(0x00, 0x00)
 					.onDeath((entity, holder, event) -> {
-						//Collection<Potion> potionCollection = ForgeRegistries.POTION_TYPES.getValues();
 						Potion[] potionArray = {Potions.SLOWNESS, Potions.STRONG_SLOWNESS, Potions.LONG_SLOWNESS, Potions.HARMING, Potions.STRONG_HARMING, Potions.POISON, Potions.LONG_POISON, Potions.STRONG_POISON, Potions.WEAKNESS, Potions.LONG_WEAKNESS};
-						//Potion potion = potionCollection.toArray(new Potion[0])[entity.getRandom().nextInt(potionCollection.size())];
-						Potion potion = potionArray[entity.getRandom().nextInt(potionArray.length)];
 						PotionEntity potionEntity = new PotionEntity(entity.level, entity);
-						potionEntity.setItem(PotionUtils.setPotion(new ItemStack(Items.SPLASH_POTION), potion));
+						potionEntity.setItem(PotionUtils.setPotion(new ItemStack(Items.SPLASH_POTION), potionArray[entity.getRandom().nextInt(potionArray.length)]));
 						float xRot = (float)(entity.getRandom().nextDouble()*2*Math.PI);
-						potionEntity.setDeltaMovement(new Vector3d(MathHelper.sin(xRot), entity.getRandom().nextDouble()*0.5, MathHelper.cos(xRot)).normalize().multiply(.5, .5, .5));
+						potionEntity.setDeltaMovement(new Vector3d(MathHelper.sin(xRot), entity.getRandom().nextDouble()*0.5+.5, MathHelper.cos(xRot)).normalize().scale(.5));
 						entity.level.addFreshEntity(potionEntity);
 					}).drops(EssenceType.MAGIC, 9)));
+
 	public static final RegistryObject<Ability> DAE_KAE_MOB = REGISTER.register("dae_kae_mob", () ->
 			new Ability(new Ability.Properties(0xED1C27, 0x004EA1, 0x00A0E2)
 					.addTargetedSkill(10, 60, (entity, holder, target) -> {
-						World world = target.level;
-						Vector3d pos = target.position();
-						for(int i = 0; i<=20; i++){
-							if(!world.isEmptyBlock(target.blockPosition().above(i))){
-								AnvilEntity anvil = new AnvilEntity(world, pos.x()+.5D, pos.y()+20, pos.z()+.5D);
-								world.addFreshEntity(anvil);
-								return true;
-							}
-						}
-						return false;
+						target.level.addFreshEntity(new AnvilEntity(target.level, target.getX(), target.getY()+20, target.getZ()));
+						return true;
 					})
 					.onAttacked((entity, holder, event) -> {
 						if(event.getSource()==DamageSource.ANVIL) event.setCanceled(true);
 					}).drops(EssenceType.METAL, 3)));
+
 	public static final RegistryObject<Ability> WINDBLAST_1 = REGISTER.register("windblast_1", () ->
 			new Ability(new Ability.Properties(0xA1CEE3, 0xA1CEE3)
-					.addSkill(4, 120, wind((world) -> new DamagingWindEntity(world).setDamage(4), 1, 1, 1))
+					.addTargetedSkill(4, 120, wind((world) -> new DamagingWindEntity(world).setDamage(4), 1, 1, 1))
 					.drops(EssenceType.AIR, 3)));
+
 	public static final RegistryObject<Ability> WINDBLAST_2 = REGISTER.register("windblast_2", () ->
 			new Ability(new Ability.Properties(0xA1CEE3, 0xA1CEE3)
-					.addSkill(8, 180, wind((world) -> new DamagingWindEntity(world).setDamage(6), 1, 1, 1))
+					.addTargetedSkill(8, 180, wind((world) -> new DamagingWindEntity(world).setDamage(6), 1, 1, 1))
 					.drops(EssenceType.AIR, 6)));
+
 	public static final RegistryObject<Ability> WINDBLAST_3 = REGISTER.register("windblast_3", () ->
 			new Ability(new Ability.Properties(0xA1CEE3, 0xA1CEE3)
-					.addSkill(12, 240, wind((world) -> new DamagingWindEntity(world).setDamage(8), 1, 1, 1))
+					.addTargetedSkill(12, 240, wind((world) -> new DamagingWindEntity(world).setDamage(8), 1, 1, 1))
 					.drops(EssenceType.AIR, 9)));
+
 	public static final RegistryObject<Ability> BATTLE_MOMENTUM = REGISTER.register("battle_momentum", () ->
 			new Ability(new Ability.Properties(0x6041F8, 0x6041F8)
 					.onAttacked((entity, holder, event) -> {
 						if(!entity.level.isClientSide)
-							for(Map.Entry<AbilitySkill, Long> entry : ((ServerAbilityHolder)holder).getSkillCastingState().getCooldowns().object2LongEntrySet())
-								entry.setValue(entry.getValue()-10);
+							for(Object2LongMap.Entry<AbilitySkill> entry : ((ServerAbilityHolder)holder).getSkillCastingState().getCooldowns().object2LongEntrySet())
+								entry.setValue(entry.getLongValue()-10);
 					})
 					.onHit((entity, holder, event) -> {
 						if(!entity.level.isClientSide)
-							for(Map.Entry<AbilitySkill, Long> entry : ((ServerAbilityHolder)holder).getSkillCastingState().getCooldowns().object2LongEntrySet())
-								entry.setValue(entry.getValue()-20);
+							for(Object2LongMap.Entry<AbilitySkill> entry : ((ServerAbilityHolder)holder).getSkillCastingState().getCooldowns().object2LongEntrySet())
+								entry.setValue(entry.getLongValue()-20);
 					}).drops(EssenceType.DOMINANCE, 9)));
-	//TODO Drops
+
 	public static final RegistryObject<Ability> SLIMEBLOOD = REGISTER.register("slimeblood", () ->
 			new Ability(new Ability.Properties(0x7DCC6A, 0x7DCC6A)
 					.onAttacked((entity, holder, event) -> {
-								SlimeEntity slime = new SlimeEntity(EntityType.SLIME, entity.level);
-								slime.setPos(entity.getX(), entity.getY(), entity.getZ());
-								entity.level.addFreshEntity(slime);
-							}
-					).addAttribute(ModAttributes.FALLING_DAMAGE_RESISTANCE.get(), "6bab5413-70eb-4aa8-b709-dec6f1bc16b8", (double)1/3, Operation.MULTIPLY_BASE)));
+						SlimeEntity slime = new SlimeEntity(EntityType.SLIME, entity.level);
+						slime.setPos(entity.getX(), entity.getY(), entity.getZ());
+						entity.level.addFreshEntity(slime);
+					}).addAttribute(ModAttributes.FALLING_DAMAGE_RESISTANCE.get(), "6bab5413-70eb-4aa8-b709-dec6f1bc16b8", (double)1/3, Operation.MULTIPLY_BASE)));
+
 	public static final RegistryObject<Ability> BLAZE_WAVE = REGISTER.register("blaze_wave", () ->
 			new Ability(new Ability.Properties(0xFF680C, 0xFF680C)
-					.addSkill(30, 180, wind((world) -> new DamagingWindEntity(world).doSetFire(true), 1, 1, 1))));
+					.addTargetedSkill(30, 180, wind((world) -> new DamagingWindEntity(world).doSetFire(true), 1, 1, 1))));
+
 	public static final RegistryObject<Ability> FREEZE_WAVE = REGISTER.register("freeze_wave", () ->
 			new Ability(new Ability.Properties(0x92B9FA, 0x92B9FA)
-					.addSkill(30, 120, wind((world) -> new EffectWindEntity(world).addEffect(new EffectInstance(Effects.MOVEMENT_SLOWDOWN, 300)), 1, 1, 1))));
+					.addTargetedSkill(30, 120, wind((world) -> new EffectWindEntity(world).addEffect(new EffectInstance(Effects.MOVEMENT_SLOWDOWN, 300)), 1, 1, 1))));
+
 	public static final RegistryObject<Ability> ENVENOM = REGISTER.register("envenom", () ->
 			new Ability(new Ability.Properties(0x4E9331, 0x4E9331)
-					.addSkill(30, 160, wind((world) -> new EffectWindEntity(world).addEffect(new EffectInstance(Effects.POISON, 100, 2)), 1, 1, 1))));
+					.addTargetedSkill(30, 160, wind((world) -> new EffectWindEntity(world).addEffect(new EffectInstance(Effects.POISON, 100, 2)), 1, 1, 1))));
+
 	public static final RegistryObject<Ability> ASSASSINATE = REGISTER.register("assassinate", () ->
 			new Ability(new Ability.Properties(0x332B40, 0x332B40)
 					.addTargetedSkill(5, 500, (entity, holder, target) -> {
@@ -470,23 +490,20 @@ public final class Abilities{
 					.addAttribute(Attributes.ATTACK_SPEED, "ee632cab-0980-46f1-bc27-683a3199a525", 3, Operation.MULTIPLY_TOTAL)
 					.addAttribute(Attributes.MOVEMENT_SPEED, "3a8d180b-88e9-488b-a590-0713cc4872c5", 1, Operation.MULTIPLY_TOTAL)
 					.addAttribute(ModAttributes.FALLING_DAMAGE_RESISTANCE.get(), "086c4438-1e28-4484-a1e4-cf3b5cede40c", 1, Operation.MULTIPLY_BASE)));
+
 	public static final RegistryObject<Ability> EVIL_TRICK = REGISTER.register("evil_trick", () ->
 			new Ability(new Ability.Properties(0x191919, 0x191919)
-					.addSkill(5, 50, (entity, holder) -> {
-						if(entity.getHealth()/entity.getMaxHealth()<0.4&&LivingUtils.getTarget(entity)!=null){
-							List<LivingEntity> list = new ArrayList<>();
-							for(Entity e : entity.level.getEntities(entity, entity.getBoundingBox().expandTowards(6, 6, 6).expandTowards(-6, -6, -6)))
-								if(e instanceof LivingEntity) list.add((LivingEntity)e);
-							if(list.isEmpty()) return false;
-							for(LivingEntity e : list){
-								e.hurt(DamageSource.GENERIC, 1);
+					.addTargetedSkill(5, 50, (entity, holder, target) -> {
+						if(!(entity.getHealth()/entity.getMaxHealth()<0.4)) return false;
+						boolean succeed = false;
+						for(Entity e : entity.level.getEntities(entity, entity.getBoundingBox().inflate(6))){
+							if(e.hurt(DamageSource.GENERIC, 1)){
+								succeed = true;
 								entity.heal(1);
 							}
-							return true;
 						}
-						return false;
-					})));
-
+						return succeed;
+					}, (entity, holder, target) -> entity.getHealth()/entity.getMaxHealth()<0.4)));
 
 	@SubscribeEvent
 	public static void newRegistry(RegistryEvent.NewRegistry e){
@@ -509,19 +526,17 @@ public final class Abilities{
 			}
 		};
 	}
-	private static AbilitySkill.SkillAction wind(Function<World, AbstractWindEntity> constructor, float velocity, float inaccuracy, int color){
-		return (entity, holder) -> {
+	private static AbilitySkill.TargetedSkillAction wind(Function<World, AbstractWindEntity> constructor, float velocity, float inaccuracy, int color){
+		return (entity, holder, target) -> {
 			AbstractWindEntity wind = constructor.apply(entity.level);
-			LivingEntity target = LivingUtils.getTarget(entity);
-			if(target==null) return false;
 			wind.setOwner(entity);
 			wind.setColor(color);
 			wind.setPos(entity.getX(), entity.getY(), entity.getZ());
-			double d0 = target.getX()-entity.getX();
-			double d1 = target.getY(0.3333333333333333D)-wind.getY();
-			double d2 = target.getZ()-entity.getZ();
-			double d3 = MathHelper.sqrt(d0*d0+d2*d2);
-			wind.shoot(d0, d1+d3*(double)0.2F, d2, velocity, inaccuracy);
+			double xDiff = target.getX()-entity.getX();
+			double yDiff = target.getY(1/3.0)-wind.getY();
+			double zDiff = target.getZ()-entity.getZ();
+			double xzDistance = MathHelper.sqrt(xDiff*xDiff+zDiff*zDiff);
+			wind.shoot(xDiff, yDiff+xzDistance*0.2, zDiff, velocity, inaccuracy);
 			entity.level.addFreshEntity(wind);
 			return true;
 		};

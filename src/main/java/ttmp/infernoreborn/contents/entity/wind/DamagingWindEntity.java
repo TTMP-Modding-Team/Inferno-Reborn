@@ -18,6 +18,9 @@ public class DamagingWindEntity extends AbstractWindEntity{
 		super(type, world);
 	}
 
+	public int getDamage(){
+		return this.damage;
+	}
 	public DamagingWindEntity setDamage(int damage){
 		this.damage = damage;
 		return this;
@@ -25,10 +28,6 @@ public class DamagingWindEntity extends AbstractWindEntity{
 	public DamagingWindEntity doSetFire(boolean setFire){
 		this.setFire = setFire;
 		return this;
-	}
-
-	public int getDamage(int damage){
-		return this.damage;
 	}
 
 	@Override protected void onHitEntity(EntityRayTraceResult result){
