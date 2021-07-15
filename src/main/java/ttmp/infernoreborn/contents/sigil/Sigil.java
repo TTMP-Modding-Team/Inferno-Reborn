@@ -4,7 +4,6 @@ import com.google.common.collect.ListMultimap;
 import net.minecraft.entity.ai.attributes.Attribute;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.inventory.EquipmentSlotType;
-import net.minecraft.item.Item;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
@@ -18,13 +17,10 @@ public class Sigil extends ForgeRegistryEntry<Sigil>{
 	private final int brighterColor, darkerColor;
 	private final int point;
 
-	@Nullable private final Item item;
-
 	public Sigil(Properties properties){
 		this.brighterColor = properties.brighterColor;
 		this.darkerColor = properties.darkerColor;
 		this.point = properties.point;
-		this.item = properties.item;
 	}
 
 	public int getBrighterColor(){
@@ -45,10 +41,6 @@ public class Sigil extends ForgeRegistryEntry<Sigil>{
 
 	public ITextComponent getName(){
 		return new TranslationTextComponent(getUnlocalizedName());
-	}
-
-	@Nullable public Item getItem(){
-		return item;
 	}
 
 	public boolean canBeAttachedTo(SigilEventContext context){
@@ -72,22 +64,32 @@ public class Sigil extends ForgeRegistryEntry<Sigil>{
 		return getUnlocalizedName();
 	}
 
+	@Nullable private ResourceLocation sigilTextureLocation;
+
+	public ResourceLocation getSigilTextureLocation(){
+		if(sigilTextureLocation==null){
+			synchronized(this){
+				if(sigilTextureLocation==null)
+					sigilTextureLocation = createSigilTextureLocation();
+			}
+		}
+		return sigilTextureLocation;
+	}
+
+	protected ResourceLocation createSigilTextureLocation(){
+		ResourceLocation id = Objects.requireNonNull(this.getRegistryName());
+		return new ResourceLocation(id.getNamespace(), "textures/sigil/"+id.getPath()+".png");
+	}
+
 	public static final class Properties{
 		private final int brighterColor, darkerColor;
 		private final int point;
-
-		@Nullable private Item item;
 
 		public Properties(int brighterColor, int darkerColor, int point){
 			if(point<0) throw new IllegalArgumentException("point");
 			this.brighterColor = brighterColor;
 			this.darkerColor = darkerColor;
 			this.point = point;
-		}
-
-		public Properties item(Item item){
-			this.item = item;
-			return this;
 		}
 	}
 }

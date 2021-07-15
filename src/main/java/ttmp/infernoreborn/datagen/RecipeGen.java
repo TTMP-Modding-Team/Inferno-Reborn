@@ -61,6 +61,7 @@ public class RecipeGen extends RecipeProvider{
 						.save(consumer, new ResourceLocation(MODID, "decompress_"+Objects.requireNonNull(type.getItem(s2).getRegistryName()).getPath()));
 			}
 		}
+/*
 
 		new ShapedSigilEngravingRecipeBuilder(Sigils.TEST.get())
 				.pattern("1 1")
@@ -70,6 +71,7 @@ public class RecipeGen extends RecipeProvider{
 				.define('1', Ingredient.of(ModItems.BLOOD_ESSENCE_SHARD.get()))
 				.unlockedBy("fuck", has(ModItems.BLOOD_ESSENCE_SHARD.get()))
 				.save(consumer, new ResourceLocation(MODID, "sigil_engraving/test"));
+*/
 
 		new ShapedSigilTableCraftingRecipeBuilder(Items.BEDROCK)
 				.pattern("2X2")
@@ -79,6 +81,7 @@ public class RecipeGen extends RecipeProvider{
 				.define('2', Ingredient.of(ModItems.GREATER_EARTH_ESSENCE_CRYSTAL.get()))
 				.unlockedBy("fuck", has(Items.STONE))
 				.save(consumer, new ResourceLocation(MODID, "sigilcraft/test"));
+/*
 
 		new ShapedSigilEngravingRecipeBuilder(Sigils.TEST2.get())
 				.pattern("  1  ")
@@ -102,6 +105,7 @@ public class RecipeGen extends RecipeProvider{
 				.define('1', Ingredient.of(ModItems.BLOOD_ESSENCE_SHARD.get()))
 				.unlockedBy("fuck", has(ModItems.BLOOD_ESSENCE_SHARD.get()))
 				.save(consumer, new ResourceLocation(MODID, "sigil_engraving/test3"));
+*/
 
 		new FoundryRecipeBuilder(new ItemStack(ModItems.DAMASCUS_STEEL_INGOT.get()))
 				.ingredient(Ingredient.of(Tags.Items.INGOTS_IRON), 1)

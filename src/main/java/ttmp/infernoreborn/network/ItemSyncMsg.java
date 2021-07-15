@@ -3,6 +3,7 @@ package ttmp.infernoreborn.network;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketBuffer;
+import net.minecraft.util.NonNullList;
 
 public abstract class ItemSyncMsg{
 	private final int slot;
@@ -26,7 +27,10 @@ public abstract class ItemSyncMsg{
 	protected abstract void doWrite(PacketBuffer buf);
 
 	public void sync(PlayerEntity player){
-		ItemStack stack = player.inventory.getItem(slot);
+		if(slot<0) return;
+		NonNullList<ItemStack> items = player.containerMenu.getItems();
+		if(items.size()<=slot) return;
+		ItemStack stack = items.get(slot);
 		if(stack.isEmpty()) return;
 		doSync(player, stack);
 	}

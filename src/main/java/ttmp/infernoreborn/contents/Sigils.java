@@ -9,9 +9,12 @@ import net.minecraftforge.fml.common.Mod.EventBusSubscriber.Bus;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistry;
 import net.minecraftforge.registries.RegistryBuilder;
-import ttmp.infernoreborn.contents.sigil.ShieldSigil;
+import ttmp.infernoreborn.contents.sigil.AfflictionSigil;
+import ttmp.infernoreborn.contents.sigil.EnduranceSigil;
+import ttmp.infernoreborn.contents.sigil.MiniHeartSigil;
+import ttmp.infernoreborn.contents.sigil.RunicShieldSigil;
 import ttmp.infernoreborn.contents.sigil.Sigil;
-import ttmp.infernoreborn.contents.sigil.AttackDamageSigil;
+import ttmp.infernoreborn.contents.sigil.TravelerSigil;
 
 import static ttmp.infernoreborn.InfernoReborn.MODID;
 
@@ -27,9 +30,11 @@ public final class Sigils{
 
 	public static final DeferredRegister<Sigil> REGISTER = DeferredRegister.create(Sigil.class, MODID);
 
-	public static final RegistryObject<Sigil> TEST = REGISTER.register("test", () -> new AttackDamageSigil(new Sigil.Properties(0xea1f1f, 0x820909, 3).item(ModItems.TEST_SIGIL.get())));
-	public static final RegistryObject<Sigil> TEST2 = REGISTER.register("test2", () -> new AttackDamageSigil(new Sigil.Properties(0x1668ec, 0x062a63, 4).item(ModItems.TEST_SIGIL_2.get())));
-	public static final RegistryObject<Sigil> TEST3 = REGISTER.register("test3", () -> new ShieldSigil(new Sigil.Properties(0xc80ff6, 0x570f69, 5).item(ModItems.TEST_SIGIL_3.get())));
+	public static final RegistryObject<Sigil> MARK_OF_AFFLICTION = REGISTER.register("mark_of_affliction", () -> new AfflictionSigil(new Sigil.Properties(0xff431d, 0x4f0e01, 3)));
+	public static final RegistryObject<Sigil> MARK_OF_ENDURANCE = REGISTER.register("mark_of_endurance", () -> new EnduranceSigil(new Sigil.Properties(0xffffff, 0x3e3e3e, 4)));
+	public static final RegistryObject<Sigil> MINI_HEART = REGISTER.register("mini_heart", () -> new MiniHeartSigil(new Sigil.Properties(0xff0202, 0x560101, 3)));
+	public static final RegistryObject<Sigil> RUNIC_SHIELD = REGISTER.register("runic_shield", () -> new RunicShieldSigil(new Sigil.Properties(0xaf02ff, 0x28003b, 5)));
+	public static final RegistryObject<Sigil> SIGIL_OF_TRAVELER = REGISTER.register("sigil_of_traveler", () -> new TravelerSigil(new Sigil.Properties(0xe7f4f4, 0x3f5655, 3)));
 
 	@SubscribeEvent
 	public static void newRegistry(RegistryEvent.NewRegistry e){

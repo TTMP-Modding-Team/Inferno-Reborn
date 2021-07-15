@@ -10,9 +10,10 @@ import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import ttmp.infernoreborn.contents.ModRecipes;
 import ttmp.infernoreborn.contents.Sigils;
-import ttmp.infernoreborn.inventory.SigilcraftInventory;
+import ttmp.infernoreborn.contents.item.SigilItem;
 import ttmp.infernoreborn.contents.sigil.Sigil;
 import ttmp.infernoreborn.contents.sigil.holder.SigilHolder;
+import ttmp.infernoreborn.inventory.SigilcraftInventory;
 
 import java.util.Map;
 import java.util.Objects;
@@ -45,7 +46,7 @@ public class ShapedSigilEngravingRecipe extends BaseSigilcraftRecipe{
 	}
 
 	@Override public ItemStack getResultItem(){
-		return sigil.getItem()!=null ? new ItemStack(sigil.getItem()) : ItemStack.EMPTY;
+		return SigilItem.createSigilItem(sigil);
 	}
 
 	@Override public IRecipeSerializer<?> getSerializer(){

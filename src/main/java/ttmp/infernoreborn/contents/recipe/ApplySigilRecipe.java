@@ -29,9 +29,11 @@ public class ApplySigilRecipe extends SpecialRecipe{
 			ItemStack stack = inv.getItem(i);
 			if(stack.isEmpty()) continue;
 			if(stack.getItem() instanceof SigilItem){
-				Sigil sigil = ((SigilItem)stack.getItem()).getSigil();
-				if(sigils==null) sigils = new HashSet<>();
-				if(!sigils.add(sigil)) return false;
+				Sigil sigil = SigilItem.getSigil(stack);
+				if(sigil!=null){
+					if(sigils==null) sigils = new HashSet<>();
+					if(!sigils.add(sigil)) return false;
+				}
 			}else{
 				SigilHolder h = SigilHolder.of(stack);
 				if(h!=null){
@@ -55,15 +57,16 @@ public class ApplySigilRecipe extends SpecialRecipe{
 		for(int i = 0; i<inv.getContainerSize(); i++){
 			ItemStack stack = inv.getItem(i);
 			if(stack.isEmpty()) continue;
-			if(stack.getItem() instanceof SigilItem) sigils.add(((SigilItem)stack.getItem()).getSigil());
-			else if(stack.getCapability(Caps.sigilHolder).isPresent()) sigilHolderStack = stack.copy();
+			if(stack.getItem() instanceof SigilItem){
+				Sigil sigil = SigilItem.getSigil(stack);
+				if(sigil!=null) sigils.add(sigil);
+			}else if(stack.getCapability(Caps.sigilHolder).isPresent()) sigilHolderStack = stack.copy();
 		}
 
 		SigilHolder h = SigilHolder.of(sigilHolderStack);
-		if(h!=null){
-			ItemContext context = new ItemContext(sigilHolderStack, h);
-			for(Sigil sigil : sigils) h.add(sigil);
-		}
+		if(h!=null)
+			for(Sigil sigil : sigils)
+				h.add(sigil);
 
 		return sigilHolderStack;
 	}

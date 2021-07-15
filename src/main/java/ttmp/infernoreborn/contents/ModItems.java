@@ -49,7 +49,7 @@ public final class ModItems{
 	};
 	public static final ItemGroup SIGILS = new ItemGroup("infernoreborn.sigils"){
 		@Override public ItemStack makeIcon(){
-			return new ItemStack(TEST_SIGIL.get());
+			return new ItemStack(SIGIL.get());
 		}
 	};
 
@@ -148,9 +148,7 @@ public final class ModItems{
 	public static final RegistryObject<Item> FOUNDRY_TILE = REGISTER.register("foundry_tile", () -> new BlockItem(ModBlocks.FOUNDRY_TILE.get(), artifacts()));
 	public static final RegistryObject<Item> FOUNDRY = REGISTER.register("foundry", () -> new FoundryBlockItem(ModBlocks.FOUNDRY.get(), artifacts()));
 
-	public static final RegistryObject<Item> TEST_SIGIL = REGISTER.register("test_sigil", () -> new SigilItem(Sigils.TEST, sigils()));
-	public static final RegistryObject<Item> TEST_SIGIL_2 = REGISTER.register("test_sigil_2", () -> new SigilItem(Sigils.TEST2, sigils()));
-	public static final RegistryObject<Item> TEST_SIGIL_3 = REGISTER.register("test_sigil_3", () -> new SigilItem(Sigils.TEST2, sigils()));
+	public static final RegistryObject<Item> SIGIL = REGISTER.register("sigil", () -> new SigilItem(sigils()));
 
 	private static RegistryObject<Item> essence(EssenceType type, EssenceSize size){
 		String id;

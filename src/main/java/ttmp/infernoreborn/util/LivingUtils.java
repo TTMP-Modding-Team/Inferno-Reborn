@@ -105,16 +105,21 @@ public final class LivingUtils{
 		if(h!=null) h.setShield(h.getShield()+shield);
 	}
 
-	public static void addToModifier(ListMultimap<Attribute, AttributeModifier> attributeMap, Attribute attribute, UUID uuid, double amount, AttributeModifier.Operation operation){
+	public static void addToModifier(ListMultimap<Attribute, AttributeModifier> attributeMap, Attribute attribute, @Nullable UUID targetUuid, double amount, AttributeModifier.Operation operation){
+		addToModifier(attributeMap, attribute, targetUuid, targetUuid, amount, operation);
+	}
+	public static void addToModifier(ListMultimap<Attribute, AttributeModifier> attributeMap, Attribute attribute, @Nullable UUID targetUuid, @Nullable UUID fallbackUuid, double amount, AttributeModifier.Operation operation){
 		List<AttributeModifier> list = attributeMap.get(attribute);
+		int modifyTargetIndex = -1;
 		for(int i = 0; i<list.size(); i++){
 			AttributeModifier m = list.get(i);
-			if(m.getId().equals(uuid)){
-				if(m.getOperation()==operation)
-					list.set(i, new AttributeModifier(m.getId(), m.getName(), m.getAmount()+amount, m.getOperation()));
-				return;
-			}
+			if(m.getOperation()!=operation) continue;
+			modifyTargetIndex = i;
+			if(targetUuid!=null&&m.getId().equals(targetUuid)) break;
 		}
-		attributeMap.put(attribute, new AttributeModifier(uuid, "", amount, operation));
+		if(modifyTargetIndex>=0){
+			AttributeModifier m = list.get(modifyTargetIndex);
+			list.set(modifyTargetIndex, new AttributeModifier(m.getId(), m.getName(), m.getAmount()+amount, m.getOperation()));
+		}else attributeMap.put(attribute, new AttributeModifier(fallbackUuid!=null ? fallbackUuid : UUID.randomUUID(), "", amount, operation));
 	}
 }
