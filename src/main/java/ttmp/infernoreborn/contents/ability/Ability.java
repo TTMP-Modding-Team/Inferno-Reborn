@@ -21,11 +21,12 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
-import java.util.stream.Collectors;
+import java.util.function.BiConsumer;
 
 public class Ability extends ForgeRegistryEntry<Ability>{
 	private final int primaryColor, secondaryColor, highlightColor;
 	private final Map<Attribute, Set<AttributeModifier>> attributes;
+	private final CooldownTicket[] cooldownTickets;
 	private final int[] drops;
 
 	@Nullable private final OnAbilityEvent<LivingAttackEvent> onAttacked;
@@ -41,6 +42,7 @@ public class Ability extends ForgeRegistryEntry<Ability>{
 		this.secondaryColor = properties.secondaryColor;
 		this.highlightColor = properties.highlightColor;
 		this.attributes = properties.attributes;
+		this.cooldownTickets = properties.cooldownTickets.toArray(new CooldownTicket[0]);
 		this.drops = properties.drops;
 
 		this.onAttacked = properties.onAttacked;
@@ -49,9 +51,8 @@ public class Ability extends ForgeRegistryEntry<Ability>{
 		this.onDeath = properties.onDeath;
 		this.onUpdate = properties.onUpdate;
 
-		this.skills = properties.skillData.stream()
-				.map(x -> new AbilitySkill(this, x))
-				.collect(Collectors.toSet());
+		this.skills = new HashSet<>(properties.skills);
+		for(CooldownTicket t : this.cooldownTickets) t.ability = this;
 	}
 
 	public int getPrimaryColor(){
@@ -66,6 +67,11 @@ public class Ability extends ForgeRegistryEntry<Ability>{
 
 	public Map<Attribute, Set<AttributeModifier>> getAttributes(){
 		return attributes;
+	}
+
+	@Nullable public CooldownTicket getCooldownTicket(byte index){
+		int ii = Byte.toUnsignedInt(index);
+		return ii<this.cooldownTickets.length ? this.cooldownTickets[ii] : null;
 	}
 
 	public int getDrop(EssenceType type){
@@ -118,7 +124,8 @@ public class Ability extends ForgeRegistryEntry<Ability>{
 	public static final class Properties{
 		private final int primaryColor, secondaryColor, highlightColor;
 		private final Map<Attribute, Set<AttributeModifier>> attributes = new HashMap<>();
-		private final List<AbilitySkill.Data> skillData = new ArrayList<>();
+		private final List<CooldownTicket> cooldownTickets = new ArrayList<>();
+		private final List<AbilitySkill> skills = new ArrayList<>();
 		private final int[] drops = new int[EssenceType.values().length];
 
 		@Nullable private OnAbilityEvent<LivingAttackEvent> onAttacked;
@@ -143,12 +150,19 @@ public class Ability extends ForgeRegistryEntry<Ability>{
 			return this;
 		}
 
+		private CooldownTicket newTicket(){
+			if(cooldownTickets.size()>255) throw new IllegalStateException("Too many tickets");
+			CooldownTicket t = new CooldownTicket((byte)cooldownTickets.size());
+			cooldownTickets.add(t);
+			return t;
+		}
+
 		public Properties addSkill(long castTime, long cooldown, AbilitySkill.SkillAction skillAction){
 			return addSkill(castTime, cooldown, skillAction, null);
 		}
 
 		public Properties addSkill(long castTime, long cooldown, AbilitySkill.SkillAction skillAction, @Nullable AbilitySkill.SkillAction skillCondition){
-			this.skillData.add(new AbilitySkill.Data((byte)this.skillData.size(), castTime, cooldown, skillAction, skillCondition));
+			this.skills.add(new AbilitySkill(newTicket(), (byte)this.skills.size(), castTime, cooldown, skillAction, skillCondition));
 			return this;
 		}
 
@@ -157,13 +171,18 @@ public class Ability extends ForgeRegistryEntry<Ability>{
 		}
 
 		public Properties addTargetedSkill(long castTime, long cooldown, AbilitySkill.TargetedSkillAction skillAction, @Nullable AbilitySkill.TargetedSkillAction skillCondition){
-			this.skillData.add(new AbilitySkill.Data((byte)this.skillData.size(), castTime, cooldown, (entity, holder) -> {
+			this.skills.add(new AbilitySkill(newTicket(), (byte)this.skills.size(), castTime, cooldown, (entity, holder) -> {
 				LivingEntity target = LivingUtils.getTarget(entity);
 				return target!=null&&target.isAlive()&&skillAction.useTargetedSkill(entity, holder, target);
 			}, (entity, holder) -> {
 				LivingEntity target = LivingUtils.getTarget(entity);
 				return target!=null&&target.isAlive()&&(skillCondition==null||skillCondition.useTargetedSkill(entity, holder, target));
 			}));
+			return this;
+		}
+
+		public Properties withCooldownTicket(BiConsumer<CooldownTicket, Properties> consumer){
+			consumer.accept(newTicket(), this);
 			return this;
 		}
 
@@ -195,6 +214,37 @@ public class Ability extends ForgeRegistryEntry<Ability>{
 		public Properties drops(EssenceType type, int amount){
 			this.drops[type.ordinal()] = Math.max(0, amount);
 			return this;
+		}
+	}
+
+	public static final class CooldownTicket{
+		private final byte id;
+		@Nullable private Ability ability;
+
+		public CooldownTicket(byte id){
+			this.id = id;
+		}
+
+		public Ability getAbility(){
+			if(ability==null) throw new IllegalStateException("Trying to use incomplete cooldown ticket");
+			return ability;
+		}
+		public byte getId(){
+			return id;
+		}
+
+		@Override public boolean equals(Object o){
+			if(this==o) return true;
+			if(o==null||getClass()!=o.getClass()) return false;
+			CooldownTicket that = (CooldownTicket)o;
+			return getId()==that.getId()&&Objects.equals(getAbility(), that.getAbility());
+		}
+		@Override public int hashCode(){
+			return Objects.hash(getId(), getAbility());
+		}
+
+		@Override public String toString(){
+			return ability==null ? "???@"+id : ability.getRegistryName()+"@"+id;
 		}
 	}
 }

@@ -4,6 +4,7 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import ttmp.infernoreborn.contents.ability.Ability;
 import ttmp.infernoreborn.capability.Caps;
+import ttmp.infernoreborn.contents.ability.cooldown.Cooldown;
 
 import javax.annotation.Nullable;
 import java.util.Set;
@@ -21,4 +22,6 @@ public interface AbilityHolder{
 	void clear();
 
 	void update(LivingEntity entity);
+
+	Cooldown cooldown();
 }

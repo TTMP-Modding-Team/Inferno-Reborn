@@ -10,6 +10,8 @@ import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.common.util.LazyOptional;
 import ttmp.infernoreborn.capability.Caps;
 import ttmp.infernoreborn.contents.ability.Ability;
+import ttmp.infernoreborn.contents.ability.cooldown.Cooldown;
+import ttmp.infernoreborn.contents.ability.cooldown.EmptyCooldown;
 import ttmp.infernoreborn.contents.ability.generator.scheme.AbilityGeneratorScheme;
 
 import javax.annotation.Nullable;
@@ -64,6 +66,10 @@ public class ClientAbilityHolder implements AbilityHolder, ICapabilityProvider{
 				if(particle!=null) particle.setColor(r, g, b);
 			}
 		}
+	}
+
+	@Override public Cooldown cooldown(){
+		return EmptyCooldown.INSTANCE;
 	}
 
 	private final LazyOptional<AbilityHolder> self = LazyOptional.of(() -> this);

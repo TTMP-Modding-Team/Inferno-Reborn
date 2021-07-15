@@ -26,9 +26,8 @@ import ttmp.infernoreborn.contents.ability.Ability;
 import ttmp.infernoreborn.contents.ability.AbilitySkill;
 import ttmp.infernoreborn.contents.ability.OnAbilityEvent;
 import ttmp.infernoreborn.contents.ability.OnAbilityUpdate;
-import ttmp.infernoreborn.contents.ability.ServerSkillCastingState;
-import ttmp.infernoreborn.contents.ability.SkillCastingState;
-import ttmp.infernoreborn.contents.ability.SkillCastingStateProvider;
+import ttmp.infernoreborn.contents.ability.cooldown.Cooldown;
+import ttmp.infernoreborn.contents.ability.cooldown.ServerCooldown;
 import ttmp.infernoreborn.contents.ability.generator.AbilityGenerator;
 import ttmp.infernoreborn.contents.ability.generator.AbilityGenerators;
 import ttmp.infernoreborn.contents.ability.generator.scheme.AbilityGeneratorScheme;
@@ -45,7 +44,7 @@ import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.Set;
 
-public class ServerAbilityHolder implements AbilityHolder, ICapabilitySerializable<CompoundNBT>, SkillCastingStateProvider{
+public class ServerAbilityHolder implements AbilityHolder, ICapabilitySerializable<CompoundNBT>{
 	@Nullable
 	public static ServerAbilityHolder of(ICapabilityProvider provider){
 		AbilityHolder of = AbilityHolder.of(provider);
@@ -92,7 +91,7 @@ public class ServerAbilityHolder implements AbilityHolder, ICapabilitySerializab
 
 	private boolean generateAbility = true;
 
-	private final ServerSkillCastingState skillCastingState = new ServerSkillCastingState(this);
+	private final ServerCooldown cooldown = new ServerCooldown();
 
 	@Override public Set<Ability> getAbilities(){
 		return abilitiesView;
@@ -165,14 +164,21 @@ public class ServerAbilityHolder implements AbilityHolder, ICapabilitySerializab
 
 			syncAbilityToClient(entity);
 		}
-		skillCastingState.update(entity);
-		if(!abilitySkills.isEmpty()&&!skillCastingState.isCasting()){
+		cooldown.decreaseAll(1);
+		if(cooldown.getCastingSkill()!=null){
+			cooldown.setCastTime(cooldown.getCastTime()-1);
+			if(!cooldown.hasCastTime()){
+				triggerSkillEffect(cooldown.getCastingSkill(), entity, true);
+				cooldown.setCastingSkill(null);
+			}
+		}
+		if(!cooldown.hasGlobalDelay()&&!abilitySkills.isEmpty()&&cooldown.getCastingSkill()==null){
 			AbilitySkill[] validSkills = this.abilitySkills.stream()
-					.filter(abilitySkill -> !skillCastingState.hasCooldown(abilitySkill)&&
+					.filter(abilitySkill -> !cooldown.has(abilitySkill.getCooldownTicket())&&
 							(abilitySkill.getSkillCondition()==null||abilitySkill.getSkillCondition().useSkill(entity, this)))
 					.toArray(AbilitySkill[]::new);
 			if(validSkills.length>0){
-				skillCastingState.startCastSkill(validSkills[entity.getRandom().nextInt(validSkills.length)], entity);
+				startCastSkill(validSkills[entity.getRandom().nextInt(validSkills.length)], entity);
 			}
 		}
 		if(entity.isAlive()){
@@ -181,8 +187,23 @@ public class ServerAbilityHolder implements AbilityHolder, ICapabilitySerializab
 		}
 	}
 
-	@Override public SkillCastingState getSkillCastingState(){
-		return skillCastingState;
+	public boolean triggerSkillEffect(AbilitySkill skill, LivingEntity entity, boolean applyCooldownOnSuccess){
+		if(!entity.isAlive()||!skill.getSkillAction().useSkill(entity, this)) return false;
+		if(applyCooldownOnSuccess){
+			cooldown.set(skill.getCooldownTicket(), skill.getCooldown());
+			cooldown.setGlobalDelay(Math.max(cooldown.getGlobalDelay(), 10));
+		}
+		return true;
+	}
+
+	public void startCastSkill(AbilitySkill skill, LivingEntity entity){
+		if(cooldown.getCastingSkill()!=null) return;
+		if(skill.getCastTime()<=0){
+			triggerSkillEffect(skill, entity, true);
+		}else{
+			cooldown.setCastingSkill(skill);
+			cooldown.setCastTime(skill.getCastTime());
+		}
 	}
 
 	public void syncAbilityToClient(LivingEntity entity){
@@ -190,6 +211,10 @@ public class ServerAbilityHolder implements AbilityHolder, ICapabilitySerializab
 				new SyncAbilityHolderMsg(entity.getId(),
 						abilities,
 						appliedGeneratorScheme!=null&&appliedGeneratorScheme.getSpecialEffect()!=null ? appliedGeneratorScheme : null));
+	}
+
+	@Override public Cooldown cooldown(){
+		return cooldown;
 	}
 
 	public void generate(LivingEntity entity, @Nullable AbilityGenerator generator){
@@ -229,7 +254,7 @@ public class ServerAbilityHolder implements AbilityHolder, ICapabilitySerializab
 		if(!abilities.isEmpty()) nbt.put("abilities", StupidUtils.writeToNbt(abilities, Abilities.getRegistry()));
 		if(this.generateAbility) nbt.putBoolean("generateAbility", true);
 		if(appliedGeneratorScheme!=null) nbt.putString("appliedGeneratorScheme", appliedGeneratorScheme.getId().toString());
-		this.skillCastingState.save(nbt);
+		this.cooldown.save(nbt);
 		return nbt;
 	}
 
@@ -243,6 +268,6 @@ public class ServerAbilityHolder implements AbilityHolder, ICapabilitySerializab
 		this.appliedGeneratorScheme = nbt.contains("appliedGeneratorScheme", Constants.NBT.TAG_STRING) ?
 				AbilityGenerators.findSchemeWithId(new ResourceLocation(nbt.getString("appliedGeneratorScheme"))) :
 				null;
-		this.skillCastingState.load(nbt);
+		this.cooldown.load(nbt);
 	}
 }

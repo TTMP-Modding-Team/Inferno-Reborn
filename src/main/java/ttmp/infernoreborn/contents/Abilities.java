@@ -1,6 +1,5 @@
 package ttmp.infernoreborn.contents;
 
-import it.unimi.dsi.fastutil.objects.Object2LongMap;
 import net.minecraft.enchantment.ThornsEnchantment;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
@@ -40,8 +39,6 @@ import ttmp.infernoreborn.capability.TickingTaskHandler;
 import ttmp.infernoreborn.contents.ability.Ability;
 import ttmp.infernoreborn.contents.ability.AbilitySkill;
 import ttmp.infernoreborn.contents.ability.OnAbilityEvent;
-import ttmp.infernoreborn.contents.ability.SkillCastingStateProvider;
-import ttmp.infernoreborn.contents.ability.holder.ServerAbilityHolder;
 import ttmp.infernoreborn.contents.entity.AnvilEntity;
 import ttmp.infernoreborn.contents.entity.wind.AbstractWindEntity;
 import ttmp.infernoreborn.contents.entity.wind.DamagingWindEntity;
@@ -277,11 +274,8 @@ public final class Abilities{
 
 	public static final RegistryObject<Ability> SENTRY = REGISTER.register("sentry", () ->
 			new Ability(new Ability.Properties(0x8000, 0x80000)
-					.onUpdate((entity, holder) -> {
-						if(holder instanceof SkillCastingStateProvider)
-							for(Object2LongMap.Entry<AbilitySkill> e : ((SkillCastingStateProvider)holder).getSkillCastingState().getCooldowns().object2LongEntrySet())
-								e.setValue(e.getLongValue()-4);
-					}).addAttribute(Attributes.MOVEMENT_SPEED, "41669826-6fde-4dc6-b67f-28a28a1f2dbb", -0.9, Operation.MULTIPLY_BASE)
+					.onUpdate((entity, holder) -> holder.cooldown().decreaseAll(4))
+					.addAttribute(Attributes.MOVEMENT_SPEED, "41669826-6fde-4dc6-b67f-28a28a1f2dbb", -0.9, Operation.MULTIPLY_BASE)
 					.drops(EssenceType.EARTH, 5)));
 
 	public static final RegistryObject<Ability> HEALTH_KIT = REGISTER.register("health_kit", () ->
@@ -435,16 +429,9 @@ public final class Abilities{
 
 	public static final RegistryObject<Ability> BATTLE_MOMENTUM = REGISTER.register("battle_momentum", () ->
 			new Ability(new Ability.Properties(0x6041F8, 0x6041F8)
-					.onAttacked((entity, holder, event) -> {
-						if(!entity.level.isClientSide)
-							for(Object2LongMap.Entry<AbilitySkill> entry : ((ServerAbilityHolder)holder).getSkillCastingState().getCooldowns().object2LongEntrySet())
-								entry.setValue(entry.getLongValue()-10);
-					})
-					.onHit((entity, holder, event) -> {
-						if(!entity.level.isClientSide)
-							for(Object2LongMap.Entry<AbilitySkill> entry : ((ServerAbilityHolder)holder).getSkillCastingState().getCooldowns().object2LongEntrySet())
-								entry.setValue(entry.getLongValue()-20);
-					}).drops(EssenceType.DOMINANCE, 9)));
+					.onAttacked((entity, holder, event) -> holder.cooldown().decreaseAll(10))
+					.onHit((entity, holder, event) -> holder.cooldown().decreaseAll(20))
+					.drops(EssenceType.DOMINANCE, 9)));
 
 	public static final RegistryObject<Ability> SLIMEBLOOD = REGISTER.register("slimeblood", () ->
 			new Ability(new Ability.Properties(0x7DCC6A, 0x7DCC6A)
