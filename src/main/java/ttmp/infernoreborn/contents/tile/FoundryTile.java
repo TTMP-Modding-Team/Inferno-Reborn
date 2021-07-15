@@ -116,8 +116,7 @@ public class FoundryTile extends TileEntity implements ITickableTileEntity, INam
 			return;
 		}
 
-		if(currentRecipe!=null)
-			if(startIfCanHandleResult(currentRecipe)) return;
+		if(currentRecipe!=null&&startIfCanHandleResult(currentRecipe)) return;
 		for(FoundryRecipe r : server.getRecipeManager().getRecipesFor(ModRecipes.FOUNDRY_RECIPE_TYPE, foundryInventory, level))
 			if(r!=currentRecipe&&startIfCanHandleResult(r)) return;
 
@@ -127,8 +126,7 @@ public class FoundryTile extends TileEntity implements ITickableTileEntity, INam
 	private boolean startIfCanHandleResult(FoundryRecipe recipe){
 		if(!insertItems(recipe, true)) return false;
 		this.currentRecipe = recipe;
-		recipe.consume(foundryInventory, false);
-		return true;
+		return recipe.consume(foundryInventory, false);
 	}
 
 	private boolean insertItems(FoundryRecipe recipe, boolean simulate){

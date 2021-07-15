@@ -43,6 +43,7 @@ public class Ability extends ForgeRegistryEntry<Ability>{
 		this.highlightColor = properties.highlightColor;
 		this.attributes = properties.attributes;
 		this.cooldownTickets = properties.cooldownTickets.toArray(new CooldownTicket[0]);
+		for(CooldownTicket t : this.cooldownTickets) t.ability = this;
 		this.drops = properties.drops;
 
 		this.onAttacked = properties.onAttacked;
@@ -52,7 +53,6 @@ public class Ability extends ForgeRegistryEntry<Ability>{
 		this.onUpdate = properties.onUpdate;
 
 		this.skills = new HashSet<>(properties.skills);
-		for(CooldownTicket t : this.cooldownTickets) t.ability = this;
 	}
 
 	public int getPrimaryColor(){
