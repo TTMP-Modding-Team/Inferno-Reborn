@@ -1,6 +1,7 @@
 {
   "parent": "minecraft:item/generated",
   "textures": {
-    "layer0": "infernoreborn:item/essence_holder"
+    "layer0": "infernoreborn:item/essence_holder_0",
+    "layer1": "infernoreborn:item/essence_holder_1"
   }
 }

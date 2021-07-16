@@ -112,9 +112,9 @@ public class FoundryBlock extends Block{
 	}
 
 	public static abstract class ProxyBlock extends Block{
-		private final int proxyX;
-		private final int proxyY;
-		private final int proxyZ;
+		public final int proxyX;
+		public final int proxyY;
+		public final int proxyZ;
 
 		public ProxyBlock(int proxyX, int proxyY, int proxyZ, Properties properties){
 			super(properties);

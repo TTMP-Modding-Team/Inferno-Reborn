@@ -29,6 +29,8 @@ import ttmp.infernoreborn.client.color.EssenceHolderBookSparkColor;
 import ttmp.infernoreborn.client.color.GeneratorInfernoSparkColor;
 import ttmp.infernoreborn.client.color.PrimalInfernoSparkColor;
 import ttmp.infernoreborn.client.color.SparkColor;
+import ttmp.infernoreborn.client.render.AnvilEntityRenderer;
+import ttmp.infernoreborn.client.render.WindEntityRenderer;
 import ttmp.infernoreborn.client.screen.EssenceHolderScreen;
 import ttmp.infernoreborn.client.screen.FoundryScreen;
 import ttmp.infernoreborn.client.screen.SigilEngravingTableScreen;
@@ -43,8 +45,6 @@ import ttmp.infernoreborn.contents.ModRecipes;
 import ttmp.infernoreborn.contents.ModTileEntities;
 import ttmp.infernoreborn.contents.Sigils;
 import ttmp.infernoreborn.contents.ability.holder.AbilityHolder;
-import ttmp.infernoreborn.client.render.AnvilEntityRenderer;
-import ttmp.infernoreborn.client.render.WindEntityRenderer;
 import ttmp.infernoreborn.contents.sigil.holder.SigilHolder;
 import ttmp.infernoreborn.datagen.AbilityGeneratorDataProvider;
 import ttmp.infernoreborn.datagen.BlockModelGen;
@@ -152,7 +152,7 @@ public class InfernoReborn{
 			event.getItemColors().register(new SparkColor(), ModItems.INFERNO_SPARK.get());
 			event.getItemColors().register(new GeneratorInfernoSparkColor(), ModItems.GENERATOR_INFERNO_SPARK.get());
 			event.getItemColors().register(new PrimalInfernoSparkColor(), ModItems.PRIMAL_INFERNO_SPARK.get());
-			event.getItemColors().register(new EssenceHolderBookSparkColor(), ModItems.BOOK_OF_THE_UNSPEAKABLE_COMBINED.get());
+			event.getItemColors().register(new EssenceHolderBookSparkColor(), ModItems.BOOK_OF_THE_UNSPEAKABLE_COMBINED.get(), ModItems.ESSENCE_HOLDER.get());
 		}
 	}
 }

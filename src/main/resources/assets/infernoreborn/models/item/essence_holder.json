@@ -1,0 +1,22 @@
+{
+	"parent": "block/block",
+	"textures": {
+		"0": "infernoreborn:item/essence_holder/bottom",
+		"1": "infernoreborn:item/essence_holder/side",
+		"2": "infernoreborn:item/essence_holder/top"
+	},
+	"elements": [
+		{
+			"from": [4, 2, 4],
+			"to": [12, 14, 12],
+			"faces": {
+				"north": {"uv": [4, 2, 12, 14], "texture": "#1", "tintindex": 0},
+				"east": {"uv": [4, 2, 12, 14], "texture": "#1", "tintindex": 0},
+				"south": {"uv": [4, 2, 12, 14], "texture": "#1", "tintindex": 0},
+				"west": {"uv": [4, 2, 12, 14], "texture": "#1", "tintindex": 0},
+				"up": {"uv": [4, 4, 12, 12], "texture": "#2", "tintindex": 0},
+				"down": {"uv": [4, 4, 12, 12], "texture": "#0", "tintindex": 0}
+			}
+		}
+	]
+}

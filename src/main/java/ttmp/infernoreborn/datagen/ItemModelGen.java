@@ -29,7 +29,9 @@ public class ItemModelGen extends ItemModelProvider{
 			item(Objects.requireNonNull(type.getGreaterCrystalItem().getRegistryName()).getPath(),
 					new ResourceLocation(MODID, "item/essence/greater_"+type.id+"_crystal"));
 		}
-		simpleItem(ModItems.ESSENCE_HOLDER.get());
+		item(ModItems.ESSENCE_HOLDER.getId().getPath(),
+				new ResourceLocation(MODID, "item/essence_holder_0"),
+				new ResourceLocation(MODID, "item/essence_holder_1"));
 		item(ModItems.BOOK_OF_THE_UNSPEAKABLE.getId().getPath(), new ResourceLocation(MODID, "item/book_of_the_unspeakable"));
 		item(ModItems.BOOK_OF_THE_UNSPEAKABLE_COMBINED.getId().getPath(),
 				new ResourceLocation(MODID, "item/book_of_the_unspeakable_combined"),
@@ -64,6 +66,8 @@ public class ItemModelGen extends ItemModelProvider{
 		simpleItem(ModItems.BERSERKER_BOOTS.get());
 
 		simpleItem(ModItems.DAMASCUS_STEEL_INGOT.get());
+
+		simpleItem(ModItems.SIGIL.get());
 	}
 
 	protected ItemModelBuilder simpleItem(Item item){

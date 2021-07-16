@@ -22,6 +22,11 @@ public final class ColorUtils{
 			return ColorUtils.hslToRgb(RNG.nextDouble()*360, .75, .7);
 		}
 	};
+	public static final ColorBlender ESSENCE_HOLDER_COLOR = new ColorBlender(2000){
+		@Override protected int createNewColor(){
+			return ColorUtils.hslToRgb(RNG.nextDouble()*360, 1, .8);
+		}
+	};
 
 	private static final Random RNG = new Random();
 	private static final long BLEND_TIME = 2000;
