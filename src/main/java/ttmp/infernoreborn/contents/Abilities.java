@@ -176,6 +176,21 @@ public final class Abilities{
 					.drops(EssenceType.MAGIC, 5)
 					.drops(EssenceType.DOMINANCE, 2)));
 
+	public static final RegistryObject<Ability> WINDBLAST_1 = REGISTER.register("windblast_1", () ->
+			new Ability(new Ability.Properties(0xA1CEE3, 0xA1CEE3)
+					.addTargetedSkill(4, 120, wind((world) -> new DamagingWindEntity(world).setDamage(4), 1, 1, 1))
+					.drops(EssenceType.AIR, 3)));
+
+	public static final RegistryObject<Ability> WINDBLAST_2 = REGISTER.register("windblast_2", () ->
+			new Ability(new Ability.Properties(0xA1CEE3, 0xA1CEE3)
+					.addTargetedSkill(8, 180, wind((world) -> new DamagingWindEntity(world).setDamage(6), 1, 1, 1))
+					.drops(EssenceType.AIR, 6)));
+
+	public static final RegistryObject<Ability> WINDBLAST_3 = REGISTER.register("windblast_3", () ->
+			new Ability(new Ability.Properties(0xA1CEE3, 0xA1CEE3)
+					.addTargetedSkill(12, 240, wind((world) -> new DamagingWindEntity(world).setDamage(8), 1, 1, 1))
+					.drops(EssenceType.AIR, 9)));
+
 	public static final RegistryObject<Ability> BULLETPROOF = REGISTER.register("bulletproof", () ->
 			new Ability(new Ability.Properties(0xC8C8C8, 0xC8C8C8)
 					.addAttribute(ModAttributes.RANGED_DAMAGE_RESISTANCE.get(), "fa9b6063-66b7-4bbd-a4d8-1d35a088fa92", .8, Operation.MULTIPLY_BASE)
@@ -412,21 +427,6 @@ public final class Abilities{
 						if(event.getSource()==DamageSource.ANVIL) event.setCanceled(true);
 					}).drops(EssenceType.METAL, 3)));
 
-	public static final RegistryObject<Ability> WINDBLAST_1 = REGISTER.register("windblast_1", () ->
-			new Ability(new Ability.Properties(0xA1CEE3, 0xA1CEE3)
-					.addTargetedSkill(4, 120, wind((world) -> new DamagingWindEntity(world).setDamage(4), 1, 1, 1))
-					.drops(EssenceType.AIR, 3)));
-
-	public static final RegistryObject<Ability> WINDBLAST_2 = REGISTER.register("windblast_2", () ->
-			new Ability(new Ability.Properties(0xA1CEE3, 0xA1CEE3)
-					.addTargetedSkill(8, 180, wind((world) -> new DamagingWindEntity(world).setDamage(6), 1, 1, 1))
-					.drops(EssenceType.AIR, 6)));
-
-	public static final RegistryObject<Ability> WINDBLAST_3 = REGISTER.register("windblast_3", () ->
-			new Ability(new Ability.Properties(0xA1CEE3, 0xA1CEE3)
-					.addTargetedSkill(12, 240, wind((world) -> new DamagingWindEntity(world).setDamage(8), 1, 1, 1))
-					.drops(EssenceType.AIR, 9)));
-
 	public static final RegistryObject<Ability> BATTLE_MOMENTUM = REGISTER.register("battle_momentum", () ->
 			new Ability(new Ability.Properties(0x6041F8, 0x6041F8)
 					.onAttacked((entity, holder, event) -> holder.cooldown().decreaseAll(10))
@@ -491,6 +491,49 @@ public final class Abilities{
 						}
 						return succeed;
 					}, (entity, holder, target) -> entity.getHealth()/entity.getMaxHealth()<0.4)));
+	public static final RegistryObject<Ability> WABBAJACK = REGISTER.register("wabbajack", () ->
+			new Ability(new Ability.Properties(0x2BB826, 0x2BB826)));
+	public static final RegistryObject<Ability> SLYNESS = REGISTER.register("slyness", () ->
+			new Ability(new Ability.Properties(0x252525, 0x252525)));
+	public static final RegistryObject<Ability> ELECTRIC_SKIN = REGISTER.register("electric_skin", () ->
+			new Ability(new Ability.Properties(0xFFFF00, 0xFFFF00)));
+	public static final RegistryObject<Ability> RECALL = REGISTER.register("recall", () ->
+			new Ability(new Ability.Properties(0x64FFFF, 0x64FFFF)));
+	public static final RegistryObject<Ability> ZOMBIE_NECROMANCY = REGISTER.register("zombie_necromancy", () ->
+			new Ability(new Ability.Properties(0x466D36, 0x466D36)));
+	public static final RegistryObject<Ability> SKELETON_NECROMANCY = REGISTER.register("skeleton_necromancy", () ->
+			new Ability(new Ability.Properties(0x787878, 0x787878)));
+	public static final RegistryObject<Ability> ARROW_STORM = REGISTER.register("arrow_storm", () ->
+			new Ability(new Ability.Properties(0x7A00D0, 0x7A00D0)));
+	public static final RegistryObject<Ability> ARROW_RUSH = REGISTER.register("arrow_rush", () ->
+			new Ability(new Ability.Properties(0x7A00D0, 0x7A00D0)));
+	public static final RegistryObject<Ability> TAILWIND = REGISTER.register("tailwind", () ->
+			new Ability(new Ability.Properties(0xC0E4FF, 0xC0E4FF)));
+	public static final RegistryObject<Ability> HEADWIND = REGISTER.register("headwind", () ->
+			new Ability(new Ability.Properties(0xC0E4FF, 0xC0E4FF)));
+	public static final RegistryObject<Ability> CONDITIONAL_REFLEX = REGISTER.register("conditional_reflex", () ->
+			new Ability(new Ability.Properties(0x0, 0x0)));
+	public static final RegistryObject<Ability> MAGMABLOOD = REGISTER.register("magmablood", () ->
+			new Ability(new Ability.Properties(0x400000, 0x400000)));
+	public static final RegistryObject<Ability> PYROMANIA = REGISTER.register("pyromania", () ->
+			new Ability(new Ability.Properties(0xD94F00, 0xD94F00)));
+	public static final RegistryObject<Ability> GUNPOWDER_SWARM = REGISTER.register("gunpowder_swarm", () ->
+			new Ability(new Ability.Properties(0x00C800, 0x00C800)));
+	public static final RegistryObject<Ability> KILLER_QUEEN = REGISTER.register("killer_queen", () ->
+			new Ability(new Ability.Properties(0xE3AADD, 0xE3AADD)));
+	public static final RegistryObject<Ability> DIABOLO = REGISTER.register("diabolo", () ->
+			new Ability(new Ability.Properties(0x4B0000, 0x4B0000)));
+	public static final RegistryObject<Ability> SERVANT = REGISTER.register("servant", () ->
+			new Ability(new Ability.Properties(0x480072, 0x480072)));
+	public static final RegistryObject<Ability> BROODLING = REGISTER.register("broodling", () ->
+			new Ability(new Ability.Properties(0x480072, 0x480072)));
+	public static final RegistryObject<Ability> GER = REGISTER.register("ger", () ->
+			new Ability(new Ability.Properties(0xFFFF19, 0xFFFF19)));
+	public static final RegistryObject<Ability> LEAVE_ME_ALONE = REGISTER.register("leave_me_alone", () ->
+			new Ability(new Ability.Properties(0xC0E4FF, 0xC0E4FF)));
+	public static final RegistryObject<Ability> BLACK_HOLE = REGISTER.register("black_hole", () ->
+			new Ability(new Ability.Properties(0x191919, 0x191919)));
+
 
 	@SubscribeEvent
 	public static void newRegistry(RegistryEvent.NewRegistry e){

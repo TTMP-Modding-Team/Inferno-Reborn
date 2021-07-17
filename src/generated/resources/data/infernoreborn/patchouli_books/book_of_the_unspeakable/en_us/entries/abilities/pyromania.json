@@ -1,0 +1,11 @@
+{
+	"name": "ability.infernoreborn.pyromania",
+	"category": "infernoreborn:abilities",
+	"icon": "infernoreborn:inferno_spark{Abilities:[\"infernoreborn:pyromania\"]}",
+	"pages": [
+		{
+			"type": "text",
+			"text": "text.infernoreborn.pyromania.0"
+		}
+	]
+}

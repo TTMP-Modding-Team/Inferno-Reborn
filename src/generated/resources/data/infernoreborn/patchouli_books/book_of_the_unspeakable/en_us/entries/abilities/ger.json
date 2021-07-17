@@ -1,0 +1,11 @@
+{
+	"name": "ability.infernoreborn.ger",
+	"category": "infernoreborn:abilities",
+	"icon": "infernoreborn:inferno_spark{Abilities:[\"infernoreborn:ger\"]}",
+	"pages": [
+		{
+			"type": "text",
+			"text": "text.infernoreborn.ger.0"
+		}
+	]
+}

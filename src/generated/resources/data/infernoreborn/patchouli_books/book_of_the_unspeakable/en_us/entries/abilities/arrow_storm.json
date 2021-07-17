@@ -1,0 +1,11 @@
+{
+	"name": "ability.infernoreborn.arrow_storm",
+	"category": "infernoreborn:abilities",
+	"icon": "infernoreborn:inferno_spark{Abilities:[\"infernoreborn:arrow_storm\"]}",
+	"pages": [
+		{
+			"type": "text",
+			"text": "text.infernoreborn.arrow_storm.0"
+		}
+	]
+}

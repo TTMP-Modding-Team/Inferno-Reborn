@@ -1,0 +1,11 @@
+{
+	"name": "ability.infernoreborn.wabbajack",
+	"category": "infernoreborn:abilities",
+	"icon": "infernoreborn:inferno_spark{Abilities:[\"infernoreborn:wabbajack\"]}",
+	"pages": [
+		{
+			"type": "text",
+			"text": "text.infernoreborn.wabbajack.0"
+		}
+	]
+}

@@ -1,0 +1,11 @@
+{
+	"name": "ability.infernoreborn.broodling",
+	"category": "infernoreborn:abilities",
+	"icon": "infernoreborn:inferno_spark{Abilities:[\"infernoreborn:broodling\"]}",
+	"pages": [
+		{
+			"type": "text",
+			"text": "text.infernoreborn.broodling.0"
+		}
+	]
+}

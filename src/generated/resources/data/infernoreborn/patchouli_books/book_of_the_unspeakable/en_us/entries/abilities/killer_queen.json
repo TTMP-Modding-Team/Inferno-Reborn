@@ -1,0 +1,11 @@
+{
+	"name": "ability.infernoreborn.killer_queen",
+	"category": "infernoreborn:abilities",
+	"icon": "infernoreborn:inferno_spark{Abilities:[\"infernoreborn:killer_queen\"]}",
+	"pages": [
+		{
+			"type": "text",
+			"text": "text.infernoreborn.killer_queen.0"
+		}
+	]
+}

@@ -1,0 +1,11 @@
+{
+	"name": "ability.infernoreborn.slyness",
+	"category": "infernoreborn:abilities",
+	"icon": "infernoreborn:inferno_spark{Abilities:[\"infernoreborn:slyness\"]}",
+	"pages": [
+		{
+			"type": "text",
+			"text": "text.infernoreborn.slyness.0"
+		}
+	]
+}

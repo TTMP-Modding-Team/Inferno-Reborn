@@ -1,0 +1,11 @@
+{
+	"name": "ability.infernoreborn.tailwind",
+	"category": "infernoreborn:abilities",
+	"icon": "infernoreborn:inferno_spark{Abilities:[\"infernoreborn:tailwind\"]}",
+	"pages": [
+		{
+			"type": "text",
+			"text": "text.infernoreborn.tailwind.0"
+		}
+	]
+}
