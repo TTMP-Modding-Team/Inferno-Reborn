@@ -150,12 +150,26 @@ publishing {
 }
 repositories {
     maven { url 'https://maven.blamejared.com' }
+    maven {
+        name = "Progwml6 maven"
+        url = "https://dvs1.progwml6.com/files/maven/"
+    }
+    maven {
+        name = "ModMaven"
+        url = "https://modmaven.k-4u.nl"
+    }
+    maven {
+        url = "https://maven.theillusivec4.top/"
+    }
 }
 
 dependencies {
-    // 1.14+
     compileOnly fg.deobf("vazkii.patchouli:Patchouli:1.16.4-52-SNAPSHOT:api")
     runtimeOnly fg.deobf("vazkii.patchouli:Patchouli:1.16.4-52-SNAPSHOT")
+    compileOnly fg.deobf("mezz.jei:jei-1.16.5:7.7.1.110:api")
+    runtimeOnly fg.deobf("mezz.jei:jei-1.16.5:7.7.1.110")
+    runtimeOnly fg.deobf("top.theillusivec4.curios:curios-forge:1.16.5-4.0.5.2")
+    compileOnly fg.deobf("top.theillusivec4.curios:curios-forge:1.16.5-4.0.5.2:api")
 }
 
 minecraft {
