@@ -23,7 +23,6 @@ import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.living.LivingAttackEvent;
 import net.minecraftforge.event.entity.living.LivingDamageEvent;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
-import net.minecraftforge.event.entity.living.LivingDropsEvent;
 import net.minecraftforge.event.entity.living.LivingEvent.LivingUpdateEvent;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import net.minecraftforge.event.entity.player.CriticalHitEvent;
@@ -39,7 +38,6 @@ import ttmp.infernoreborn.capability.TickingTaskHandler;
 import ttmp.infernoreborn.contents.ModAttributes;
 import ttmp.infernoreborn.contents.ModEffects;
 import ttmp.infernoreborn.contents.ModItems;
-import ttmp.infernoreborn.contents.ability.Ability;
 import ttmp.infernoreborn.contents.ability.OnAbilityEvent;
 import ttmp.infernoreborn.contents.ability.holder.AbilityHolder;
 import ttmp.infernoreborn.contents.ability.holder.ClientAbilityHolder;
@@ -50,7 +48,6 @@ import ttmp.infernoreborn.contents.sigil.holder.PlayerSigilHolder;
 import ttmp.infernoreborn.contents.sigil.holder.SigilHolder;
 import ttmp.infernoreborn.util.ArmorSet;
 import ttmp.infernoreborn.util.CannotHurtNonLiving;
-import ttmp.infernoreborn.util.EssenceType;
 import ttmp.infernoreborn.util.LivingUtils;
 
 import java.util.Collection;
@@ -271,28 +268,6 @@ public class CommonEventHandlers{
 				event.setDamageModifier(event.getDamageModifier()+1.5f);
 			}else if(event.getTarget() instanceof LivingEntity&&((LivingEntity)event.getTarget()).getMaxHealth()>=30){
 				event.setDamageModifier(event.getDamageModifier()+.5f);
-			}
-		}
-	}
-
-	@SubscribeEvent
-	public static void onLivingDrops(LivingDropsEvent event){
-		AbilityHolder h = AbilityHolder.of(event.getEntityLiving());
-		if(h==null) return;
-		for(EssenceType type : EssenceType.values()){
-			int amount = 0;
-			for(Ability a : h.getAbilities()) amount += a.getDrop(type);
-
-			if(amount>=9*9){
-				addDrop(event.getEntityLiving(), event.getDrops(), new ItemStack(type.getGreaterCrystalItem(), amount/9*9));
-				amount %= 9*9;
-			}
-			if(amount>=9){
-				addDrop(event.getEntityLiving(), event.getDrops(), new ItemStack(type.getCrystalItem(), amount/9));
-				amount %= 9;
-			}
-			if(amount>=1){
-				addDrop(event.getEntityLiving(), event.getDrops(), new ItemStack(type.getShardItem(), amount));
 			}
 		}
 	}

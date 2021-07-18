@@ -1,7 +1,5 @@
 package ttmp.infernoreborn;
 
-import cpw.mods.modlauncher.Launcher;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.ScreenManager;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.RenderTypeLookup;
@@ -47,6 +45,7 @@ import ttmp.infernoreborn.contents.ModContainers;
 import ttmp.infernoreborn.contents.ModEffects;
 import ttmp.infernoreborn.contents.ModEntities;
 import ttmp.infernoreborn.contents.ModItems;
+import ttmp.infernoreborn.contents.ModLootModifiers;
 import ttmp.infernoreborn.contents.ModRecipes;
 import ttmp.infernoreborn.contents.ModTileEntities;
 import ttmp.infernoreborn.contents.Sigils;
@@ -58,6 +57,7 @@ import ttmp.infernoreborn.datagen.BlockTagGen;
 import ttmp.infernoreborn.datagen.BookDataProvider;
 import ttmp.infernoreborn.datagen.ItemModelGen;
 import ttmp.infernoreborn.datagen.ItemTagGen;
+import ttmp.infernoreborn.datagen.LootModifierGen;
 import ttmp.infernoreborn.datagen.McmetaGen;
 import ttmp.infernoreborn.datagen.RecipeGen;
 import ttmp.infernoreborn.network.ModNet;
@@ -79,6 +79,7 @@ public class InfernoReborn{
 		ModContainers.REGISTER.register(modEventBus);
 		ModEffects.REGISTER.register(modEventBus);
 		ModItems.REGISTER.register(modEventBus);
+		ModLootModifiers.REGISTER.register(modEventBus);
 		ModRecipes.REGISTER.register(modEventBus);
 		ModTileEntities.REGISTER.register(modEventBus);
 		ModEntities.REGISTER.register(modEventBus);
@@ -124,6 +125,7 @@ public class InfernoReborn{
 			BlockTagGen blockTagGen = new BlockTagGen(event.getGenerator(), event.getExistingFileHelper());
 			generator.addProvider(blockTagGen);
 			generator.addProvider(new ItemTagGen(event.getGenerator(), blockTagGen, event.getExistingFileHelper()));
+			generator.addProvider(new LootModifierGen(event.getGenerator()));
 		}
 		if(event.includeClient()){
 			generator.addProvider(new ItemModelGen(event.getGenerator(), event.getExistingFileHelper()));
