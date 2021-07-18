@@ -3,6 +3,7 @@ package ttmp.infernoreborn.contents.item;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.Rarity;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
@@ -26,6 +27,16 @@ public class SigilItem extends Item{
 			setSigil(stack, sigil);
 			itemStacks.add(stack);
 		}
+	}
+
+	@Override public String getDescriptionId(ItemStack stack){
+		Sigil sigil = getSigil(stack);
+		return sigil!=null ? sigil.getUnlocalizedName() : super.getDescriptionId();
+	}
+
+	@Override public Rarity getRarity(ItemStack stack){
+		Sigil sigil = getSigil(stack);
+		return sigil!=null ? sigil.getRarity() : super.getRarity(stack);
 	}
 
 	@Nullable public static Sigil getSigil(ItemStack stack){

@@ -71,16 +71,21 @@
 	"item.infernoreborn.crimson_metal_scrap": "Crimson Metal Scrap",
 	"item.infernoreborn.damascus_steel_ingot": "Damascus Steel Ingot",
 	"item.infernoreborn.damascus_steel_nugget": "Damascus Steel Nugget",
+	"item.infernoreborn.sigil": "Empty Sigil",
+
 	"block.infernoreborn.damascus_steel_block": "Damascus Steel Block",
 	"block.infernoreborn.sigil_engraving_table_3x3": "Sigil Engraving Table 3x3",
 	"block.infernoreborn.sigil_engraving_table_5x5": "Sigil Engraving Table 5x5",
 	"block.infernoreborn.sigil_engraving_table_7x7": "Sigil Engraving Table 7x7",
+	"block.infernoreborn.foundry_tile": "Foundry Tile",
 	"block.infernoreborn.foundry": "Foundry",
+
 	"tooltip.infernoreborn.expand": "[%s]",
 	"tooltip.infernoreborn.expand.shift": "Shift",
 	"tooltip.infernoreborn.expand.ctrl": "Ctrl",
 	"tooltip.infernoreborn.expand.alt": "Alt",
 	"tooltip.infernoreborn.inferno_spark.n_abilities": "%s abilities",
+
 	"ability.infernoreborn.heart": "Heart",
 	"ability.infernoreborn.heart2": "Heart+",
 	"ability.infernoreborn.heart3": "Heart++",
@@ -91,7 +96,6 @@
 	"ability.infernoreborn.heart8": "Heart+++++++",
 	"ability.infernoreborn.heart9": "Heart++++++++",
 	"ability.infernoreborn.heart10": "Heart+++++++++",
-
 	"ability.infernoreborn.wood_skin": "Wood Skin",
 	"ability.infernoreborn.rock_skin": "Rock Skin",
 	"ability.infernoreborn.iron_skin": "Iron Skin",
@@ -157,6 +161,13 @@
 	"ability.infernoreborn.ger": "GER",
 	"ability.infernoreborn.leave_me_alone": "Leave Me Alone",
 	"ability.infernoreborn.black_hole": "Black Hole",
+
+	"sigil.infernoreborn.mark_of_affliction": "Mark of Affliction",
+	"sigil.infernoreborn.mark_of_endurance": "Mark of Endurance",
+	"sigil.infernoreborn.mini_heart": "Mini Heart",
+	"sigil.infernoreborn.runic_shield": "Runic Shield",
+	"sigil.infernoreborn.sigil_of_traveler": "Sigil of Traveler",
+
 	"text.infernoreborn.book_of_the_unspeakable.landingText": "The Successor of MobCapabilities",
 	"text.infernoreborn.book_of_the_unspeakable.quick_start": "Quick Start Guide",
 	"text.infernoreborn.book_of_the_unspeakable.abilities": "Abilities",
@@ -239,9 +250,11 @@
 	"text.infernoreborn.ger.0": "GER",
 	"text.infernoreborn.leave_me_alone.0": "Leave Me Alone",
 	"text.infernoreborn.black_hole.0": "Black Hole",
+
 	"container.infernoreborn.essence_holder": "Essence Holder",
 	"container.infernoreborn.book_of_the_unspeakable": "Book of the Unspeakable",
 	"container.infernoreborn.sigil_engraving_table": "Sigil Engraving Table",
+
 	"infernoreborn.ranged_attack": "Ranged Attack Damage",
 	"infernoreborn.magic_attack": "Magic Attack Damage",
 	"infernoreborn.regeneration": "Regeneration",
