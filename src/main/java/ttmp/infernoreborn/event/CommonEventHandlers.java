@@ -22,6 +22,7 @@ import net.minecraftforge.event.entity.living.LivingDamageEvent;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.entity.living.LivingEvent.LivingUpdateEvent;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
+import net.minecraftforge.event.entity.player.AttackEntityEvent;
 import net.minecraftforge.event.entity.player.CriticalHitEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.event.world.ExplosionEvent;
@@ -45,6 +46,8 @@ import ttmp.infernoreborn.util.ArmorSet;
 import ttmp.infernoreborn.util.CannotHurtNonLiving;
 import ttmp.infernoreborn.util.LivingUtils;
 import ttmp.infernoreborn.util.SigilUtils;
+
+import javax.annotation.Nullable;
 
 import static ttmp.infernoreborn.InfernoReborn.MODID;
 
@@ -154,6 +157,21 @@ public class CommonEventHandlers{
 		}
 	}
 
+	@Nullable private static PlayerEntity player;
+	@Nullable private static Entity target;
+	private static float attackStrength;
+
+	@SubscribeEvent(priority = EventPriority.LOWEST)
+	public static void onPlayerAttack(AttackEntityEvent event){
+		player = event.getPlayer();
+		target = event.getTarget();
+		attackStrength = event.getPlayer().getAttackStrengthScale(.5f);
+	}
+
+	private static boolean isAttackStrengthFull(Entity attacker, Entity target){
+		return attacker==player&&target==CommonEventHandlers.target&&attackStrength>.9f;
+	}
+
 	@SubscribeEvent
 	public static void onLivingDamage(LivingDamageEvent event){
 		LivingEntity entity = event.getEntityLiving();
@@ -170,7 +188,7 @@ public class CommonEventHandlers{
 		if(event.getAmount()>0){
 			Entity directEntity = event.getSource().getDirectEntity();
 			if(entity!=directEntity){
-				if(CRIMSON_ARMOR_SET.qualifies(entity)){ // TODO no "spam to full stack"
+				if(CRIMSON_ARMOR_SET.qualifies(entity)){
 					LivingUtils.addStackEffect(entity, ModEffects.BLOOD_FRENZY.get(), 80, 0, 1, 3);
 				}
 				if(directEntity instanceof LivingEntity){
@@ -180,7 +198,7 @@ public class CommonEventHandlers{
 						float drainPortion = (float)(1+bloodFrenzy.getAmplifier())/(2+bloodFrenzy.getAmplifier());
 						e.heal(event.getAmount()*drainPortion);
 					}
-					if(CRIMSON_ARMOR_SET.qualifies(e)){
+					if(isAttackStrengthFull(e, entity)&&CRIMSON_ARMOR_SET.qualifies(e)){
 						LivingUtils.addStackEffect(e, ModEffects.BLOOD_FRENZY.get(), 80, 0, 1, 3);
 					}
 				}
