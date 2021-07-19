@@ -1,4 +1,4 @@
-package ttmp.infernoreborn.datagen.book;
+package ttmp.infernoreborn.datagen.builder.book;
 
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;

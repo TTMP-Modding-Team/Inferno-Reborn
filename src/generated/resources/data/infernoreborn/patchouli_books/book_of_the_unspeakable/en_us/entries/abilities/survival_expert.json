@@ -5,7 +5,11 @@
   "pages": [
     {
       "type": "text",
-      "text": "text.infernoreborn.survival_expert.0"
+      "text": "text.infernoreborn.ability.survival_expert.0"
+    },
+    {
+      "type": "infernoreborn:ability_attribute",
+      "ability": "infernoreborn:survival_expert"
     }
   ]
 }

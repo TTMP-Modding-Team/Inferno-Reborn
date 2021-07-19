@@ -5,7 +5,11 @@
   "pages": [
     {
       "type": "text",
-      "text": "text.infernoreborn.aether_walker.0"
+      "text": "text.infernoreborn.ability.aether_walker.0"
+    },
+    {
+      "type": "infernoreborn:ability_attribute",
+      "ability": "infernoreborn:aether_walker"
     }
   ]
 }

@@ -1,11 +1,11 @@
 {
-	"name": "ability.infernoreborn.skeleton_necromancy",
-	"category": "infernoreborn:abilities",
-	"icon": "infernoreborn:inferno_spark{Abilities:[\"infernoreborn:skeleton_necromancy\"]}",
-	"pages": [
-		{
-			"type": "text",
-			"text": "text.infernoreborn.skeleton_necromancy.0"
-		}
-	]
+  "name": "ability.infernoreborn.skeleton_necromancy",
+  "category": "infernoreborn:abilities",
+  "icon": "infernoreborn:inferno_spark{Abilities:[\"infernoreborn:skeleton_necromancy\"]}",
+  "pages": [
+    {
+      "type": "text",
+      "text": "text.infernoreborn.ability.skeleton_necromancy.0"
+    }
+  ]
 }

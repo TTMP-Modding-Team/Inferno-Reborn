@@ -5,7 +5,11 @@
   "pages": [
     {
       "type": "text",
-      "text": "text.infernoreborn.mud_skin.0"
+      "text": "text.infernoreborn.ability.mud_skin.0"
+    },
+    {
+      "type": "infernoreborn:ability_attribute",
+      "ability": "infernoreborn:mud_skin"
     }
   ]
 }

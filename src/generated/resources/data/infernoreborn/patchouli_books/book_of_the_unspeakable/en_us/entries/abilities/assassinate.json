@@ -5,7 +5,11 @@
   "pages": [
     {
       "type": "text",
-      "text": "text.infernoreborn.assassinate.0"
+      "text": "text.infernoreborn.ability.assassinate.0"
+    },
+    {
+      "type": "infernoreborn:ability_attribute",
+      "ability": "infernoreborn:assassinate"
     }
   ]
 }

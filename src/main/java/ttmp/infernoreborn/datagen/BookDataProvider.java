@@ -10,16 +10,21 @@ import net.minecraft.data.IDataProvider;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import ttmp.infernoreborn.InfernoReborn;
-import ttmp.infernoreborn.contents.ability.Ability;
+import ttmp.infernoreborn.compat.patchouli.AbilityAttributeComponent;
 import ttmp.infernoreborn.contents.Abilities;
 import ttmp.infernoreborn.contents.ModItems;
-import ttmp.infernoreborn.datagen.book.BookBuilder;
-import ttmp.infernoreborn.datagen.book.BookCategory;
-import ttmp.infernoreborn.datagen.book.BookEntry;
-import ttmp.infernoreborn.datagen.book.BookFileGenerator;
-import ttmp.infernoreborn.datagen.book.Stack;
-import ttmp.infernoreborn.datagen.book.TextPage;
+import ttmp.infernoreborn.contents.Sigils;
+import ttmp.infernoreborn.contents.ability.Ability;
 import ttmp.infernoreborn.contents.item.FixedAbilityItem;
+import ttmp.infernoreborn.contents.item.SigilItem;
+import ttmp.infernoreborn.contents.sigil.Sigil;
+import ttmp.infernoreborn.datagen.builder.book.BookBuilder;
+import ttmp.infernoreborn.datagen.builder.book.BookCategory;
+import ttmp.infernoreborn.datagen.builder.book.BookEntry;
+import ttmp.infernoreborn.datagen.builder.book.BookFileGenerator;
+import ttmp.infernoreborn.datagen.builder.book.Stack;
+import ttmp.infernoreborn.datagen.builder.book.page.TemplatePage;
+import ttmp.infernoreborn.datagen.builder.book.page.TextPage;
 
 import java.io.IOException;
 import java.nio.file.Path;
@@ -40,35 +45,58 @@ public class BookDataProvider implements IDataProvider{
 	}
 
 	@Override public void run(DirectoryCache directoryCache){
-		new BookBuilder(ModItems.BOOK_OF_THE_UNSPEAKABLE.getId(),
+		final ResourceLocation bookId = ModItems.BOOK_OF_THE_UNSPEAKABLE.getId();
+		new BookBuilder(bookId,
 				ModItems.BOOK_OF_THE_UNSPEAKABLE.get().getDescriptionId(),
-				i18nText("text", ModItems.BOOK_OF_THE_UNSPEAKABLE.getId(), "landingText"))
+				i18nText("text", bookId, "landingText"))
 				.dontGenerateBook(true)
 				.customBookItem(new Stack(ModItems.BOOK_OF_THE_UNSPEAKABLE.get()))
 				.i18n(true)
-				.category(new BookCategory("quick_start",
-						i18nText("text", ModItems.BOOK_OF_THE_UNSPEAKABLE.getId(), "quick_start"),
+				.category(new BookCategory("journals",
+						i18nText("text", bookId, "journals"),
 						new Stack(Blocks.COBBLESTONE))
 						.sortnum(1))
 				.category(new BookCategory("abilities",
-						i18nText("text", ModItems.BOOK_OF_THE_UNSPEAKABLE.getId(), "abilities"),
+						i18nText("text", bookId, "abilities"),
 						new Stack(ModItems.PRIMAL_INFERNO_SPARK.get()))
 						.sortnum(2))
-				.category(new BookCategory("treasures",
-						i18nText("text", ModItems.BOOK_OF_THE_UNSPEAKABLE.getId(), "treasures"),
+				.category(new BookCategory("artifacts",
+						i18nText("text", bookId, "artifacts"),
 						new Stack(ModItems.ESSENCE_HOLDER.get()))
 						.sortnum(3))
+				.category(new BookCategory("sigils",
+						i18nText("text", bookId, "sigils"),
+						new Stack(ModItems.SIGIL.get()))
+						.sortnum(4))
+				.template("ability_attribute", new AbilityAttributeComponent())
 				.makeEntryAndSave(bookEntryConsumer -> {
+					final ResourceLocation abilities = new ResourceLocation(MODID, "abilities");
+					final ResourceLocation sigils = new ResourceLocation(MODID, "sigils");
+
+					final ResourceLocation abilityAttribute = new ResourceLocation(MODID, "ability_attribute");
+
 					for(Ability ability : Abilities.getRegistry()){
 						ItemStack stack = new ItemStack(ModItems.INFERNO_SPARK.get());
 						FixedAbilityItem.setAbilities(stack, new Ability[]{ability});
-
-						bookEntryConsumer.accept(new BookEntry(
+						BookEntry book = new BookEntry(
 								Objects.requireNonNull(ability.getRegistryName()).getPath(),
 								ability.getUnlocalizedName(),
-								new ResourceLocation(MODID, "abilities"),
+								abilities,
+								new Stack(stack));
+						book.page(new TextPage(i18nText("text", "ability", ability.getRegistryName(), "0")));
+						if(!ability.getAttributes().isEmpty())
+							book.page(new TemplatePage(abilityAttribute).param("ability", ability.getRegistryName()));
+						bookEntryConsumer.accept(book);
+					}
+
+					for(Sigil sigil : Sigils.getRegistry()){
+						ItemStack stack = SigilItem.createSigilItem(sigil);
+						bookEntryConsumer.accept(new BookEntry(
+								Objects.requireNonNull(sigil.getRegistryName()).getPath(),
+								sigil.getUnlocalizedName(),
+								sigils,
 								new Stack(stack))
-								.page(new TextPage(i18nText("text", ability.getRegistryName(), "0"))));
+								.page(new TextPage(i18nText("text", "sigil", sigil.getRegistryName(), "0"))));
 					}
 				}, new BookFileGenerator(){
 					@Override public void saveBook(ResourceLocation bookId, JsonObject json){
@@ -76,6 +104,9 @@ public class BookDataProvider implements IDataProvider{
 					}
 					@Override public void saveCategory(ResourceLocation bookId, String categoryId, JsonObject json){
 						trySave(directoryCache, json, createPath(bookId, "en_us/categories/"+categoryId+".json"));
+					}
+					@Override public void saveTemplate(ResourceLocation bookId, String templateId, JsonObject json){
+						trySave(directoryCache, json, createPath(bookId, "en_us/templates/"+templateId+".json"));
 					}
 					@Override public void saveEntry(ResourceLocation bookId, String categoryId, String entryId, JsonObject json){
 						trySave(directoryCache, json, createPath(bookId, "en_us/entries/"+categoryId+"/"+entryId+".json"));
@@ -101,5 +132,8 @@ public class BookDataProvider implements IDataProvider{
 
 	private static String i18nText(String type, ResourceLocation id, String s){
 		return type+"."+id.getNamespace()+"."+id.getPath()+"."+s;
+	}
+	private static String i18nText(String type, String subtype, ResourceLocation id, String s){
+		return type+"."+id.getNamespace()+"."+subtype+"."+id.getPath()+"."+s;
 	}
 }

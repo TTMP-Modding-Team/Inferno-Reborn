@@ -5,7 +5,11 @@
   "pages": [
     {
       "type": "text",
-      "text": "text.infernoreborn.frozen_skin.0"
+      "text": "text.infernoreborn.ability.frozen_skin.0"
+    },
+    {
+      "type": "infernoreborn:ability_attribute",
+      "ability": "infernoreborn:frozen_skin"
     }
   ]
 }

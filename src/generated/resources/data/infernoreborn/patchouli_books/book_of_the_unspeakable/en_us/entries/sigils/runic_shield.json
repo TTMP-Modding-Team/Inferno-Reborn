@@ -1,0 +1,11 @@
+{
+  "name": "sigil.infernoreborn.runic_shield",
+  "category": "infernoreborn:sigils",
+  "icon": "infernoreborn:sigil{Sigils:\"infernoreborn:runic_shield\"}",
+  "pages": [
+    {
+      "type": "text",
+      "text": "text.infernoreborn.sigil.runic_shield.0"
+    }
+  ]
+}

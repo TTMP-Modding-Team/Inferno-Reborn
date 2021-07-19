@@ -5,7 +5,11 @@
   "pages": [
     {
       "type": "text",
-      "text": "text.infernoreborn.sentry.0"
+      "text": "text.infernoreborn.ability.sentry.0"
+    },
+    {
+      "type": "infernoreborn:ability_attribute",
+      "ability": "infernoreborn:sentry"
     }
   ]
 }

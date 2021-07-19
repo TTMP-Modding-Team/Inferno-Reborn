@@ -1,8 +1,9 @@
-package ttmp.infernoreborn.datagen.book;
+package ttmp.infernoreborn.datagen.builder.book;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import net.minecraft.util.ResourceLocation;
+import ttmp.infernoreborn.datagen.builder.book.page.BookPage;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;

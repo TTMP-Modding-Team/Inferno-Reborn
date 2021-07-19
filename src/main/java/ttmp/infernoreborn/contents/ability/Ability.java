@@ -1,5 +1,8 @@
 package ttmp.infernoreborn.contents.ability;
 
+import com.google.common.collect.ImmutableMultimap;
+import com.google.common.collect.LinkedHashMultimap;
+import com.google.common.collect.Multimap;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.ai.attributes.Attribute;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
@@ -14,10 +17,8 @@ import ttmp.infernoreborn.util.LivingUtils;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
@@ -25,7 +26,7 @@ import java.util.function.BiConsumer;
 
 public class Ability extends ForgeRegistryEntry<Ability>{
 	private final int primaryColor, secondaryColor, highlightColor;
-	private final Map<Attribute, Set<AttributeModifier>> attributes;
+	private final Multimap<Attribute, AttributeModifier> attributes;
 	private final CooldownTicket[] cooldownTickets;
 	private final int[] drops;
 
@@ -41,7 +42,7 @@ public class Ability extends ForgeRegistryEntry<Ability>{
 		this.primaryColor = properties.primaryColor;
 		this.secondaryColor = properties.secondaryColor;
 		this.highlightColor = properties.highlightColor;
-		this.attributes = properties.attributes;
+		this.attributes = ImmutableMultimap.copyOf(properties.attributes);
 		this.cooldownTickets = properties.cooldownTickets.toArray(new CooldownTicket[0]);
 		for(CooldownTicket t : this.cooldownTickets) t.ability = this;
 		this.drops = properties.drops;
@@ -65,7 +66,7 @@ public class Ability extends ForgeRegistryEntry<Ability>{
 		return highlightColor;
 	}
 
-	public Map<Attribute, Set<AttributeModifier>> getAttributes(){
+	public Multimap<Attribute, AttributeModifier> getAttributes(){
 		return attributes;
 	}
 
@@ -123,7 +124,7 @@ public class Ability extends ForgeRegistryEntry<Ability>{
 
 	public static final class Properties{
 		private final int primaryColor, secondaryColor, highlightColor;
-		private final Map<Attribute, Set<AttributeModifier>> attributes = new HashMap<>();
+		private final Multimap<Attribute, AttributeModifier> attributes = LinkedHashMultimap.create();
 		private final List<CooldownTicket> cooldownTickets = new ArrayList<>();
 		private final List<AbilitySkill> skills = new ArrayList<>();
 		private final int[] drops = new int[EssenceType.values().length];
@@ -144,8 +145,7 @@ public class Ability extends ForgeRegistryEntry<Ability>{
 		}
 
 		public Properties addAttribute(Attribute attribute, String uuid, double amount, AttributeModifier.Operation operation){
-			Set<AttributeModifier> m = attributes.computeIfAbsent(attribute, a -> new HashSet<>());
-			if(!m.add(new AttributeModifier(UUID.fromString(uuid), "Ability Attributes", amount, operation)))
+			if(!attributes.put(attribute, new AttributeModifier(UUID.fromString(uuid), "Ability Attributes", amount, operation)))
 				throw new IllegalStateException("Registration of attribute with overlapping ID "+uuid);
 			return this;
 		}

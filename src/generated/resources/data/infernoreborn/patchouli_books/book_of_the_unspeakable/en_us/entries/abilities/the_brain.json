@@ -5,7 +5,11 @@
   "pages": [
     {
       "type": "text",
-      "text": "text.infernoreborn.the_brain.0"
+      "text": "text.infernoreborn.ability.the_brain.0"
+    },
+    {
+      "type": "infernoreborn:ability_attribute",
+      "ability": "infernoreborn:the_brain"
     }
   ]
 }

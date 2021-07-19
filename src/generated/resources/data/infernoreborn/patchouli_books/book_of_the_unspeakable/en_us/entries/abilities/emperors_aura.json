@@ -5,7 +5,11 @@
   "pages": [
     {
       "type": "text",
-      "text": "text.infernoreborn.emperors_aura.0"
+      "text": "text.infernoreborn.ability.emperors_aura.0"
+    },
+    {
+      "type": "infernoreborn:ability_attribute",
+      "ability": "infernoreborn:emperors_aura"
     }
   ]
 }

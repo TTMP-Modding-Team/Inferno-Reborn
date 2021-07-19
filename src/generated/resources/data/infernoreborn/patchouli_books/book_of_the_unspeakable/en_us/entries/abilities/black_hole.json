@@ -1,11 +1,11 @@
 {
-	"name": "ability.infernoreborn.black_hole",
-	"category": "infernoreborn:abilities",
-	"icon": "infernoreborn:inferno_spark{Abilities:[\"infernoreborn:black_hole\"]}",
-	"pages": [
-		{
-			"type": "text",
-			"text": "text.infernoreborn.black_hole.0"
-		}
-	]
+  "name": "ability.infernoreborn.black_hole",
+  "category": "infernoreborn:abilities",
+  "icon": "infernoreborn:inferno_spark{Abilities:[\"infernoreborn:black_hole\"]}",
+  "pages": [
+    {
+      "type": "text",
+      "text": "text.infernoreborn.ability.black_hole.0"
+    }
+  ]
 }

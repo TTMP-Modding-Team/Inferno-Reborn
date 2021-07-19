@@ -5,7 +5,11 @@
   "pages": [
     {
       "type": "text",
-      "text": "text.infernoreborn.health_kit.0"
+      "text": "text.infernoreborn.ability.health_kit.0"
+    },
+    {
+      "type": "infernoreborn:ability_attribute",
+      "ability": "infernoreborn:health_kit"
     }
   ]
 }

@@ -1,0 +1,11 @@
+{
+  "name": "sigil.infernoreborn.mini_heart",
+  "category": "infernoreborn:sigils",
+  "icon": "infernoreborn:sigil{Sigils:\"infernoreborn:mini_heart\"}",
+  "pages": [
+    {
+      "type": "text",
+      "text": "text.infernoreborn.sigil.mini_heart.0"
+    }
+  ]
+}

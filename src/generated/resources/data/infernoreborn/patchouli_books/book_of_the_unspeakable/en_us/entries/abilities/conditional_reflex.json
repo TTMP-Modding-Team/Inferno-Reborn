@@ -1,11 +1,11 @@
 {
-	"name": "ability.infernoreborn.conditional_reflex",
-	"category": "infernoreborn:abilities",
-	"icon": "infernoreborn:inferno_spark{Abilities:[\"infernoreborn:conditional_reflex\"]}",
-	"pages": [
-		{
-			"type": "text",
-			"text": "text.infernoreborn.conditional_reflex.0"
-		}
-	]
+  "name": "ability.infernoreborn.conditional_reflex",
+  "category": "infernoreborn:abilities",
+  "icon": "infernoreborn:inferno_spark{Abilities:[\"infernoreborn:conditional_reflex\"]}",
+  "pages": [
+    {
+      "type": "text",
+      "text": "text.infernoreborn.ability.conditional_reflex.0"
+    }
+  ]
 }

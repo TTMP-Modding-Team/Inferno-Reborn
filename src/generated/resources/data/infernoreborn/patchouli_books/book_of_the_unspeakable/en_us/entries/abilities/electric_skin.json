@@ -1,11 +1,11 @@
 {
-	"name": "ability.infernoreborn.electric_skin",
-	"category": "infernoreborn:abilities",
-	"icon": "infernoreborn:inferno_spark{Abilities:[\"infernoreborn:electric_skin\"]}",
-	"pages": [
-		{
-			"type": "text",
-			"text": "text.infernoreborn.electric_skin.0"
-		}
-	]
+  "name": "ability.infernoreborn.electric_skin",
+  "category": "infernoreborn:abilities",
+  "icon": "infernoreborn:inferno_spark{Abilities:[\"infernoreborn:electric_skin\"]}",
+  "pages": [
+    {
+      "type": "text",
+      "text": "text.infernoreborn.ability.electric_skin.0"
+    }
+  ]
 }

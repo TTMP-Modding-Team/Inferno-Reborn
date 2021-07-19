@@ -1,11 +1,11 @@
 {
-	"name": "ability.infernoreborn.arrow_rush",
-	"category": "infernoreborn:abilities",
-	"icon": "infernoreborn:inferno_spark{Abilities:[\"infernoreborn:arrow_rush\"]}",
-	"pages": [
-		{
-			"type": "text",
-			"text": "text.infernoreborn.arrow_rush.0"
-		}
-	]
+  "name": "ability.infernoreborn.arrow_rush",
+  "category": "infernoreborn:abilities",
+  "icon": "infernoreborn:inferno_spark{Abilities:[\"infernoreborn:arrow_rush\"]}",
+  "pages": [
+    {
+      "type": "text",
+      "text": "text.infernoreborn.ability.arrow_rush.0"
+    }
+  ]
 }

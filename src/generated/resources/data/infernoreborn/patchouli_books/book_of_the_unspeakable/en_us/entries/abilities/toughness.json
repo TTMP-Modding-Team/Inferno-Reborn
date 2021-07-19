@@ -5,7 +5,11 @@
   "pages": [
     {
       "type": "text",
-      "text": "text.infernoreborn.toughness.0"
+      "text": "text.infernoreborn.ability.toughness.0"
+    },
+    {
+      "type": "infernoreborn:ability_attribute",
+      "ability": "infernoreborn:toughness"
     }
   ]
 }

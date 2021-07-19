@@ -5,7 +5,11 @@
   "pages": [
     {
       "type": "text",
-      "text": "text.infernoreborn.heart2.0"
+      "text": "text.infernoreborn.ability.heart2.0"
+    },
+    {
+      "type": "infernoreborn:ability_attribute",
+      "ability": "infernoreborn:heart2"
     }
   ]
 }

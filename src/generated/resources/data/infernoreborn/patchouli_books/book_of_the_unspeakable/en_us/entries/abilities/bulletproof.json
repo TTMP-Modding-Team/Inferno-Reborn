@@ -5,7 +5,11 @@
   "pages": [
     {
       "type": "text",
-      "text": "text.infernoreborn.bulletproof.0"
+      "text": "text.infernoreborn.ability.bulletproof.0"
+    },
+    {
+      "type": "infernoreborn:ability_attribute",
+      "ability": "infernoreborn:bulletproof"
     }
   ]
 }

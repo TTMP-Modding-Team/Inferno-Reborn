@@ -1,14 +1,20 @@
-package ttmp.infernoreborn.datagen.book;
+package ttmp.infernoreborn.datagen.builder.book;
 
+import com.google.common.collect.ArrayListMultimap;
+import com.google.common.collect.ListMultimap;
+import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import net.minecraft.util.ResourceLocation;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 import java.util.function.Consumer;
 
@@ -18,6 +24,7 @@ public final class BookBuilder{
 	public final String landingText;
 
 	public final Map<ResourceLocation, BookCategory> categories = new HashMap<>();
+	public final ListMultimap<String, BookComponent> templates = ArrayListMultimap.create();
 
 	@Nullable public String fillerTexture;
 	@Nullable public String version;
@@ -63,6 +70,13 @@ public final class BookBuilder{
 		return this;
 	}
 
+	public BookBuilder template(String id, BookComponent... components){
+		if(components.length==0) throw new IllegalArgumentException("No components");
+		if(this.templates.containsKey(id)) throw new IllegalStateException("Template with id '"+id+"' already exists");
+		this.templates.putAll(id, Arrays.asList(components));
+		return this;
+	}
+
 	public JsonObject serialize(){
 		JsonObject object = new JsonObject();
 		object.addProperty("name", name);
@@ -89,6 +103,13 @@ public final class BookBuilder{
 		generator.saveBook(id, this.serialize());
 		for(BookCategory bookCategory : categories.values())
 			generator.saveCategory(id, bookCategory.id, bookCategory.serialize());
+		for(Entry<String, Collection<BookComponent>> e : templates.asMap().entrySet()){
+			JsonObject o = new JsonObject();
+			JsonArray a = new JsonArray();
+			for(BookComponent c : e.getValue()) a.add(c.serialize());
+			o.add("components", a);
+			generator.saveTemplate(id, e.getKey(), o);
+		}
 		for(BookEntry bookEntry : bookEntries)
 			generator.saveEntry(id, bookEntry.category.getPath(), bookEntry.id, bookEntry.serialize());
 	}

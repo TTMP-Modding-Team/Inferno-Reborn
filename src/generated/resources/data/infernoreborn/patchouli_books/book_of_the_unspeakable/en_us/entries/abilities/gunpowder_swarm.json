@@ -1,11 +1,11 @@
 {
-	"name": "ability.infernoreborn.gunpowder_swarm",
-	"category": "infernoreborn:abilities",
-	"icon": "infernoreborn:inferno_spark{Abilities:[\"infernoreborn:gunpowder_swarm\"]}",
-	"pages": [
-		{
-			"type": "text",
-			"text": "text.infernoreborn.gunpowder_swarm.0"
-		}
-	]
+  "name": "ability.infernoreborn.gunpowder_swarm",
+  "category": "infernoreborn:abilities",
+  "icon": "infernoreborn:inferno_spark{Abilities:[\"infernoreborn:gunpowder_swarm\"]}",
+  "pages": [
+    {
+      "type": "text",
+      "text": "text.infernoreborn.ability.gunpowder_swarm.0"
+    }
+  ]
 }

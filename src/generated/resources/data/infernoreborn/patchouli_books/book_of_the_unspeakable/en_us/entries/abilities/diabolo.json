@@ -1,11 +1,11 @@
 {
-	"name": "ability.infernoreborn.diabolo",
-	"category": "infernoreborn:abilities",
-	"icon": "infernoreborn:inferno_spark{Abilities:[\"infernoreborn:diabolo\"]}",
-	"pages": [
-		{
-			"type": "text",
-			"text": "text.infernoreborn.diabolo.0"
-		}
-	]
+  "name": "ability.infernoreborn.diabolo",
+  "category": "infernoreborn:abilities",
+  "icon": "infernoreborn:inferno_spark{Abilities:[\"infernoreborn:diabolo\"]}",
+  "pages": [
+    {
+      "type": "text",
+      "text": "text.infernoreborn.ability.diabolo.0"
+    }
+  ]
 }

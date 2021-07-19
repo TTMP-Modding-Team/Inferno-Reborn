@@ -5,7 +5,11 @@
   "pages": [
     {
       "type": "text",
-      "text": "text.infernoreborn.fuzzy_skin.0"
+      "text": "text.infernoreborn.ability.fuzzy_skin.0"
+    },
+    {
+      "type": "infernoreborn:ability_attribute",
+      "ability": "infernoreborn:fuzzy_skin"
     }
   ]
 }

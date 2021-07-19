@@ -1,11 +1,11 @@
 {
-	"name": "ability.infernoreborn.leave_me_alone",
-	"category": "infernoreborn:abilities",
-	"icon": "infernoreborn:inferno_spark{Abilities:[\"infernoreborn:leave_me_alone\"]}",
-	"pages": [
-		{
-			"type": "text",
-			"text": "text.infernoreborn.leave_me_alone.0"
-		}
-	]
+  "name": "ability.infernoreborn.leave_me_alone",
+  "category": "infernoreborn:abilities",
+  "icon": "infernoreborn:inferno_spark{Abilities:[\"infernoreborn:leave_me_alone\"]}",
+  "pages": [
+    {
+      "type": "text",
+      "text": "text.infernoreborn.ability.leave_me_alone.0"
+    }
+  ]
 }

@@ -1,0 +1,11 @@
+{
+  "name": "sigil.infernoreborn.sigil_of_traveler",
+  "category": "infernoreborn:sigils",
+  "icon": "infernoreborn:sigil{Sigils:\"infernoreborn:sigil_of_traveler\"}",
+  "pages": [
+    {
+      "type": "text",
+      "text": "text.infernoreborn.sigil.sigil_of_traveler.0"
+    }
+  ]
+}

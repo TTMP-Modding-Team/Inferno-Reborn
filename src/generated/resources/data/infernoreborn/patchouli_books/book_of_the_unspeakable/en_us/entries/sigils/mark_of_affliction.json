@@ -1,0 +1,11 @@
+{
+  "name": "sigil.infernoreborn.mark_of_affliction",
+  "category": "infernoreborn:sigils",
+  "icon": "infernoreborn:sigil{Sigils:\"infernoreborn:mark_of_affliction\"}",
+  "pages": [
+    {
+      "type": "text",
+      "text": "text.infernoreborn.sigil.mark_of_affliction.0"
+    }
+  ]
+}

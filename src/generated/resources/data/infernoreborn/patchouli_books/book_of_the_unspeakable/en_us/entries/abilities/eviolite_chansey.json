@@ -5,7 +5,11 @@
   "pages": [
     {
       "type": "text",
-      "text": "text.infernoreborn.eviolite_chansey.0"
+      "text": "text.infernoreborn.ability.eviolite_chansey.0"
+    },
+    {
+      "type": "infernoreborn:ability_attribute",
+      "ability": "infernoreborn:eviolite_chansey"
     }
   ]
 }

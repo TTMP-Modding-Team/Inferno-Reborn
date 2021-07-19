@@ -1,11 +1,11 @@
 {
-	"name": "ability.infernoreborn.recall",
-	"category": "infernoreborn:abilities",
-	"icon": "infernoreborn:inferno_spark{Abilities:[\"infernoreborn:recall\"]}",
-	"pages": [
-		{
-			"type": "text",
-			"text": "text.infernoreborn.recall.0"
-		}
-	]
+  "name": "ability.infernoreborn.recall",
+  "category": "infernoreborn:abilities",
+  "icon": "infernoreborn:inferno_spark{Abilities:[\"infernoreborn:recall\"]}",
+  "pages": [
+    {
+      "type": "text",
+      "text": "text.infernoreborn.ability.recall.0"
+    }
+  ]
 }

@@ -5,7 +5,11 @@
   "pages": [
     {
       "type": "text",
-      "text": "text.infernoreborn.swiftness.0"
+      "text": "text.infernoreborn.ability.swiftness.0"
+    },
+    {
+      "type": "infernoreborn:ability_attribute",
+      "ability": "infernoreborn:swiftness"
     }
   ]
 }

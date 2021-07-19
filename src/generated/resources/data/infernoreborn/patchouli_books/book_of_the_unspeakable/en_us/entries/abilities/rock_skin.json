@@ -5,7 +5,11 @@
   "pages": [
     {
       "type": "text",
-      "text": "text.infernoreborn.rock_skin.0"
+      "text": "text.infernoreborn.ability.rock_skin.0"
+    },
+    {
+      "type": "infernoreborn:ability_attribute",
+      "ability": "infernoreborn:rock_skin"
     }
   ]
 }

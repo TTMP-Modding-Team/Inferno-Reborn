@@ -5,7 +5,11 @@
   "pages": [
     {
       "type": "text",
-      "text": "text.infernoreborn.netherite_skin.0"
+      "text": "text.infernoreborn.ability.netherite_skin.0"
+    },
+    {
+      "type": "infernoreborn:ability_attribute",
+      "ability": "infernoreborn:netherite_skin"
     }
   ]
 }

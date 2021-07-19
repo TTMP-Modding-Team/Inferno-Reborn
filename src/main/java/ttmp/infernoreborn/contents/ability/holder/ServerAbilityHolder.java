@@ -36,7 +36,9 @@ import ttmp.infernoreborn.network.SyncAbilityHolderMsg;
 import ttmp.infernoreborn.util.LazyPopulatedList;
 import ttmp.infernoreborn.util.StupidUtils;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
@@ -225,7 +227,7 @@ public class ServerAbilityHolder implements AbilityHolder, ICapabilitySerializab
 	}
 
 	protected void onAbilityAdded(Ability ability, LivingEntity entity){
-		for(Entry<Attribute, Set<AttributeModifier>> entry : ability.getAttributes().entrySet()){
+		for(Entry<Attribute, Collection<AttributeModifier>> entry : ability.getAttributes().asMap().entrySet()){
 			ModifiableAttributeInstance instance = entity.getAttributes().getInstance(entry.getKey());
 			if(instance==null) continue;
 			for(AttributeModifier m : entry.getValue())
@@ -234,7 +236,7 @@ public class ServerAbilityHolder implements AbilityHolder, ICapabilitySerializab
 	}
 
 	protected void onAbilityRemoved(Ability ability, LivingEntity entity){
-		for(Entry<Attribute, Set<AttributeModifier>> entry : ability.getAttributes().entrySet()){
+		for(Entry<Attribute, Collection<AttributeModifier>> entry : ability.getAttributes().asMap().entrySet()){
 			ModifiableAttributeInstance instance = entity.getAttributes().getInstance(entry.getKey());
 			if(instance==null) continue;
 			for(AttributeModifier m : entry.getValue())
@@ -244,7 +246,7 @@ public class ServerAbilityHolder implements AbilityHolder, ICapabilitySerializab
 
 	private final LazyOptional<AbilityHolder> self = LazyOptional.of(() -> this);
 
-	@Override public <T> LazyOptional<T> getCapability(Capability<T> cap, @Nullable Direction side){
+	@Nonnull @Override public <T> LazyOptional<T> getCapability(Capability<T> cap, @Nullable Direction side){
 		return cap==Caps.abilityHolder ? self.cast() : LazyOptional.empty();
 	}
 

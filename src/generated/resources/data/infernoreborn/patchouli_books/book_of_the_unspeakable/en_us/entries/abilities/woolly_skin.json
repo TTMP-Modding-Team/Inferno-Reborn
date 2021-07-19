@@ -5,7 +5,11 @@
   "pages": [
     {
       "type": "text",
-      "text": "text.infernoreborn.woolly_skin.0"
+      "text": "text.infernoreborn.ability.woolly_skin.0"
+    },
+    {
+      "type": "infernoreborn:ability_attribute",
+      "ability": "infernoreborn:woolly_skin"
     }
   ]
 }

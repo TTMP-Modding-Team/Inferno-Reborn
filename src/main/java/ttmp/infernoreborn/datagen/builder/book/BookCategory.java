@@ -1,4 +1,4 @@
-package ttmp.infernoreborn.datagen.book;
+package ttmp.infernoreborn.datagen.builder.book;
 
 import com.google.gson.JsonObject;
 

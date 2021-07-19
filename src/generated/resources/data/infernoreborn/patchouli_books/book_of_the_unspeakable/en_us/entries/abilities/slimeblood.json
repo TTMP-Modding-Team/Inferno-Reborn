@@ -5,7 +5,11 @@
   "pages": [
     {
       "type": "text",
-      "text": "text.infernoreborn.slimeblood.0"
+      "text": "text.infernoreborn.ability.slimeblood.0"
+    },
+    {
+      "type": "infernoreborn:ability_attribute",
+      "ability": "infernoreborn:slimeblood"
     }
   ]
 }
