@@ -107,7 +107,7 @@ minecraft {
 sourceSets.main.resources { srcDir 'src/generated/resources' }
 
 mixin {
-    add sourceSets.main, "paraglider.refmap.json"
+    add sourceSets.main, "infernoreborn.refmap.json"
 }
 
 dependencies {

@@ -6,10 +6,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.ai.attributes.Attribute;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
-import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.inventory.container.Container;
 import net.minecraft.item.ItemStack;
 import net.minecraft.potion.EffectInstance;
 import net.minecraft.util.DamageSource;
@@ -26,7 +23,6 @@ import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.entity.living.LivingEvent.LivingUpdateEvent;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import net.minecraftforge.event.entity.player.CriticalHitEvent;
-import net.minecraftforge.event.entity.player.PlayerContainerEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.event.world.ExplosionEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
@@ -42,15 +38,13 @@ import ttmp.infernoreborn.contents.ability.OnAbilityEvent;
 import ttmp.infernoreborn.contents.ability.holder.AbilityHolder;
 import ttmp.infernoreborn.contents.ability.holder.ClientAbilityHolder;
 import ttmp.infernoreborn.contents.ability.holder.ServerAbilityHolder;
-import ttmp.infernoreborn.contents.container.listener.SigilHolderSynchronizer;
 import ttmp.infernoreborn.contents.sigil.holder.ItemSigilHolder;
 import ttmp.infernoreborn.contents.sigil.holder.PlayerSigilHolder;
 import ttmp.infernoreborn.contents.sigil.holder.SigilHolder;
 import ttmp.infernoreborn.util.ArmorSet;
 import ttmp.infernoreborn.util.CannotHurtNonLiving;
 import ttmp.infernoreborn.util.LivingUtils;
-
-import java.util.Collection;
+import ttmp.infernoreborn.util.SigilUtils;
 
 import static ttmp.infernoreborn.InfernoReborn.MODID;
 
@@ -83,28 +77,6 @@ public class CommonEventHandlers{
 	@SubscribeEvent
 	public static void attachWorldCapabilities(AttachCapabilitiesEvent<World> event){
 		event.addCapability(TICKING_TASK_HANDLER_KEY, new SimpleTickingTaskHandler());
-	}
-
-	@SubscribeEvent
-	public static void onPlayerLoggedIn(PlayerEvent.PlayerLoggedInEvent event){
-		if(event.getPlayer() instanceof ServerPlayerEntity)
-			addSlotListeners((ServerPlayerEntity)event.getPlayer(), event.getPlayer().inventoryMenu);
-	}
-
-	@SubscribeEvent
-	public static void onPlayerClone(PlayerEvent.Clone event){
-		if(event.getPlayer() instanceof ServerPlayerEntity)
-			addSlotListeners((ServerPlayerEntity)event.getPlayer(), event.getPlayer().inventoryMenu);
-	}
-
-	@SubscribeEvent
-	public static void onPlayerContainerOpen(PlayerContainerEvent.Open event){
-		if(event.getPlayer() instanceof ServerPlayerEntity)
-			addSlotListeners((ServerPlayerEntity)event.getPlayer(), event.getContainer());
-	}
-
-	private static void addSlotListeners(ServerPlayerEntity player, Container container){
-		container.addSlotListener(new SigilHolderSynchronizer(player));
 	}
 
 	@SubscribeEvent
@@ -240,7 +212,7 @@ public class CommonEventHandlers{
 		SigilHolder h = SigilHolder.of(event.getItemStack());
 		if(h==null) return;
 		ListMultimap<Attribute, AttributeModifier> m = ArrayListMultimap.create(event.getModifiers());
-		h.applyAttributes(event.getSlotType(), m);
+		SigilUtils.applyAttributes(h, event.getSlotType(), m);
 		event.clearModifiers();
 		m.forEach(event::addModifier);
 	}
@@ -270,11 +242,5 @@ public class CommonEventHandlers{
 				event.setDamageModifier(event.getDamageModifier()+.5f);
 			}
 		}
-	}
-
-	private static void addDrop(LivingEntity entity, Collection<ItemEntity> entities, ItemStack stack){
-		ItemEntity itemEntity = new ItemEntity(entity.level, entity.getX(), entity.getY(), entity.getZ(), stack);
-		itemEntity.setDefaultPickUpDelay();
-		entities.add(itemEntity);
 	}
 }

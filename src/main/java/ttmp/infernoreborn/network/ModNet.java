@@ -1,12 +1,10 @@
 package ttmp.infernoreborn.network;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.entity.player.ClientPlayerEntity;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.network.NetworkDirection;
 import net.minecraftforge.fml.network.NetworkEvent;
@@ -23,7 +21,6 @@ import ttmp.infernoreborn.util.EssenceHolder;
 import ttmp.infernoreborn.util.EssenceType;
 
 import java.util.Optional;
-import java.util.function.Function;
 import java.util.function.Supplier;
 
 import static ttmp.infernoreborn.InfernoReborn.MODID;
@@ -53,18 +50,6 @@ public final class ModNet{
 		CHANNEL.registerMessage(4, ParticleMsg.class,
 				ParticleMsg::write, ParticleMsg::read,
 				Client::handleParticle, Optional.of(NetworkDirection.PLAY_TO_CLIENT));
-
-		registerItemSyncMsg(32, EssenceHolderSyncMsg.class, EssenceHolderSyncMsg.Bulk.class, EssenceHolderSyncMsg::new, EssenceHolderSyncMsg.Bulk::new);
-		registerItemSyncMsg(34, SigilHolderSyncMsg.class, SigilHolderSyncMsg.Bulk.class, SigilHolderSyncMsg::new, SigilHolderSyncMsg.Bulk::new);
-	}
-
-	private static <M extends ItemSyncMsg, B extends BulkItemSyncMsg<M>> void registerItemSyncMsg(int index,
-	                                                                                              Class<M> msg,
-	                                                                                              Class<B> bulkMsg,
-	                                                                                              Function<PacketBuffer, M> decoder,
-	                                                                                              Function<PacketBuffer, B> bulkMsgDecoder){
-		CHANNEL.registerMessage(index, msg, ItemSyncMsg::write, decoder, Client::handleItemSync, Optional.of(NetworkDirection.PLAY_TO_CLIENT));
-		CHANNEL.registerMessage(index+1, bulkMsg, BulkItemSyncMsg::write, bulkMsgDecoder, Client::handleBulkItemSync, Optional.of(NetworkDirection.PLAY_TO_CLIENT));
 	}
 
 	private static final class Server{
@@ -104,24 +89,6 @@ public final class ModNet{
 				h.clear();
 				for(Ability a : msg.getAbilities()) h.add(a);
 				h.setAppliedGeneratorScheme(msg.getAppliedGeneratorScheme());
-			});
-		}
-
-		public static void handleItemSync(ItemSyncMsg msg, Supplier<NetworkEvent.Context> ctx){
-			ctx.get().setPacketHandled(true);
-			ctx.get().enqueueWork(() -> {
-				ClientPlayerEntity player = Minecraft.getInstance().player;
-				if(player==null) return;
-				msg.sync(player);
-			});
-		}
-
-		public static void handleBulkItemSync(BulkItemSyncMsg<?> msg, Supplier<NetworkEvent.Context> ctx){
-			ctx.get().setPacketHandled(true);
-			ctx.get().enqueueWork(() -> {
-				ClientPlayerEntity player = Minecraft.getInstance().player;
-				if(player==null) return;
-				msg.sync(player);
 			});
 		}
 

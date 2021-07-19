@@ -10,10 +10,11 @@ import ttmp.infernoreborn.capability.Caps;
 import ttmp.infernoreborn.contents.ModRecipes;
 import ttmp.infernoreborn.contents.item.SigilItem;
 import ttmp.infernoreborn.contents.sigil.Sigil;
-import ttmp.infernoreborn.contents.sigil.context.ItemContext;
 import ttmp.infernoreborn.contents.sigil.holder.SigilHolder;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 public class ApplySigilRecipe extends SpecialRecipe{
@@ -22,7 +23,6 @@ public class ApplySigilRecipe extends SpecialRecipe{
 	}
 
 	@Override public boolean matches(CraftingInventory inv, World world){
-		ItemStack sigilHolderStack = null;
 		SigilHolder sigilHolder = null;
 		Set<Sigil> sigils = null;
 		for(int i = 0; i<inv.getContainerSize(); i++){
@@ -36,24 +36,21 @@ public class ApplySigilRecipe extends SpecialRecipe{
 				}
 			}else{
 				SigilHolder h = SigilHolder.of(stack);
-				if(h!=null){
-					if(sigilHolder!=null) return false;
-					sigilHolder = h;
-					sigilHolderStack = stack;
-				}else return false;
+				if(h==null) return false;
+				if(sigilHolder!=null) return false;
+				sigilHolder = h;
 			}
 		}
 		if(sigilHolder==null||sigils==null) return false;
 
-		ItemContext context = new ItemContext(sigilHolderStack, sigilHolder);
 		for(Sigil sigil : sigils)
-			if(!sigil.canBeAttachedTo(context)) return false;
+			if(!sigilHolder.canAdd(sigil)) return false;
 		return true;
 	}
 
 	@Override public ItemStack assemble(CraftingInventory inv){
 		ItemStack sigilHolderStack = ItemStack.EMPTY;
-		Set<Sigil> sigils = new HashSet<>();
+		List<Sigil> sigils = new ArrayList<>();
 		for(int i = 0; i<inv.getContainerSize(); i++){
 			ItemStack stack = inv.getItem(i);
 			if(stack.isEmpty()) continue;
