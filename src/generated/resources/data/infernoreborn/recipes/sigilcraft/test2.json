@@ -1,0 +1,22 @@
+{
+	"type": "infernoreborn:shaped_sigil_table_crafting",
+	"pattern": [
+		"  1  ",
+		"1 1 1",
+		" 1X1 ",
+		"  1  ",
+		"  1  "
+	],
+	"key": {
+		"1": {
+			"item": "infernoreborn:metal_essence_crystal"
+		},
+		"X": {
+			"item": "minecraft:acacia_log"
+		}
+	},
+	"result": {
+		"item": "minecraft:acacia_button"
+	},
+	"center": "X"
+}

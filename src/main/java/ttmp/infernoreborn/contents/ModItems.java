@@ -151,6 +151,8 @@ public final class ModItems{
 
 	public static final RegistryObject<Item> SIGIL = REGISTER.register("sigil", () -> new SigilItem(sigils()));
 
+	public static final RegistryObject<Item> CURIO_TEST = REGISTER.register("curio_test", () -> new Item(materials(Rarity.EPIC)));
+
 	private static RegistryObject<Item> essence(EssenceType type, EssenceSize size){
 		String id;
 		switch(size){

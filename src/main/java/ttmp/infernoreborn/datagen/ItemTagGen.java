@@ -33,5 +33,7 @@ public class ItemTagGen extends ItemTagsProvider{
 
 		this.tag(ModTags.INGOTS_DAMASCUS_STEEL).add(ModItems.DAMASCUS_STEEL_INGOT.get());
 		this.tag(ModTags.NUGGETS_DAMASCUS_STEEL).add(ModItems.DAMASCUS_STEEL_NUGGET.get());
+
+		this.tag(ModTags.CURIOS_CURIO).add(ModItems.CURIO_TEST.get());
 	}
 }

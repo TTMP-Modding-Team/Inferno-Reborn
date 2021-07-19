@@ -81,6 +81,16 @@ public class RecipeGen extends RecipeProvider{
 				.define('2', Ingredient.of(ModItems.GREATER_EARTH_ESSENCE_CRYSTAL.get()))
 				.unlockedBy("fuck", has(Items.STONE))
 				.save(consumer, new ResourceLocation(MODID, "sigilcraft/test"));
+		new ShapedSigilTableCraftingRecipeBuilder(Items.ACACIA_BUTTON)
+				.pattern("  1  ")
+				.pattern("1 1 1")
+				.pattern(" 1X1 ")
+				.pattern("  1  ")
+				.pattern("  1  ")
+				.defineAsCenter('X', Ingredient.of(Items.ACACIA_LOG))
+				.define('1', Ingredient.of(ModItems.METAL_ESSENCE_CRYSTAL.get()))
+				.unlockedBy("fuck", has(ModItems.METAL_ESSENCE_CRYSTAL.get()))
+				.save(consumer, new ResourceLocation(MODID, "sigilcraft/test2"));
 /*
 
 		new ShapedSigilEngravingRecipeBuilder(Sigils.TEST2.get())
