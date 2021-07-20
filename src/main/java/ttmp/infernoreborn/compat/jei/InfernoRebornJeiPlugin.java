@@ -10,9 +10,8 @@ import mezz.jei.api.registration.IRecipeCategoryRegistration;
 import mezz.jei.api.registration.IRecipeRegistration;
 import mezz.jei.api.registration.ISubtypeRegistration;
 import net.minecraft.client.Minecraft;
-import net.minecraft.item.ItemStack;
+import net.minecraft.client.world.ClientWorld;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.world.World;
 import ttmp.infernoreborn.compat.jei.sigil.RecipeSize;
 import ttmp.infernoreborn.compat.jei.sigil.ShapedSigilEngravingRecipeCategory;
 import ttmp.infernoreborn.compat.jei.sigil.ShapedSigilTableCraftingRecipeCategory;
@@ -26,17 +25,17 @@ import ttmp.infernoreborn.contents.recipe.sigilcraft.ShapedSigilEngravingRecipe;
 import ttmp.infernoreborn.contents.recipe.sigilcraft.ShapedSigilTableCraftingRecipe;
 import ttmp.infernoreborn.contents.recipe.sigilcraft.SigilcraftRecipe;
 
+import javax.annotation.Nullable;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 import static ttmp.infernoreborn.InfernoReborn.MODID;
 
 @JeiPlugin
 public class InfernoRebornJeiPlugin implements IModPlugin{
-	private final Multimap<RecipeSize, SigilcraftRecipe> SHAPED_SIGIL_CRAFTING_MAP = ArrayListMultimap.create();
-	private final Multimap<RecipeSize, SigilcraftRecipe> SHAPED_SIGIL_ENGRAVING_MAP = ArrayListMultimap.create();
-
 	@Override public ResourceLocation getPluginUid(){
-		return new ResourceLocation(MODID, "jeiplugin");
+		return new ResourceLocation(MODID, MODID);
 	}
 	@Override public void registerItemSubtypes(ISubtypeRegistration registration){
 		registration.registerSubtypeInterpreter(ModItems.INFERNO_SPARK.get(), (stack, context) -> Arrays.toString(FixedAbilityItem.getAbilities(stack)));
@@ -46,57 +45,63 @@ public class InfernoRebornJeiPlugin implements IModPlugin{
 	@Override public void registerCategories(IRecipeCategoryRegistration registration){
 		IGuiHelper guiHelper = registration.getJeiHelpers().getGuiHelper();
 		registration.addRecipeCategories(
-				new ShapedSigilEngravingRecipeCategory(guiHelper, RecipeSize.SIZE_3X3),
-				new ShapedSigilEngravingRecipeCategory(guiHelper, RecipeSize.SIZE_5X5),
-				new ShapedSigilEngravingRecipeCategory(guiHelper, RecipeSize.SIZE_7X7),
-				new ShapedSigilTableCraftingRecipeCategory(guiHelper, RecipeSize.SIZE_3X3),
-				new ShapedSigilTableCraftingRecipeCategory(guiHelper, RecipeSize.SIZE_5X5),
-				new ShapedSigilTableCraftingRecipeCategory(guiHelper, RecipeSize.SIZE_7X7)
+				new ShapedSigilEngravingRecipeCategory(guiHelper, RecipeSize.X3),
+				new ShapedSigilEngravingRecipeCategory(guiHelper, RecipeSize.X5),
+				new ShapedSigilEngravingRecipeCategory(guiHelper, RecipeSize.X7),
+				new ShapedSigilTableCraftingRecipeCategory(guiHelper, RecipeSize.X3),
+				new ShapedSigilTableCraftingRecipeCategory(guiHelper, RecipeSize.X5),
+				new ShapedSigilTableCraftingRecipeCategory(guiHelper, RecipeSize.X7)
 		);
 	}
 	@Override public void registerRecipes(IRecipeRegistration registration){
-		World world = Minecraft.getInstance().level;
-		if(world!=null){
-			for(SigilcraftRecipe recipe : world.getRecipeManager().getAllRecipesFor(ModRecipes.SIGILCRAFT_RECIPE_TYPE))
-				putSigilcraftRecipe(recipe);
-		}
-		registration.addRecipes(SHAPED_SIGIL_CRAFTING_MAP.get(RecipeSize.SIZE_3X3), ShapedSigilTableCraftingRecipeCategory.getUidBySize(3));
-		registration.addRecipes(SHAPED_SIGIL_CRAFTING_MAP.get(RecipeSize.SIZE_5X5), ShapedSigilTableCraftingRecipeCategory.getUidBySize(5));
-		registration.addRecipes(SHAPED_SIGIL_CRAFTING_MAP.get(RecipeSize.SIZE_7X7), ShapedSigilTableCraftingRecipeCategory.getUidBySize(7));
-		registration.addRecipes(SHAPED_SIGIL_ENGRAVING_MAP.get(RecipeSize.SIZE_3X3), ShapedSigilEngravingRecipeCategory.getUidBySize(3));
-		registration.addRecipes(SHAPED_SIGIL_ENGRAVING_MAP.get(RecipeSize.SIZE_5X5), ShapedSigilEngravingRecipeCategory.getUidBySize(5));
-		registration.addRecipes(SHAPED_SIGIL_ENGRAVING_MAP.get(RecipeSize.SIZE_7X7), ShapedSigilEngravingRecipeCategory.getUidBySize(7));
+		ClientWorld world = Minecraft.getInstance().level;
+		if(world==null) return;
 
+		Multimap<RecipeSize, ShapedSigilEngravingRecipe> sigilEngravingRecipes = ArrayListMultimap.create();
+		Multimap<RecipeSize, ShapedSigilTableCraftingRecipe> sigilTableCraftingRecipes = ArrayListMultimap.create();
+
+		for(SigilcraftRecipe recipe : world.getRecipeManager().getAllRecipesFor(ModRecipes.SIGILCRAFT_RECIPE_TYPE)){
+			if(recipe instanceof ShapedSigilEngravingRecipe){
+				ShapedSigilEngravingRecipe r = (ShapedSigilEngravingRecipe)recipe;
+				RecipeSize recipeSize = getRecipeSize(r);
+				if(recipeSize!=null) sigilEngravingRecipes.put(recipeSize, r);
+			}else if(recipe instanceof ShapedSigilTableCraftingRecipe){
+				ShapedSigilTableCraftingRecipe r = (ShapedSigilTableCraftingRecipe)recipe;
+				RecipeSize recipeSize = getRecipeSize(r);
+				if(recipeSize!=null) sigilTableCraftingRecipes.put(recipeSize, r);
+			}
+		}
+		for(RecipeSize s : RecipeSize.values()){
+			registration.addRecipes(sigilEngravingRecipes.get(s), ShapedSigilEngravingRecipeCategory.getUidBySize(s));
+			registration.addRecipes(sigilTableCraftingRecipes.get(s), ShapedSigilTableCraftingRecipeCategory.getUidBySize(s));
+		}
 	}
 
 	@Override public void registerRecipeCatalysts(IRecipeCatalystRegistration registration){
-		registration.addRecipeCatalyst(new ItemStack(ModItems.SIGIL_ENGRAVING_TABLE_3X3.get()), ShapedSigilEngravingRecipeCategory.getUidBySize(3), ShapedSigilTableCraftingRecipeCategory.getUidBySize(3));
-		registration.addRecipeCatalyst(new ItemStack(ModItems.SIGIL_ENGRAVING_TABLE_5X5.get()), ShapedSigilEngravingRecipeCategory.getUidBySize(3), ShapedSigilEngravingRecipeCategory.getUidBySize(5), ShapedSigilTableCraftingRecipeCategory.getUidBySize(3), ShapedSigilTableCraftingRecipeCategory.getUidBySize(5));
-		registration.addRecipeCatalyst(new ItemStack(ModItems.SIGIL_ENGRAVING_TABLE_7X7.get()), ShapedSigilEngravingRecipeCategory.getUidBySize(3), ShapedSigilEngravingRecipeCategory.getUidBySize(5), ShapedSigilEngravingRecipeCategory.getUidBySize(7), ShapedSigilTableCraftingRecipeCategory.getUidBySize(3), ShapedSigilTableCraftingRecipeCategory.getUidBySize(5), ShapedSigilTableCraftingRecipeCategory.getUidBySize(7));
+		for(RecipeSize size : RecipeSize.values()){
+			List<ResourceLocation> recipeCategories = new ArrayList<>();
+			for(RecipeSize size2 : RecipeSize.values()){
+				recipeCategories.add(ShapedSigilEngravingRecipeCategory.getUidBySize(size2));
+				recipeCategories.add(ShapedSigilTableCraftingRecipeCategory.getUidBySize(size2));
+				if(size==size2) break;
+			}
+			registration.addRecipeCatalyst(size.icon(), recipeCategories.toArray(new ResourceLocation[0]));
+		}
 	}
 
-	private void putSigilcraftRecipe(SigilcraftRecipe recipe){
-		RecipeSize recipeSize = getRecipeSize((BaseSigilcraftRecipe)recipe);
-		if(recipe instanceof ShapedSigilEngravingRecipe)
-			SHAPED_SIGIL_ENGRAVING_MAP.put(recipeSize, recipe);
-		else if(recipe instanceof ShapedSigilTableCraftingRecipe)
-			SHAPED_SIGIL_CRAFTING_MAP.put(recipeSize, recipe);
-	}
-
-	private RecipeSize getRecipeSize(BaseSigilcraftRecipe recipe){
-		int center = recipe.getCenterIngredient();
+	@Nullable private RecipeSize getRecipeSize(BaseSigilcraftRecipe recipe){
 		int height = recipe.getRecipeHeight();
 		int width = recipe.getRecipeWidth();
-		switch(Math.max(Math.max(center%width, width-1-center%width), Math.max(center/width, height-1-center/width))){
+		switch(Math.max(Math.max(recipe.getCenterX(), width-1-recipe.getCenterX()), Math.max(recipe.getCenterY(), height-1-recipe.getCenterY()))){
+			case 0:
 			case 1:
-				return RecipeSize.SIZE_3X3;
+				return RecipeSize.X3;
 			case 2:
-				return RecipeSize.SIZE_5X5;
+				return RecipeSize.X5;
 			case 3:
-				return RecipeSize.SIZE_7X7;
+				return RecipeSize.X7;
 			default:
 				return null;
 		}
 	}
-
 }

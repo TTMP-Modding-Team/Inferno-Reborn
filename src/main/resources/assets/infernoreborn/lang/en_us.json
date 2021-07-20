@@ -194,5 +194,13 @@
 	"infernoreborn.falling_damage_resistance": "Falling Damage Resistance",
 	"infernoreborn.melee_damage_resistance": "Melee Damage Resistance",
 	"infernoreborn.ranged_damage_resistance": "Ranged Damage Resistance",
-	"infernoreborn.magic_damage_resistance": "Magic Damage Resistance"
+	"infernoreborn.magic_damage_resistance": "Magic Damage Resistance",
+
+	"recipe.infernoreborn.shaped_sigil_engraving.x3": "Sigil Engraving (3x3)",
+	"recipe.infernoreborn.shaped_sigil_engraving.x5": "Sigil Engraving (5x5)",
+	"recipe.infernoreborn.shaped_sigil_engraving.x7": "Sigil Engraving (7x7)",
+
+	"recipe.infernoreborn.shaped_sigil_table_crafting.x3": "Sigilcrafting (3x3)",
+	"recipe.infernoreborn.shaped_sigil_table_crafting.x5": "Sigilcrafting (5x5)",
+	"recipe.infernoreborn.shaped_sigil_table_crafting.x7": "Sigilcrafting (7x7)"
 }

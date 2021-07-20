@@ -1,0 +1,11 @@
+{
+  "name": "sigil.infernoreborn.goat_eyes",
+  "category": "infernoreborn:sigils",
+  "icon": "infernoreborn:sigil{Sigils:\"infernoreborn:goat_eyes\"}",
+  "pages": [
+    {
+      "type": "text",
+      "text": "text.infernoreborn.sigil.goat_eyes.0"
+    }
+  ]
+}

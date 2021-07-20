@@ -37,14 +37,21 @@ public abstract class BaseSigilcraftRecipe implements SigilcraftRecipe, IShapedR
 		return centerIngredient;
 	}
 
+	public int getCenterX(){
+		return indexToX(getCenterIngredient(), getRecipeWidth());
+	}
+	public int getCenterY(){
+		return indexToY(getCenterIngredient(), getRecipeWidth());
+	}
+
 	@Override public boolean matches(SigilcraftInventory inv, World world){
 		return matchCore(inv)&&(matches(inv, false)||matches(inv, true));
 	}
 	@Override public abstract ItemStack assemble(SigilcraftInventory inv);
 
 	protected boolean matches(SigilcraftInventory inv, boolean mirror){
-		int recipeOriginX = inv.getWidth()/2-indexToX(getCenterIngredient(), getRecipeWidth());
-		int recipeOriginY = inv.getHeight()/2-indexToY(getCenterIngredient(), getRecipeHeight());
+		int recipeOriginX = inv.getWidth()/2-getCenterX();
+		int recipeOriginY = inv.getHeight()/2-getCenterY();
 		if(recipeOriginX<0||recipeOriginY<0||recipeOriginX+getRecipeWidth()>inv.getWidth()||recipeOriginY+getRecipeHeight()>inv.getHeight()) return false;
 
 		for(int x = 0; x<inv.getWidth(); ++x){
@@ -69,7 +76,7 @@ public abstract class BaseSigilcraftRecipe implements SigilcraftRecipe, IShapedR
 
 	@Override public boolean canCraftInDimensions(int width, int height){
 		int cx = indexToX(centerIngredient, getRecipeWidth());
-		int cy = indexToY(centerIngredient, getRecipeHeight());
+		int cy = indexToY(centerIngredient, getRecipeWidth());
 
 		int minIngredientX = width/2-getRecipeWidth()+cx+1;
 		int maxIngredientX = width/2+getRecipeWidth()-cx-1;

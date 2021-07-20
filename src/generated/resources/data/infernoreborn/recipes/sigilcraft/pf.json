@@ -1,0 +1,31 @@
+{
+  "type": "infernoreborn:shaped_sigil_table_crafting",
+  "pattern": [
+    "  111  ",
+    "3144413",
+    "344X443",
+    " 24442 ",
+    "  222  "
+  ],
+  "key": {
+    "1": {
+      "item": "infernoreborn:greater_dominance_essence_crystal"
+    },
+    "2": {
+      "item": "infernoreborn:greater_air_essence_crystal"
+    },
+    "3": {
+      "item": "infernoreborn:greater_water_essence_crystal"
+    },
+    "4": {
+      "item": "infernoreborn:greater_blood_essence_crystal"
+    },
+    "X": {
+      "item": "minecraft:cobblestone"
+    }
+  },
+  "result": {
+    "item": "minecraft:pufferfish"
+  },
+  "center": "X"
+}

@@ -36,6 +36,8 @@ public final class Sigils{
 	public static final RegistryObject<Sigil> RUNIC_SHIELD = REGISTER.register("runic_shield", () -> new RunicShieldSigil(new Sigil.Properties(0xaf02ff, 0x28003b, 5)));
 	public static final RegistryObject<Sigil> SIGIL_OF_TRAVELER = REGISTER.register("sigil_of_traveler", () -> new TravelerSigil(new Sigil.Properties(0xe7f4f4, 0x3f5655, 3)));
 
+	public static final RegistryObject<Sigil> GOAT_EYES = REGISTER.register("goat_eyes", () -> new TravelerSigil(new Sigil.Properties(0xFFFFFF, 0xFFFFFF, 1))); // TODO
+
 	@SubscribeEvent
 	public static void newRegistry(RegistryEvent.NewRegistry e){
 		registry = (ForgeRegistry<Sigil>)new RegistryBuilder<Sigil>()
