@@ -24,6 +24,8 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.world.Explosion;
+import net.minecraft.world.GameRules;
 import net.minecraft.world.World;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
@@ -39,6 +41,7 @@ import ttmp.infernoreborn.capability.TickingTaskHandler;
 import ttmp.infernoreborn.contents.ability.Ability;
 import ttmp.infernoreborn.contents.ability.AbilitySkill;
 import ttmp.infernoreborn.contents.ability.OnAbilityEvent;
+import ttmp.infernoreborn.contents.ability.cooldown.Cooldown;
 import ttmp.infernoreborn.contents.entity.AnvilEntity;
 import ttmp.infernoreborn.contents.entity.wind.AbstractWindEntity;
 import ttmp.infernoreborn.contents.entity.wind.DamagingWindEntity;
@@ -456,25 +459,23 @@ public final class Abilities{
 	public static final RegistryObject<Ability> ASSASSINATE = REGISTER.register("assassinate", () ->
 			new Ability(new Ability.Properties(0x332B40, 0x332B40)
 					.addTargetedSkill(5, 500, (entity, holder, target) -> {
-						if(target.isAlive()){
+						if(entity.doHurtTarget(target)){
 							entity.teleportTo(target.getX()-0.5, target.getY()+target.getEyeHeight(), target.getZ()-0.5);
-							entity.doHurtTarget(target);
+							if(!target.isAlive()) return false;
 							return true;
-							//if(!target.isAlive()) cooldown = 0;
 						}
 						return false;
 					}, (entity, holder, target) -> {
 						double dist = target.position().distanceTo(entity.position());
 						return !(dist<2)&&!(dist>48);
-					})/*
-			.addTargetedSkill(5, 250, (entity, holder, target) -> {
-				int hurtDuration = target.hurtDuration;
-				entity.doHurtTarget(target);
-				target.hurtDuration = hurtDuration;
-				return true;
-			}, (entity, holder, target) -> target.getLastHurtMob()==entity)*/
+					})
+					.addTargetedSkill(5, 250, (entity, holder, target) -> {
+						int hurtDuration = target.hurtDuration;
+						entity.doHurtTarget(target);
+						target.hurtDuration = hurtDuration;
+						return true;
+					}, (entity, holder, target) -> entity.getBbWidth()*2.0F*entity.getBbWidth()*2.0F+target.getBbWidth()<=entity.distanceToSqr(target.getX(), target.getY(), target.getZ()))
 					.addAttribute(Attributes.ATTACK_DAMAGE, "33a76a6a-e561-4aab-886b-9b6986bc487a", 8, Operation.ADDITION)
-					.addAttribute(Attributes.ATTACK_SPEED, "ee632cab-0980-46f1-bc27-683a3199a525", 3, Operation.MULTIPLY_TOTAL)
 					.addAttribute(Attributes.MOVEMENT_SPEED, "3a8d180b-88e9-488b-a590-0713cc4872c5", 1, Operation.MULTIPLY_TOTAL)
 					.addAttribute(ModAttributes.FALLING_DAMAGE_RESISTANCE.get(), "086c4438-1e28-4484-a1e4-cf3b5cede40c", 1, Operation.MULTIPLY_BASE)));
 
@@ -496,7 +497,20 @@ public final class Abilities{
 	public static final RegistryObject<Ability> SLYNESS = REGISTER.register("slyness", () ->
 			new Ability(new Ability.Properties(0x252525, 0x252525)));
 	public static final RegistryObject<Ability> ELECTRIC_SKIN = REGISTER.register("electric_skin", () ->
-			new Ability(new Ability.Properties(0xFFFF00, 0xFFFF00)));
+			new Ability(new Ability.Properties(0xFFFF00, 0xFFFF00)
+					.withCooldownTicket((ticket, properties) -> properties.onAttacked((entity, holder, event) -> {
+						Cooldown cooldown = holder.cooldown();
+						if(event.getSource()==DamageSource.LIGHTNING_BOLT){
+							event.setCanceled(true);
+							cooldown.set(ticket, 100);
+						}else if(event.getSource().getEntity() instanceof LivingEntity){
+							int dmg = (int)(100-cooldown.get(ticket))/10-2;
+							if(dmg>0&&event.getSource().getEntity().hurt(DamageSource.LIGHTNING_BOLT, dmg)){
+								cooldown.set(ticket, 100);
+								cooldown.setGlobalDelay(10);
+							}
+						}
+					}))));
 	public static final RegistryObject<Ability> RECALL = REGISTER.register("recall", () ->
 			new Ability(new Ability.Properties(0x64FFFF, 0x64FFFF)));
 	public static final RegistryObject<Ability> ZOMBIE_NECROMANCY = REGISTER.register("zombie_necromancy", () ->
@@ -512,7 +526,15 @@ public final class Abilities{
 	public static final RegistryObject<Ability> HEADWIND = REGISTER.register("headwind", () ->
 			new Ability(new Ability.Properties(0xC0E4FF, 0xC0E4FF)));
 	public static final RegistryObject<Ability> CONDITIONAL_REFLEX = REGISTER.register("conditional_reflex", () ->
-			new Ability(new Ability.Properties(0x0, 0x0)));
+			new Ability(new Ability.Properties(0x0, 0x0)
+					.withCooldownTicket((ticket, properties) -> properties.onAttacked((entity, holder, event) -> {
+						LivingEntity target = LivingUtils.getTarget(entity);
+						if(target!=null){
+							holder.cooldown().setGlobalDelay(5);
+							holder.cooldown().set(ticket, 5);
+							entity.doHurtTarget(target);
+						}
+					})).addAttribute(Attributes.ATTACK_DAMAGE, "9ff4653e-cd0e-48d1-b2ac-1627ae0f5700", 3, Operation.ADDITION)));
 	public static final RegistryObject<Ability> MAGMABLOOD = REGISTER.register("magmablood", () ->
 			new Ability(new Ability.Properties(0x400000, 0x400000)));
 	public static final RegistryObject<Ability> PYROMANIA = REGISTER.register("pyromania", () ->
@@ -520,7 +542,27 @@ public final class Abilities{
 	public static final RegistryObject<Ability> GUNPOWDER_SWARM = REGISTER.register("gunpowder_swarm", () ->
 			new Ability(new Ability.Properties(0x00C800, 0x00C800)));
 	public static final RegistryObject<Ability> KILLER_QUEEN = REGISTER.register("killer_queen", () ->
-			new Ability(new Ability.Properties(0xE3AADD, 0xE3AADD)));
+			new Ability(new Ability.Properties(0xE3AADD, 0xE3AADD)
+					.onUpdate((entity, holder) -> {
+						LivingEntity target = LivingUtils.getTarget(entity);
+						if(target!=null&&target.isAlive()&&target.hasEffect(ModEffects.KILLER_QUEEN.get())){
+							int c = target.getActiveEffectsMap().get(ModEffects.KILLER_QUEEN.get()).getAmplifier()+1;
+							double distance = target.distanceTo(entity);
+							if(distance>6&&(distance>15||LivingUtils.explosionDamagePredicate(target, 1+c/2f)>=target.getHealth())){
+								entity.level.explode(entity, target.getX(), target.getY(), target.getZ(), 1+c/2f, false, LivingUtils.getExplosionMode(entity.level));
+							}
+						}
+					}).onHit((entity, holder, event) -> {
+						Entity directEntity = event.getSource().getDirectEntity();
+						if(entity==directEntity){
+							event.getEntityLiving().addEffect(new EffectInstance(ModEffects.KILLER_QUEEN.get(), 600, 1));
+						}else if(directEntity!=null){
+							entity.level.explode(entity, directEntity.getX(), directEntity.getY(), directEntity.getZ(), 1.5f, false, LivingUtils.getExplosionMode(entity.level));
+							directEntity.kill();
+						}
+					}).onAttacked((entity, holder, event) -> {
+						if(event.getSource().isExplosion()) event.setCanceled(true);
+					}).addAttribute(ModAttributes.DAMAGE_RESISTANCE.get(), "ec33a2c7-5757-413a-9a79-51d507d068aa", 0.15, Operation.MULTIPLY_BASE)));
 	public static final RegistryObject<Ability> DIABOLO = REGISTER.register("diabolo", () ->
 			new Ability(new Ability.Properties(0x4B0000, 0x4B0000)));
 	public static final RegistryObject<Ability> SERVANT = REGISTER.register("servant", () ->
@@ -571,6 +613,7 @@ public final class Abilities{
 			return true;
 		};
 	}
+
 
 	@FunctionalInterface
 	private interface SkinEffect{

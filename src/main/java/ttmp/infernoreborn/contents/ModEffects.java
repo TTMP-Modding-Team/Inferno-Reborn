@@ -6,6 +6,7 @@ import net.minecraftforge.fml.RegistryObject;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import ttmp.infernoreborn.contents.effect.BloodFrenzyEffect;
+import ttmp.infernoreborn.contents.effect.KillerQueenEffect;
 
 import static net.minecraft.entity.ai.attributes.AttributeModifier.Operation.ADDITION;
 import static ttmp.infernoreborn.InfernoReborn.MODID;
@@ -17,4 +18,5 @@ public final class ModEffects{
 
 	public static final RegistryObject<Effect> BLOOD_FRENZY = REGISTER.register("blood_frenzy", () -> new BloodFrenzyEffect(EffectType.BENEFICIAL, 0xa00000)
 			.addAttributeModifier(ModAttributes.REGENERATION.get(), "285f126c-14d4-48e7-a13d-443851d85b4c", 1.0/60, ADDITION));
+	public static final RegistryObject<Effect> KILLER_QUEEN = REGISTER.register("killer_queen", () -> new KillerQueenEffect(EffectType.HARMFUL, 0x0));
 }

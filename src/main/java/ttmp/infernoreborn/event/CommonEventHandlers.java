@@ -146,7 +146,7 @@ public class CommonEventHandlers{
 
 	@SubscribeEvent(priority = EventPriority.LOW)
 	public static void onLivingHurtAfter(LivingHurtEvent event){
-		Entity entity = event.getSource().getDirectEntity();
+		Entity entity = event.getSource().getEntity();
 		if(entity instanceof LivingEntity){
 			if(!entity.isAlive()) return;
 			ServerAbilityHolder h = ServerAbilityHolder.of(entity);

@@ -1,17 +1,27 @@
 package ttmp.infernoreborn.util;
 
 import com.google.common.collect.ListMultimap;
+import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.IAngerable;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.MobEntity;
 import net.minecraft.entity.ai.attributes.Attribute;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
+import net.minecraft.entity.ai.attributes.Attributes;
 import net.minecraft.entity.ai.attributes.ModifiableAttributeInstance;
 import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.potion.Effect;
 import net.minecraft.potion.EffectInstance;
+import net.minecraft.potion.Effects;
+import net.minecraft.util.CombatRules;
+import net.minecraft.util.DamageSource;
+import net.minecraft.world.Explosion;
+import net.minecraft.world.GameRules;
+import net.minecraft.world.World;
 import ttmp.infernoreborn.InfernoReborn;
 import ttmp.infernoreborn.capability.ShieldHolder;
+import ttmp.infernoreborn.contents.Abilities;
+import ttmp.infernoreborn.contents.ability.holder.AbilityHolder;
 
 import javax.annotation.Nullable;
 import java.util.List;
@@ -122,4 +132,32 @@ public final class LivingUtils{
 			list.set(modifyTargetIndex, new AttributeModifier(m.getId(), m.getName(), m.getAmount()+amount, m.getOperation()));
 		}else attributeMap.put(attribute, new AttributeModifier(fallbackUuid!=null ? fallbackUuid : UUID.randomUUID(), "", amount, operation));
 	}
+	public static Explosion.Mode getExplosionMode(World world){
+		return world.getGameRules().getBoolean(GameRules.RULE_MOBGRIEFING) ? Explosion.Mode.DESTROY : Explosion.Mode.NONE;
+	}
+
+	public static float explosionDamagePredicate(LivingEntity target, float explosionSize){
+		if(isImmuneToExplosions(target)||target.getEyeHeight()==0) return 0;
+		double density = Explosion.getSeenPercent(target.position(), target);
+		return calcDamageWithArmor(target, (int)((density*density+density)/2*7*explosionSize+1));
+	}
+
+	private static boolean isImmuneToExplosions(LivingEntity target){
+		if(target.ignoreExplosion()||target.isInvulnerableTo(DamageSource.explosion((LivingEntity)null))) return true;
+		AbilityHolder holder = AbilityHolder.of(target);
+		if(holder==null) return false;
+		if(holder.has(Abilities.KILLER_QUEEN.get())||holder.has(Abilities.GUNPOWDER_SWARM.get())) return true;
+		return false;
+	}
+	private static float calcDamageWithArmor(LivingEntity target, float damage){
+		if(damage<=0) return 0;
+		damage = CombatRules.getDamageAfterAbsorb(damage, target.getArmorValue(), (float)target.getAttribute(Attributes.ARMOR_TOUGHNESS).getValue());
+		if(target.hasEffect(Effects.DAMAGE_RESISTANCE))
+			damage = damage*(25-(target.getEffect(Effects.DAMAGE_RESISTANCE).getAmplifier()+1)*5)/25;
+		if(damage<=0) return 0;
+		int k = EnchantmentHelper.getDamageProtection(target.getArmorSlots(), DamageSource.explosion((LivingEntity)null));
+		if(k>0) damage = CombatRules.getDamageAfterMagicAbsorb(damage, k);
+		return Math.max(damage-target.getAbsorptionAmount(), 0);
+	}
+
 }
