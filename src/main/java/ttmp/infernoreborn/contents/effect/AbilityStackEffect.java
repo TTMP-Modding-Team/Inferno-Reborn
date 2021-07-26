@@ -13,8 +13,8 @@ import net.minecraft.potion.EffectType;
 import net.minecraft.util.math.vector.Matrix4f;
 import org.lwjgl.opengl.GL11;
 
-public class KillerQueenEffect extends Effect{
-	public KillerQueenEffect(EffectType effectType, int color){
+public class AbilityStackEffect extends Effect{
+	public AbilityStackEffect(EffectType effectType, int color){
 		super(effectType, color);
 	}
 

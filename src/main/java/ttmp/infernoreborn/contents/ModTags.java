@@ -21,6 +21,7 @@ public final class ModTags{
 	public static final Tags.IOptionalNamedTag<Item> STORAGE_BLOCKS_DAMASCUS_STEEL = ItemTags.createOptional(new ResourceLocation("forge", "storage_blocks/damascus_steel"));
 
 	public static final Tags.IOptionalNamedTag<Item> CURIOS_CURIO = ItemTags.createOptional(new ResourceLocation("curios", "curio"));
+	public static final Tags.IOptionalNamedTag<Item> CURIOS_BELT = ItemTags.createOptional(new ResourceLocation("curios", "belt"));
 
 	public static final class Blocks{
 		private Blocks(){}

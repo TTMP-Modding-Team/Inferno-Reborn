@@ -142,31 +142,6 @@ public final class LivingUtils{
 		return world.getGameRules().getBoolean(GameRules.RULE_MOBGRIEFING) ? Explosion.Mode.DESTROY : Explosion.Mode.NONE;
 	}
 
-	public static float explosionDamagePredicate(LivingEntity target, float explosionSize){
-		if(isImmuneToExplosions(target)||target.getEyeHeight()==0) return 0;
-		double density = Explosion.getSeenPercent(target.position(), target);
-		return calcDamageWithArmor(target, (int)((density*density+density)/2*7*explosionSize+1));
-	}
-
-	private static boolean isImmuneToExplosions(LivingEntity target){
-		if(target.ignoreExplosion()||target.isInvulnerableTo(DamageSource.explosion((LivingEntity)null))) return true;
-		AbilityHolder holder = AbilityHolder.of(target);
-		if(holder==null) return false;
-		return holder.has(Abilities.KILLER_QUEEN.get())||holder.has(Abilities.GUNPOWDER_SWARM.get());
-	}
-
-	private static float calcDamageWithArmor(LivingEntity target, float damage){
-		if(damage<=0) return 0;
-		damage = CombatRules.getDamageAfterAbsorb(damage, target.getArmorValue(), (float)getAttrib(target, Attributes.ARMOR_TOUGHNESS));
-		EffectInstance damageResistance = target.getEffect(Effects.DAMAGE_RESISTANCE);
-		if(damageResistance!=null)
-			damage = damage*(25-(damageResistance.getAmplifier()+1)*5)/25;
-		if(damage<=0) return 0;
-		int k = EnchantmentHelper.getDamageProtection(target.getArmorSlots(), DamageSource.explosion((LivingEntity)null));
-		if(k>0) damage = CombatRules.getDamageAfterMagicAbsorb(damage, k);
-		return Math.max(damage-target.getAbsorptionAmount(), 0);
-	}
-
 	public static IFormattableTextComponent getAttributeText(Attribute attribute, double amount, AttributeModifier.Operation operation){
 		double displayAmount = operation!=AttributeModifier.Operation.MULTIPLY_BASE&&operation!=AttributeModifier.Operation.MULTIPLY_TOTAL ?
 				attribute.equals(Attributes.KNOCKBACK_RESISTANCE) ? amount*10 : amount :

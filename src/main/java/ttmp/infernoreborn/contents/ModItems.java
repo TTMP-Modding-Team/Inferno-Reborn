@@ -20,6 +20,7 @@ import ttmp.infernoreborn.contents.item.ExplosiveSwordItem;
 import ttmp.infernoreborn.contents.item.FixedAbilityItem;
 import ttmp.infernoreborn.contents.item.FoundryBlockItem;
 import ttmp.infernoreborn.contents.item.GeneratorAbilityItem;
+import ttmp.infernoreborn.contents.item.ItemThanatosBelt;
 import ttmp.infernoreborn.contents.item.RandomAbilityItem;
 import ttmp.infernoreborn.contents.item.SigilItem;
 import ttmp.infernoreborn.contents.item.TheBookItem;
@@ -151,7 +152,9 @@ public final class ModItems{
 
 	public static final RegistryObject<Item> SIGIL = REGISTER.register("sigil", () -> new SigilItem(sigils()));
 
-	public static final RegistryObject<Item> CURIO_TEST = REGISTER.register("curio_test", () -> new Item(materials(Rarity.EPIC)));
+	public static final RegistryObject<Item> CURIO_TEST = REGISTER.register("curio_test", () -> new Item(artifacts(Rarity.EPIC)));
+
+	public static final RegistryObject<Item> THANATOS_BELT = REGISTER.register("thanatos_belt", () -> new ItemThanatosBelt(artifacts(Rarity.EPIC)));
 
 	private static RegistryObject<Item> essence(EssenceType type, EssenceSize size){
 		String id;
