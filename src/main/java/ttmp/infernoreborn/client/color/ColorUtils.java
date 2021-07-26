@@ -1,6 +1,7 @@
 package ttmp.infernoreborn.client.color;
 
 import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.text.Color;
 import ttmp.infernoreborn.contents.ability.Ability;
 
 import java.util.Random;
@@ -27,6 +28,8 @@ public final class ColorUtils{
 			return ColorUtils.hslToRgb(RNG.nextDouble()*360, 1, .8);
 		}
 	};
+
+	public static final Color SIGIL_TEXT_COLOR = Color.fromRgb(0xd14d0a);
 
 	private static final Random RNG = new Random();
 	private static final long BLEND_TIME = 2000;

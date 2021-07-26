@@ -2,7 +2,7 @@ package ttmp.infernoreborn.util;
 
 import com.google.common.collect.ListMultimap;
 import net.minecraft.client.resources.I18n;
-import net.minecraft.enchantment.EnchantmentHelper;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.IAngerable;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.MobEntity;
@@ -13,25 +13,19 @@ import net.minecraft.entity.ai.attributes.ModifiableAttributeInstance;
 import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.potion.Effect;
 import net.minecraft.potion.EffectInstance;
-import net.minecraft.potion.Effects;
-import net.minecraft.util.CombatRules;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.text.IFormattableTextComponent;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.TranslationTextComponent;
-import net.minecraft.world.Explosion;
-import net.minecraft.world.GameRules;
-import net.minecraft.world.World;
 import ttmp.infernoreborn.InfernoReborn;
 import ttmp.infernoreborn.capability.ShieldHolder;
-import ttmp.infernoreborn.contents.Abilities;
-import ttmp.infernoreborn.contents.ability.holder.AbilityHolder;
 
 import javax.annotation.Nullable;
 import java.util.List;
 import java.util.UUID;
 
 import static net.minecraft.item.ItemStack.ATTRIBUTE_MODIFIER_FORMAT;
+import static ttmp.infernoreborn.InfernoReborn.MODID;
 
 public final class LivingUtils{
 	private LivingUtils(){}
@@ -45,6 +39,9 @@ public final class LivingUtils{
 			UUID.fromString("2AD3F246-FEE1-4E67-B886-69FD380BB150")
 	};
 
+	private static final DamageSource FROSTBITE_DAMAGE = new DamageSource(MODID+".frostbite").bypassArmor();
+	private static final DamageSource MIDAS_DAMAGE = new DamageSource(MODID+".midas").bypassArmor().bypassMagic().bypassInvul();
+
 	public static UUID getAttackDamageId(){
 		return BASE_ATTACK_DAMAGE_UUID;
 	}
@@ -54,6 +51,22 @@ public final class LivingUtils{
 	public static UUID getArmorModifierId(EquipmentSlotType type){
 		if(type.getType()!=EquipmentSlotType.Group.ARMOR) throw new IllegalArgumentException("type");
 		return ARMOR_MODIFIER_UUID_PER_SLOT[type.getIndex()];
+	}
+
+	public static DamageSource frostbiteDamage(){
+		return FROSTBITE_DAMAGE;
+	}
+
+	public static DamageSource killerQueenDamage(Entity source){
+		return new NotStupidDamageSource(MODID+".killerQueen", null, source)
+				.setIgnoreHeldItem().setNeverScalesWithDifficulty()
+				.bypassArmor().bypassMagic().bypassInvul();
+	}
+
+	public static DamageSource midasDamage(Entity source){
+		return new NotStupidDamageSource(MODID+".midas", null, source)
+				.setIgnoreHeldItem().setNeverScalesWithDifficulty()
+				.bypassArmor().bypassMagic().bypassInvul();
 	}
 
 	public static void addStackEffect(LivingEntity entity,
@@ -83,13 +96,6 @@ public final class LivingUtils{
 					false,
 					visible,
 					showIcon));
-		}
-	}
-
-	public static void addInfiniteEffect(LivingEntity entity, Effect effect, int amp){
-		EffectInstance e = entity.getEffect(effect);
-		if(e==null||e.getDuration()<30||e.getAmplifier()<amp){
-			entity.addEffect(new EffectInstance(effect, 400, amp, true, false));
 		}
 	}
 
@@ -137,9 +143,6 @@ public final class LivingUtils{
 			AttributeModifier m = list.get(modifyTargetIndex);
 			list.set(modifyTargetIndex, new AttributeModifier(m.getId(), m.getName(), m.getAmount()+amount, m.getOperation()));
 		}else attributeMap.put(attribute, new AttributeModifier(fallbackUuid!=null ? fallbackUuid : UUID.randomUUID(), "", amount, operation));
-	}
-	public static Explosion.Mode getExplosionMode(World world){
-		return world.getGameRules().getBoolean(GameRules.RULE_MOBGRIEFING) ? Explosion.Mode.DESTROY : Explosion.Mode.NONE;
 	}
 
 	public static IFormattableTextComponent getAttributeText(Attribute attribute, double amount, AttributeModifier.Operation operation){

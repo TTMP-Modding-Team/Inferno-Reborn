@@ -13,9 +13,11 @@ import ttmp.infernoreborn.contents.sigil.AfflictionSigil;
 import ttmp.infernoreborn.contents.sigil.BlessingOfMercurySigil;
 import ttmp.infernoreborn.contents.sigil.EnduranceSigil;
 import ttmp.infernoreborn.contents.sigil.FeatherFallSigil;
+import ttmp.infernoreborn.contents.sigil.FrostbiteRuneSigil;
 import ttmp.infernoreborn.contents.sigil.GoatEyeSigil;
 import ttmp.infernoreborn.contents.sigil.MiniHeartSigil;
 import ttmp.infernoreborn.contents.sigil.RunicShieldSigil;
+import ttmp.infernoreborn.contents.sigil.ScaldRuneSigil;
 import ttmp.infernoreborn.contents.sigil.Sigil;
 import ttmp.infernoreborn.contents.sigil.TravelerSigil;
 
@@ -47,9 +49,14 @@ public final class Sigils{
 	public static final RegistryObject<Sigil> GOAT_EYES = REGISTER.register("goat_eyes", () -> new GoatEyeSigil(
 			new Sigil.Properties(0xFFFFFF, 0xFFFFFF, 1).allowBody()));
 	public static final RegistryObject<Sigil> FEATHER_FALL_SIGIL = REGISTER.register("feather_fall_sigil", () -> new FeatherFallSigil(
-			new Sigil.Properties(0xFFFFFF, 0xFFFFFF, 3).allowBody()));
+			new Sigil.Properties(0xFFFFFF, 0xFFFFFF, 3).allowBody().allowArmor().allowCurio()));
 	public static final RegistryObject<Sigil> BLESSING_OF_MERCURY = REGISTER.register("blessing_of_mercury", () -> new BlessingOfMercurySigil(
-			new Sigil.Properties(0xFFFFFF, 0xFFFFFF, 5).allowBody()));
+			new Sigil.Properties(0xFFFFFF, 0xFFFFFF, 5).allowBody().allowMainhand().allowArmor().allowCurio()));
+
+	public static final RegistryObject<Sigil> FROSTBITE_RUNE = REGISTER.register("frostbite_rune", () -> new FrostbiteRuneSigil(
+			new Sigil.Properties(0xFFFFFF, 0xFFFFFF, 4).allowMainhand()));
+	public static final RegistryObject<Sigil> SCALD_RUNE = REGISTER.register("scald_rune", () -> new ScaldRuneSigil(
+			new Sigil.Properties(0xFFFFFF, 0xFFFFFF, 4).allowMainhand()));
 
 	@SubscribeEvent
 	public static void newRegistry(RegistryEvent.NewRegistry e){

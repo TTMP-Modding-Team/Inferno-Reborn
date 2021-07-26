@@ -20,7 +20,7 @@ public class EnduranceSigil extends AttributeSigil{
 	@Override protected void createSigilBookEntryContent(SigilPageBuilder builder){
 		builder.effectsFor(SigilSlot.BODY)
 				.attribute(ModAttributes.DAMAGE_RESISTANCE.get(), .1, Operation.MULTIPLY_BASE);
-		builder.effectsForArmor(SigilSlot.CURIO)
+		builder.effectsFor(SigilSlot.ARMOR, SigilSlot.CURIO)
 				.attribute(ModAttributes.DAMAGE_RESISTANCE.get(), .05, Operation.MULTIPLY_BASE);
 	}
 }

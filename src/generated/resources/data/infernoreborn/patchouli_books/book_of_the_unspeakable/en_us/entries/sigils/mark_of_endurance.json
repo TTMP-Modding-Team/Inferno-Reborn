@@ -11,11 +11,6 @@
       "type": "infernoreborn:sigil_effect",
       "sigil": "infernoreborn:mark_of_endurance",
       "page": "0"
-    },
-    {
-      "type": "infernoreborn:sigil_effect",
-      "sigil": "infernoreborn:mark_of_endurance",
-      "page": "1"
     }
   ]
 }

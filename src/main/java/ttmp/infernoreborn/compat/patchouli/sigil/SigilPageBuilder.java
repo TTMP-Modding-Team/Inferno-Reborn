@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.EnumSet;
 import java.util.List;
+import java.util.Locale;
 import java.util.stream.Collectors;
 
 public class SigilPageBuilder{
@@ -41,12 +42,6 @@ public class SigilPageBuilder{
 		effectPages.add(effectPage);
 		return effectPage;
 	}
-	public EffectPageBuilder effectsForArmor(SigilSlot... additional){
-		EnumSet<SigilSlot> set = EnumSet.noneOf(SigilSlot.class);
-		Collections.addAll(set, SigilSlot.HEAD, SigilSlot.CHEST, SigilSlot.LEGS, SigilSlot.FEET);
-		Collections.addAll(set, additional);
-		return effectsFor(set);
-	}
 
 	public SigilBookEntry build(){
 		return new SimpleSigilBookEntry(descriptionPages, effectPages.stream()
@@ -57,28 +52,9 @@ public class SigilPageBuilder{
 	public static class EffectPageBuilder{
 		private final List<ITextComponent> text = new ArrayList<>();
 
-		public EffectPageBuilder(EnumSet<SigilSlot> s){
-			if(s.contains(SigilSlot.ANY)){
-				whenApplied("any");
-				return;
-			}
-			if(s.contains(SigilSlot.BODY)) whenApplied("body");
-			if(s.contains(SigilSlot.ITEM)){
-				whenApplied("item");
-				return;
-			}
-			if(s.contains(SigilSlot.MAINHAND)) whenApplied("mainhand");
-			if(s.contains(SigilSlot.OFFHAND)) whenApplied("offhand");
-			if(s.contains(SigilSlot.HEAD)&&s.contains(SigilSlot.CHEST)&&
-					s.contains(SigilSlot.LEGS)&&s.contains(SigilSlot.FEET))
-				whenApplied("armor");
-			else{
-				if(s.contains(SigilSlot.HEAD)) whenApplied("head");
-				if(s.contains(SigilSlot.CHEST)) whenApplied("chest");
-				if(s.contains(SigilSlot.LEGS)) whenApplied("legs");
-				if(s.contains(SigilSlot.FEET)) whenApplied("feet");
-			}
-			if(s.contains(SigilSlot.CURIO)) whenApplied("curio");
+		public EffectPageBuilder(EnumSet<SigilSlot> slots){
+			for(SigilSlot slot : slots)
+				whenApplied(slot.name().toLowerCase(Locale.ROOT));
 		}
 
 		private void whenApplied(String slotName){
@@ -90,7 +66,7 @@ public class SigilPageBuilder{
 		}
 
 		public EffectPageBuilder effect(ITextComponent text){
-			this.text.add(new StringTextComponent("  ").append(text));
+			this.text.add(new StringTextComponent(" ").append(text));
 			return this;
 		}
 

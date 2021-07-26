@@ -20,7 +20,7 @@ public class RunicShieldSigil extends AttributeSigil{
 	@Override protected void createSigilBookEntryContent(SigilPageBuilder builder){
 		builder.effectsFor(SigilSlot.BODY)
 				.attribute(ModAttributes.SHIELD.get(), 10, Operation.ADDITION);
-		builder.effectsForArmor(SigilSlot.CURIO)
+		builder.effectsFor(SigilSlot.ARMOR, SigilSlot.CURIO)
 				.attribute(ModAttributes.SHIELD.get(), 2, Operation.ADDITION);
 	}
 }

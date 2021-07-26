@@ -1,0 +1,11 @@
+{
+  "name": "ability.infernoreborn.touch_of_midas",
+  "category": "infernoreborn:abilities",
+  "icon": "infernoreborn:inferno_spark{Abilities:[\"infernoreborn:touch_of_midas\"]}",
+  "pages": [
+    {
+      "type": "text",
+      "text": "text.infernoreborn.ability.touch_of_midas.0"
+    }
+  ]
+}

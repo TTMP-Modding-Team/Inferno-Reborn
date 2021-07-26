@@ -1,17 +1,20 @@
 package ttmp.infernoreborn.contents.sigil;
 
 import com.google.common.collect.ListMultimap;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.ai.attributes.Attribute;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Rarity;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraftforge.event.entity.living.LivingAttackEvent;
 import net.minecraftforge.registries.ForgeRegistryEntry;
 import ttmp.infernoreborn.compat.patchouli.sigil.SigilBookEntry;
+import ttmp.infernoreborn.compat.patchouli.sigil.SigilPageBuilder;
 import ttmp.infernoreborn.contents.sigil.context.ItemContext;
 import ttmp.infernoreborn.contents.sigil.context.SigilEventContext;
-import ttmp.infernoreborn.compat.patchouli.sigil.SigilPageBuilder;
 import ttmp.infernoreborn.util.SigilSlot;
 
 import javax.annotation.Nullable;
@@ -74,22 +77,25 @@ public class Sigil extends ForgeRegistryEntry<Sigil>{
 		return false;
 	}
 
+	/**
+	 * Apply attributes based on the slot and context
+	 */
 	public void applyAttributes(SigilEventContext ctx, SigilSlot slot, ListMultimap<Attribute, AttributeModifier> attributes){}
 
-	@Override public boolean equals(Object obj){
-		if(obj==this) return true;
-		if(!(obj instanceof Sigil)) return false;
-		return Objects.equals(((Sigil)obj).getRegistryName(), this.getRegistryName());
-	}
+	/**
+	 * On tick
+	 */
+	public void onTick(SigilEventContext ctx, SigilSlot slot, PlayerEntity player){}
 
-	@Override public int hashCode(){
-		ResourceLocation n = getRegistryName();
-		return n==null ? 0 : n.hashCode();
-	}
+	/**
+	 * When holder attacks sth
+	 */
+	public void onAttack(SigilEventContext ctx, SigilSlot slot, LivingAttackEvent event, LivingEntity entity){}
 
-	@Override public String toString(){
-		return getUnlocalizedName();
-	}
+	/**
+	 * When holder is attacked by sth
+	 */
+	public void onAttacked(SigilEventContext ctx, SigilSlot slot, LivingAttackEvent event){}
 
 	@Nullable private ResourceLocation sigilTextureLocation;
 
@@ -124,6 +130,21 @@ public class Sigil extends ForgeRegistryEntry<Sigil>{
 	}
 
 	protected void createSigilBookEntryContent(SigilPageBuilder builder){}
+
+	@Override public boolean equals(Object obj){
+		if(obj==this) return true;
+		if(!(obj instanceof Sigil)) return false;
+		return Objects.equals(((Sigil)obj).getRegistryName(), this.getRegistryName());
+	}
+
+	@Override public int hashCode(){
+		ResourceLocation n = getRegistryName();
+		return n==null ? 0 : n.hashCode();
+	}
+
+	@Override public String toString(){
+		return getUnlocalizedName();
+	}
 
 	public static final class Properties{
 		private final int brighterColor, darkerColor;
@@ -162,7 +183,7 @@ public class Sigil extends ForgeRegistryEntry<Sigil>{
 			return allow(SigilSlot.OFFHAND);
 		}
 		public Properties allowArmor(){
-			return allow(SigilSlot.HEAD, SigilSlot.CHEST, SigilSlot.LEGS, SigilSlot.FEET);
+			return allow(SigilSlot.ARMOR);
 		}
 		public Properties allowCurio(){
 			return allow(SigilSlot.CURIO);

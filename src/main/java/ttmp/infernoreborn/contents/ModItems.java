@@ -156,6 +156,8 @@ public final class ModItems{
 
 	public static final RegistryObject<Item> THANATOS_BELT = REGISTER.register("thanatos_belt", () -> new ItemThanatosBelt(artifacts(Rarity.EPIC)));
 
+	public static final RegistryObject<Item> GLOD_NUGGET = REGISTER.register("glod_nugget", () -> new Item(new Item.Properties()));
+
 	private static RegistryObject<Item> essence(EssenceType type, EssenceSize size){
 		String id;
 		switch(size){

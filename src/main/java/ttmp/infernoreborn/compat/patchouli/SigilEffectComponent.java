@@ -26,7 +26,7 @@ public class SigilEffectComponent extends ActualCustomComponent{
 	}
 
 	@Override public void render(MatrixStack ms, IComponentRenderContext context, float pticks, int mouseX, int mouseY){
-		SigilBookEntry.EffectPage page = page();
+		SigilBookEntry.EffectPage page = page(this.page);
 		if(page==null) return;
 		FontRenderer font = Minecraft.getInstance().font;
 		int y = this.y;
@@ -34,12 +34,19 @@ public class SigilEffectComponent extends ActualCustomComponent{
 			font.draw(ms, text.copy().withStyle(context.getFont()), x, y, 0xFF000000);
 			y += font.lineHeight;
 		}
+		page = page(this.page+1);
+		if(page==null) return;
+		y += font.lineHeight*3;
+		for(ITextComponent text : page.getText()){
+			font.draw(ms, text.copy().withStyle(context.getFont()), x, y, 0xFF000000);
+			y += font.lineHeight;
+		}
 	}
 
-	@Nullable private SigilBookEntry.EffectPage page(){
-		if(sigil==null||page<0) return null;
+	@Nullable private SigilBookEntry.EffectPage page(int index){
+		if(sigil==null||index<0) return null;
 		SigilBookEntry sigilBookEntry = sigil.getSigilBookEntryContent();
-		if(page>=sigilBookEntry.getEffectPages().size()) return null;
-		return sigilBookEntry.getEffectPages().get(page);
+		if(index>=sigilBookEntry.getEffectPages().size()) return null;
+		return sigilBookEntry.getEffectPages().get(index);
 	}
 }

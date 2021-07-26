@@ -28,6 +28,7 @@ import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.event.world.ExplosionEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.LogicalSide;
 import net.minecraftforge.fml.common.Mod;
 import ttmp.infernoreborn.capability.ShieldHolder;
 import ttmp.infernoreborn.capability.SimpleTickingTaskHandler;
@@ -43,7 +44,7 @@ import ttmp.infernoreborn.contents.sigil.holder.ItemSigilHolder;
 import ttmp.infernoreborn.contents.sigil.holder.PlayerSigilHolder;
 import ttmp.infernoreborn.contents.sigil.holder.SigilHolder;
 import ttmp.infernoreborn.util.ArmorSet;
-import ttmp.infernoreborn.util.CannotHurtNonLiving;
+import ttmp.infernoreborn.util.LivingOnly;
 import ttmp.infernoreborn.util.LivingUtils;
 import ttmp.infernoreborn.util.SigilSlot;
 import ttmp.infernoreborn.util.SigilUtils;
@@ -110,29 +111,39 @@ public class CommonEventHandlers{
 			for(OnAbilityEvent<LivingAttackEvent> e : h.onAttackedListeners)
 				e.onEvent(event.getEntityLiving(), h, event);
 		}
+		if(event.isCanceled()) return;
+		Entity directEntity = event.getSource().getDirectEntity();
+		if(directEntity instanceof LivingEntity){
+			LivingEntity livingEntity = (LivingEntity)directEntity;
+			SigilUtils.forEachSigilHolder(livingEntity, (sigilHolder, sigilSlot) -> SigilUtils.onAttack(sigilHolder, sigilSlot, event, livingEntity));
+		}
+		SigilUtils.forEachSigilHolder(event.getEntityLiving(), (sigilHolder, sigilSlot) -> SigilUtils.onAttacked(sigilHolder, sigilSlot, event));
 	}
 
 	@SubscribeEvent
 	public static void onLivingHurt(LivingHurtEvent event){
 		LivingEntity entity = event.getEntityLiving();
 		LivingEntity attacker = event.getSource().getEntity() instanceof LivingEntity ? (LivingEntity)event.getSource().getEntity() : null;
-		float res = (float)LivingUtils.getAttrib(entity, ModAttributes.DAMAGE_RESISTANCE.get());
+		float res;
 		float mod = 0;
 
 		if(event.getSource()==DamageSource.FALL)
-			res += LivingUtils.getAttrib(event.getEntityLiving(), ModAttributes.FALLING_DAMAGE_RESISTANCE.get())-1;
+			res = (float)(LivingUtils.getAttrib(event.getEntityLiving(), ModAttributes.FALLING_DAMAGE_RESISTANCE.get())-1);
 		else if(!event.getSource().isBypassInvul()){
-			if(event.getSource().isMagic()){
+			res = (float)LivingUtils.getAttrib(entity, ModAttributes.DAMAGE_RESISTANCE.get());
+			if(event.getSource().isMagic())
 				res += LivingUtils.getAttrib(event.getEntityLiving(), ModAttributes.MAGIC_DAMAGE_RESISTANCE.get())-1;
-				if(attacker!=null) mod += LivingUtils.getAttrib(attacker, ModAttributes.MAGIC_ATTACK.get());
-			}
-			if(attacker!=null&&event.getSource().getDirectEntity()==attacker){
+			if(attacker!=null&&event.getSource().getDirectEntity()==attacker)
 				res += LivingUtils.getAttrib(event.getEntityLiving(), ModAttributes.MELEE_DAMAGE_RESISTANCE.get())-1;
-			}
-			if(!event.getSource().isMagic()&&event.getSource().isProjectile()){
+			if(!event.getSource().isMagic()&&event.getSource().isProjectile())
 				res += LivingUtils.getAttrib(event.getEntityLiving(), ModAttributes.RANGED_DAMAGE_RESISTANCE.get())-1;
-				if(attacker!=null) mod += LivingUtils.getAttrib(attacker, ModAttributes.RANGED_ATTACK.get());
-			}
+		}else res = 0;
+
+		if(attacker!=null){
+			if(event.getSource().isMagic())
+				mod += LivingUtils.getAttrib(attacker, ModAttributes.MAGIC_ATTACK.get());
+			if(!event.getSource().isMagic()&&event.getSource().isProjectile())
+				mod += LivingUtils.getAttrib(attacker, ModAttributes.RANGED_ATTACK.get());
 		}
 
 		float dmg = event.getAmount()+mod;
@@ -246,7 +257,7 @@ public class CommonEventHandlers{
 	@SubscribeEvent
 	public static void onExplosionDetonate(ExplosionEvent.Detonate event){
 		Explosion explosion = event.getExplosion();
-		if(explosion.getDamageSource() instanceof CannotHurtNonLiving){
+		if(explosion.getDamageSource() instanceof LivingOnly){
 			event.getAffectedEntities().removeIf(entity -> !(entity instanceof LivingEntity));
 		}
 	}
@@ -261,5 +272,12 @@ public class CommonEventHandlers{
 				event.setDamageModifier(event.getDamageModifier()+.5f);
 			}
 		}
+	}
+
+	@SubscribeEvent
+	public static void onPlayerTick(TickEvent.PlayerTickEvent event){
+		if(event.side!=LogicalSide.SERVER) return;
+		SigilUtils.forEachSigilHolder(event.player,
+				(sigilHolder, sigilSlot) -> SigilUtils.onTick(sigilHolder, sigilSlot, event.player));
 	}
 }

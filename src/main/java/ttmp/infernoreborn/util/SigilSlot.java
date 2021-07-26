@@ -27,6 +27,10 @@ public enum SigilSlot{
 	 */
 	OFFHAND,
 	/**
+	 * Generic armor slot, includes all 4 armor pieces
+	 */
+	ARMOR,
+	/**
 	 * Helmet item slot
 	 */
 	HEAD,
@@ -58,6 +62,8 @@ public enum SigilSlot{
 				return isEquipmentSlotEquals(stack, EquipmentSlotType.MAINHAND);
 			case OFFHAND:
 				return isEquipmentSlotEquals(stack, EquipmentSlotType.OFFHAND);
+			case ARMOR:
+				return isEquipmentSlotArmor(stack);
 			case HEAD:
 				return isEquipmentSlotEquals(stack, EquipmentSlotType.HEAD);
 			case LEGS:
@@ -75,6 +81,10 @@ public enum SigilSlot{
 
 	private static boolean isEquipmentSlotEquals(ItemStack stack, EquipmentSlotType equipmentSlotType){
 		return MobEntity.getEquipmentSlotForItem(stack)==equipmentSlotType;
+	}
+
+	private static boolean isEquipmentSlotArmor(ItemStack stack){
+		return MobEntity.getEquipmentSlotForItem(stack).getType()==EquipmentSlotType.Group.ARMOR;
 	}
 
 	public boolean isAvailableWithoutItem(){

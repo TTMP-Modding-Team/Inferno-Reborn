@@ -11,11 +11,6 @@
       "type": "infernoreborn:sigil_effect",
       "sigil": "infernoreborn:runic_shield",
       "page": "0"
-    },
-    {
-      "type": "infernoreborn:sigil_effect",
-      "sigil": "infernoreborn:runic_shield",
-      "page": "1"
     }
   ]
 }

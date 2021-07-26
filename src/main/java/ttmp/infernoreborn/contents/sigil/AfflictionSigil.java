@@ -30,7 +30,7 @@ public class AfflictionSigil extends AttributeSigil{
 	@Override protected void createSigilBookEntryContent(SigilPageBuilder builder){
 		builder.effectsFor(SigilSlot.MAINHAND, SigilSlot.BODY)
 				.attribute(Attributes.ATTACK_DAMAGE, 3, Operation.ADDITION);
-		builder.effectsForArmor(SigilSlot.CURIO)
+		builder.effectsFor(SigilSlot.ARMOR, SigilSlot.CURIO)
 				.attribute(Attributes.ATTACK_DAMAGE, 1, Operation.ADDITION);
 	}
 }

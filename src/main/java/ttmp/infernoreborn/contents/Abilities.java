@@ -21,9 +21,7 @@ import net.minecraft.potion.PotionUtils;
 import net.minecraft.potion.Potions;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.EntityDamageSource;
-import net.minecraft.util.IndirectEntityDamageSource;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.Explosion;
@@ -50,7 +48,7 @@ import ttmp.infernoreborn.contents.entity.wind.EffectWindEntity;
 import ttmp.infernoreborn.network.ModNet;
 import ttmp.infernoreborn.network.ParticleMsg;
 import ttmp.infernoreborn.util.EssenceType;
-import ttmp.infernoreborn.util.LivingOnlyIndirectEntityDamageSource;
+import ttmp.infernoreborn.util.LivingOnlyEntityDamageSource;
 import ttmp.infernoreborn.util.LivingUtils;
 
 import java.util.ArrayList;
@@ -543,20 +541,23 @@ public final class Abilities{
 			new Ability(new Ability.Properties(0xE3AADD, 0xE3AADD)
 					.onUpdate((entity, holder) -> {
 						LivingEntity target = LivingUtils.getTarget(entity);
-						if(target!=null&&target.isAlive()&&target.hasEffect(ModEffects.KILLER_QUEEN.get())){
-							int c = target.getActiveEffectsMap().get(ModEffects.KILLER_QUEEN.get()).getAmplifier()+1;
-							double distance = target.distanceTo(entity);
-							if(distance>6&&(distance>15||c>=target.getHealth())){
-								entity.hurt(new LivingOnlyIndirectEntityDamageSource(MODID+".killer_queen", null, entity).bypassArmor().bypassMagic(), c);
-								entity.level.explode(entity, new LivingOnlyIndirectEntityDamageSource("explosion.player", null, entity).setExplosion(), null, target.getX(), target.getY(), target.getZ(), 1+c/2f, false, Explosion.Mode.NONE);
-							}
+						if(target==null||!target.isAlive()) return;
+						EffectInstance effect = target.getEffect(ModEffects.KILLER_QUEEN.get());
+						if(effect==null) return;
+						int c = effect.getAmplifier()+1;
+						double distance = target.distanceTo(entity);
+						if(distance>6&&(distance>15||c>=target.getHealth())){
+							entity.hurt(LivingUtils.killerQueenDamage(entity), c);
+							entity.level.explode(entity, new LivingOnlyEntityDamageSource("explosion.player", null, entity).setExplosion(),
+									null, target.getX(), target.getY(), target.getZ(), 1+c/2f, false, Explosion.Mode.NONE);
 						}
 					}).onHit((entity, holder, event) -> {
 						Entity directEntity = event.getSource().getDirectEntity();
 						if(entity==directEntity){
-							event.getEntityLiving().addEffect(new EffectInstance(ModEffects.KILLER_QUEEN.get(), 600, 1));
-						}else if(directEntity!=null){
-							entity.level.explode(entity, new LivingOnlyIndirectEntityDamageSource("explosion.player", null, entity).setExplosion(), null, directEntity.getX(), directEntity.getY(), directEntity.getZ(), 1.5f, false, Explosion.Mode.NONE);
+							LivingUtils.addStackEffect(event.getEntityLiving(), ModEffects.KILLER_QUEEN.get(), 600, 0, 1, 127);
+						}else if(directEntity!=null&&event.getSource().isProjectile()){
+							entity.level.explode(entity, new LivingOnlyEntityDamageSource("explosion.player", directEntity, entity).setExplosion(),
+									null, directEntity.getX(), directEntity.getY(), directEntity.getZ(), 1.5f, false, Explosion.Mode.NONE);
 							directEntity.kill();
 						}
 					}).onAttacked((entity, holder, event) -> {
@@ -574,31 +575,26 @@ public final class Abilities{
 			new Ability(new Ability.Properties(0xC0E4FF, 0xC0E4FF)));
 	public static final RegistryObject<Ability> BLACK_HOLE = REGISTER.register("black_hole", () ->
 			new Ability(new Ability.Properties(0x191919, 0x191919)));
-	public static final RegistryObject<Ability> HAND_OF_MIDAS = REGISTER.register("hand_of_midas", () ->
+	public static final RegistryObject<Ability> TOUCH_OF_MIDAS = REGISTER.register("touch_of_midas", () ->
 			new Ability(new Ability.Properties(0xFDF55F, 0xDD9515)
-					.addTargetedSkill(10, 600, (entity, holder, target) -> {
-								if(target.hurt(new LivingOnlyIndirectEntityDamageSource(MODID+".hand_of_midas", target, entity).bypassArmor().bypassMagic(), target.getHealth())){
-									EffectInstance effect = target.getEffect(ModEffects.HAND_OF_MIDAS.get());
-									if(effect!=null){
-										for(int i = 0; i<=effect.getAmplifier()+1; i++){
-											ItemEntity goldEntity = new ItemEntity(target.level, target.getRandomX(1), target.getRandomY(), target.getRandomZ(1), new ItemStack(Items.GOLD_NUGGET));
-											target.level.addFreshEntity(goldEntity);
-										}
-										return true;
-									}
-								}
-								return false;
-							},
-							(entity, holder, target) -> {
-								EffectInstance effect = target.getEffect(ModEffects.HAND_OF_MIDAS.get());
-								if(effect!=null)
-									return target.getHealth()<=effect.getAmplifier()+1;
-								return false;
-							})
 					.onHit((entity, holder, event) -> {
-						if(entity==event.getSource().getDirectEntity())
-							LivingUtils.addStackEffect(event.getEntityLiving(), ModEffects.HAND_OF_MIDAS.get(), 100, 1, 1, 10);
+						if(entity!=event.getSource().getDirectEntity()) return;
+						LivingEntity target = event.getEntityLiving();
+						LivingUtils.addStackEffect(target, ModEffects.HAND_OF_MIDAS.get(), 100, 0, 1, 127);
+						EffectInstance effect = target.getEffect(ModEffects.HAND_OF_MIDAS.get());
+						if(effect!=null&&target.getHealth()<=effect.getAmplifier()+1){
+							if(target.hurt(LivingUtils.midasDamage(entity), Float.MAX_VALUE)){
+								for(int i = 0; i<=effect.getAmplifier(); i++){
+									target.level.addFreshEntity(new ItemEntity(target.level,
+											target.getRandomX(1),
+											target.getRandomY(),
+											target.getRandomZ(1),
+											new ItemStack(ModItems.GLOD_NUGGET.get())));
+								}
+							}
+						}
 					})));
+
 	@SubscribeEvent
 	public static void newRegistry(RegistryEvent.NewRegistry e){
 		registry = (ForgeRegistry<Ability>)new RegistryBuilder<Ability>()

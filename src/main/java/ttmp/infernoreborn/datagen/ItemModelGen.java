@@ -68,6 +68,8 @@ public class ItemModelGen extends ItemModelProvider{
 		simpleItem(ModItems.DAMASCUS_STEEL_INGOT.get());
 
 		simpleItem(ModItems.SIGIL.get());
+
+		item(ModItems.GLOD_NUGGET.getId().getPath(), new ResourceLocation("item/gold_nugget"));
 	}
 
 	protected ItemModelBuilder simpleItem(Item item){

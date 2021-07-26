@@ -17,7 +17,7 @@ import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.Explosion;
 import net.minecraft.world.World;
 import ttmp.infernoreborn.capability.TickingTaskHandler;
-import ttmp.infernoreborn.util.LivingOnlyIndirectEntityDamageSource;
+import ttmp.infernoreborn.util.LivingOnlyEntityDamageSource;
 
 import javax.annotation.Nullable;
 
@@ -105,9 +105,8 @@ public class ExplosiveSwordItem extends SwordItem{
 	}
 
 	protected static void createExplosion(World world, LivingEntity entity, Vector3d angle, double distance, float power){
-		//noinspection ConstantConditions why is mojang so stupid
 		world.explode(entity,
-				new LivingOnlyIndirectEntityDamageSource("explosion.player", null, entity).setExplosion(),
+				new LivingOnlyEntityDamageSource("explosion.player", null, entity).setExplosion(),
 				null,
 				entity.getX()+angle.x*distance,
 				entity.getEyeY()+angle.y*distance,

@@ -104,7 +104,7 @@ public class BookDataProvider implements IDataProvider{
 						for(int i = 0; i<bookPageContent.getDescriptionPages(); i++){
 							bookEntry.page(new TextPage(i18nText("text", "sigil", sigil.getRegistryName(), String.valueOf(i))));
 						}
-						for(int i = 0; i<bookPageContent.getEffectPages().size(); i++){
+						for(int i = 0; i<bookPageContent.getEffectPages().size(); i+=2){
 							bookEntry.page(new TemplatePage(sigilEffect)
 									.param("sigil", sigil.getRegistryName())
 									.param("page", i));

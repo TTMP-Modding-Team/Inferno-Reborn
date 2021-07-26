@@ -20,7 +20,7 @@ public class MiniHeartSigil extends AttributeSigil{
 	@Override protected void createSigilBookEntryContent(SigilPageBuilder builder){
 		builder.effectsFor(SigilSlot.BODY)
 				.attribute(Attributes.MAX_HEALTH, 10, Operation.ADDITION);
-		builder.effectsForArmor(SigilSlot.CURIO)
+		builder.effectsFor(SigilSlot.ARMOR, SigilSlot.CURIO)
 				.attribute(Attributes.MAX_HEALTH, 2, Operation.ADDITION);
 	}
 }

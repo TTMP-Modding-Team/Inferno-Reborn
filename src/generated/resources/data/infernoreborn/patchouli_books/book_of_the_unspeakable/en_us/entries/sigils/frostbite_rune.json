@@ -1,0 +1,11 @@
+{
+  "name": "sigil.infernoreborn.frostbite_rune",
+  "category": "infernoreborn:sigils",
+  "icon": "infernoreborn:sigil{Sigils:\"infernoreborn:frostbite_rune\"}",
+  "pages": [
+    {
+      "type": "text",
+      "text": "text.infernoreborn.sigil.frostbite_rune.0"
+    }
+  ]
+}

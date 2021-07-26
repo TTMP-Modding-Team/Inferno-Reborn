@@ -72,6 +72,7 @@
 	"item.infernoreborn.damascus_steel_ingot": "Damascus Steel Ingot",
 	"item.infernoreborn.damascus_steel_nugget": "Damascus Steel Nugget",
 	"item.infernoreborn.sigil": "Empty Sigil",
+	"item.infernoreborn.glod_nugget": "Glod Nugget",
 
 	"block.infernoreborn.damascus_steel_block": "Damascus Steel Block",
 	"block.infernoreborn.sigil_engraving_table_3x3": "Sigil Engraving Table 3x3",
@@ -85,6 +86,12 @@
 	"tooltip.infernoreborn.expand.ctrl": "Ctrl",
 	"tooltip.infernoreborn.expand.alt": "Alt",
 	"tooltip.infernoreborn.inferno_spark.n_abilities": "%s abilities",
+	"tooltip.infernoreborn.sigil_engraved": "1 Sigil Engraved",
+	"tooltip.infernoreborn.sigil_engraved.s": "%s Sigils Engraved",
+	"tooltip.infernoreborn.sigil_engraved.points": " (%s/%s)",
+	"tooltip.infernoreborn.sigil_engraved.collapsed": " [§6Alt§r to expand]",
+	"tooltip.infernoreborn.sigil_engraved.entry": "  * %s (%s)",
+	"tooltip.infernoreborn.sigil.points": "Required Slots: %s",
 
 	"ability.infernoreborn.heart": "Heart",
 	"ability.infernoreborn.heart2": "Heart+",
@@ -162,6 +169,11 @@
 	"ability.infernoreborn.leave_me_alone": "Leave Me Alone",
 	"ability.infernoreborn.black_hole": "Black Hole",
 
+	"death.attack.infernoreborn.frostbite": "%1$s froze to death",
+	"death.attack.infernoreborn.frostbite.player": "%1$s was froze to death whilst fighting %2$s",
+	"death.attack.infernoreborn.killerQueen": "%1$s became a bomb by %2$s",
+	"death.attack.infernoreborn.midas": "%1$s was turned into gold by %2$s",
+
 	"sigil.infernoreborn.mark_of_affliction": "Mark of Affliction",
 	"sigil.infernoreborn.mark_of_endurance": "Mark of Endurance",
 	"sigil.infernoreborn.mini_heart": "Mini Heart",
@@ -207,7 +219,7 @@
 	"infernoreborn.shield_regeneration": "Shield Regeneration",
 
 	"infernoreborn.damage_resistance": "Damage Resistance",
-	"infernoreborn.falling_damage_resistance": "Falling Damage Resistance",
+	"infernoreborn.falling_damage_resistance": "Fall Damage Resistance",
 	"infernoreborn.melee_damage_resistance": "Melee Damage Resistance",
 	"infernoreborn.ranged_damage_resistance": "Ranged Damage Resistance",
 	"infernoreborn.magic_damage_resistance": "Magic Damage Resistance",

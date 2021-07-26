@@ -19,7 +19,7 @@ public class FeatherFallSigil extends AttributeSigil{
 	@Override protected void createSigilBookEntryContent(SigilPageBuilder builder){
 		builder.effectsFor(SigilSlot.BODY)
 				.attribute(ModAttributes.FALLING_DAMAGE_RESISTANCE.get(), 1, AttributeModifier.Operation.MULTIPLY_BASE);
-		builder.effectsForArmor(SigilSlot.CURIO)
+		builder.effectsFor(SigilSlot.ARMOR, SigilSlot.CURIO)
 				.attribute(ModAttributes.FALLING_DAMAGE_RESISTANCE.get(), .25, AttributeModifier.Operation.MULTIPLY_BASE);
 	}
 }

@@ -6,7 +6,6 @@ import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.entity.ai.attributes.AttributeModifier.Operation;
 import net.minecraft.entity.ai.attributes.Attributes;
 import ttmp.infernoreborn.compat.patchouli.sigil.SigilPageBuilder;
-import ttmp.infernoreborn.contents.ModAttributes;
 import ttmp.infernoreborn.util.SigilSlot;
 
 public class TravelerSigil extends AttributeSigil{
@@ -21,7 +20,7 @@ public class TravelerSigil extends AttributeSigil{
 	@Override protected void createSigilBookEntryContent(SigilPageBuilder builder){
 		builder.effectsFor(SigilSlot.BODY)
 				.attribute(Attributes.MOVEMENT_SPEED, .1, Operation.MULTIPLY_BASE);
-		builder.effectsForArmor(SigilSlot.CURIO)
+		builder.effectsFor(SigilSlot.ARMOR, SigilSlot.CURIO)
 				.attribute(Attributes.MOVEMENT_SPEED, .05, Operation.MULTIPLY_BASE);
 	}
 }

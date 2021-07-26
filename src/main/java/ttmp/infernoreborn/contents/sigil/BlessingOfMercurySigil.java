@@ -35,7 +35,7 @@ public class BlessingOfMercurySigil extends AttributeSigil{
 				.attribute(Attributes.ATTACK_SPEED, .25, AttributeModifier.Operation.MULTIPLY_BASE);
 		builder.effectsFor(SigilSlot.MAINHAND)
 				.attribute(Attributes.ATTACK_SPEED, .5, AttributeModifier.Operation.MULTIPLY_BASE);
-		builder.effectsForArmor(SigilSlot.CURIO)
+		builder.effectsFor(SigilSlot.ARMOR, SigilSlot.CURIO)
 				.attribute(Attributes.MOVEMENT_SPEED, .1, AttributeModifier.Operation.MULTIPLY_BASE)
 				.attribute(ModAttributes.FALLING_DAMAGE_RESISTANCE.get(), .5, AttributeModifier.Operation.MULTIPLY_BASE);
 	}

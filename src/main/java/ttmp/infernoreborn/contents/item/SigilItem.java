@@ -1,5 +1,6 @@
 package ttmp.infernoreborn.contents.item;
 
+import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
@@ -7,12 +8,17 @@ import net.minecraft.item.Rarity;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TextFormatting;
+import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraft.world.World;
 import net.minecraftforge.common.util.Constants;
 import ttmp.infernoreborn.contents.ModItems;
 import ttmp.infernoreborn.contents.Sigils;
 import ttmp.infernoreborn.contents.sigil.Sigil;
 
 import javax.annotation.Nullable;
+import java.util.List;
 import java.util.Objects;
 
 public class SigilItem extends Item{
@@ -37,6 +43,12 @@ public class SigilItem extends Item{
 	@Override public Rarity getRarity(ItemStack stack){
 		Sigil sigil = getSigil(stack);
 		return sigil!=null ? sigil.getRarity() : super.getRarity(stack);
+	}
+
+	@Override public void appendHoverText(ItemStack stack, @Nullable World level, List<ITextComponent> text, ITooltipFlag flags){
+		Sigil sigil = getSigil(stack);
+		if(sigil==null) return;
+		text.add(new TranslationTextComponent("tooltip.infernoreborn.sigil.points", sigil.getPoint()).withStyle(TextFormatting.GOLD));
 	}
 
 	@Nullable public static Sigil getSigil(ItemStack stack){
