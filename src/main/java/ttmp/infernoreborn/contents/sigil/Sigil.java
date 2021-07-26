@@ -3,27 +3,37 @@ package ttmp.infernoreborn.contents.sigil;
 import com.google.common.collect.ListMultimap;
 import net.minecraft.entity.ai.attributes.Attribute;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
-import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.Rarity;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.registries.ForgeRegistryEntry;
+import ttmp.infernoreborn.compat.patchouli.sigil.SigilBookEntry;
+import ttmp.infernoreborn.contents.sigil.context.ItemContext;
 import ttmp.infernoreborn.contents.sigil.context.SigilEventContext;
+import ttmp.infernoreborn.compat.patchouli.sigil.SigilPageBuilder;
+import ttmp.infernoreborn.util.SigilSlot;
 
 import javax.annotation.Nullable;
+import java.util.Collections;
+import java.util.EnumSet;
 import java.util.Objects;
+import java.util.Set;
 
 public class Sigil extends ForgeRegistryEntry<Sigil>{
+	private static final Set<SigilSlot> ANY_SLOTS = Collections.unmodifiableSet(EnumSet.of(SigilSlot.ANY));
+
 	private final int brighterColor, darkerColor;
 	private final int point;
-
+	private final Set<SigilSlot> applicableSlots;
 	private final Rarity rarity;
 
 	public Sigil(Properties properties){
 		this.brighterColor = properties.brighterColor;
 		this.darkerColor = properties.darkerColor;
 		this.point = properties.point;
+		this.applicableSlots = properties.applicableSlots.isEmpty()||properties.applicableSlots.contains(SigilSlot.ANY) ?
+				ANY_SLOTS : Collections.unmodifiableSet(properties.applicableSlots);
 		this.rarity = properties.rarity;
 	}
 
@@ -38,6 +48,9 @@ public class Sigil extends ForgeRegistryEntry<Sigil>{
 		return point;
 	}
 
+	public Set<SigilSlot> getApplicableSlots(){
+		return applicableSlots;
+	}
 	public Rarity getRarity(){
 		return rarity;
 	}
@@ -52,10 +65,16 @@ public class Sigil extends ForgeRegistryEntry<Sigil>{
 	}
 
 	public boolean canBeAttachedTo(SigilEventContext context){
-		return true;
+		ItemContext ic = context.getAsItemContext();
+		if(ic==null)
+			return getApplicableSlots().contains(SigilSlot.ANY)||getApplicableSlots().contains(SigilSlot.BODY);
+		for(SigilSlot s : getApplicableSlots())
+			if(s.isAvailableForItem(ic.stack()))
+				return true;
+		return false;
 	}
 
-	public void applyAttributes(SigilEventContext ctx, @Nullable EquipmentSlotType equipmentSlotType, ListMultimap<Attribute, AttributeModifier> attributes){}
+	public void applyAttributes(SigilEventContext ctx, SigilSlot slot, ListMultimap<Attribute, AttributeModifier> attributes){}
 
 	@Override public boolean equals(Object obj){
 		if(obj==this) return true;
@@ -89,10 +108,28 @@ public class Sigil extends ForgeRegistryEntry<Sigil>{
 		return new ResourceLocation(id.getNamespace(), "textures/sigil/"+id.getPath()+".png");
 	}
 
+	@Nullable private SigilBookEntry sigilBookEntry;
+
+	public SigilBookEntry getSigilBookEntryContent(){
+		if(sigilBookEntry==null){
+			synchronized(this){
+				if(sigilBookEntry==null){
+					SigilPageBuilder b = new SigilPageBuilder();
+					createSigilBookEntryContent(b);
+					this.sigilBookEntry = b.build();
+				}
+			}
+		}
+		return sigilBookEntry;
+	}
+
+	protected void createSigilBookEntryContent(SigilPageBuilder builder){}
+
 	public static final class Properties{
 		private final int brighterColor, darkerColor;
 		private final int point;
 
+		private final EnumSet<SigilSlot> applicableSlots = EnumSet.noneOf(SigilSlot.class);
 		private Rarity rarity = Rarity.UNCOMMON;
 
 		public Properties(int brighterColor, int darkerColor, int point){
@@ -105,6 +142,30 @@ public class Sigil extends ForgeRegistryEntry<Sigil>{
 		public Properties rarity(Rarity rarity){
 			this.rarity = Objects.requireNonNull(rarity);
 			return this;
+		}
+
+		public Properties allow(SigilSlot... slots){
+			Collections.addAll(applicableSlots, slots);
+			return this;
+		}
+
+		public Properties allowBody(){
+			return allow(SigilSlot.BODY);
+		}
+		public Properties allowAnyItem(){
+			return allow(SigilSlot.ITEM);
+		}
+		public Properties allowMainhand(){
+			return allow(SigilSlot.MAINHAND);
+		}
+		public Properties allowOffhand(){
+			return allow(SigilSlot.OFFHAND);
+		}
+		public Properties allowArmor(){
+			return allow(SigilSlot.HEAD, SigilSlot.CHEST, SigilSlot.LEGS, SigilSlot.FEET);
+		}
+		public Properties allowCurio(){
+			return allow(SigilSlot.CURIO);
 		}
 	}
 }

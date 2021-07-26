@@ -24,8 +24,6 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.world.Explosion;
-import net.minecraft.world.GameRules;
 import net.minecraft.world.World;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
@@ -461,8 +459,7 @@ public final class Abilities{
 					.addTargetedSkill(5, 500, (entity, holder, target) -> {
 						if(entity.doHurtTarget(target)){
 							entity.teleportTo(target.getX()-0.5, target.getY()+target.getEyeHeight(), target.getZ()-0.5);
-							if(!target.isAlive()) return false;
-							return true;
+							return target.isAlive();
 						}
 						return false;
 					}, (entity, holder, target) -> {

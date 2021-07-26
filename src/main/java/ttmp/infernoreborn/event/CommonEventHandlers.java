@@ -45,6 +45,7 @@ import ttmp.infernoreborn.contents.sigil.holder.SigilHolder;
 import ttmp.infernoreborn.util.ArmorSet;
 import ttmp.infernoreborn.util.CannotHurtNonLiving;
 import ttmp.infernoreborn.util.LivingUtils;
+import ttmp.infernoreborn.util.SigilSlot;
 import ttmp.infernoreborn.util.SigilUtils;
 
 import javax.annotation.Nullable;
@@ -230,7 +231,7 @@ public class CommonEventHandlers{
 		SigilHolder h = SigilHolder.of(event.getItemStack());
 		if(h==null) return;
 		ListMultimap<Attribute, AttributeModifier> m = ArrayListMultimap.create(event.getModifiers());
-		SigilUtils.applyAttributes(h, event.getSlotType(), m);
+		SigilUtils.applyAttributes(h, SigilSlot.of(event.getSlotType()), m);
 		event.clearModifiers();
 		m.forEach(event::addModifier);
 	}

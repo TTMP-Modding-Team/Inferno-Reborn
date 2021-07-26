@@ -6,6 +6,10 @@
     {
       "type": "text",
       "text": "text.infernoreborn.ability.killer_queen.0"
+    },
+    {
+      "type": "infernoreborn:ability_attribute",
+      "ability": "infernoreborn:killer_queen"
     }
   ]
 }

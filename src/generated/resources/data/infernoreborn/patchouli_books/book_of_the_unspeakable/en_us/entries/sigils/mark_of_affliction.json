@@ -6,6 +6,16 @@
     {
       "type": "text",
       "text": "text.infernoreborn.sigil.mark_of_affliction.0"
+    },
+    {
+      "type": "infernoreborn:sigil_effect",
+      "sigil": "infernoreborn:mark_of_affliction",
+      "page": "0"
+    },
+    {
+      "type": "infernoreborn:sigil_effect",
+      "sigil": "infernoreborn:mark_of_affliction",
+      "page": "1"
     }
   ]
 }

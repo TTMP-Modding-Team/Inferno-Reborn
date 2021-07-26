@@ -1,0 +1,21 @@
+{
+  "name": "sigil.infernoreborn.feather_fall_sigil",
+  "category": "infernoreborn:sigils",
+  "icon": "infernoreborn:sigil{Sigils:\"infernoreborn:feather_fall_sigil\"}",
+  "pages": [
+    {
+      "type": "text",
+      "text": "text.infernoreborn.sigil.feather_fall_sigil.0"
+    },
+    {
+      "type": "infernoreborn:sigil_effect",
+      "sigil": "infernoreborn:feather_fall_sigil",
+      "page": "0"
+    },
+    {
+      "type": "infernoreborn:sigil_effect",
+      "sigil": "infernoreborn:feather_fall_sigil",
+      "page": "1"
+    }
+  ]
+}

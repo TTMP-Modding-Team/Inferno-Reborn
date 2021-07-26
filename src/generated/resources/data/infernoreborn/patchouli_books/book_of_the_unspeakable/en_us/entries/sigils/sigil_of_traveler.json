@@ -6,6 +6,16 @@
     {
       "type": "text",
       "text": "text.infernoreborn.sigil.sigil_of_traveler.0"
+    },
+    {
+      "type": "infernoreborn:sigil_effect",
+      "sigil": "infernoreborn:sigil_of_traveler",
+      "page": "0"
+    },
+    {
+      "type": "infernoreborn:sigil_effect",
+      "sigil": "infernoreborn:sigil_of_traveler",
+      "page": "1"
     }
   ]
 }

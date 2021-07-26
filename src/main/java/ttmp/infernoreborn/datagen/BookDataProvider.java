@@ -11,6 +11,8 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import ttmp.infernoreborn.InfernoReborn;
 import ttmp.infernoreborn.compat.patchouli.AbilityAttributeComponent;
+import ttmp.infernoreborn.compat.patchouli.SigilEffectComponent;
+import ttmp.infernoreborn.compat.patchouli.sigil.SigilBookEntry;
 import ttmp.infernoreborn.contents.Abilities;
 import ttmp.infernoreborn.contents.ModItems;
 import ttmp.infernoreborn.contents.Sigils;
@@ -69,11 +71,13 @@ public class BookDataProvider implements IDataProvider{
 						new Stack(ModItems.SIGIL.get()))
 						.sortnum(4))
 				.template("ability_attribute", new AbilityAttributeComponent())
+				.template("sigil_effect", new SigilEffectComponent())
 				.makeEntryAndSave(bookEntryConsumer -> {
 					final ResourceLocation abilities = new ResourceLocation(MODID, "abilities");
 					final ResourceLocation sigils = new ResourceLocation(MODID, "sigils");
 
 					final ResourceLocation abilityAttribute = new ResourceLocation(MODID, "ability_attribute");
+					final ResourceLocation sigilEffect = new ResourceLocation(MODID, "sigil_effect");
 
 					for(Ability ability : Abilities.getRegistry()){
 						ItemStack stack = new ItemStack(ModItems.INFERNO_SPARK.get());
@@ -90,13 +94,22 @@ public class BookDataProvider implements IDataProvider{
 					}
 
 					for(Sigil sigil : Sigils.getRegistry()){
+						SigilBookEntry bookPageContent = sigil.getSigilBookEntryContent();
 						ItemStack stack = SigilItem.createSigilItem(sigil);
-						bookEntryConsumer.accept(new BookEntry(
+						BookEntry bookEntry = new BookEntry(
 								Objects.requireNonNull(sigil.getRegistryName()).getPath(),
 								sigil.getUnlocalizedName(),
 								sigils,
-								new Stack(stack))
-								.page(new TextPage(i18nText("text", "sigil", sigil.getRegistryName(), "0"))));
+								new Stack(stack));
+						for(int i = 0; i<bookPageContent.getDescriptionPages(); i++){
+							bookEntry.page(new TextPage(i18nText("text", "sigil", sigil.getRegistryName(), String.valueOf(i))));
+						}
+						for(int i = 0; i<bookPageContent.getEffectPages().size(); i++){
+							bookEntry.page(new TemplatePage(sigilEffect)
+									.param("sigil", sigil.getRegistryName())
+									.param("page", i));
+						}
+						bookEntryConsumer.accept(bookEntry);
 					}
 				}, new BookFileGenerator(){
 					@Override public void saveBook(ResourceLocation bookId, JsonObject json){

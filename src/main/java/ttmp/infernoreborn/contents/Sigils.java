@@ -10,7 +10,10 @@ import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistry;
 import net.minecraftforge.registries.RegistryBuilder;
 import ttmp.infernoreborn.contents.sigil.AfflictionSigil;
+import ttmp.infernoreborn.contents.sigil.BlessingOfMercurySigil;
 import ttmp.infernoreborn.contents.sigil.EnduranceSigil;
+import ttmp.infernoreborn.contents.sigil.FeatherFallSigil;
+import ttmp.infernoreborn.contents.sigil.GoatEyeSigil;
 import ttmp.infernoreborn.contents.sigil.MiniHeartSigil;
 import ttmp.infernoreborn.contents.sigil.RunicShieldSigil;
 import ttmp.infernoreborn.contents.sigil.Sigil;
@@ -30,13 +33,23 @@ public final class Sigils{
 
 	public static final DeferredRegister<Sigil> REGISTER = DeferredRegister.create(Sigil.class, MODID);
 
-	public static final RegistryObject<Sigil> MARK_OF_AFFLICTION = REGISTER.register("mark_of_affliction", () -> new AfflictionSigil(new Sigil.Properties(0xff431d, 0x4f0e01, 3)));
-	public static final RegistryObject<Sigil> MARK_OF_ENDURANCE = REGISTER.register("mark_of_endurance", () -> new EnduranceSigil(new Sigil.Properties(0xffffff, 0x3e3e3e, 4)));
-	public static final RegistryObject<Sigil> MINI_HEART = REGISTER.register("mini_heart", () -> new MiniHeartSigil(new Sigil.Properties(0xff0202, 0x560101, 3)));
-	public static final RegistryObject<Sigil> RUNIC_SHIELD = REGISTER.register("runic_shield", () -> new RunicShieldSigil(new Sigil.Properties(0xaf02ff, 0x28003b, 5)));
-	public static final RegistryObject<Sigil> SIGIL_OF_TRAVELER = REGISTER.register("sigil_of_traveler", () -> new TravelerSigil(new Sigil.Properties(0xe7f4f4, 0x3f5655, 3)));
+	public static final RegistryObject<Sigil> MARK_OF_AFFLICTION = REGISTER.register("mark_of_affliction", () -> new AfflictionSigil(
+			new Sigil.Properties(0xff431d, 0x4f0e01, 3).allowBody().allowMainhand().allowArmor().allowCurio()));
+	public static final RegistryObject<Sigil> MARK_OF_ENDURANCE = REGISTER.register("mark_of_endurance", () -> new EnduranceSigil(
+			new Sigil.Properties(0xffffff, 0x3e3e3e, 4).allowBody().allowArmor().allowCurio()));
+	public static final RegistryObject<Sigil> MINI_HEART = REGISTER.register("mini_heart", () -> new MiniHeartSigil(
+			new Sigil.Properties(0xff0202, 0x560101, 3).allowBody().allowArmor().allowCurio()));
+	public static final RegistryObject<Sigil> RUNIC_SHIELD = REGISTER.register("runic_shield", () -> new RunicShieldSigil(
+			new Sigil.Properties(0xaf02ff, 0x28003b, 5).allowBody().allowArmor().allowCurio()));
+	public static final RegistryObject<Sigil> SIGIL_OF_TRAVELER = REGISTER.register("sigil_of_traveler", () -> new TravelerSigil(
+			new Sigil.Properties(0xe7f4f4, 0x3f5655, 3).allowBody().allowArmor().allowCurio()));
 
-	public static final RegistryObject<Sigil> GOAT_EYES = REGISTER.register("goat_eyes", () -> new TravelerSigil(new Sigil.Properties(0xFFFFFF, 0xFFFFFF, 1))); // TODO
+	public static final RegistryObject<Sigil> GOAT_EYES = REGISTER.register("goat_eyes", () -> new GoatEyeSigil(
+			new Sigil.Properties(0xFFFFFF, 0xFFFFFF, 1).allowBody()));
+	public static final RegistryObject<Sigil> FEATHER_FALL_SIGIL = REGISTER.register("feather_fall_sigil", () -> new FeatherFallSigil(
+			new Sigil.Properties(0xFFFFFF, 0xFFFFFF, 3).allowBody()));
+	public static final RegistryObject<Sigil> BLESSING_OF_MERCURY = REGISTER.register("blessing_of_mercury", () -> new BlessingOfMercurySigil(
+			new Sigil.Properties(0xFFFFFF, 0xFFFFFF, 5).allowBody()));
 
 	@SubscribeEvent
 	public static void newRegistry(RegistryEvent.NewRegistry e){

@@ -4,32 +4,23 @@ import com.google.common.collect.ListMultimap;
 import net.minecraft.entity.ai.attributes.Attribute;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.entity.ai.attributes.AttributeModifier.Operation;
-import net.minecraft.inventory.EquipmentSlotType;
+import ttmp.infernoreborn.compat.patchouli.sigil.SigilPageBuilder;
 import ttmp.infernoreborn.contents.ModAttributes;
-import ttmp.infernoreborn.contents.sigil.context.SigilEventContext;
-
-import javax.annotation.Nullable;
+import ttmp.infernoreborn.util.SigilSlot;
 
 public class EnduranceSigil extends AttributeSigil{
 	public EnduranceSigil(Properties properties){
 		super(properties);
 	}
 
-	@Override protected boolean canBeAttachedTo(SigilEventContext ctx, @Nullable EquipmentSlotType equipmentSlotType){
-		return equipmentSlotType==null||equipmentSlotType.getType()==EquipmentSlotType.Group.ARMOR;
+	@Override protected void applyAttributes(SigilSlot slot, ListMultimap<Attribute, AttributeModifier> attributes){
+		addToModifier(attributes, ModAttributes.DAMAGE_RESISTANCE.get(), slot==SigilSlot.BODY ? .1 : .05, Operation.MULTIPLY_BASE);
 	}
 
-	@Override protected void applyAttributes(Mode mode, ListMultimap<Attribute, AttributeModifier> attributes){
-		switch(mode){
-			case BODY:
-				addToModifier(attributes, ModAttributes.DAMAGE_RESISTANCE.get(), .1, Operation.MULTIPLY_BASE);
-				break;
-			case HEAD:
-			case CHEST:
-			case LEGS:
-			case FEET:
-				addToModifier(attributes, ModAttributes.DAMAGE_RESISTANCE.get(), .05, Operation.MULTIPLY_BASE);
-				break;
-		}
+	@Override protected void createSigilBookEntryContent(SigilPageBuilder builder){
+		builder.effectsFor(SigilSlot.BODY)
+				.attribute(ModAttributes.DAMAGE_RESISTANCE.get(), .1, Operation.MULTIPLY_BASE);
+		builder.effectsForArmor(SigilSlot.CURIO)
+				.attribute(ModAttributes.DAMAGE_RESISTANCE.get(), .05, Operation.MULTIPLY_BASE);
 	}
 }

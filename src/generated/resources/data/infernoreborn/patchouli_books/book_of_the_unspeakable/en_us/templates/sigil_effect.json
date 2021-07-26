@@ -1,0 +1,8 @@
+{
+  "components": [
+    {
+      "type": "custom",
+      "class": "ttmp.infernoreborn.compat.patchouli.SigilEffectComponent"
+    }
+  ]
+}

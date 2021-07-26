@@ -167,6 +167,9 @@
 	"sigil.infernoreborn.mini_heart": "Mini Heart",
 	"sigil.infernoreborn.runic_shield": "Runic Shield",
 	"sigil.infernoreborn.sigil_of_traveler": "Sigil of Traveler",
+	"sigil.infernoreborn.goat_eyes": "Goat Eyes",
+	"sigil.infernoreborn.feather_fall_sigil": "Featherfall Sigil",
+	"sigil.infernoreborn.blessing_of_mercury": "Blessing of Mercury",
 
 	"text.infernoreborn.book_of_the_unspeakable.landingText": "The Successor of MobCapabilities",
 	"text.infernoreborn.book_of_the_unspeakable.journals": "Journals",
@@ -179,6 +182,19 @@
 	"text.infernoreborn.book_of_the_unspeakable.sigils.desc": "wa sigils",
 
 	"text.infernoreborn.ability.attribute": "When Applied:",
+	"text.infernoreborn.applied.any": "When Applied:",
+	"text.infernoreborn.applied.body": "On Body:",
+	"text.infernoreborn.applied.item": "On Item:",
+	"text.infernoreborn.applied.mainhand": "On Weapons And Tools:",
+	"text.infernoreborn.applied.offhand": "On Shield:",
+	"text.infernoreborn.applied.armor": "On Armor:",
+	"text.infernoreborn.applied.head": "On Headgear:",
+	"text.infernoreborn.applied.chest": "On Chestplate:",
+	"text.infernoreborn.applied.legs": "On Leggings:",
+	"text.infernoreborn.applied.feet": "On Boots:",
+	"text.infernoreborn.applied.curio": "On Accessories:",
+
+	"text.infernoreborn.sigil.goat_eyes.effect": "Confusion immunity",
 
 	"container.infernoreborn.essence_holder": "Essence Holder",
 	"container.infernoreborn.book_of_the_unspeakable": "Book of the Unspeakable",

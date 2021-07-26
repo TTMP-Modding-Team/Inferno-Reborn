@@ -1,6 +1,7 @@
 package ttmp.infernoreborn.util;
 
 import com.google.common.collect.ListMultimap;
+import net.minecraft.client.resources.I18n;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.IAngerable;
 import net.minecraft.entity.LivingEntity;
@@ -15,6 +16,9 @@ import net.minecraft.potion.EffectInstance;
 import net.minecraft.potion.Effects;
 import net.minecraft.util.CombatRules;
 import net.minecraft.util.DamageSource;
+import net.minecraft.util.text.IFormattableTextComponent;
+import net.minecraft.util.text.TextFormatting;
+import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.Explosion;
 import net.minecraft.world.GameRules;
 import net.minecraft.world.World;
@@ -26,6 +30,8 @@ import ttmp.infernoreborn.contents.ability.holder.AbilityHolder;
 import javax.annotation.Nullable;
 import java.util.List;
 import java.util.UUID;
+
+import static net.minecraft.item.ItemStack.ATTRIBUTE_MODIFIER_FORMAT;
 
 public final class LivingUtils{
 	private LivingUtils(){}
@@ -146,18 +152,31 @@ public final class LivingUtils{
 		if(target.ignoreExplosion()||target.isInvulnerableTo(DamageSource.explosion((LivingEntity)null))) return true;
 		AbilityHolder holder = AbilityHolder.of(target);
 		if(holder==null) return false;
-		if(holder.has(Abilities.KILLER_QUEEN.get())||holder.has(Abilities.GUNPOWDER_SWARM.get())) return true;
-		return false;
+		return holder.has(Abilities.KILLER_QUEEN.get())||holder.has(Abilities.GUNPOWDER_SWARM.get());
 	}
+
 	private static float calcDamageWithArmor(LivingEntity target, float damage){
 		if(damage<=0) return 0;
-		damage = CombatRules.getDamageAfterAbsorb(damage, target.getArmorValue(), (float)target.getAttribute(Attributes.ARMOR_TOUGHNESS).getValue());
-		if(target.hasEffect(Effects.DAMAGE_RESISTANCE))
-			damage = damage*(25-(target.getEffect(Effects.DAMAGE_RESISTANCE).getAmplifier()+1)*5)/25;
+		damage = CombatRules.getDamageAfterAbsorb(damage, target.getArmorValue(), (float)getAttrib(target, Attributes.ARMOR_TOUGHNESS));
+		EffectInstance damageResistance = target.getEffect(Effects.DAMAGE_RESISTANCE);
+		if(damageResistance!=null)
+			damage = damage*(25-(damageResistance.getAmplifier()+1)*5)/25;
 		if(damage<=0) return 0;
 		int k = EnchantmentHelper.getDamageProtection(target.getArmorSlots(), DamageSource.explosion((LivingEntity)null));
 		if(k>0) damage = CombatRules.getDamageAfterMagicAbsorb(damage, k);
 		return Math.max(damage-target.getAbsorptionAmount(), 0);
 	}
 
+	public static IFormattableTextComponent getAttributeText(Attribute attribute, double amount, AttributeModifier.Operation operation){
+		double displayAmount = operation!=AttributeModifier.Operation.MULTIPLY_BASE&&operation!=AttributeModifier.Operation.MULTIPLY_TOTAL ?
+				attribute.equals(Attributes.KNOCKBACK_RESISTANCE) ? amount*10 : amount :
+				amount*100;
+
+		if(amount<0) return new TranslationTextComponent("attribute.modifier.take."+operation.toValue(),
+				ATTRIBUTE_MODIFIER_FORMAT.format(-displayAmount),
+				I18n.get(attribute.getDescriptionId())).withStyle(TextFormatting.RED);
+		else return new TranslationTextComponent("attribute.modifier.plus."+operation.toValue(),
+				ATTRIBUTE_MODIFIER_FORMAT.format(displayAmount),
+				I18n.get(attribute.getDescriptionId())).withStyle(TextFormatting.BLUE);
+	}
 }

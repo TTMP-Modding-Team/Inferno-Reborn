@@ -6,6 +6,11 @@
     {
       "type": "text",
       "text": "text.infernoreborn.sigil.goat_eyes.0"
+    },
+    {
+      "type": "infernoreborn:sigil_effect",
+      "sigil": "infernoreborn:goat_eyes",
+      "page": "0"
     }
   ]
 }

@@ -5,31 +5,22 @@ import net.minecraft.entity.ai.attributes.Attribute;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.entity.ai.attributes.AttributeModifier.Operation;
 import net.minecraft.entity.ai.attributes.Attributes;
-import net.minecraft.inventory.EquipmentSlotType;
-import ttmp.infernoreborn.contents.sigil.context.SigilEventContext;
-
-import javax.annotation.Nullable;
+import ttmp.infernoreborn.compat.patchouli.sigil.SigilPageBuilder;
+import ttmp.infernoreborn.util.SigilSlot;
 
 public class MiniHeartSigil extends AttributeSigil{
 	public MiniHeartSigil(Properties properties){
 		super(properties);
 	}
 
-	@Override protected boolean canBeAttachedTo(SigilEventContext ctx, @Nullable EquipmentSlotType equipmentSlotType){
-		return equipmentSlotType==null||equipmentSlotType.getType()==EquipmentSlotType.Group.ARMOR;
+	@Override protected void applyAttributes(SigilSlot slot, ListMultimap<Attribute, AttributeModifier> attributes){
+		addToModifier(attributes, Attributes.MAX_HEALTH, slot==SigilSlot.BODY ? 10 : 2, Operation.ADDITION);
 	}
 
-	@Override protected void applyAttributes(Mode mode, ListMultimap<Attribute, AttributeModifier> attributes){
-		switch(mode){
-			case BODY:
-				addToModifier(attributes, Attributes.MAX_HEALTH, 10, Operation.ADDITION);
-				break;
-			case HEAD:
-			case CHEST:
-			case LEGS:
-			case FEET:
-				addToModifier(attributes, Attributes.MAX_HEALTH, 2, Operation.ADDITION);
-				break;
-		}
+	@Override protected void createSigilBookEntryContent(SigilPageBuilder builder){
+		builder.effectsFor(SigilSlot.BODY)
+				.attribute(Attributes.MAX_HEALTH, 10, Operation.ADDITION);
+		builder.effectsForArmor(SigilSlot.CURIO)
+				.attribute(Attributes.MAX_HEALTH, 2, Operation.ADDITION);
 	}
 }

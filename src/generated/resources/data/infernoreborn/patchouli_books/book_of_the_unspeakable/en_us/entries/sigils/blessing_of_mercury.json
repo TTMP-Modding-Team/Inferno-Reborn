@@ -1,0 +1,26 @@
+{
+  "name": "sigil.infernoreborn.blessing_of_mercury",
+  "category": "infernoreborn:sigils",
+  "icon": "infernoreborn:sigil{Sigils:\"infernoreborn:blessing_of_mercury\"}",
+  "pages": [
+    {
+      "type": "text",
+      "text": "text.infernoreborn.sigil.blessing_of_mercury.0"
+    },
+    {
+      "type": "infernoreborn:sigil_effect",
+      "sigil": "infernoreborn:blessing_of_mercury",
+      "page": "0"
+    },
+    {
+      "type": "infernoreborn:sigil_effect",
+      "sigil": "infernoreborn:blessing_of_mercury",
+      "page": "1"
+    },
+    {
+      "type": "infernoreborn:sigil_effect",
+      "sigil": "infernoreborn:blessing_of_mercury",
+      "page": "2"
+    }
+  ]
+}
