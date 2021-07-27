@@ -42,18 +42,18 @@ public class FoundryContainer extends Container{
 		this.processSupplier = processSupplier;
 		this.maxProcessSupplier = maxProcessSupplier;
 
-		this.addSlot(new SlotItemHandler(foundry, FoundryTile.ESSENCE_HOLDER_SLOT, 8, 38));
-		this.addSlot(new SlotItemHandler(foundry, FoundryTile.ESSENCE_INPUT_SLOT, 8, 56));
-		this.addSlot(new SlotItemHandler(foundry, FoundryTile.INPUT_SLOT_1, 44, 45));
-		this.addSlot(new SlotItemHandler(foundry, FoundryTile.INPUT_SLOT_2, 62, 45));
-		this.addSlot(new ExtractOnlySlotItemHandler(foundry, FoundryTile.OUTPUT_SLOT_1, 112, 45));
-		this.addSlot(new ExtractOnlySlotItemHandler(foundry, FoundryTile.OUTPUT_SLOT_2, 134, 45));
+		this.addSlot(new SlotItemHandler(foundry, FoundryTile.ESSENCE_HOLDER_SLOT, 8, 11));
+		this.addSlot(new SlotItemHandler(foundry, FoundryTile.ESSENCE_INPUT_SLOT, 8, 29));
+		this.addSlot(new SlotItemHandler(foundry, FoundryTile.INPUT_SLOT_1, 44, 20));
+		this.addSlot(new SlotItemHandler(foundry, FoundryTile.INPUT_SLOT_2, 62, 20));
+		this.addSlot(new ExtractOnlySlotItemHandler(foundry, FoundryTile.OUTPUT_SLOT_1, 116, 20));
+		this.addSlot(new ExtractOnlySlotItemHandler(foundry, FoundryTile.OUTPUT_SLOT_2, 134, 20));
 
 		for(int y = 0; y<3; ++y)
 			for(int x = 0; x<9; ++x)
-				this.addSlot(new Slot(playerInventory, x+y*9+9, 8+x*18, 99+y*18));
+				this.addSlot(new Slot(playerInventory, x+y*9+9, 8+x*18, 74+y*18));
 		for(int i1 = 0; i1<9; ++i1)
-			this.addSlot(new Slot(playerInventory, i1, 8+i1*18, 157));
+			this.addSlot(new Slot(playerInventory, i1, 8+i1*18, 132));
 	}
 
 	public IItemHandlerModifiable getFoundry(){

@@ -1,21 +1,40 @@
 {
   "variants": {
-    "facing=north": {
+    "facing=north,lit=false": {
       "model": "infernoreborn:block/foundry/firebox",
       "y": 180,
       "uvlock": true
     },
-    "facing=south": {
+    "facing=south,lit=false": {
       "model": "infernoreborn:block/foundry/firebox",
       "uvlock": true
     },
-    "facing=west": {
+    "facing=west,lit=false": {
       "model": "infernoreborn:block/foundry/firebox",
       "y": 90,
       "uvlock": true
     },
-    "facing=east": {
+    "facing=east,lit=false": {
       "model": "infernoreborn:block/foundry/firebox",
+      "y": 270,
+      "uvlock": true
+    },
+    "facing=north,lit=true": {
+      "model": "infernoreborn:block/foundry/firebox_on",
+      "y": 180,
+      "uvlock": true
+    },
+    "facing=south,lit=true": {
+      "model": "infernoreborn:block/foundry/firebox_on",
+      "uvlock": true
+    },
+    "facing=west,lit=true": {
+      "model": "infernoreborn:block/foundry/firebox_on",
+      "y": 90,
+      "uvlock": true
+    },
+    "facing=east,lit=true": {
+      "model": "infernoreborn:block/foundry/firebox_on",
       "y": 270,
       "uvlock": true
     }

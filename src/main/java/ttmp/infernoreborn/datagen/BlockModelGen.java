@@ -10,6 +10,7 @@ import net.minecraftforge.common.data.ExistingFileHelper;
 import ttmp.infernoreborn.contents.ModBlocks;
 
 import static net.minecraft.state.properties.BlockStateProperties.HORIZONTAL_FACING;
+import static net.minecraft.state.properties.BlockStateProperties.LIT;
 import static ttmp.infernoreborn.InfernoReborn.MODID;
 
 public class BlockModelGen extends BlockStateProvider{
@@ -25,27 +26,44 @@ public class BlockModelGen extends BlockStateProvider{
 		simpleBlock(ModBlocks.FOUNDRY_TILE.get(), foundryTileModel);
 		simpleBlockItem(ModBlocks.FOUNDRY_TILE.get(), foundryTileModel);
 
-		BlockModelBuilder foundryFirebox = models().cube("block/foundry/firebox",
-				res("block/foundry/tile"),
-				res("block/foundry/tile"),
-				res("block/foundry/firebox"),
-				res("block/foundry/firebox"),
-				res("block/foundry/tile"),
-				res("block/foundry/firebox"))
-				.texture("particle", res("block/foundry/tile"));
-		BlockModelBuilder foundryGrate = models().cube("block/foundry/grate",
-				res("block/foundry/tile"),
-				res("block/foundry/tile"),
-				res("block/foundry/grate"),
-				res("block/foundry/grate"),
-				res("block/foundry/tile"),
-				res("block/foundry/grate"))
-				.texture("particle", res("block/foundry/tile"));
+		models().withExistingParent("block/foundry/foundry_tile_base", "cube")
+				.texture("down", "#tile")
+				.texture("up", "#tile")
+				.texture("north", "#face")
+				.texture("south", "#face")
+				.texture("east", "#tile")
+				.texture("west", "#face")
+				.texture("particle", "#tile")
+				.texture("tile", res("block/foundry/tile"));
 
-		getVariantBuilder(ModBlocks.FOUNDRY.get()).forAllStates(state -> ConfiguredModel.builder().modelFile(foundryFirebox).uvLock(true).rotationY(state.getValue(HORIZONTAL_FACING).get2DDataValue()*90).build());
-		getVariantBuilder(ModBlocks.FOUNDRY_FIREBOX.get()).forAllStates(state -> ConfiguredModel.builder().modelFile(foundryFirebox).uvLock(true).rotationY(state.getValue(HORIZONTAL_FACING).get2DDataValue()*90).build());
-		getVariantBuilder(ModBlocks.FOUNDRY_GRATE_1.get()).forAllStates(state -> ConfiguredModel.builder().modelFile(foundryGrate).uvLock(true).rotationY(state.getValue(HORIZONTAL_FACING).get2DDataValue()*90).build());
-		getVariantBuilder(ModBlocks.FOUNDRY_GRATE_2.get()).forAllStates(state -> ConfiguredModel.builder().modelFile(foundryGrate).uvLock(true).rotationY(state.getValue(HORIZONTAL_FACING).get2DDataValue()*90).build());
+		BlockModelBuilder foundryFirebox = models().withExistingParent("block/foundry/firebox", res("block/foundry/foundry_tile_base"))
+				.texture("face", res("block/foundry/firebox"));
+		BlockModelBuilder foundryFireboxOn = models().withExistingParent("block/foundry/firebox_on", res("block/foundry/foundry_tile_base"))
+				.texture("face", res("block/foundry/firebox_on"));
+		BlockModelBuilder foundryGrate = models().withExistingParent("block/foundry/grate", res("block/foundry/foundry_tile_base"))
+				.texture("face", res("block/foundry/grate"));
+
+		getVariantBuilder(ModBlocks.FOUNDRY.get()).forAllStates(state -> ConfiguredModel.builder()
+				.modelFile(state.getValue(LIT) ? foundryFireboxOn : foundryFirebox)
+				.uvLock(true)
+				.rotationY(state.getValue(HORIZONTAL_FACING).get2DDataValue()*90)
+				.build());
+		getVariantBuilder(ModBlocks.FOUNDRY_FIREBOX.get()).forAllStates(state -> ConfiguredModel.builder()
+				.modelFile(state.getValue(LIT) ? foundryFireboxOn : foundryFirebox)
+				.uvLock(true)
+				.rotationY(state.getValue(HORIZONTAL_FACING).get2DDataValue()*90)
+				.build());
+		getVariantBuilder(ModBlocks.FOUNDRY_GRATE_1.get()).forAllStates(state -> ConfiguredModel.builder()
+				.modelFile(foundryGrate)
+				.uvLock(true)
+				.rotationY(state.getValue(HORIZONTAL_FACING).get2DDataValue()*90)
+				.build());
+		getVariantBuilder(ModBlocks.FOUNDRY_GRATE_2.get()).forAllStates(state -> ConfiguredModel.builder()
+				.modelFile(foundryGrate)
+				.uvLock(true)
+				.rotationY(state.getValue(HORIZONTAL_FACING).get2DDataValue()*90)
+				.build());
+
 		getVariantBuilder(ModBlocks.FOUNDRY_MOLD_1.get()).forAllStates(state ->
 				ConfiguredModel.builder().modelFile(new ExistingModelFile(res("block/foundry/mold_1"), existingFileHelper))
 						.rotationY(state.getValue(HORIZONTAL_FACING).get2DDataValue()*90-90).build());

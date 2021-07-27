@@ -30,8 +30,10 @@ import net.minecraftforge.items.wrapper.RangedWrapper;
 import net.minecraftforge.items.wrapper.RecipeWrapper;
 import ttmp.infernoreborn.InfernoReborn;
 import ttmp.infernoreborn.capability.Caps;
+import ttmp.infernoreborn.contents.ModBlocks;
 import ttmp.infernoreborn.contents.ModRecipes;
 import ttmp.infernoreborn.contents.ModTileEntities;
+import ttmp.infernoreborn.contents.block.FoundryBlock;
 import ttmp.infernoreborn.contents.container.FoundryContainer;
 import ttmp.infernoreborn.contents.recipe.foundry.FoundryRecipe;
 import ttmp.infernoreborn.inventory.EssenceHolderItemHandler;
@@ -42,6 +44,9 @@ import ttmp.infernoreborn.util.EssenceType;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.Objects;
+
+import static net.minecraft.state.properties.BlockStateProperties.HORIZONTAL_FACING;
+import static net.minecraft.state.properties.BlockStateProperties.LIT;
 
 public class FoundryTile extends TileEntity implements ITickableTileEntity, INamedContainerProvider{
 	public static final int ESSENCE_HOLDER_SLOT = 0;
@@ -105,6 +110,17 @@ public class FoundryTile extends TileEntity implements ITickableTileEntity, INam
 				if(insertItems(currentRecipe, false)) searchRecipe();
 			}
 		}else searchRecipe();
+
+		boolean lit = currentRecipe!=null;
+		if(this.getBlockState().getValue(LIT)!=lit){
+			BlockPos.Mutable mpos = new BlockPos.Mutable().set(getBlockPos());
+			this.level.setBlock(mpos, this.getBlockState().setValue(LIT, lit), 3);
+			BlockState fireboxBlockState = ModBlocks.FOUNDRY_FIREBOX.get()
+					.defaultBlockState()
+					.setValue(LIT, lit)
+					.setValue(HORIZONTAL_FACING, this.getBlockState().getValue(HORIZONTAL_FACING));
+			this.level.setBlock(FoundryBlock.moveFromOrigin(mpos, fireboxBlockState), fireboxBlockState, 3);
+		}
 	}
 
 	private void searchRecipe(){
@@ -154,7 +170,7 @@ public class FoundryTile extends TileEntity implements ITickableTileEntity, INam
 
 	public IItemHandler getEssenceInput(){
 		if(essenceInput==null) essenceInput = new RangedWrapper(inv, ESSENCE_INPUT_SLOT, ESSENCE_INPUT_SLOT+1){
-			@Override public ItemStack extractItem(int slot, int amount, boolean simulate){
+			@Nonnull @Override public ItemStack extractItem(int slot, int amount, boolean simulate){
 				return ItemStack.EMPTY;
 			}
 		};
@@ -162,7 +178,7 @@ public class FoundryTile extends TileEntity implements ITickableTileEntity, INam
 	}
 	public IItemHandler getInput(){
 		if(input==null) input = new RangedWrapper(inv, INPUT_SLOT_1, INPUT_SLOT_2+1){
-			@Override public ItemStack extractItem(int slot, int amount, boolean simulate){
+			@Nonnull @Override public ItemStack extractItem(int slot, int amount, boolean simulate){
 				return ItemStack.EMPTY;
 			}
 		};
@@ -170,7 +186,7 @@ public class FoundryTile extends TileEntity implements ITickableTileEntity, INam
 	}
 	public IItemHandler getOutput(){
 		if(output==null) output = new RangedWrapper(inv, OUTPUT_SLOT_1, OUTPUT_SLOT_2+1){
-			@Override public ItemStack insertItem(int slot, ItemStack stack, boolean simulate){
+			@Nonnull @Override public ItemStack insertItem(int slot, ItemStack stack, boolean simulate){
 				return stack;
 			}
 		};
@@ -194,7 +210,7 @@ public class FoundryTile extends TileEntity implements ITickableTileEntity, INam
 		return outputLO;
 	}
 
-	@Override public <T> LazyOptional<T> getCapability(Capability<T> cap, @Nullable Direction side){
+	@Nonnull @Override public <T> LazyOptional<T> getCapability(Capability<T> cap, @Nullable Direction side){
 		if(cap==CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) return getEssenceInputLO().cast();
 		return super.getCapability(cap, side);
 	}

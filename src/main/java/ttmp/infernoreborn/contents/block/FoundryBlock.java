@@ -17,6 +17,7 @@ import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.shapes.ISelectionContext;
 import net.minecraft.util.math.shapes.VoxelShape;
+import net.minecraft.util.math.shapes.VoxelShapes;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.IWorld;
 import net.minecraft.world.World;
@@ -26,8 +27,11 @@ import ttmp.infernoreborn.contents.tile.FoundryProxyTile;
 import ttmp.infernoreborn.contents.tile.FoundryTile;
 
 import javax.annotation.Nullable;
+import java.util.HashMap;
+import java.util.Map;
 
 import static net.minecraft.state.properties.BlockStateProperties.HORIZONTAL_FACING;
+import static net.minecraft.state.properties.BlockStateProperties.LIT;
 
 public class FoundryBlock extends Block{
 	public static ProxyBlock[] proxyBlocks(){
@@ -42,10 +46,11 @@ public class FoundryBlock extends Block{
 
 	public FoundryBlock(Properties properties){
 		super(properties);
+		this.registerDefaultState(defaultBlockState().setValue(LIT, false));
 	}
 
 	@Override protected void createBlockStateDefinition(StateContainer.Builder<Block, BlockState> b){
-		b.add(HORIZONTAL_FACING);
+		b.add(HORIZONTAL_FACING, LIT);
 	}
 
 	@Nullable @Override public BlockState getStateForPlacement(BlockItemUseContext ctx){
@@ -146,7 +151,7 @@ public class FoundryBlock extends Block{
 
 		@Override public void playerWillDestroy(World level, BlockPos pos, BlockState state, PlayerEntity player){
 			TileEntity blockEntity = level.getBlockEntity(moveToOrigin(new BlockPos.Mutable().set(pos), state));
-			if(blockEntity instanceof FoundryTile) level.destroyBlock(blockEntity.getBlockPos(), true, player);
+			if(blockEntity instanceof FoundryTile) level.destroyBlock(blockEntity.getBlockPos(), !player.isCreative(), player);
 		}
 
 		@SuppressWarnings("deprecation") @Override public void onRemove(BlockState state, World level, BlockPos pos, BlockState newState, boolean pIsMoving){
@@ -187,6 +192,11 @@ public class FoundryBlock extends Block{
 	public static final class FireboxProxyBlock extends ProxyBlock{
 		public FireboxProxyBlock(int proxyX, int proxyY, int proxyZ, Properties properties){
 			super(proxyX, proxyY, proxyZ, properties);
+			this.registerDefaultState(defaultBlockState().setValue(LIT, false));
+		}
+
+		@Override protected void createBlockStateDefinition(StateContainer.Builder<Block, BlockState> b){
+			b.add(HORIZONTAL_FACING, LIT);
 		}
 
 		@Override public FoundryProxyTile createTileEntity(BlockState state, IBlockReader world){
@@ -204,23 +214,79 @@ public class FoundryBlock extends Block{
 		}
 	}
 
-	public static final class MoldProxyBlock extends ProxyBlock{
-		private static final VoxelShape SHAPE = box(0, 6, 0, 16, 12, 16);
-		private static final VoxelShape VISUAL_SHAPE = box(0, 0, 0, 16, 12, 16);
+	private static abstract class MoldProxyBlockBase extends ProxyBlock{
+		private final Map<Direction, VoxelShape> shapes;
 
-		public MoldProxyBlock(int proxyX, int proxyY, int proxyZ, Properties properties){
+		public MoldProxyBlockBase(int proxyX, int proxyY, int proxyZ, Properties properties){
 			super(proxyX, proxyY, proxyZ, properties);
+			this.shapes = new HashMap<>();
+			for(Direction d : HORIZONTAL_FACING.getPossibleValues())
+				this.shapes.put(d, createVoxelShape(d));
 		}
+
+		protected abstract VoxelShape createVoxelShape(Direction dir);
 
 		@Override public FoundryProxyTile createTileEntity(BlockState state, IBlockReader world){
 			return FoundryProxyTile.moldProxy();
 		}
 
-		@SuppressWarnings("deprecation") @Override public VoxelShape getShape(BlockState p_220053_1_, IBlockReader p_220053_2_, BlockPos p_220053_3_, ISelectionContext p_220053_4_){
-			return SHAPE;
+		@SuppressWarnings("deprecation") @Override public VoxelShape getShape(BlockState state, IBlockReader level, BlockPos pos, ISelectionContext context){
+			return shapes.get(state.getValue(HORIZONTAL_FACING));
 		}
-		@SuppressWarnings("deprecation") @Override public VoxelShape getVisualShape(BlockState p_230322_1_, IBlockReader p_230322_2_, BlockPos p_230322_3_, ISelectionContext p_230322_4_){
-			return VISUAL_SHAPE;
+
+		protected static VoxelShape box(double x1, double y1, double z1, double x2, double y2, double z2, Direction dir){
+			switch(dir){
+				case NORTH:
+					return box(x1, y1, z1, x2, y2, z2);
+				case SOUTH:
+					return box(16-x1, y1, 16-z1, 16-x2, y2, 16-z2);
+				case WEST:
+					return box(z1, y1, 16-x1, z2, y2, 16-x2);
+				case EAST:
+					return box(16-z1, y1, x1, 16-z2, y2, x2);
+				default:
+					throw new IllegalArgumentException("dir");
+			}
+		}
+	}
+
+	public static final class MoldProxyBlock extends MoldProxyBlockBase{
+		public MoldProxyBlock(int proxyX, int proxyY, int proxyZ, Properties properties){
+			super(proxyX, proxyY, proxyZ, properties);
+		}
+
+		@Override protected VoxelShape createVoxelShape(Direction dir){
+			dir = dir.getClockWise();
+			return VoxelShapes.or(box(0, 10, 0, 4, 12, 16, dir),
+					box(4, 10, 11, 16, 12, 16, dir),
+					box(4, 10, 0, 14, 12, 5, dir),
+					box(14, 10, 0, 15, 12, 4, dir),
+					box(15, 10, 0, 16, 12, 3, dir),
+					box(0, 6, 0, 16, 10, 16, dir),
+					box(0, 0, 0, 16, 12, 0, dir),
+					box(0, 0, 16, 16, 12, 16, dir),
+					box(0, 0, 0, 0, 12, 16, dir))
+					.optimize();
+		}
+	}
+
+	public static final class MoldProxyBlock2 extends MoldProxyBlockBase{
+		public MoldProxyBlock2(int proxyX, int proxyY, int proxyZ, Properties properties){
+			super(proxyX, proxyY, proxyZ, properties);
+		}
+
+		@Override protected VoxelShape createVoxelShape(Direction dir){
+			dir = dir.getCounterClockWise();
+			return VoxelShapes.or(box(0, 10, 0, 4, 12, 16, dir),
+					box(4, 10, 11, 14, 12, 16, dir),
+					box(4, 10, 0, 16, 12, 5, dir),
+					box(14, 10, 12, 15, 12, 16, dir),
+					box(15, 10, 13, 16, 12, 16, dir),
+					box(0, 6, 0, 16, 10, 16, dir),
+					box(0, 0, 0, 16, 12, 0, dir),
+					box(0, 0, 16, 16, 12, 16, dir),
+					box(0, 0, 0, 0, 12, 16, dir))
+					.optimize();
 		}
 	}
 }

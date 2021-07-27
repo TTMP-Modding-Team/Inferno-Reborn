@@ -1,12 +1,6 @@
 {
-  "parent": "minecraft:block/cube",
+  "parent": "infernoreborn:block/foundry/foundry_tile_base",
   "textures": {
-    "down": "infernoreborn:block/foundry/tile",
-    "up": "infernoreborn:block/foundry/tile",
-    "north": "infernoreborn:block/foundry/firebox",
-    "south": "infernoreborn:block/foundry/firebox",
-    "east": "infernoreborn:block/foundry/tile",
-    "west": "infernoreborn:block/foundry/firebox",
-    "particle": "infernoreborn:block/foundry/tile"
+    "face": "infernoreborn:block/foundry/firebox"
   }
 }

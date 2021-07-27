@@ -1,6 +1,6 @@
 {
   "parent": "infernoreborn:block/foundry/foundry_tile_base",
   "textures": {
-    "face": "infernoreborn:block/foundry/grate"
+    "face": "infernoreborn:block/foundry/firebox_on"
   }
 }
