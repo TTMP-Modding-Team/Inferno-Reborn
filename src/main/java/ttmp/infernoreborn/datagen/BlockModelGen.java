@@ -52,6 +52,9 @@ public class BlockModelGen extends BlockStateProvider{
 		getVariantBuilder(ModBlocks.FOUNDRY_MOLD_2.get()).forAllStates(state ->
 				ConfiguredModel.builder().modelFile(new ExistingModelFile(res("block/foundry/mold_2"), existingFileHelper))
 						.rotationY(state.getValue(HORIZONTAL_FACING).get2DDataValue()*90+90).build());
+
+		simpleBlock(ModBlocks.GOLDEN_SKULL.get(), new ExistingModelFile(new ResourceLocation("block/skull"), existingFileHelper));
+		simpleBlock(ModBlocks.GOLDEN_WALL_SKULL.get(), new ExistingModelFile(new ResourceLocation("block/skull"), existingFileHelper));
 	}
 
 	private static ResourceLocation res(String path){

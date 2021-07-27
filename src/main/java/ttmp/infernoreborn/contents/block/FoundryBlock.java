@@ -149,6 +149,14 @@ public class FoundryBlock extends Block{
 			if(blockEntity instanceof FoundryTile) level.destroyBlock(blockEntity.getBlockPos(), true, player);
 		}
 
+		@SuppressWarnings("deprecation") @Override public void onRemove(BlockState state, World level, BlockPos pos, BlockState newState, boolean pIsMoving){
+			if(!state.is(newState.getBlock())){
+				TileEntity blockEntity = level.getBlockEntity(moveToOrigin(new BlockPos.Mutable().set(pos), state));
+				if(blockEntity instanceof FoundryTile) level.destroyBlock(blockEntity.getBlockPos(), true, null);
+			}
+			super.onRemove(state, level, pos, newState, pIsMoving);
+		}
+
 		@Override public boolean hasTileEntity(BlockState state){
 			return true;
 		}

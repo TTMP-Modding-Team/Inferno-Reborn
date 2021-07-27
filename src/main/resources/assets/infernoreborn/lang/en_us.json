@@ -80,6 +80,7 @@
 	"block.infernoreborn.sigil_engraving_table_7x7": "Sigil Engraving Table 7x7",
 	"block.infernoreborn.foundry_tile": "Foundry Tile",
 	"block.infernoreborn.foundry": "Foundry",
+	"block.infernoreborn.golden_skull": "Golden Skull",
 
 	"tooltip.infernoreborn.expand": "[%s]",
 	"tooltip.infernoreborn.expand.shift": "Shift",

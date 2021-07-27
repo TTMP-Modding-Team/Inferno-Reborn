@@ -69,7 +69,7 @@ public class ItemModelGen extends ItemModelProvider{
 
 		simpleItem(ModItems.SIGIL.get());
 
-		item(ModItems.GLOD_NUGGET.getId().getPath(), new ResourceLocation("item/gold_nugget"));
+		withExistingParent(ModItems.GOLDEN_SKULL.getId().getPath(), "item/template_skull");
 	}
 
 	protected ItemModelBuilder simpleItem(Item item){

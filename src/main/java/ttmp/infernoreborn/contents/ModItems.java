@@ -6,10 +6,12 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Rarity;
+import net.minecraft.item.WallOrFloorItem;
 import net.minecraftforge.fml.RegistryObject;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import ttmp.infernoreborn.client.render.FoundryISTER;
+import ttmp.infernoreborn.client.render.GoldenSkullISTER;
 import ttmp.infernoreborn.contents.item.BerserkerArmorItem;
 import ttmp.infernoreborn.contents.item.CrimsonArmorItem;
 import ttmp.infernoreborn.contents.item.CrimsonClaymoreItem;
@@ -156,7 +158,8 @@ public final class ModItems{
 
 	public static final RegistryObject<Item> THANATOS_BELT = REGISTER.register("thanatos_belt", () -> new ItemThanatosBelt(artifacts(Rarity.EPIC)));
 
-	public static final RegistryObject<Item> GLOD_NUGGET = REGISTER.register("glod_nugget", () -> new Item(new Item.Properties()));
+	public static final RegistryObject<Item> GOLDEN_SKULL = REGISTER.register("golden_skull", () -> new WallOrFloorItem(ModBlocks.GOLDEN_SKULL.get(), ModBlocks.GOLDEN_WALL_SKULL.get(),
+			new Item.Properties().setISTER(() -> GoldenSkullISTER::new)));
 
 	private static RegistryObject<Item> essence(EssenceType type, EssenceSize size){
 		String id;

@@ -584,13 +584,11 @@ public final class Abilities{
 						EffectInstance effect = target.getEffect(ModEffects.HAND_OF_MIDAS.get());
 						if(effect!=null&&target.getHealth()<=effect.getAmplifier()+1){
 							if(target.hurt(LivingUtils.midasDamage(entity), Float.MAX_VALUE)){
-								for(int i = 0; i<=effect.getAmplifier(); i++){
-									target.level.addFreshEntity(new ItemEntity(target.level,
-											target.getRandomX(1),
-											target.getRandomY(),
-											target.getRandomZ(1),
-											new ItemStack(ModItems.GLOD_NUGGET.get())));
-								}
+								target.level.addFreshEntity(new ItemEntity(target.level,
+										target.getRandomX(1),
+										target.getRandomY(),
+										target.getRandomZ(1),
+										new ItemStack(ModItems.GOLDEN_SKULL.get()).setHoverName(target.getName())));
 							}
 						}
 					})));
