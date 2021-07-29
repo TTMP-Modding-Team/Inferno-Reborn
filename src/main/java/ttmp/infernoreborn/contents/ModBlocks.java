@@ -13,6 +13,7 @@ import ttmp.infernoreborn.contents.block.FoundryBlock;
 import ttmp.infernoreborn.contents.block.GoldenSkullBlock;
 import ttmp.infernoreborn.contents.block.GoldenWallSkullBlock;
 import ttmp.infernoreborn.contents.block.SigilEngravingTableBlock;
+import ttmp.infernoreborn.contents.block.SigilScrapperBlock;
 import ttmp.infernoreborn.contents.tile.SigilEngravingTableTile;
 
 import static net.minecraft.state.properties.BlockStateProperties.LIT;
@@ -38,6 +39,8 @@ public final class ModBlocks{
 			return SigilEngravingTableTile.new7x7();
 		}
 	});
+
+	public static final RegistryObject<Block> SIGIL_SCRAPPER = REGISTER.register("sigil_scrapper", () -> new SigilScrapperBlock(Properties.of(Material.WOOD)));
 
 	public static final RegistryObject<Block> FOUNDRY_TILE = REGISTER.register("foundry_tile", () -> new Block(
 			Properties.of(Material.STONE).requiresCorrectToolForDrops().strength(3.5f)));

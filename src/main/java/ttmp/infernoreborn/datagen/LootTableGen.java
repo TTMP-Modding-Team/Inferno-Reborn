@@ -38,6 +38,7 @@ public class LootTableGen extends LootTableProvider{
 			dropSelf(ModBlocks.SIGIL_ENGRAVING_TABLE_3X3.get());
 			dropSelf(ModBlocks.SIGIL_ENGRAVING_TABLE_5X5.get());
 			dropSelf(ModBlocks.SIGIL_ENGRAVING_TABLE_7X7.get());
+			dropSelf(ModBlocks.SIGIL_SCRAPPER.get());
 
 			dropSelf(ModBlocks.FOUNDRY_TILE.get());
 			add(ModBlocks.FOUNDRY.get(), b -> createNameableBlockEntityTable(ModBlocks.FOUNDRY.get()));

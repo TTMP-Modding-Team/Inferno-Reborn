@@ -42,6 +42,7 @@ import ttmp.infernoreborn.client.render.WindEntityRenderer;
 import ttmp.infernoreborn.client.screen.EssenceHolderScreen;
 import ttmp.infernoreborn.client.screen.FoundryScreen;
 import ttmp.infernoreborn.client.screen.SigilEngravingTableScreen;
+import ttmp.infernoreborn.client.screen.SigilScrapperScreen;
 import ttmp.infernoreborn.contents.Abilities;
 import ttmp.infernoreborn.contents.ModAttributes;
 import ttmp.infernoreborn.contents.ModBlocks;
@@ -153,6 +154,7 @@ public class InfernoReborn{
 				ScreenManager.register(ModContainers.SIGIL_ENGRAVING_TABLE_3X3.get(), SigilEngravingTableScreen.X3::new);
 				ScreenManager.register(ModContainers.SIGIL_ENGRAVING_TABLE_5X5.get(), SigilEngravingTableScreen.X5::new);
 				ScreenManager.register(ModContainers.SIGIL_ENGRAVING_TABLE_7X7.get(), SigilEngravingTableScreen.X7::new);
+				ScreenManager.register(ModContainers.SIGIL_SCRAPPER.get(), SigilScrapperScreen::new);
 				ScreenManager.register(ModContainers.FOUNDRY.get(), FoundryScreen::new);
 
 				ItemModelsProperties.register(ModItems.EXPLOSIVE_SWORD.get(), new ResourceLocation("using"),

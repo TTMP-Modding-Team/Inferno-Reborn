@@ -10,6 +10,7 @@ import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.common.util.LazyOptional;
+import ttmp.infernoreborn.InfernoReborn;
 import ttmp.infernoreborn.capability.Caps;
 import ttmp.infernoreborn.config.ModCfg;
 import ttmp.infernoreborn.contents.Sigils;
@@ -19,11 +20,11 @@ import ttmp.infernoreborn.contents.sigil.context.SigilEventContext;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.Collections;
-import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.Objects;
 import java.util.Random;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 public class ItemSigilHolder implements SigilHolder, ICapabilityProvider{
 	private static final Random SEED_RANDOM = new Random();
@@ -78,7 +79,7 @@ public class ItemSigilHolder implements SigilHolder, ICapabilityProvider{
 	}
 
 	private void writeSigils(){
-		if(this.isEmpty()){
+		if(sigils==null||sigils.isEmpty()){
 			CompoundNBT tag = this.stack.getTag();
 			if(tag!=null){
 				tag.remove(SIGIL_NBT);
@@ -86,32 +87,27 @@ public class ItemSigilHolder implements SigilHolder, ICapabilityProvider{
 			}
 		}else{
 			CompoundNBT tag = this.stack.getOrCreateTag();
+			String tagBefore = tag.toString();
 			ListNBT list = tag.getList(SIGIL_NBT, Constants.NBT.TAG_STRING);
 
-			Iterator<Sigil> it = Objects.requireNonNull(sigils).iterator();
 			if(list.isEmpty()){
+				for(Sigil s : sigils)
+					list.add(StringNBT.valueOf(Objects.requireNonNull(s.getRegistryName()).toString()));
 				tag.put(SIGIL_NBT, list);
 			}else{
-				Sigil s = it.next();
-				int i = 0;
-
-				while(true){
-					String at = list.getString(i);
-					if(at.equals(Objects.requireNonNull(s.getRegistryName()).toString())){
-						if(++i>=list.size()) break;
-					}else{
-						// assume it's deleted
-						list.remove(i);
-						if(i>=list.size()) break;
-					}
-					if(!it.hasNext()) break;
-					s = it.next();
+				Sigil[] sigils = this.sigils.toArray(new Sigil[0]);
+				int si = 0;
+				for(int i = 0; i<list.size(); i++){
+					if(si>=sigils.length) list.remove(i--);
+					else if(list.getString(i).equals(Objects.requireNonNull(sigils[si].getRegistryName()).toString())) si++;
+					else list.remove(i--); // Assume it's deleted
 				}
+				for(; si<sigils.length; si++)
+					list.add(StringNBT.valueOf(Objects.requireNonNull(sigils[si].getRegistryName()).toString()));
 			}
-			while(it.hasNext()){
-				Sigil n = it.next();
-				list.add(StringNBT.valueOf(Objects.requireNonNull(n.getRegistryName()).toString()));
-			}
+			InfernoReborn.LOGGER.debug("Shit {}\n{}\n{}", tagBefore, tag, sigils.stream()
+					.map(s -> Objects.requireNonNull(s.getRegistryName()).toString())
+					.collect(Collectors.joining(", ")));
 		}
 	}
 
@@ -161,7 +157,7 @@ public class ItemSigilHolder implements SigilHolder, ICapabilityProvider{
 	}
 	@Override public boolean remove(Sigil sigil){
 		readFromItem();
-		if(sigils==null||sigils.remove(sigil)) return false;
+		if(sigils==null||!sigils.remove(sigil)) return false;
 		if(sigils.isEmpty()) sigils = null;
 		writeSigils();
 		totalPointDirty = true;

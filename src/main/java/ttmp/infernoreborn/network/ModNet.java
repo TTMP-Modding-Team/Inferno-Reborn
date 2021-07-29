@@ -10,6 +10,7 @@ import net.minecraftforge.fml.network.NetworkDirection;
 import net.minecraftforge.fml.network.NetworkEvent;
 import net.minecraftforge.fml.network.NetworkRegistry;
 import net.minecraftforge.fml.network.simple.SimpleChannel;
+import ttmp.infernoreborn.InfernoReborn;
 import ttmp.infernoreborn.capability.TickingTaskHandler;
 import ttmp.infernoreborn.client.ParticlePlacingTask;
 import ttmp.infernoreborn.client.screen.EssenceHolderScreen;
@@ -17,6 +18,8 @@ import ttmp.infernoreborn.contents.ability.Ability;
 import ttmp.infernoreborn.contents.ability.generator.AbilityGenerators;
 import ttmp.infernoreborn.contents.ability.holder.ClientAbilityHolder;
 import ttmp.infernoreborn.contents.container.EssenceHolderContainer;
+import ttmp.infernoreborn.contents.container.SigilScrapperContainer;
+import ttmp.infernoreborn.contents.sigil.holder.SigilHolder;
 import ttmp.infernoreborn.util.EssenceHolder;
 import ttmp.infernoreborn.util.EssenceType;
 
@@ -50,6 +53,9 @@ public final class ModNet{
 		CHANNEL.registerMessage(4, ParticleMsg.class,
 				ParticleMsg::write, ParticleMsg::read,
 				Client::handleParticle, Optional.of(NetworkDirection.PLAY_TO_CLIENT));
+		CHANNEL.registerMessage(5, ScrapSigilMsg.class,
+				ScrapSigilMsg::write, ScrapSigilMsg::read,
+				Server::handleScrapSigil, Optional.of(NetworkDirection.PLAY_TO_SERVER));
 	}
 
 	private static final class Server{
@@ -59,12 +65,21 @@ public final class ModNet{
 			ctx.get().setPacketHandled(true);
 			ctx.get().enqueueWork(() -> {
 				ServerPlayerEntity sender = ctx.get().getSender();
-				if(sender==null) return;
-				if(!(sender.containerMenu instanceof EssenceHolderContainer)){
-					return;
-				}
+				if(sender==null||!(sender.containerMenu instanceof EssenceHolderContainer)) return;
 				EssenceHolderContainer container = (EssenceHolderContainer)sender.containerMenu;
 				container.handleEssenceHolderSlotClick(msg.getSlot(), msg.getType(), msg.isShift());
+			});
+		}
+
+		public static void handleScrapSigil(ScrapSigilMsg msg, Supplier<NetworkEvent.Context> ctx){
+			ctx.get().setPacketHandled(true);
+			InfernoReborn.LOGGER.debug("wr awfd {}", msg.getSigil());
+			if(msg.getSigil()!=null) ctx.get().enqueueWork(() -> {
+				ServerPlayerEntity sender = ctx.get().getSender();
+				if(sender==null||!(sender.containerMenu instanceof SigilScrapperContainer)) return;
+				SigilScrapperContainer container = (SigilScrapperContainer)sender.containerMenu;
+				SigilHolder h = container.getSigilHolder();
+				if(h!=null) h.remove(msg.getSigil());
 			});
 		}
 	}

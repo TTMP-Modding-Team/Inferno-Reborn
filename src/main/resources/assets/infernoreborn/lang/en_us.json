@@ -78,6 +78,7 @@
 	"block.infernoreborn.sigil_engraving_table_3x3": "Sigil Engraving Table 3x3",
 	"block.infernoreborn.sigil_engraving_table_5x5": "Sigil Engraving Table 5x5",
 	"block.infernoreborn.sigil_engraving_table_7x7": "Sigil Engraving Table 7x7",
+	"block.infernoreborn.sigil_scrapper": "Sigil Scrapper",
 	"block.infernoreborn.foundry_tile": "Foundry Tile",
 	"block.infernoreborn.foundry": "Foundry",
 	"block.infernoreborn.golden_skull": "Golden Skull",
@@ -93,6 +94,7 @@
 	"tooltip.infernoreborn.sigil_engraved.collapsed": " [§6Alt§r to expand]",
 	"tooltip.infernoreborn.sigil_engraved.entry": "  * %s (%s)",
 	"tooltip.infernoreborn.sigil.points": "Required Slots: %s",
+	"tooltip.infernoreborn.sigil_scrapper": "Press for 1 second to scrap",
 
 	"ability.infernoreborn.heart": "Heart",
 	"ability.infernoreborn.heart2": "Heart+",
@@ -213,6 +215,7 @@
 	"container.infernoreborn.book_of_the_unspeakable": "Book of the Unspeakable",
 	"container.infernoreborn.sigil_engraving_table": "Sigil Engraving Table",
 	"container.infernoreborn.foundry": "Foundry",
+	"container.infernoreborn.sigil_scrapper": "Sigil Scrapper",
 
 	"infernoreborn.ranged_attack": "Ranged Attack Damage",
 	"infernoreborn.magic_attack": "Magic Attack Damage",
