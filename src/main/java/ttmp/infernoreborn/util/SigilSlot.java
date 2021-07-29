@@ -3,7 +3,10 @@ package ttmp.infernoreborn.util;
 import net.minecraft.entity.MobEntity;
 import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.text.TranslationTextComponent;
 import top.theillusivec4.curios.api.CuriosApi;
+
+import java.util.Locale;
 
 public enum SigilSlot{
 	/**
@@ -89,6 +92,10 @@ public enum SigilSlot{
 
 	public boolean isAvailableWithoutItem(){
 		return this==ANY||this==BODY;
+	}
+
+	public TranslationTextComponent getName(){
+		return new TranslationTextComponent("tooltip.infernoreborn.sigil.slot."+this.name().toLowerCase(Locale.ROOT));
 	}
 
 	public static SigilSlot of(EquipmentSlotType equipmentSlotType){

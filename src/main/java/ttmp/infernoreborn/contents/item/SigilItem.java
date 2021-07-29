@@ -9,13 +9,17 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.util.text.Style;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.Constants;
+import ttmp.infernoreborn.client.color.ColorUtils;
 import ttmp.infernoreborn.contents.ModItems;
 import ttmp.infernoreborn.contents.Sigils;
 import ttmp.infernoreborn.contents.sigil.Sigil;
+import ttmp.infernoreborn.util.SigilSlot;
 
 import javax.annotation.Nullable;
 import java.util.List;
@@ -48,7 +52,20 @@ public class SigilItem extends Item{
 	@Override public void appendHoverText(ItemStack stack, @Nullable World level, List<ITextComponent> text, ITooltipFlag flags){
 		Sigil sigil = getSigil(stack);
 		if(sigil==null) return;
-		text.add(new TranslationTextComponent("tooltip.infernoreborn.sigil.points", sigil.getPoint()).withStyle(TextFormatting.GOLD));
+		text.add(new TranslationTextComponent("tooltip.infernoreborn.sigil.points",
+				new StringTextComponent(String.valueOf(sigil.getPoint()))
+						.withStyle(TextFormatting.GOLD))
+				.withStyle(Style.EMPTY.withColor(ColorUtils.SIGIL_TEXT_COLOR)));
+		StringTextComponent slots = new StringTextComponent("");
+		slots.withStyle(TextFormatting.GOLD);
+		boolean first = true;
+		for(SigilSlot slot : sigil.getApplicableSlots()){
+			if(first) first = false;
+			else slots.append(", ");
+			slots.append(slot.getName());
+		}
+		text.add(new TranslationTextComponent("tooltip.infernoreborn.sigil.slots", slots)
+				.withStyle(Style.EMPTY.withColor(ColorUtils.SIGIL_TEXT_COLOR)));
 	}
 
 	@Nullable public static Sigil getSigil(ItemStack stack){
