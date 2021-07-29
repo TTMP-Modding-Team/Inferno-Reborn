@@ -47,6 +47,7 @@ public class McmetaGen implements IDataProvider{
 		add(new ResourceLocation(MODID, "block/foundry/firebox_on"), mcmeta(10, true));
 		add(new ResourceLocation(MODID, "item/essence_holder_0"), mcmeta(20, true));
 		add(new ResourceLocation(MODID, "item/essence_holder_1"), mcmeta(20, true));
+		add(new ResourceLocation(MODID, "item/judgement"), mcmeta(3, false));
 	}
 
 	@Override public void run(DirectoryCache directoryCache){

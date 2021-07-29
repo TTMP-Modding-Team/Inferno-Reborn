@@ -113,7 +113,9 @@ mixin {
 
 dependencies {
     minecraft 'net.minecraftforge:forge:1.16.5-36.1.25'
-    annotationProcessor 'org.spongepowered:mixin:0.8.2:processor'
+    if(System.getProperty("idea.sync.active")!="true") {
+        annotationProcessor 'org.spongepowered:mixin:0.8.2:processor'
+    }
 }
 
 // Example for how to get properties into the manifest for reading by the runtime..

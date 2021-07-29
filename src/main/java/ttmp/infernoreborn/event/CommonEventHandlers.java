@@ -30,6 +30,8 @@ import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.LogicalSide;
 import net.minecraftforge.fml.common.Mod;
+import ttmp.infernoreborn.capability.MobCapability;
+import ttmp.infernoreborn.capability.PlayerCapability;
 import ttmp.infernoreborn.capability.ShieldHolder;
 import ttmp.infernoreborn.capability.SimpleTickingTaskHandler;
 import ttmp.infernoreborn.capability.TickingTaskHandler;
@@ -59,7 +61,8 @@ public class CommonEventHandlers{
 
 	private static final ResourceLocation ABILITY_HOLDER_KEY = new ResourceLocation(MODID, "ability_holder");
 	private static final ResourceLocation SIGIL_HOLDER_KEY = new ResourceLocation(MODID, "sigil_holder");
-	private static final ResourceLocation SHIELD_HOLDER_KEY = new ResourceLocation(MODID, "shield_holder");
+	private static final ResourceLocation PLAYER_CAP_KEY = new ResourceLocation(MODID, "player");
+	private static final ResourceLocation MOB_CAP_KEY = new ResourceLocation(MODID, "mob");
 	private static final ResourceLocation TICKING_TASK_HANDLER_KEY = new ResourceLocation(MODID, "ticking_task_handler");
 
 	private static final ArmorSet CRIMSON_ARMOR_SET = new ArmorSet.ItemSet(null, ModItems.CRIMSON_CHESTPLATE, ModItems.CRIMSON_LEGGINGS, ModItems.CRIMSON_BOOTS);
@@ -69,9 +72,14 @@ public class CommonEventHandlers{
 	public static void attachEntityCapabilities(AttachCapabilitiesEvent<Entity> event){
 		Entity e = event.getObject();
 		if(!(e instanceof LivingEntity)) return;
-		event.addCapability(SHIELD_HOLDER_KEY, new ShieldHolder((LivingEntity)e));
-		if(e instanceof PlayerEntity) event.addCapability(SIGIL_HOLDER_KEY, new PlayerSigilHolder((PlayerEntity)e));
-		else event.addCapability(ABILITY_HOLDER_KEY, e.level.isClientSide ? new ClientAbilityHolder() : new ServerAbilityHolder());
+		if(e instanceof PlayerEntity){
+			PlayerEntity p = (PlayerEntity)e;
+			event.addCapability(SIGIL_HOLDER_KEY, new PlayerSigilHolder(p));
+			event.addCapability(PLAYER_CAP_KEY, new PlayerCapability(p));
+		}else{
+			event.addCapability(ABILITY_HOLDER_KEY, e.level.isClientSide ? new ClientAbilityHolder() : new ServerAbilityHolder());
+			event.addCapability(MOB_CAP_KEY, new MobCapability((LivingEntity)e));
+		}
 	}
 
 	@SubscribeEvent

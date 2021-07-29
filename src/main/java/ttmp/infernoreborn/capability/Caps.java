@@ -19,4 +19,6 @@ public final class Caps{
 	public static Capability<ShieldHolder> shieldHolder;
 	@CapabilityInject(TickingTaskHandler.class)
 	public static Capability<TickingTaskHandler> tickingTaskHandler;
+	@CapabilityInject(PlayerCapability.class)
+	public static Capability<PlayerCapability> playerCapability;
 }

@@ -70,6 +70,10 @@ public class ItemModelGen extends ItemModelProvider{
 		simpleItem(ModItems.SIGIL.get());
 
 		withExistingParent(ModItems.GOLDEN_SKULL.getId().getPath(), "item/template_skull");
+		item(ModItems.JUDGEMENT.getId().getPath(), new ResourceLocation(MODID, "item/judgement"))
+				.override()
+				.predicate(new ResourceLocation("off"), 1)
+				.model(item("item/judgement_off", new ResourceLocation(MODID, "item/judgement_off")));
 	}
 
 	protected ItemModelBuilder simpleItem(Item item){

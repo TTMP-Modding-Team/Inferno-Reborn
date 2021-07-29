@@ -23,6 +23,7 @@ import ttmp.infernoreborn.contents.item.FixedAbilityItem;
 import ttmp.infernoreborn.contents.item.FoundryBlockItem;
 import ttmp.infernoreborn.contents.item.GeneratorAbilityItem;
 import ttmp.infernoreborn.contents.item.ItemThanatosBelt;
+import ttmp.infernoreborn.contents.item.JudgementItem;
 import ttmp.infernoreborn.contents.item.RandomAbilityItem;
 import ttmp.infernoreborn.contents.item.SigilItem;
 import ttmp.infernoreborn.contents.item.TheBookItem;
@@ -91,6 +92,8 @@ public final class ModItems{
 
 	public static final RegistryObject<Item> ESSENCE_HOLDER = REGISTER.register("essence_holder", () -> new EssenceHolderItem(artifacts(Rarity.UNCOMMON).stacksTo(1)));
 
+	public static final RegistryObject<Item> JUDGEMENT = REGISTER.register("judgement", () -> new JudgementItem(artifacts(Rarity.EPIC).stacksTo(1)));
+
 	public static final RegistryObject<Item> EXPLOSIVE_SWORD = REGISTER.register("explosive_sword", () -> new ExplosiveSwordItem(artifacts(Rarity.RARE)));
 
 	public static final RegistryObject<Item> CRIMSON_CLAYMORE = REGISTER.register("crimson_claymore", () -> new CrimsonClaymoreItem(artifacts(Rarity.RARE)));
@@ -103,11 +106,6 @@ public final class ModItems{
 	public static final RegistryObject<Item> BERSERKER_CHESTPLATE = REGISTER.register("berserker_chestplate", () -> new BerserkerArmorItem(EquipmentSlotType.CHEST, artifacts(Rarity.UNCOMMON)));
 	public static final RegistryObject<Item> BERSERKER_LEGGINGS = REGISTER.register("berserker_leggings", () -> new BerserkerArmorItem(EquipmentSlotType.LEGS, artifacts(Rarity.UNCOMMON)));
 	public static final RegistryObject<Item> BERSERKER_BOOTS = REGISTER.register("berserker_boots", () -> new BerserkerArmorItem(EquipmentSlotType.FEET, artifacts(Rarity.UNCOMMON)));
-
-	public static final RegistryObject<BlockItem> SIGIL_ENGRAVING_TABLE_3X3 = REGISTER.register("sigil_engraving_table_3x3", () -> new BlockItem(ModBlocks.SIGIL_ENGRAVING_TABLE_3X3.get(), artifacts()));
-	public static final RegistryObject<BlockItem> SIGIL_ENGRAVING_TABLE_5X5 = REGISTER.register("sigil_engraving_table_5x5", () -> new BlockItem(ModBlocks.SIGIL_ENGRAVING_TABLE_5X5.get(), artifacts()));
-	public static final RegistryObject<BlockItem> SIGIL_ENGRAVING_TABLE_7X7 = REGISTER.register("sigil_engraving_table_7x7", () -> new BlockItem(ModBlocks.SIGIL_ENGRAVING_TABLE_7X7.get(), artifacts()));
-	public static final RegistryObject<BlockItem> SIGIL_SCRAPPER = REGISTER.register("sigil_scrapper", () -> new BlockItem(ModBlocks.SIGIL_SCRAPPER.get(), artifacts()));
 
 	public static final RegistryObject<Item> BLOOD_ESSENCE_SHARD = essence(EssenceType.BLOOD, EssenceSize.SHARD);
 	public static final RegistryObject<Item> BLOOD_ESSENCE_CRYSTAL = essence(EssenceType.BLOOD, EssenceSize.CRYSTAL);
@@ -149,6 +147,11 @@ public final class ModItems{
 	public static final RegistryObject<Item> DAMASCUS_STEEL_INGOT = REGISTER.register("damascus_steel_ingot", () -> new Item(materials(Rarity.UNCOMMON)));
 	public static final RegistryObject<Item> DAMASCUS_STEEL_NUGGET = REGISTER.register("damascus_steel_nugget", () -> new Item(materials(Rarity.UNCOMMON)));
 	public static final RegistryObject<BlockItem> DAMASCUS_STEEL_BLOCK = REGISTER.register("damascus_steel_block", () -> new BlockItem(ModBlocks.DAMASCUS_STEEL_BLOCK.get(), materials(Rarity.UNCOMMON)));
+
+	public static final RegistryObject<BlockItem> SIGIL_ENGRAVING_TABLE_3X3 = REGISTER.register("sigil_engraving_table_3x3", () -> new BlockItem(ModBlocks.SIGIL_ENGRAVING_TABLE_3X3.get(), artifacts()));
+	public static final RegistryObject<BlockItem> SIGIL_ENGRAVING_TABLE_5X5 = REGISTER.register("sigil_engraving_table_5x5", () -> new BlockItem(ModBlocks.SIGIL_ENGRAVING_TABLE_5X5.get(), artifacts()));
+	public static final RegistryObject<BlockItem> SIGIL_ENGRAVING_TABLE_7X7 = REGISTER.register("sigil_engraving_table_7x7", () -> new BlockItem(ModBlocks.SIGIL_ENGRAVING_TABLE_7X7.get(), artifacts()));
+	public static final RegistryObject<BlockItem> SIGIL_SCRAPPER = REGISTER.register("sigil_scrapper", () -> new BlockItem(ModBlocks.SIGIL_SCRAPPER.get(), artifacts()));
 
 	public static final RegistryObject<Item> FOUNDRY_TILE = REGISTER.register("foundry_tile", () -> new BlockItem(ModBlocks.FOUNDRY_TILE.get(), artifacts()));
 	public static final RegistryObject<Item> FOUNDRY = REGISTER.register("foundry", () -> new FoundryBlockItem(ModBlocks.FOUNDRY.get(), artifacts().setISTER(() -> () -> FoundryISTER.INSTANCE)));

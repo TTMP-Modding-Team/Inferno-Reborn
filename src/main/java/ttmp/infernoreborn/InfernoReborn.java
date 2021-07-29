@@ -30,6 +30,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import top.theillusivec4.curios.api.SlotTypeMessage;
 import top.theillusivec4.curios.api.SlotTypePreset;
+import ttmp.infernoreborn.capability.PlayerCapability;
 import ttmp.infernoreborn.capability.ShieldHolder;
 import ttmp.infernoreborn.capability.TickingTaskHandler;
 import ttmp.infernoreborn.client.color.EssenceHolderBookSparkColor;
@@ -56,6 +57,7 @@ import ttmp.infernoreborn.contents.ModTileEntities;
 import ttmp.infernoreborn.contents.Sigils;
 import ttmp.infernoreborn.contents.ability.holder.AbilityHolder;
 import ttmp.infernoreborn.contents.block.GoldenSkullBlock;
+import ttmp.infernoreborn.contents.item.JudgementItem;
 import ttmp.infernoreborn.contents.sigil.holder.SigilHolder;
 import ttmp.infernoreborn.datagen.AbilityGeneratorDataProvider;
 import ttmp.infernoreborn.datagen.BlockModelGen;
@@ -109,6 +111,7 @@ public class InfernoReborn{
 			registerDefaultCapability(SigilHolder.class);
 			registerDefaultCapability(ShieldHolder.class);
 			registerDefaultCapability(TickingTaskHandler.class);
+			registerDefaultCapability(PlayerCapability.class);
 		});
 	}
 
@@ -159,6 +162,8 @@ public class InfernoReborn{
 
 				ItemModelsProperties.register(ModItems.EXPLOSIVE_SWORD.get(), new ResourceLocation("using"),
 						(stack, world, entity) -> entity!=null&&entity.isUsingItem()&&entity.getUseItem()==stack ? 1 : 0);
+				ItemModelsProperties.register(ModItems.JUDGEMENT.get(), new ResourceLocation("off"),
+						(stack, world, entity) -> entity==null||JudgementItem.isOff(stack) ? 1 : 0);
 
 				RenderTypeLookup.setRenderLayer(ModBlocks.FOUNDRY_MOLD_1.get(), RenderType.cutout());
 				RenderTypeLookup.setRenderLayer(ModBlocks.FOUNDRY_MOLD_2.get(), RenderType.cutout());
