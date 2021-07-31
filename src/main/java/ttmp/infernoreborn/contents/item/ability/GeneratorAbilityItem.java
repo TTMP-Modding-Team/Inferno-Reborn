@@ -1,4 +1,4 @@
-package ttmp.infernoreborn.contents.item;
+package ttmp.infernoreborn.contents.item.ability;
 
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.LivingEntity;

@@ -3,7 +3,7 @@ package ttmp.infernoreborn.client.color;
 import net.minecraft.client.renderer.color.IItemColor;
 import net.minecraft.item.ItemStack;
 import ttmp.infernoreborn.contents.ability.Ability;
-import ttmp.infernoreborn.contents.item.FixedAbilityItem;
+import ttmp.infernoreborn.contents.item.ability.FixedAbilityItem;
 
 public class SparkColor implements IItemColor{
 	@Override public int getColor(ItemStack stack, int i){

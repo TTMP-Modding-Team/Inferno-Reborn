@@ -17,7 +17,7 @@ import ttmp.infernoreborn.contents.Abilities;
 import ttmp.infernoreborn.contents.ModItems;
 import ttmp.infernoreborn.contents.Sigils;
 import ttmp.infernoreborn.contents.ability.Ability;
-import ttmp.infernoreborn.contents.item.FixedAbilityItem;
+import ttmp.infernoreborn.contents.item.ability.FixedAbilityItem;
 import ttmp.infernoreborn.contents.item.SigilItem;
 import ttmp.infernoreborn.contents.sigil.Sigil;
 import ttmp.infernoreborn.datagen.builder.book.BookBuilder;

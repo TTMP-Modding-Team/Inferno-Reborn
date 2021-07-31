@@ -9,7 +9,7 @@ import net.minecraft.world.World;
 import ttmp.infernoreborn.contents.ability.Ability;
 import ttmp.infernoreborn.contents.ModItems;
 import ttmp.infernoreborn.contents.ModRecipes;
-import ttmp.infernoreborn.contents.item.FixedAbilityItem;
+import ttmp.infernoreborn.contents.item.ability.FixedAbilityItem;
 
 import java.util.Collections;
 import java.util.HashSet;
