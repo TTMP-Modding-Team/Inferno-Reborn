@@ -43,6 +43,8 @@ public class LootTableGen extends LootTableProvider{
 			dropSelf(ModBlocks.FOUNDRY_TILE.get());
 			add(ModBlocks.FOUNDRY.get(), b -> createNameableBlockEntityTable(ModBlocks.FOUNDRY.get()));
 
+			dropSelf(ModBlocks.ESSENCE_HOLDER.get());
+
 			dropSelf(ModBlocks.DAMASCUS_STEEL_BLOCK.get());
 			add(ModBlocks.GOLDEN_SKULL.get(), b -> createNameableBlockEntityTable(ModBlocks.GOLDEN_SKULL.get()));
 		}

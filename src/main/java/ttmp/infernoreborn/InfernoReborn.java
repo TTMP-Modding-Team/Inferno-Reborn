@@ -30,6 +30,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import top.theillusivec4.curios.api.SlotTypeMessage;
 import top.theillusivec4.curios.api.SlotTypePreset;
+import ttmp.infernoreborn.capability.EssenceNetProvider;
 import ttmp.infernoreborn.capability.PlayerCapability;
 import ttmp.infernoreborn.capability.ShieldHolder;
 import ttmp.infernoreborn.capability.TickingTaskHandler;
@@ -112,6 +113,7 @@ public class InfernoReborn{
 			registerDefaultCapability(ShieldHolder.class);
 			registerDefaultCapability(TickingTaskHandler.class);
 			registerDefaultCapability(PlayerCapability.class);
+			registerDefaultCapability(EssenceNetProvider.class);
 		});
 	}
 

@@ -9,6 +9,7 @@ import net.minecraft.world.IBlockReader;
 import net.minecraftforge.fml.RegistryObject;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
+import ttmp.infernoreborn.contents.block.EssenceHolderBlock;
 import ttmp.infernoreborn.contents.block.FoundryBlock;
 import ttmp.infernoreborn.contents.block.GoldenSkullBlock;
 import ttmp.infernoreborn.contents.block.GoldenWallSkullBlock;
@@ -57,6 +58,9 @@ public final class ModBlocks{
 			Properties.of(Material.STONE).requiresCorrectToolForDrops().strength(3.5f).noDrops().dynamicShape()));
 	public static final RegistryObject<FoundryBlock.ProxyBlock> FOUNDRY_MOLD_2 = REGISTER.register("foundry_mold_2", () -> new FoundryBlock.MoldProxyBlock2(1, 0, 1,
 			Properties.of(Material.STONE).requiresCorrectToolForDrops().strength(3.5f).noDrops().dynamicShape()));
+
+	public static final RegistryObject<Block> ESSENCE_HOLDER = REGISTER.register("essence_holder", () -> new EssenceHolderBlock(
+			Properties.of(Material.GLASS).strength(1.5f).dynamicShape()));
 
 	public static final RegistryObject<Block> DAMASCUS_STEEL_BLOCK = REGISTER.register("damascus_steel_block", () -> new Block(
 			Properties.of(Material.METAL).requiresCorrectToolForDrops().strength(5, 6).sound(SoundType.METAL)));

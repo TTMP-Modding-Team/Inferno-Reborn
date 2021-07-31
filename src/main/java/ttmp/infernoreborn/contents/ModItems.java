@@ -156,6 +156,8 @@ public final class ModItems{
 	public static final RegistryObject<Item> FOUNDRY_TILE = REGISTER.register("foundry_tile", () -> new BlockItem(ModBlocks.FOUNDRY_TILE.get(), artifacts()));
 	public static final RegistryObject<Item> FOUNDRY = REGISTER.register("foundry", () -> new FoundryBlockItem(ModBlocks.FOUNDRY.get(), artifacts().setISTER(() -> () -> FoundryISTER.INSTANCE)));
 
+	public static final RegistryObject<Item> ESSENCE_HOLDER_BLOCk = REGISTER.register("essence_holder_block", () -> new BlockItem(ModBlocks.ESSENCE_HOLDER.get(), artifacts()));
+
 	public static final RegistryObject<Item> SIGIL = REGISTER.register("sigil", () -> new SigilItem(sigils()));
 
 	public static final RegistryObject<Item> CURIO_TEST = REGISTER.register("curio_test", () -> new Item(artifacts(Rarity.EPIC)));

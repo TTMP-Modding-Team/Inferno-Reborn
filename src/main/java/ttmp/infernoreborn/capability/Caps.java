@@ -21,4 +21,6 @@ public final class Caps{
 	public static Capability<TickingTaskHandler> tickingTaskHandler;
 	@CapabilityInject(PlayerCapability.class)
 	public static Capability<PlayerCapability> playerCapability;
+	@CapabilityInject(EssenceNetProvider.class)
+	public static Capability<EssenceNetProvider> essenceNetProvider;
 }
