@@ -15,6 +15,9 @@ import ttmp.infernoreborn.contents.block.GoldenSkullBlock;
 import ttmp.infernoreborn.contents.block.GoldenWallSkullBlock;
 import ttmp.infernoreborn.contents.block.SigilEngravingTableBlock;
 import ttmp.infernoreborn.contents.block.SigilScrapperBlock;
+import ttmp.infernoreborn.contents.block.essencenet.EssenceNetCoreBlock;
+import ttmp.infernoreborn.contents.block.essencenet.EssenceNetExporterBlock;
+import ttmp.infernoreborn.contents.block.essencenet.EssenceNetImporterBlock;
 import ttmp.infernoreborn.contents.tile.SigilEngravingTableTile;
 
 import static net.minecraft.state.properties.BlockStateProperties.LIT;
@@ -60,6 +63,12 @@ public final class ModBlocks{
 			Properties.of(Material.STONE).requiresCorrectToolForDrops().strength(3.5f).noDrops().dynamicShape()));
 
 	public static final RegistryObject<Block> ESSENCE_HOLDER = REGISTER.register("essence_holder", () -> new EssenceHolderBlock(
+			Properties.of(Material.GLASS).strength(1.5f).dynamicShape()));
+	public static final RegistryObject<Block> ESSENCE_NET_CORE = REGISTER.register("essence_net_core", () -> new EssenceNetCoreBlock(
+			Properties.of(Material.GLASS).strength(1.5f).dynamicShape()));
+	public static final RegistryObject<Block> ESSENCE_NET_IMPORTER = REGISTER.register("essence_net_importer", () -> new EssenceNetImporterBlock(
+			Properties.of(Material.GLASS).strength(1.5f).dynamicShape()));
+	public static final RegistryObject<Block> ESSENCE_NET_EXPORTER = REGISTER.register("essence_net_exporter", () -> new EssenceNetExporterBlock(
 			Properties.of(Material.GLASS).strength(1.5f).dynamicShape()));
 
 	public static final RegistryObject<Block> DAMASCUS_STEEL_BLOCK = REGISTER.register("damascus_steel_block", () -> new Block(

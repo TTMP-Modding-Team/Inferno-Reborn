@@ -58,6 +58,7 @@ import ttmp.infernoreborn.contents.ModTileEntities;
 import ttmp.infernoreborn.contents.Sigils;
 import ttmp.infernoreborn.contents.ability.holder.AbilityHolder;
 import ttmp.infernoreborn.contents.block.GoldenSkullBlock;
+import ttmp.infernoreborn.contents.item.EssenceNetAccessorItem;
 import ttmp.infernoreborn.contents.item.JudgementItem;
 import ttmp.infernoreborn.contents.sigil.holder.SigilHolder;
 import ttmp.infernoreborn.datagen.AbilityGeneratorDataProvider;
@@ -114,6 +115,7 @@ public class InfernoReborn{
 			registerDefaultCapability(TickingTaskHandler.class);
 			registerDefaultCapability(PlayerCapability.class);
 			registerDefaultCapability(EssenceNetProvider.class);
+			registerDefaultCapability(EssenceNetAccessorItem.Data.class);
 		});
 	}
 

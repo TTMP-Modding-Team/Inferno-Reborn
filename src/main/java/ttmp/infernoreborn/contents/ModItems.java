@@ -12,21 +12,23 @@ import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import ttmp.infernoreborn.client.render.FoundryISTER;
 import ttmp.infernoreborn.client.render.GoldenSkullISTER;
-import ttmp.infernoreborn.contents.item.armor.BerserkerArmorItem;
-import ttmp.infernoreborn.contents.item.armor.CrimsonArmorItem;
 import ttmp.infernoreborn.contents.item.CrimsonClaymoreItem;
 import ttmp.infernoreborn.contents.item.DragonSlayerItem;
 import ttmp.infernoreborn.contents.item.EssenceHolderBookItem;
 import ttmp.infernoreborn.contents.item.EssenceHolderItem;
+import ttmp.infernoreborn.contents.item.EssenceNetAccessorItem;
+import ttmp.infernoreborn.contents.item.EssenceNetBlockItem;
 import ttmp.infernoreborn.contents.item.ExplosiveSwordItem;
-import ttmp.infernoreborn.contents.item.ability.FixedAbilityItem;
 import ttmp.infernoreborn.contents.item.FoundryBlockItem;
-import ttmp.infernoreborn.contents.item.ability.GeneratorAbilityItem;
 import ttmp.infernoreborn.contents.item.ItemThanatosBelt;
 import ttmp.infernoreborn.contents.item.JudgementItem;
-import ttmp.infernoreborn.contents.item.ability.RandomAbilityItem;
 import ttmp.infernoreborn.contents.item.SigilItem;
 import ttmp.infernoreborn.contents.item.TheBookItem;
+import ttmp.infernoreborn.contents.item.ability.FixedAbilityItem;
+import ttmp.infernoreborn.contents.item.ability.GeneratorAbilityItem;
+import ttmp.infernoreborn.contents.item.ability.RandomAbilityItem;
+import ttmp.infernoreborn.contents.item.armor.BerserkerArmorItem;
+import ttmp.infernoreborn.contents.item.armor.CrimsonArmorItem;
 import ttmp.infernoreborn.util.EssenceSize;
 import ttmp.infernoreborn.util.EssenceType;
 
@@ -156,7 +158,11 @@ public final class ModItems{
 	public static final RegistryObject<Item> FOUNDRY_TILE = REGISTER.register("foundry_tile", () -> new BlockItem(ModBlocks.FOUNDRY_TILE.get(), artifacts()));
 	public static final RegistryObject<Item> FOUNDRY = REGISTER.register("foundry", () -> new FoundryBlockItem(ModBlocks.FOUNDRY.get(), artifacts().setISTER(() -> () -> FoundryISTER.INSTANCE)));
 
-	public static final RegistryObject<Item> ESSENCE_HOLDER_BLOCk = REGISTER.register("essence_holder_block", () -> new BlockItem(ModBlocks.ESSENCE_HOLDER.get(), artifacts()));
+	public static final RegistryObject<Item> ESSENCE_HOLDER_BLOCK = REGISTER.register("essence_holder_block", () -> new BlockItem(ModBlocks.ESSENCE_HOLDER.get(), artifacts()));
+	public static final RegistryObject<Item> ESSENCE_NET_CORE = REGISTER.register("essence_net_core", () -> new BlockItem(ModBlocks.ESSENCE_NET_CORE.get(), artifacts().stacksTo(1)));
+	public static final RegistryObject<Item> ESSENCE_NET_ACCESSOR = REGISTER.register("essence_net_accessor", () -> new EssenceNetAccessorItem(artifacts().stacksTo(1)));
+	public static final RegistryObject<Item> ESSENCE_NET_IMPORTER = REGISTER.register("essence_net_importer", () -> new EssenceNetBlockItem(ModBlocks.ESSENCE_NET_IMPORTER.get(), artifacts()));
+	public static final RegistryObject<Item> ESSENCE_NET_EXPORTER = REGISTER.register("essence_net_exporter", () -> new EssenceNetBlockItem(ModBlocks.ESSENCE_NET_EXPORTER.get(), artifacts()));
 
 	public static final RegistryObject<Item> SIGIL = REGISTER.register("sigil", () -> new SigilItem(sigils()));
 

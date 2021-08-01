@@ -5,6 +5,9 @@ import net.minecraftforge.fml.RegistryObject;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import ttmp.infernoreborn.contents.tile.EssenceHolderTile;
+import ttmp.infernoreborn.contents.tile.EssenceNetCoreTile;
+import ttmp.infernoreborn.contents.tile.EssenceNetExporterTile;
+import ttmp.infernoreborn.contents.tile.EssenceNetImporterTile;
 import ttmp.infernoreborn.contents.tile.FoundryProxyTile;
 import ttmp.infernoreborn.contents.tile.FoundryTile;
 import ttmp.infernoreborn.contents.tile.GoldenSkullTile;
@@ -34,8 +37,14 @@ public final class ModTileEntities{
 	public static final RegistryObject<TileEntityType<FoundryProxyTile>> FOUNDRY_MOLD_PROXY = REGISTER.register("foundry_mold_proxy", () ->
 			TileEntityType.Builder.of(FoundryProxyTile::moldProxy, ModBlocks.FOUNDRY_MOLD_1.get(), ModBlocks.FOUNDRY_MOLD_2.get()).build(null));
 
-	public static final RegistryObject<TileEntityType<EssenceHolderTile>> ESSENCE_HOLDER =REGISTER.register("essence_holder", () ->
-			TileEntityType.Builder.of(EssenceHolderTile::new, ModBlocks.ESSENCE_HOLDER.get(), ModBlocks.FOUNDRY_MOLD_2.get()).build(null));
+	public static final RegistryObject<TileEntityType<EssenceHolderTile>> ESSENCE_HOLDER = REGISTER.register("essence_holder", () ->
+			TileEntityType.Builder.of(EssenceHolderTile::new, ModBlocks.ESSENCE_HOLDER.get()).build(null));
+	public static final RegistryObject<TileEntityType<EssenceNetCoreTile>> ESSENCE_NET_CORE = REGISTER.register("essence_net_core", () ->
+			TileEntityType.Builder.of(EssenceNetCoreTile::new, ModBlocks.ESSENCE_NET_CORE.get()).build(null));
+	public static final RegistryObject<TileEntityType<EssenceNetImporterTile>> ESSENCE_NET_IMPORTER = REGISTER.register("essence_net_importer", () ->
+			TileEntityType.Builder.of(EssenceNetImporterTile::new, ModBlocks.ESSENCE_NET_IMPORTER.get()).build(null));
+	public static final RegistryObject<TileEntityType<EssenceNetExporterTile>> ESSENCE_NET_EXPORTER = REGISTER.register("essence_net_exporter", () ->
+			TileEntityType.Builder.of(EssenceNetExporterTile::new, ModBlocks.ESSENCE_NET_EXPORTER.get()).build(null));
 
 	public static final RegistryObject<TileEntityType<GoldenSkullTile>> GOLDEN_SKULL = REGISTER.register("golden_skull", () ->
 			TileEntityType.Builder.of(GoldenSkullTile::new, ModBlocks.GOLDEN_SKULL.get(), ModBlocks.GOLDEN_WALL_SKULL.get()).build(null));

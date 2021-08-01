@@ -21,6 +21,7 @@ import ttmp.infernoreborn.contents.container.EssenceHolderContainerProvider;
 import ttmp.infernoreborn.util.EssenceType;
 import ttmp.infernoreborn.util.ExpandKey;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.List;
 
@@ -34,7 +35,7 @@ public class EssenceHolderItem extends Item{
 			private final EssenceHolder essenceHolder = new EssenceHolder();
 			private final LazyOptional<EssenceHolder> self = LazyOptional.of(() -> essenceHolder);
 
-			@Override public <T> LazyOptional<T> getCapability(Capability<T> cap, @Nullable Direction side){
+			@Nonnull @Override public <T> LazyOptional<T> getCapability(Capability<T> cap, @Nullable Direction side){
 				return Caps.essenceHolder==cap ? self.cast() : LazyOptional.empty();
 			}
 
@@ -50,7 +51,7 @@ public class EssenceHolderItem extends Item{
 	@Override public ActionResult<ItemStack> use(World world, PlayerEntity player, Hand hand){
 		ItemStack stack = player.getItemInHand(hand);
 		if(!world.isClientSide) openGui(player, hand);
-		return ActionResult.success(stack);
+		return ActionResult.sidedSuccess(stack, world.isClientSide);
 	}
 
 	@Override public void appendHoverText(ItemStack stack, @Nullable World world, List<ITextComponent> text, ITooltipFlag flags){

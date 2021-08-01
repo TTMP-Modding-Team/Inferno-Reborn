@@ -17,4 +17,9 @@ public enum EssenceSize{
 				throw new IllegalStateException("Unreachable");
 		}
 	}
+
+	public static EssenceSize of(int ordinal){
+		EssenceSize[] values = values();
+		return values[ordinal%values.length];
+	}
 }

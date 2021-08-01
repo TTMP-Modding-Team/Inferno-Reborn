@@ -75,4 +75,8 @@ public enum EssenceType{
 				if(t.getItem(s)==item) return true;
 		return false;
 	}
+
+	public static EssenceType of(String id){
+		return valueOf(id.toUpperCase(Locale.ROOT));
+	}
 }

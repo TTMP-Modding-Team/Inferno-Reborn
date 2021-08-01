@@ -3,6 +3,7 @@ package ttmp.infernoreborn.capability;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityInject;
 import ttmp.infernoreborn.contents.ability.holder.AbilityHolder;
+import ttmp.infernoreborn.contents.item.EssenceNetAccessorItem;
 import ttmp.infernoreborn.contents.sigil.holder.SigilHolder;
 import ttmp.infernoreborn.util.EssenceHolder;
 
@@ -23,4 +24,6 @@ public final class Caps{
 	public static Capability<PlayerCapability> playerCapability;
 	@CapabilityInject(EssenceNetProvider.class)
 	public static Capability<EssenceNetProvider> essenceNetProvider;
+	@CapabilityInject(EssenceNetAccessorItem.Data.class)
+	public static Capability<EssenceNetAccessorItem.Data> essenceNetAccessorData;
 }

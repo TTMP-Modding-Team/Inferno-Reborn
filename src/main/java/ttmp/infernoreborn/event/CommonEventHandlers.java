@@ -30,6 +30,7 @@ import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.LogicalSide;
 import net.minecraftforge.fml.common.Mod;
+import ttmp.infernoreborn.capability.EssenceNetProvider;
 import ttmp.infernoreborn.capability.MobCapability;
 import ttmp.infernoreborn.capability.PlayerCapability;
 import ttmp.infernoreborn.capability.ShieldHolder;
@@ -64,6 +65,7 @@ public class CommonEventHandlers{
 	private static final ResourceLocation PLAYER_CAP_KEY = new ResourceLocation(MODID, "player");
 	private static final ResourceLocation MOB_CAP_KEY = new ResourceLocation(MODID, "mob");
 	private static final ResourceLocation TICKING_TASK_HANDLER_KEY = new ResourceLocation(MODID, "ticking_task_handler");
+	private static final ResourceLocation ESSENCE_NET = new ResourceLocation(MODID, "essence_net");
 
 	private static final ArmorSet CRIMSON_ARMOR_SET = new ArmorSet.ItemSet(null, ModItems.CRIMSON_CHESTPLATE, ModItems.CRIMSON_LEGGINGS, ModItems.CRIMSON_BOOTS);
 	private static final ArmorSet BERSERKER_ARMOR_SET = new ArmorSet.ItemSet(ModItems.BERSERKER_HELMET, ModItems.BERSERKER_CHESTPLATE, ModItems.BERSERKER_LEGGINGS, ModItems.BERSERKER_BOOTS);
@@ -90,6 +92,8 @@ public class CommonEventHandlers{
 	@SubscribeEvent
 	public static void attachWorldCapabilities(AttachCapabilitiesEvent<World> event){
 		event.addCapability(TICKING_TASK_HANDLER_KEY, new SimpleTickingTaskHandler());
+		if(event.getObject().dimension()==World.OVERWORLD)
+			event.addCapability(ESSENCE_NET, new EssenceNetProvider.Impl());
 	}
 
 	@SubscribeEvent
