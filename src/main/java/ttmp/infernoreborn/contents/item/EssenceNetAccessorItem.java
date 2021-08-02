@@ -1,5 +1,6 @@
 package ttmp.infernoreborn.contents.item;
 
+import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -8,10 +9,14 @@ import net.minecraft.nbt.IntNBT;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TextFormatting;
+import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.common.capabilities.ICapabilitySerializable;
+import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.common.util.LazyOptional;
 import ttmp.infernoreborn.capability.Caps;
 import ttmp.infernoreborn.capability.EssenceNetProvider;
@@ -21,6 +26,7 @@ import ttmp.infernoreborn.util.EssenceHolder;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.util.List;
 
 public class EssenceNetAccessorItem extends Item implements EssenceNetCoreBlock.EssenceNetAcceptable{
 	public EssenceNetAccessorItem(Properties properties){
@@ -40,6 +46,32 @@ public class EssenceNetAccessorItem extends Item implements EssenceNetCoreBlock.
 		if(!world.isClientSide&&stack.getCapability(Caps.essenceHolder).isPresent())
 			player.openMenu(new EssenceHolderContainerProvider(stack.getHoverName(), player, hand));
 		return ActionResult.sidedSuccess(stack, world.isClientSide);
+	}
+
+	@Override public void appendHoverText(ItemStack stack, @Nullable World level, List<ITextComponent> text, ITooltipFlag flag){
+		@SuppressWarnings("ConstantConditions") Data data = stack.getCapability(Caps.essenceNetAccessorData).orElse(null);
+		//noinspection ConstantConditions
+		if(data==null||data.networkId==0) text.add(new TranslationTextComponent("tooltip.infernoreborn.essence_network.no_network")
+				.withStyle(TextFormatting.DARK_RED));
+		else text.add(new TranslationTextComponent("tooltip.infernoreborn.essence_network", data.networkId)
+				.withStyle(TextFormatting.GOLD));
+	}
+
+	@Nullable @Override public CompoundNBT getShareTag(ItemStack stack){
+		CompoundNBT tag = stack.getTag();
+		@SuppressWarnings("ConstantConditions") Data data = stack.getCapability(Caps.essenceNetAccessorData).orElse(null);
+		//noinspection ConstantConditions
+		if(data!=null&&data.networkId!=0){
+			if(tag==null) tag = new CompoundNBT();
+			tag.putInt("EssenceNetworkID", data.networkId);
+		}
+		return tag;
+	}
+
+	@Override public void readShareTag(ItemStack stack, @Nullable CompoundNBT nbt){
+		if(nbt!=null&&nbt.contains("EssenceNetworkID", Constants.NBT.TAG_INT)){
+			stack.getCapability(Caps.essenceNetAccessorData).ifPresent(data -> data.setNetworkId(nbt.getInt("EssenceNetworkID")));
+		}
 	}
 
 	public static final class Data implements ICapabilitySerializable<IntNBT>{

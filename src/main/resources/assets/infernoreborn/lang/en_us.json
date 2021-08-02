@@ -107,6 +107,8 @@
 	"tooltip.infernoreborn.sigil.slot.feet": "Boots",
 	"tooltip.infernoreborn.sigil.slot.curio": "Accessories",
 	"tooltip.infernoreborn.sigil_scrapper": "Press for 1 second to scrap",
+	"tooltip.infernoreborn.essence_network.no_network": "No network set. Use Essence Network Core (TODO change name) to attune.",
+	"tooltip.infernoreborn.essence_network": "Network #%s",
 
 	"ability.infernoreborn.heart": "Heart",
 	"ability.infernoreborn.heart2": "Heart+",

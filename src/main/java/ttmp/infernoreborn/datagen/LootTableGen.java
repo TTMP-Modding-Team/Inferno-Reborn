@@ -5,13 +5,18 @@ import net.minecraft.block.Block;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.LootTableProvider;
 import net.minecraft.data.loot.BlockLootTables;
+import net.minecraft.loot.ConstantRange;
+import net.minecraft.loot.ItemLootEntry;
 import net.minecraft.loot.LootParameterSet;
 import net.minecraft.loot.LootParameterSets;
+import net.minecraft.loot.LootPool;
 import net.minecraft.loot.LootTable;
 import net.minecraft.loot.ValidationTracker;
+import net.minecraft.loot.functions.CopyNbt;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.RegistryObject;
 import ttmp.infernoreborn.contents.ModBlocks;
+import ttmp.infernoreborn.contents.item.EssenceNetBlockItem;
 
 import java.util.Collections;
 import java.util.List;
@@ -45,8 +50,22 @@ public class LootTableGen extends LootTableProvider{
 
 			dropSelf(ModBlocks.ESSENCE_HOLDER.get());
 
+			addEssenceNetworkBlockDrop(ModBlocks.ESSENCE_NET_CORE.get());
+			addEssenceNetworkBlockDrop(ModBlocks.ESSENCE_NET_IMPORTER.get());
+			addEssenceNetworkBlockDrop(ModBlocks.ESSENCE_NET_EXPORTER.get());
+
 			dropSelf(ModBlocks.DAMASCUS_STEEL_BLOCK.get());
 			add(ModBlocks.GOLDEN_SKULL.get(), b -> createNameableBlockEntityTable(ModBlocks.GOLDEN_SKULL.get()));
+		}
+
+		private void addEssenceNetworkBlockDrop(Block block){
+			add(block, LootTable.lootTable().withPool(
+					applyExplosionCondition(block, LootPool.lootPool()
+							.setRolls(ConstantRange.exactly(1))
+							.add(ItemLootEntry.lootTableItem(block)
+									.apply(CopyNbt.copyData(CopyNbt.Source.BLOCK_ENTITY)
+											.copy(EssenceNetBlockItem.DEFAULT_NETWORK_ID_KEY,
+													"BlockEntityTag."+EssenceNetBlockItem.DEFAULT_NETWORK_ID_KEY))))));
 		}
 
 		@Override protected Iterable<Block> getKnownBlocks(){
