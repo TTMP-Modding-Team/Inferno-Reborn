@@ -6,6 +6,19 @@
       "entries": [
         {
           "type": "minecraft:item",
+          "functions": [
+            {
+              "function": "minecraft:copy_nbt",
+              "source": "block_entity",
+              "ops": [
+                {
+                  "source": "Essence",
+                  "target": "BlockEntityTag.Essence",
+                  "op": "replace"
+                }
+              ]
+            }
+          ],
           "name": "infernoreborn:essence_holder_block"
         }
       ],

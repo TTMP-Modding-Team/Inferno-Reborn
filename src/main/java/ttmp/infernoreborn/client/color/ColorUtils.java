@@ -25,7 +25,7 @@ public final class ColorUtils{
 	};
 	public static final ColorBlender ESSENCE_HOLDER_COLOR = new ColorBlender(2000){
 		@Override protected int createNewColor(){
-			return ColorUtils.hslToRgb(RNG.nextDouble()*360, 1, .8);
+			return ColorUtils.hslToRgb(RNG.nextDouble()*360, 1, .5);
 		}
 	};
 

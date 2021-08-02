@@ -48,7 +48,7 @@ public class LootTableGen extends LootTableProvider{
 			dropSelf(ModBlocks.FOUNDRY_TILE.get());
 			add(ModBlocks.FOUNDRY.get(), b -> createNameableBlockEntityTable(ModBlocks.FOUNDRY.get()));
 
-			dropSelf(ModBlocks.ESSENCE_HOLDER.get());
+			addNbtCopiedDrop(ModBlocks.ESSENCE_HOLDER.get(), "Essence");
 
 			addEssenceNetworkBlockDrop(ModBlocks.ESSENCE_NET_CORE.get());
 			addEssenceNetworkBlockDrop(ModBlocks.ESSENCE_NET_IMPORTER.get());
@@ -59,13 +59,17 @@ public class LootTableGen extends LootTableProvider{
 		}
 
 		private void addEssenceNetworkBlockDrop(Block block){
+			addNbtCopiedDrop(block, EssenceNetBlockItem.DEFAULT_NETWORK_ID_KEY);
+		}
+
+		private void addNbtCopiedDrop(Block block, String... keys){
+			CopyNbt.Builder copyData = CopyNbt.copyData(CopyNbt.Source.BLOCK_ENTITY);
+			for(String key : keys) copyData.copy(key, "BlockEntityTag."+key);
 			add(block, LootTable.lootTable().withPool(
 					applyExplosionCondition(block, LootPool.lootPool()
 							.setRolls(ConstantRange.exactly(1))
 							.add(ItemLootEntry.lootTableItem(block)
-									.apply(CopyNbt.copyData(CopyNbt.Source.BLOCK_ENTITY)
-											.copy(EssenceNetBlockItem.DEFAULT_NETWORK_ID_KEY,
-													"BlockEntityTag."+EssenceNetBlockItem.DEFAULT_NETWORK_ID_KEY))))));
+									.apply(copyData)))));
 		}
 
 		@Override protected Iterable<Block> getKnownBlocks(){

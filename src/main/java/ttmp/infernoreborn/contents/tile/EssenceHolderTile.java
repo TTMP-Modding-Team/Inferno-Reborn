@@ -31,7 +31,7 @@ public class EssenceHolderTile extends TileEntity implements INamedContainerProv
 		return new TranslationTextComponent("container.infernoreborn.essence_holder");
 	}
 	@Override public Container createMenu(int id, PlayerInventory inv, PlayerEntity p){
-		return new EssenceHolderContainer(id, inv);
+		return new EssenceHolderContainer(id, inv, essenceHolder);
 	}
 
 	@Nullable private LazyOptional<EssenceHolder> essenceHolderLO;
