@@ -8,6 +8,7 @@ import net.minecraftforge.client.model.generators.ConfiguredModel;
 import net.minecraftforge.client.model.generators.ModelFile.ExistingModelFile;
 import net.minecraftforge.common.data.ExistingFileHelper;
 import ttmp.infernoreborn.contents.ModBlocks;
+import ttmp.infernoreborn.contents.ModItems;
 
 import static net.minecraft.state.properties.BlockStateProperties.HORIZONTAL_FACING;
 import static net.minecraft.state.properties.BlockStateProperties.LIT;
@@ -70,6 +71,10 @@ public class BlockModelGen extends BlockStateProvider{
 		getVariantBuilder(ModBlocks.FOUNDRY_MOLD_2.get()).forAllStates(state ->
 				ConfiguredModel.builder().modelFile(new ExistingModelFile(res("block/foundry/mold_2"), existingFileHelper))
 						.rotationY(state.getValue(HORIZONTAL_FACING).get2DDataValue()*90+90).build());
+
+		ExistingModelFile essenceHolderModel = new ExistingModelFile(res("block/essence_holder"), existingFileHelper);
+		simpleBlock(ModBlocks.ESSENCE_HOLDER.get(), essenceHolderModel);
+		itemModels().getBuilder(ModItems.ESSENCE_HOLDER_BLOCK.getId().getPath()).parent(essenceHolderModel);
 
 		simpleBlock(ModBlocks.GOLDEN_SKULL.get(), new ExistingModelFile(new ResourceLocation("block/skull"), existingFileHelper));
 		simpleBlock(ModBlocks.GOLDEN_WALL_SKULL.get(), new ExistingModelFile(new ResourceLocation("block/skull"), existingFileHelper));

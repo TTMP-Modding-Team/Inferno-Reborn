@@ -176,6 +176,7 @@ public class InfernoReborn{
 
 				RenderTypeLookup.setRenderLayer(ModBlocks.FOUNDRY_MOLD_1.get(), RenderType.cutout());
 				RenderTypeLookup.setRenderLayer(ModBlocks.FOUNDRY_MOLD_2.get(), RenderType.cutout());
+				RenderTypeLookup.setRenderLayer(ModBlocks.ESSENCE_HOLDER.get(), RenderType.translucent());
 
 				SkullTileEntityRenderer.MODEL_BY_TYPE.put(GoldenSkullBlock.TYPE, SkullTileEntityRenderer.MODEL_BY_TYPE.get(SkullBlock.Types.SKELETON));
 				SkullTileEntityRenderer.SKIN_BY_TYPE.put(GoldenSkullBlock.TYPE, new ResourceLocation(MODID, "textures/entity/golden_skull.png"));

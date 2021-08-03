@@ -45,6 +45,8 @@ public class McmetaGen implements IDataProvider{
 			add(new ResourceLocation(MODID, "item/essence/greater_"+type.id+"_crystal"), mcmeta(20, true));
 		}
 		add(new ResourceLocation(MODID, "block/foundry/firebox_on"), mcmeta(10, true));
+		add(new ResourceLocation(MODID, "block/essence_holder/side"), mcmeta(10, true));
+		add(new ResourceLocation(MODID, "block/essence_holder/top"), mcmeta(10, true));
 		add(new ResourceLocation(MODID, "item/judgement"), mcmeta(3, false));
 	}
 
