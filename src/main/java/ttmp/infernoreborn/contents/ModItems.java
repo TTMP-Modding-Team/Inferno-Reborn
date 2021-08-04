@@ -20,6 +20,7 @@ import ttmp.infernoreborn.contents.item.EssenceNetAccessorItem;
 import ttmp.infernoreborn.contents.item.EssenceNetBlockItem;
 import ttmp.infernoreborn.contents.item.ExplosiveSwordItem;
 import ttmp.infernoreborn.contents.item.FoundryBlockItem;
+import ttmp.infernoreborn.contents.item.ItemCloudScarf;
 import ttmp.infernoreborn.contents.item.ItemThanatosBelt;
 import ttmp.infernoreborn.contents.item.JudgementItem;
 import ttmp.infernoreborn.contents.item.SigilItem;
@@ -171,6 +172,7 @@ public final class ModItems{
 	public static final RegistryObject<Item> CURIO_TEST = REGISTER.register("curio_test", () -> new Item(artifacts(Rarity.EPIC)));
 
 	public static final RegistryObject<Item> THANATOS_BELT = REGISTER.register("thanatos_belt", () -> new ItemThanatosBelt(artifacts(Rarity.EPIC)));
+	public static final RegistryObject<Item> CLOUD_SCARF = REGISTER.register("cloud_scarf", () -> new ItemCloudScarf(artifacts(Rarity.EPIC)));
 
 	public static final RegistryObject<Item> GOLDEN_SKULL = REGISTER.register("golden_skull", () -> new WallOrFloorItem(ModBlocks.GOLDEN_SKULL.get(), ModBlocks.GOLDEN_WALL_SKULL.get(),
 			new Item.Properties().setISTER(() -> GoldenSkullISTER::new)));

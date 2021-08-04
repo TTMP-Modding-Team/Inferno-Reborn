@@ -36,5 +36,6 @@ public class ItemTagGen extends ItemTagsProvider{
 
 		this.tag(ModTags.CURIOS_CURIO).add(ModItems.CURIO_TEST.get());
 		this.tag(ModTags.CURIOS_BELT).add(ModItems.THANATOS_BELT.get());
+		this.tag(ModTags.CURIOS_NECKLACE).add(ModItems.CLOUD_SCARF.get());
 	}
 }
