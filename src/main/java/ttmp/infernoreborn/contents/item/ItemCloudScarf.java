@@ -27,14 +27,12 @@ public class ItemCloudScarf extends Item implements ICurioItem{
 		Vector3d movement = livingEntity.getDeltaMovement();
 		if(livingEntity.isCrouching()&&movement.y<=0.75&&isBlockFlyableBelow(livingEntity, 4.0)){
 			double velocity = (-movement.y+4)/20;
-			;
 			if(velocity>0) livingEntity.setDeltaMovement(movement.x, velocity, movement.z);
 		}
 		livingEntity.fallDistance = 0;
 	}
 	@Override public Multimap<Attribute, AttributeModifier> getAttributeModifiers(SlotContext slotContext, UUID uuid, ItemStack stack){
 		Multimap<Attribute, AttributeModifier> multimap = ICurioItem.super.getAttributeModifiers(slotContext, uuid, stack);
-		System.out.println(slotContext.getIdentifier()+"qewr"+slotContext.getIndex());
 		if(slotContext.getIdentifier().equals("necklace"))
 			multimap.put(Attributes.MOVEMENT_SPEED, new AttributeModifier(UUID.fromString("0eed5b47-e0c2-4653-9f36-128db5d39ffe"), "Armor Modifier", 0.35, AttributeModifier.Operation.MULTIPLY_TOTAL));
 		return multimap;
