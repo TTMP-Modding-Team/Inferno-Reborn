@@ -130,6 +130,7 @@ public class CafCompiler implements StatementVisitor, ExpressionVisitor{
 	}
 	@Override public void visitIf(Statement.If apply){
 		if(apply.getIfThen().isEmpty()&&apply.getElseThen().isEmpty()) return;
+		writeInst(apply.getCondition());
 		write(Inst.JUMPELSE);
 		int goElse = getNextWritePoint();
 		write2((short)0);
