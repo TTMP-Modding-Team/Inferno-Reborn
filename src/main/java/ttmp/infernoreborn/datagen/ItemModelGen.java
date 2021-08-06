@@ -74,6 +74,8 @@ public class ItemModelGen extends ItemModelProvider{
 				.override()
 				.predicate(new ResourceLocation("off"), 1)
 				.model(item("item/judgement_off", new ResourceLocation(MODID, "item/judgement_off")));
+
+		simpleItem(ModItems.CLOUD_SCARF.get());
 	}
 
 	protected ItemModelBuilder simpleItem(Item item){
