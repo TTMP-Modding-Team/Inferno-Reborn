@@ -33,6 +33,8 @@ public class CafParser{
 				return applyStmt();
 			case IF:
 				return ifStmt();
+			case DEBUG:
+				return debugStmt();
 			default:
 				throw CafCompileException.create(script, current.start, "Invalid statement");
 		}
@@ -84,6 +86,12 @@ public class CafParser{
 			}else elseThen = Collections.emptyList();
 		}
 		return new Statement.If(start, condition, then, Objects.requireNonNull(elseThen));
+	}
+
+	private Statement.Debug debugStmt(){
+		int start = lexer.current().start;
+		lexer.next();
+		return new Statement.Debug(start, expr());
 	}
 
 	private List<Statement> ifBody(){
@@ -196,10 +204,13 @@ public class CafParser{
 		switch(lexer.current().type){
 			case BANG:
 				lexer.next();
-				return new Expression.Not(primary());
+				return new Expression.Not(unary());
 			case MINUS:
 				lexer.next();
-				return new Expression.Negate(primary());
+				return new Expression.Negate(unary());
+			case DEBUG:
+				lexer.next();
+				return new Expression.Debug(unary());
 			default:
 				return primary();
 		}

@@ -19,6 +19,7 @@ public class CafLexer{
 		RESERVED_WORDS.put("false", TokenType.FALSE);
 		RESERVED_WORDS.put("if", TokenType.IF);
 		RESERVED_WORDS.put("else", TokenType.ELSE);
+		RESERVED_WORDS.put("debug", TokenType.DEBUG);
 	}
 
 	private static final Pattern COLOR_PATTERN = Pattern.compile("[0-9a-fA-F]{6}");

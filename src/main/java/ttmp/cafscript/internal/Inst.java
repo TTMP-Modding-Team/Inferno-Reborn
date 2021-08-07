@@ -113,6 +113,11 @@ public interface Inst{
 	byte JUMPELSE = 0x62;
 
 	/**
+	 * Peek top of stack and print it
+	 */
+	byte DEBUG = 0x70;
+
+	/**
 	 * End the fucking program
 	 */
 	byte END = 0x7F;

@@ -149,6 +149,11 @@ public class CafCompiler implements StatementVisitor, ExpressionVisitor{
 			write2At(goElse, getJumpCoord(goElse));
 		}
 	}
+	@Override public void visitDebug(Statement.Debug debug){
+		writeInst(debug.getExpr());
+		write(Inst.DEBUG);
+		write(Inst.DISCARD);
+	}
 
 	@Override public void visitComma(Expression.Comma comma){
 		int size = comma.getExpressions().size();
@@ -303,6 +308,10 @@ public class CafCompiler implements StatementVisitor, ExpressionVisitor{
 			default:
 				error("Unknown constant '"+constant+"'");
 		}
+	}
+	@Override public void visitDebug(Expression.Debug debug){
+		writeInst(debug.getExpression());
+		write(Inst.DEBUG);
 	}
 
 	private byte obj(Object o){

@@ -169,6 +169,9 @@ public class CafInterpreter{
 				case Inst.JUMPELSE:
 					ip += popBoolean() ? 2 : next2();
 					break;
+				case Inst.DEBUG:
+					engine.debug(peek());
+					break;
 				case Inst.END:
 					return rootInitializer.finish();
 				default:
@@ -210,6 +213,12 @@ public class CafInterpreter{
 		if(stack.isEmpty())
 			throw new CafException("StackUnderflow.com");
 		return stack.remove(stack.size()-1);
+	}
+
+	private Object peek(){
+		if(stack.isEmpty())
+			throw new CafException("StackUnderflow.com");
+		return stack.get(stack.size()-1);
 	}
 
 	private double popNumber(){

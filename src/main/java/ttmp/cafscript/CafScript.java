@@ -150,6 +150,9 @@ public final class CafScript{
 				case Inst.JUMPELSE:
 					stb.append("JUMPELSE ").append(Shorts.fromBytes(inst[++i], inst[++i]));
 					break;
+				case Inst.DEBUG:
+					stb.append("DEBUG");
+					break;
 				case Inst.END:
 					stb.append("END");
 					break;

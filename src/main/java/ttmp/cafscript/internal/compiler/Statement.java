@@ -163,4 +163,21 @@ public abstract class Statement{
 					'}';
 		}
 	}
+
+	public static final class Debug extends Statement{
+		private final Expression expr;
+
+		public Debug(int position, Expression expr){
+			super(position);
+			this.expr = expr;
+		}
+
+		public Expression getExpr(){
+			return expr;
+		}
+
+		@Override public void visit(StatementVisitor visitor){
+			visitor.visitDebug(this);
+		}
+	}
 }

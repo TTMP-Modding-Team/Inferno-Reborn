@@ -4,6 +4,7 @@ import org.junit.jupiter.api.DynamicTest;
 import org.junit.jupiter.api.TestFactory;
 import org.junit.jupiter.api.function.Executable;
 import ttmp.cafscript.CafScriptEngine;
+import ttmp.cafscript.definitions.initializer.Initializer;
 import ttmp.cafscript.definitions.initializer.TestInitializer;
 import ttmp.cafscript.internal.CafDebugEngine;
 import ttmp.cafscript.internal.CafInterpreter;
@@ -25,6 +26,9 @@ public class CafScriptTest{
 		tests.add(DynamicTest.dynamicTest("Compile Test 1", compileTest(engine, "compile_test/1")));
 		tests.add(DynamicTest.dynamicTest("Compile Test 2", compileTest(engine, "compile_test/2")));
 
+		tests.add(DynamicTest.dynamicTest("Run Test: Debug",
+				runTest(engine, "run_test/debug")));
+
 		tests.add(DynamicTest.dynamicTest("Operation Test: Constants",
 				operationTest(engine, "operation_test/constants",
 						new ResourceLocation("test:test"),
@@ -45,6 +49,10 @@ public class CafScriptTest{
 
 	private Executable compileTest(CafScriptEngine engine, String filename){
 		return () -> engine.compile(readScript(filename));
+	}
+
+	private Executable runTest(CafScriptEngine engine, String filename){
+		return () -> new CafInterpreter(engine, engine.compile(readScript(filename)), Initializer.EMPTY).execute();
 	}
 
 	private Executable operationTest(CafScriptEngine engine, String filename, Object... expectedValues){

@@ -250,6 +250,26 @@ public interface Expression{
 		}
 	}
 
+	class Debug implements Expression{
+		private final Expression expression;
+
+		public Debug(Expression expression){
+			this.expression = expression;
+		}
+
+		public Expression getExpression(){
+			return expression;
+		}
+
+		@Override public void visit(ExpressionVisitor visitor){
+			visitor.visitDebug(this);
+		}
+
+		@Override public String toString(){
+			return "debug "+expression;
+		}
+	}
+
 	enum Constant implements Expression{
 		TRUE,
 		FALSE;

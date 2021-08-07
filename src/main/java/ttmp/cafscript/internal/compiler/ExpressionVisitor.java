@@ -12,4 +12,5 @@ public interface ExpressionVisitor{
 	void visitIdentifier(Expression.Identifier identifier);
 	void visitConstruct(Expression.Construct construct);
 	void visitConstant(Expression.Constant constant);
+	void visitDebug(Expression.Debug debug);
 }

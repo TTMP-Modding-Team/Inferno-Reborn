@@ -6,4 +6,5 @@ public interface StatementVisitor{
 	void visitDefine(Statement.Define define);
 	void visitApply(Statement.Apply apply);
 	void visitIf(Statement.If apply);
+	void visitDebug(Statement.Debug debug);
 }
