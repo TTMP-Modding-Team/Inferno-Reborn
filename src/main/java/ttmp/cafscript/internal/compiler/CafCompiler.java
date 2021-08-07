@@ -46,7 +46,7 @@ public class CafCompiler implements StatementVisitor, ExpressionVisitor{
 
 	private static <T> T[] populate(Object2ByteMap<T> map, T[] array){
 		for(Object2ByteMap.Entry<T> e : map.object2ByteEntrySet())
-			array[e.getByteValue()] = e.getKey();
+			array[Byte.toUnsignedInt(e.getByteValue())] = e.getKey();
 		return array;
 	}
 

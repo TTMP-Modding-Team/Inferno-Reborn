@@ -54,9 +54,21 @@ public interface Inst{
 	byte GTEQ = 0x2B;
 
 	// Commas
+	/**
+	 * Consume 2 stack, bundle it, push 1
+	 */
 	byte BUNDLE2 = 0x30;
+	/**
+	 * Consume 3 stack, bundle it, push 1
+	 */
 	byte BUNDLE3 = 0x31;
+	/**
+	 * Consume 4 stack, bundle it, push 1
+	 */
 	byte BUNDLE4 = 0x32;
+	/**
+	 * Consume {1} stack, bundle it, push 1
+	 */
 	byte BUNDLEN = 0x33;
 
 	// 0x40~0x5F Advanced Operators
@@ -78,11 +90,11 @@ public interface Inst{
 	byte APPLY = 0x43;
 
 	/**
-	 * Create new {@link ttmp.cafscript.definitions.Initializer Initializer} based on identifier {1} and pushes it
+	 * Create new {@link ttmp.cafscript.definitions.initializer.Initializer Initializer} based on identifier {1} and pushes it
 	 */
 	byte NEW = 0x50;
 	/**
-	 * Pop 1 object (expects {@link ttmp.cafscript.definitions.Initializer Initializer}) and pushes finalized object
+	 * Pop 1 object (expects {@link ttmp.cafscript.definitions.initializer.Initializer Initializer}) and pushes finalized object
 	 */
 	byte MAKE = 0x51;
 

@@ -16,16 +16,24 @@ public final class CafScript{
 		this.identifiers = identifiers;
 	}
 
-	// TODO no don't give raw arrays lmao
+	public int getInstSize(){
+		return inst.length;
+	}
+	public byte getInst(int at){
+		return inst[at];
+	}
 
-	public byte[] getInst(){
-		return inst;
+	public int getObjectSize(){
+		return objects.length;
 	}
-	public Object[] getObjects(){
-		return objects;
+	public Object getObject(int at){
+		return objects[at];
 	}
-	public String[] getIdentifiers(){
-		return identifiers;
+	public int getIdentifierSize(){
+		return identifiers.length;
+	}
+	public String getIdentifier(int at){
+		return identifiers[at];
 	}
 
 	public String format(){

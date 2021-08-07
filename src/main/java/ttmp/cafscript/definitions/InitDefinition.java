@@ -1,5 +1,8 @@
 package ttmp.cafscript.definitions;
 
-public interface InitDefinition{
-	Initializer createInitializer();
+import ttmp.cafscript.definitions.initializer.Initializer;
+
+@FunctionalInterface
+public interface InitDefinition<T>{
+	Initializer<T> createInitializer();
 }
