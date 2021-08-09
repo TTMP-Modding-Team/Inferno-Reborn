@@ -10,10 +10,15 @@ public final class CafScript{
 	private final Object[] objects;
 	private final String[] identifiers;
 
-	public CafScript(byte[] inst, Object[] objects, String[] identifiers){
+	private final int variables;
+	private final int maxStack;
+
+	public CafScript(byte[] inst, Object[] objects, String[] identifiers, int variables, int maxStack){
 		this.inst = inst;
 		this.objects = objects;
 		this.identifiers = identifiers;
+		this.variables = variables;
+		this.maxStack = maxStack;
 	}
 
 	public int getInstSize(){
@@ -36,8 +41,17 @@ public final class CafScript{
 		return identifiers[at];
 	}
 
+	public int getVariables(){
+		return variables;
+	}
+	public int getMaxStack(){
+		return maxStack;
+	}
+
 	public String format(){
 		StringBuilder stb = new StringBuilder("CafScript{");
+		stb.append("\nVariables: ").append(variables);
+		stb.append("\nMaximum Stack Size: ").append(maxStack);
 		stb.append("\nBytecodes: ").append(inst.length).append(" entries");
 		for(int i = 0; i<inst.length; i++){
 			stb.append(String.format("\n %3d| ", i));
@@ -124,16 +138,25 @@ public final class CafScript{
 					stb.append("BUNDLEN ").append(Byte.toUnsignedInt(inst[++i]));
 					break;
 				case Inst.GET_PROPERTY:
-					stb.append("GET_PROPERTY ").append(inst[++i]).append("   #").append(identifiers[inst[i]]);
+					stb.append("GET_PROPERTY ").append(inst[++i]).append(" ").append(Byte.toUnsignedInt(inst[++i]))
+							.append("   #").append(identifiers[inst[i-1]]);
 					break;
 				case Inst.SET_PROPERTY:
 					stb.append("SET_PROPERTY ").append(inst[++i]).append("   #").append(identifiers[inst[i]]);
 					break;
 				case Inst.SET_PROPERTY_LAZY:
-					stb.append("SET_PROPERTY_LAZY ").append(inst[++i]).append("   #").append(identifiers[inst[i]]);
+					stb.append("SET_PROPERTY_LAZY ").append(inst[++i])
+							.append(" ").append(Shorts.fromBytes(inst[++i], inst[++i]))
+							.append("   #").append(identifiers[inst[i-2]]);
 					break;
 				case Inst.APPLY:
 					stb.append("APPLY");
+					break;
+				case Inst.GET_VARIABLE:
+					stb.append("GET_VARIABLE ").append(Byte.toUnsignedInt(inst[++i]));
+					break;
+				case Inst.SET_VARIABLE:
+					stb.append("SET_VARIABLE ").append(Byte.toUnsignedInt(inst[++i]));
 					break;
 				case Inst.NEW:
 					stb.append("NEW ").append(inst[++i]).append("   #").append(identifiers[inst[i]]);
@@ -152,6 +175,9 @@ public final class CafScript{
 					break;
 				case Inst.DEBUG:
 					stb.append("DEBUG");
+					break;
+				case Inst.FINISH_PROPERTY_INIT:
+					stb.append("FINISH_PROPERTY_INIT ").append(inst[++i]).append("   #").append(identifiers[inst[i]]);
 					break;
 				case Inst.END:
 					stb.append("END");

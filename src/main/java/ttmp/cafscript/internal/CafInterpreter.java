@@ -8,28 +8,34 @@ import ttmp.cafscript.definitions.InitDefinition;
 import ttmp.cafscript.definitions.initializer.Initializer;
 import ttmp.cafscript.exceptions.CafException;
 
-import java.util.ArrayList;
-import java.util.List;
-
-public class CafInterpreter{
+public class CafInterpreter{ // TODO needs global constants, probably needs to be put on bottom of the stack before root init
 	private static final int STACK_SIZE = 31; // TODO adjustable?
 
 	private final CafScriptEngine engine;
 	private final CafScript script;
-	private final Initializer<?> rootInitializer;
 
-	private final List<Object> stack = new ArrayList<>();
+	private final Object[] stack;
+	private int stackSize;
+	private final Object[] variable;
 
 	private int ip;
 
-	public CafInterpreter(CafScriptEngine engine, CafScript script, Initializer<?> rootInitializer){
+	public CafInterpreter(CafScriptEngine engine, CafScript script){
 		this.engine = engine;
 		this.script = script;
-		this.rootInitializer = rootInitializer;
+
+		this.stack = new Object[script.getMaxStack()];
+		this.variable = new Object[script.getVariables()];
 	}
 
-	public Object execute(){
-		push(rootInitializer);
+	public Object execute(Initializer<?> initializer){
+		return execute(initializer, 0);
+	}
+
+	public Object execute(Initializer<?> initializer, int start){
+		ip = start;
+		int startingStack = 0;
+		push(initializer);
 		while(true){
 			switch(next()){
 				case Inst.PUSH:
@@ -136,15 +142,34 @@ public class CafInterpreter{
 					push(bundle);
 					break;
 				}
-				case Inst.GET_PROPERTY:
-					push(rootInitializer.getPropertyValue(identifier())); // TODO FUCK FUCK FUCK
+				case Inst.GET_PROPERTY:{
+					String identifier = identifier();
+					push(expectInitializer(getNBelowTop(nextUnsigned())).getPropertyValue(identifier));
 					break;
-				case Inst.SET_PROPERTY:
-				case Inst.SET_PROPERTY_LAZY:
-					rootInitializer.setPropertyValue(identifier(), pop()); // TODO FUCK FUCK FUCK
+				}
+				case Inst.SET_PROPERTY:{
+					Object o = pop();
+					expectInitializer(peek()).setPropertyValue(identifier(), o);
+				}
 					break;
-				case Inst.APPLY:
-					rootInitializer.apply(pop());
+				case Inst.SET_PROPERTY_LAZY:{
+					Initializer<?> i2 = expectInitializer(peek()).setPropertyValueLazy(identifier(), ip+2);
+					if(i2!=null){
+						ip += 2;
+						push(i2);
+					}else ip += next2();
+					break;
+				}
+				case Inst.APPLY:{
+					Object o = pop();
+					expectInitializer(peek()).apply(o);
+					break;
+				}
+				case Inst.GET_VARIABLE:
+					push(variable[nextUnsigned()]);
+					break;
+				case Inst.SET_VARIABLE:
+					variable[nextUnsigned()] = pop();
 					break;
 				case Inst.NEW:{
 					String identifier = identifier();
@@ -172,8 +197,16 @@ public class CafInterpreter{
 				case Inst.DEBUG:
 					engine.debug(peek());
 					break;
+				case Inst.FINISH_PROPERTY_INIT:
+					if(stackSize==startingStack+1)
+						return expectInitializer(pop()).finish();
+					else{
+						Object o = expectInitializer(pop()).finish();
+						expectInitializer(peek()).setPropertyValue(identifier(), o);
+						break;
+					}
 				case Inst.END:
-					return rootInitializer.finish();
+					return expectInitializer(pop()).finish();
 				default:
 					throw new CafException("Unknown bytecode '"+script.getInst(ip-1)+"'");
 			}
@@ -204,21 +237,27 @@ public class CafInterpreter{
 	}
 
 	private void push(Object o){
-		if(stack.size()==STACK_SIZE)
+		if(stackSize==STACK_SIZE)
 			throw new CafException("StackOverflow.com");
-		stack.add(o);
+		stack[stackSize++] = o;
 	}
 
 	private Object pop(){
-		if(stack.isEmpty())
+		if(stackSize==0)
 			throw new CafException("StackUnderflow.com");
-		return stack.remove(stack.size()-1);
+		return stack[--stackSize];
 	}
 
 	private Object peek(){
-		if(stack.isEmpty())
+		if(stackSize==0)
 			throw new CafException("StackUnderflow.com");
-		return stack.get(stack.size()-1);
+		return stack[stackSize-1];
+	}
+
+	private Object getNBelowTop(int i){
+		if(i<stackSize){
+			return stack[stackSize-1-i];
+		}else throw new CafException("Kinda hard to get object "+i+" below top from stack... when the stack size is "+stackSize);
 	}
 
 	private double popNumber(){
@@ -231,6 +270,11 @@ public class CafInterpreter{
 		Object o = pop();
 		if(!(o instanceof Boolean)) throw new CafException("Not a boolean");
 		else return (boolean)o;
+	}
+
+	private static Initializer<?> expectInitializer(Object o){
+		if(!(o instanceof Initializer)) throw new CafException("Not an initializer");
+		else return (Initializer<?>)o;
 	}
 
 	private String identifier(){

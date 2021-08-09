@@ -4,10 +4,22 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.ResourceLocationException;
 import ttmp.cafscript.exceptions.CafException;
 
+import javax.annotation.Nullable;
 import java.util.List;
 
 public interface Expression{
 	void visit(ExpressionVisitor visitor);
+
+	default boolean isConstant(){
+		return false;
+	}
+	/**
+	 * @return Constant object, {@code null} if the expression doesn't evalutes into compile-time constants.<br>
+	 * {@code isConstant() == true} implies the object is constant and thus always has constant object.
+	 */
+	@Nullable default Object getConstantObject(){
+		return null;
+	}
 
 	class Comma implements Expression{
 		private final List<Expression> expressions;
@@ -153,6 +165,13 @@ public interface Expression{
 		@Override public String toString(){
 			return String.valueOf(number);
 		}
+
+		@Override public boolean isConstant(){
+			return true;
+		}
+		@Nullable @Override public Object getConstantObject(){
+			return number;
+		}
 	}
 
 	class Namespace implements Expression{
@@ -178,6 +197,13 @@ public interface Expression{
 		@Override public String toString(){
 			return "<"+namespace+">";
 		}
+
+		@Override public boolean isConstant(){
+			return true;
+		}
+		@Nullable @Override public Object getConstantObject(){
+			return namespace;
+		}
 	}
 
 	class Color implements Expression{
@@ -199,6 +225,13 @@ public interface Expression{
 
 		@Override public String toString(){
 			return "#"+rgb;
+		}
+
+		@Override public boolean isConstant(){
+			return true;
+		}
+		@Nullable @Override public Object getConstantObject(){
+			return rgb;
 		}
 	}
 
@@ -276,6 +309,13 @@ public interface Expression{
 
 		@Override public void visit(ExpressionVisitor visitor){
 			visitor.visitConstant(this);
+		}
+
+		@Override public boolean isConstant(){
+			return true;
+		}
+		@Override public Object getConstantObject(){
+			return this==TRUE;
 		}
 	}
 }

@@ -1,6 +1,5 @@
 package ttmp.cafscript.definitions.initializer;
 
-import ttmp.cafscript.definitions.InitDefinition;
 import ttmp.cafscript.exceptions.CafException;
 import ttmp.cafscript.exceptions.CafNoPropertyException;
 
@@ -11,23 +10,24 @@ public interface Initializer<T>{
 	Initializer<Object> EMPTY = () -> Initializer.EMPTY;
 
 	/**
-	 * Get property definition assosiated with given property name. {@code null} if there is no such property.
-	 */
-	default @Nullable InitDefinition<?> getPropertyDefinition(String property){
-		return null;
-	}
-
-	/**
-	 * Get property value assosiated with given property name. Error the shit out if there is no such property. TODO exception pls
+	 * Get property value associated with given property name. Error the shit out if there is no such property. TODO exception pls
 	 */
 	default Object getPropertyValue(String property){
 		throw new CafNoPropertyException();
 	}
 
 	/**
-	 * Set property value assosiated with given property name. Error the shit out if there is no such property. TODO exception pls
+	 * Set property value associated with given property name. Error the shit out if there is no such property. TODO exception pls
 	 */
 	default void setPropertyValue(String property, Object o){
+		throw new CafNoPropertyException();
+	}
+
+	/**
+	 * Set property values associated with given property name - but lazily. Returning non-null initializer will make the property value evaluated instantly.
+	 * TODO should be able to store it, while controlling lazy initialization
+	 */
+	default @Nullable Initializer<?> setPropertyValueLazy(String property, int codepoint){
 		throw new CafNoPropertyException();
 	}
 

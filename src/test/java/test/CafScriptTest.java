@@ -1,3 +1,5 @@
+package test;
+
 import net.minecraft.util.ResourceLocation;
 import org.apache.commons.io.FileUtils;
 import org.junit.jupiter.api.DynamicTest;
@@ -9,12 +11,14 @@ import ttmp.cafscript.definitions.initializer.TestInitializer;
 import ttmp.cafscript.internal.CafDebugEngine;
 import ttmp.cafscript.internal.CafInterpreter;
 
+import javax.annotation.Nullable;
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.function.Supplier;
 
 public class CafScriptTest{
 	@TestFactory
@@ -28,6 +32,10 @@ public class CafScriptTest{
 
 		tests.add(DynamicTest.dynamicTest("Run Test: Debug",
 				runTest(engine, "run_test/debug")));
+		tests.add(DynamicTest.dynamicTest("Run Test: Init",
+				runTest(engine, "run_test/init", () -> PrintInitializer.INSTANCE)));
+		tests.add(DynamicTest.dynamicTest("Run Test: Defines",
+				runTest(engine, "run_test/defines")));
 
 		tests.add(DynamicTest.dynamicTest("Operation Test: Constants",
 				operationTest(engine, "operation_test/constants",
@@ -52,11 +60,15 @@ public class CafScriptTest{
 	}
 
 	private Executable runTest(CafScriptEngine engine, String filename){
-		return () -> new CafInterpreter(engine, engine.compile(readScript(filename)), Initializer.EMPTY).execute();
+		return () -> new CafInterpreter(engine, engine.compile(readScript(filename))).execute(Initializer.EMPTY);
+	}
+	private Executable runTest(CafScriptEngine engine, String filename, @Nullable Supplier<Initializer<?>> initializer){
+		return initializer==null ? runTest(engine, filename) :
+				(() -> new CafInterpreter(engine, engine.compile(readScript(filename))).execute(initializer.get()));
 	}
 
 	private Executable operationTest(CafScriptEngine engine, String filename, Object... expectedValues){
-		return () -> new CafInterpreter(engine, engine.compile(readScript(filename)), new TestInitializer(expectedValues)).execute();
+		return () -> new CafInterpreter(engine, engine.compile(readScript(filename))).execute(new TestInitializer(expectedValues));
 	}
 
 	private String readScript(String filename) throws IOException{
