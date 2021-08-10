@@ -17,17 +17,30 @@ public abstract class Expression{
 
 	public abstract void visit(ExpressionVisitor visitor);
 
+	/**
+	 * @return Whether or not this expression produces known compile time constant.
+	 * {@code true} implies {@code getConstantObject() != null}, {@code false} implies {@code getConstantObject() == null}.
+	 */
 	public boolean isConstant(){
 		return false;
 	}
+
 	/**
 	 * @return Constant object, {@code null} if the expression doesn't evaluate into compile-time constants.<br>
-	 * {@code isConstant() == true} implies the object is constant and thus always has constant object.
+	 * {@code isConstant() == true} implies the object is compile-time constant and thus always has constant object.
 	 */
 	@Nullable public Object getConstantObject(){
 		return null;
 	}
 
+	/**
+	 * Get constant with type {@code T}. Throws compile error if the expression doesn't produce constant, or the type of constant is not {@code T}.
+	 *
+	 * @param classOf Class of the constant
+	 * @param <T>     Type of the constant
+	 * @return Constant of type {@code T}
+	 * @throws CafCompileException if the expression doesn't produce constant, or the type of constant is not {@code T}
+	 */
 	public <T> T expectConstantObject(Class<T> classOf){
 		Object o = getConstantObject();
 		if(o==null) error("Expected constant");
@@ -38,8 +51,8 @@ public abstract class Expression{
 
 	/**
 	 * Checks if the expression evaluates to specific type of object.<br>
-	 * If the expressions evaluates correctly (or is unknown until runtime) then
-	 * {@code null} is returned. If not, then compile exception will be thrown.
+	 * If the expression would never evaluate into given {@code expectedType}, {@link CafCompileException} will be thrown.<br>
+	 * This method also propagates to child nodes to check any errors in the expression.
 	 */
 	public abstract void checkType(@Nullable Class<?> expectedType);
 
