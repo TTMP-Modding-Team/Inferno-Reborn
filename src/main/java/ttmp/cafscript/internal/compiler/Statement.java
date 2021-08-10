@@ -1,36 +1,24 @@
 package ttmp.cafscript.internal.compiler;
 
-import java.util.Collections;
 import java.util.List;
 
 public abstract class Statement{
-	private final int position;
+	public final int position;
 
 	public Statement(int position){
 		this.position = position;
 	}
 
-	public int getPosition(){
-		return position;
-	}
-
 	public abstract void visit(StatementVisitor visitor);
 
 	public static final class Assign extends Statement{
-		private final String property;
-		private final Expression value;
+		public final String property;
+		public final Expression value;
 
 		public Assign(int position, String property, Expression value){
 			super(position);
 			this.property = property;
 			this.value = value;
-		}
-
-		public String getProperty(){
-			return property;
-		}
-		public Expression getValue(){
-			return value;
 		}
 
 		@Override public void visit(StatementVisitor visitor){
@@ -46,20 +34,13 @@ public abstract class Statement{
 	}
 
 	public static final class AssignLazy extends Statement{
-		private final String property;
-		private final List<Statement> statements;
+		public final String property;
+		public final List<Statement> statements;
 
 		public AssignLazy(int position, String property, List<Statement> statements){
 			super(position);
 			this.property = property;
 			this.statements = statements;
-		}
-
-		public String getProperty(){
-			return property;
-		}
-		public List<Statement> getStatements(){
-			return statements;
 		}
 
 		@Override public void visit(StatementVisitor visitor){
@@ -69,26 +50,19 @@ public abstract class Statement{
 		@Override public String toString(){
 			return "AssignLazy{"+
 					"property='"+property+'\''+
-					", value="+statements+
+					", statements="+statements+
 					'}';
 		}
 	}
 
 	public static final class Define extends Statement{
-		private final String property;
-		private final Expression value;
+		public final String property;
+		public final Expression value;
 
 		public Define(int position, String property, Expression value){
 			super(position);
 			this.property = property;
 			this.value = value;
-		}
-
-		public String getProperty(){
-			return property;
-		}
-		public Expression getValue(){
-			return value;
 		}
 
 		@Override public void visit(StatementVisitor visitor){
@@ -104,15 +78,11 @@ public abstract class Statement{
 	}
 
 	public static final class Apply extends Statement{
-		private final Expression value;
+		public final Expression value;
 
 		public Apply(int position, Expression value){
 			super(position);
 			this.value = value;
-		}
-
-		public Expression getValue(){
-			return value;
 		}
 
 		@Override public void visit(StatementVisitor visitor){
@@ -127,28 +97,15 @@ public abstract class Statement{
 	}
 
 	public static final class If extends Statement{
-		private final Expression condition;
-		private final List<Statement> ifThen;
-		private final List<Statement> elseThen;
+		public final Expression condition;
+		public final List<Statement> ifThen;
+		public final List<Statement> elseThen;
 
-		public If(int position, Expression condition, List<Statement> ifThen){
-			this(position, condition, ifThen, Collections.emptyList());
-		}
 		public If(int position, Expression condition, List<Statement> ifThen, List<Statement> elseThen){
 			super(position);
 			this.condition = condition;
 			this.ifThen = ifThen;
 			this.elseThen = elseThen;
-		}
-
-		public Expression getCondition(){
-			return condition;
-		}
-		public List<Statement> getIfThen(){
-			return ifThen;
-		}
-		public List<Statement> getElseThen(){
-			return elseThen;
 		}
 
 		@Override public void visit(StatementVisitor visitor){
@@ -165,15 +122,11 @@ public abstract class Statement{
 	}
 
 	public static final class StatementList extends Statement{
-		private final List<Statement> statements;
+		public final List<Statement> statements;
 
 		public StatementList(int position, List<Statement> statements){
 			super(position);
 			this.statements = statements;
-		}
-
-		public List<Statement> getStatements(){
-			return statements;
 		}
 
 		@Override public void visit(StatementVisitor visitor){
@@ -188,19 +141,21 @@ public abstract class Statement{
 	}
 
 	public static final class Debug extends Statement{
-		private final Expression expr;
+		public final Expression value;
 
-		public Debug(int position, Expression expr){
+		public Debug(int position, Expression value){
 			super(position);
-			this.expr = expr;
-		}
-
-		public Expression getExpr(){
-			return expr;
+			this.value = value;
 		}
 
 		@Override public void visit(StatementVisitor visitor){
 			visitor.visitDebug(this);
+		}
+
+		@Override public String toString(){
+			return "Debug{"+
+					"value="+value+
+					'}';
 		}
 	}
 }

@@ -108,7 +108,7 @@ public class CafCompiler implements StatementVisitor, ExpressionVisitor{
 
 	public void writeInst(Statement stmt){
 		int c = this.currentSourcePosition;
-		this.currentSourcePosition = stmt.getPosition();
+		this.currentSourcePosition = stmt.position;
 		stmt.visit(this);
 		this.currentSourcePosition = c;
 	}
@@ -121,20 +121,20 @@ public class CafCompiler implements StatementVisitor, ExpressionVisitor{
 	}
 
 	@Override public void visitAssign(Statement.Assign assign){
-		writeInst(assign.getValue());
+		writeInst(assign.value);
 		write(Inst.SET_PROPERTY);
-		write(identifier(assign.getProperty()));
+		write(identifier(assign.property));
 		removeStack();
 	}
 	@Override public void visitAssignLazy(Statement.AssignLazy assignLazy){
 		write(Inst.SET_PROPERTY_LAZY);
-		byte identifier = identifier(assignLazy.getProperty());
+		byte identifier = identifier(assignLazy.property);
 		write(identifier);
 		int p = getNextWritePoint();
 		write2((short)0);
 		addStack();
 		pushBlock();
-		for(Statement s : assignLazy.getStatements())
+		for(Statement s : assignLazy.statements)
 			writeInst(s);
 		popBlock();
 		write(Inst.FINISH_PROPERTY_INIT);
@@ -142,14 +142,14 @@ public class CafCompiler implements StatementVisitor, ExpressionVisitor{
 		write2At(p, getJumpCoord(p));
 	}
 	@Override public void visitDefine(Statement.Define define){
-		Expression e = define.getValue();
+		Expression e = define.value;
 		if(e.isConstant()){
-			setDefinition(define.getProperty(),
+			setDefinition(define.property,
 					Definition.constant(obj(Objects.requireNonNull(
 							e.getConstantObject()))));
 		}else{
 			Definition definition = Definition.variable(newVariableId());
-			setDefinition(define.getProperty(), definition);
+			setDefinition(define.property, definition);
 			writeInst(e);
 			write(Inst.SET_VARIABLE);
 			write(definition.varId);
@@ -157,13 +157,13 @@ public class CafCompiler implements StatementVisitor, ExpressionVisitor{
 		}
 	}
 	@Override public void visitApply(Statement.Apply apply){
-		writeInst(apply.getValue());
+		writeInst(apply.value);
 		write(Inst.APPLY);
 		removeStack();
 	}
 	@Override public void visitIf(Statement.If apply){
-		writeInst(apply.getCondition());
-		if(apply.getIfThen().isEmpty()&&apply.getElseThen().isEmpty()){
+		writeInst(apply.condition);
+		if(apply.ifThen.isEmpty()&&apply.elseThen.isEmpty()){
 			write(Inst.DISCARD);
 			removeStack();
 			return;
@@ -173,25 +173,25 @@ public class CafCompiler implements StatementVisitor, ExpressionVisitor{
 		int goElse = getNextWritePoint();
 		write2((short)0);
 
-		for(Statement s : apply.getIfThen()) writeInst(s);
+		for(Statement s : apply.ifThen) writeInst(s);
 
-		if(!apply.getElseThen().isEmpty()){
+		if(!apply.elseThen.isEmpty()){
 			write(Inst.JUMP);
 			int ifEnd = getNextWritePoint();
 			write2((short)0);
 			write2At(goElse, getJumpCoord(goElse));
 
-			for(Statement s : apply.getElseThen()) writeInst(s);
+			for(Statement s : apply.elseThen) writeInst(s);
 			write2At(ifEnd, getJumpCoord(ifEnd));
 		}else{
 			write2At(goElse, getJumpCoord(goElse));
 		}
 	}
 	@Override public void visitStatements(Statement.StatementList statementList){
-		for(Statement s : statementList.getStatements()) writeInst(s);
+		for(Statement s : statementList.statements) writeInst(s);
 	}
 	@Override public void visitDebug(Statement.Debug debug){
-		writeInst(debug.getExpr());
+		writeInst(debug.value);
 		write(Inst.DEBUG);
 		write(Inst.DISCARD);
 		removeStack();
@@ -442,7 +442,7 @@ public class CafCompiler implements StatementVisitor, ExpressionVisitor{
 		return array;
 	}
 
-	protected static final class Block {
+	protected static final class Block{
 		public final int initializerStackPosition;
 		public final Map<String, Definition> definitions = new HashMap<>();
 
