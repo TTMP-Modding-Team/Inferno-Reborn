@@ -63,7 +63,7 @@ public class CafLexer{
 	}
 	public void expectNext(TokenType token, String error, boolean skipNewline){
 		Token t = skipNewline ? next() : next0();
-		if(!t.is(token)) throw CafCompileException.create(script, t.start, error);
+		if(!t.is(token)) throw new CafCompileException(t.start, error);
 	}
 
 	public boolean guessNext(TokenType token){
@@ -168,7 +168,7 @@ public class CafLexer{
 				case '#':{
 					String literal = grabIdentifierLiteral(charIndex);
 					if(!checkMatch(COLOR_PATTERN, literal))
-						throw CafCompileException.create(script, charIndex-1, "Invalid color '"+literal+"'");
+						throw new CafCompileException(charIndex-1, "Invalid color '"+literal+"'");
 					charIndex += literal.length();
 					return new Token(TokenType.COLOR, tokenStart, 1+literal.length());
 				}
@@ -176,13 +176,13 @@ public class CafLexer{
 					if(c>='0'&&c<='9'){ // is number
 						String literal = grabNumberLiteral(--charIndex);
 						if(literal.isEmpty())
-							throw CafCompileException.create(script, charIndex, "Invalid number");
+							throw new CafCompileException(charIndex, "Invalid number");
 						charIndex += literal.length();
 						return new Token(TokenType.NUMBER, tokenStart, literal.length());
 					}else{
 						String literal = grabIdentifierLiteral(--charIndex);
 						if(literal.isEmpty())
-							throw CafCompileException.create(script, charIndex, "Invalid character '"+c+"'("+Integer.toHexString(c)+")");
+							throw new CafCompileException(charIndex, "Invalid character '"+c+"'("+Integer.toHexString(c)+")");
 						charIndex += literal.length();
 						return new Token(RESERVED_WORDS.getOrDefault(literal, TokenType.IDENTIFIER), tokenStart, literal.length());
 					}

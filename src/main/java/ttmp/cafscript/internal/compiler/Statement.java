@@ -164,6 +164,29 @@ public abstract class Statement{
 		}
 	}
 
+	public static final class StatementList extends Statement{
+		private final List<Statement> statements;
+
+		public StatementList(int position, List<Statement> statements){
+			super(position);
+			this.statements = statements;
+		}
+
+		public List<Statement> getStatements(){
+			return statements;
+		}
+
+		@Override public void visit(StatementVisitor visitor){
+			visitor.visitStatements(this);
+		}
+
+		@Override public String toString(){
+			return "StatementList{"+
+					"statements="+statements+
+					'}';
+		}
+	}
+
 	public static final class Debug extends Statement{
 		private final Expression expr;
 

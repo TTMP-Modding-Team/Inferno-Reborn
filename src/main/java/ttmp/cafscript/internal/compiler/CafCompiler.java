@@ -183,6 +183,9 @@ public class CafCompiler implements StatementVisitor, ExpressionVisitor{
 			write2At(goElse, getJumpCoord(goElse));
 		}
 	}
+	@Override public void visitStatements(Statement.StatementList statementList){
+		for(Statement s : statementList.getStatements()) writeInst(s);
+	}
 	@Override public void visitDebug(Statement.Debug debug){
 		writeInst(debug.getExpr());
 		write(Inst.DEBUG);
@@ -191,8 +194,8 @@ public class CafCompiler implements StatementVisitor, ExpressionVisitor{
 	}
 
 	@Override public void visitComma(Expression.Comma comma){
-		int size = comma.getExpressions().size();
-		for(Expression e : comma.getExpressions())
+		int size = comma.expressions.size();
+		for(Expression e : comma.expressions)
 			writeInst(e);
 		switch(size){
 			case 0:
@@ -215,125 +218,119 @@ public class CafCompiler implements StatementVisitor, ExpressionVisitor{
 		removeStack(size-1);
 	}
 	@Override public void visitNot(Expression.Not not){
-		writeInst(not.getExpression());
+		writeInst(not.expression);
 		write(Inst.NOT);
 	}
 	@Override public void visitNegate(Expression.Negate negate){
-		writeInst(negate.getExpression());
+		writeInst(negate.expression);
 		write(Inst.NEGATE);
 	}
-	@Override public void visitBinary(Expression.Binary binary){
-		writeInst(binary.getE1());
-		switch(binary.getOperator()){
-			case AND_AND:{
-				write(Inst.JUMPELSE);
-				removeStack();
-				int p = getNextWritePoint();
-				write2((short)0);
-				writeInst(binary.getE2());
-				write(Inst.JUMP);
-				int p2 = getNextWritePoint();
-				write2((short)0);
-				write2At(p, getJumpCoord(p));
-				write(Inst.FALSE);
-				addStack();
-				write2At(p2, getJumpCoord(p2));
-				return;
-			}
-			case OR_OR:{
-				write(Inst.JUMPIF);
-				removeStack();
-				int p = getNextWritePoint();
-				write2((short)0);
-				writeInst(binary.getE2());
-				write(Inst.JUMP);
-				int p2 = getNextWritePoint();
-				write2((short)0);
-				write2At(p, getJumpCoord(p));
-				write(Inst.TRUE);
-				addStack();
-				write2At(p2, getJumpCoord(p2));
-				return;
-			}
-			default:
-				writeInst(binary.getE2());
-				switch(binary.getOperator()){
-					case PLUS:
-						write(Inst.ADD);
-						break;
-					case MINUS:
-						write(Inst.SUBTRACT);
-						break;
-					case STAR:
-						write(Inst.MULTIPLY);
-						break;
-					case SLASH:
-						write(Inst.DIVIDE);
-						break;
-					case EQ_EQ:
-						write(Inst.EQ);
-						break;
-					case BANG_EQ:
-						write(Inst.NEQ);
-						break;
-					case LT:
-						write(Inst.LT);
-						break;
-					case GT:
-						write(Inst.GT);
-						break;
-					case LT_EQ:
-						write(Inst.LTEQ);
-						break;
-					case GT_EQ:
-						write(Inst.GTEQ);
-						break;
-					default:
-						error("Unknown binary operator '"+binary.getOperator()+"'");
-				}
-				removeStack();
-		}
-	}
 	@Override public void visitTernary(Expression.Ternary ternary){
-		writeInst(ternary.getCondition());
+		writeInst(ternary.condition);
 		write(Inst.JUMPELSE);
 		removeStack();
 		int p = getNextWritePoint();
 		write2((short)0);
-		writeInst(ternary.getIfThen());
+		writeInst(ternary.ifThen);
 		write(Inst.JUMP);
 		int p2 = getNextWritePoint();
 		write2((short)0);
 		write2At(p, getJumpCoord(p));
-		writeInst(ternary.getElseThen());
+		writeInst(ternary.elseThen);
+		write2At(p2, getJumpCoord(p2));
+	}
+	private void writeSimpleBinary(Expression.Binary binary, byte inst){
+		writeInst(binary.e1);
+		writeInst(binary.e2);
+		write(inst);
+		removeStack();
+	}
+	@Override public void visitEq(Expression.Eq eq){
+		writeSimpleBinary(eq, Inst.EQ);
+	}
+	@Override public void visitNotEq(Expression.NotEq notEq){
+		writeSimpleBinary(notEq, Inst.NEQ);
+	}
+	@Override public void visitGt(Expression.Gt gt){
+		writeSimpleBinary(gt, Inst.GT);
+	}
+	@Override public void visitLt(Expression.Lt lt){
+		writeSimpleBinary(lt, Inst.LT);
+	}
+	@Override public void visitGtEq(Expression.GtEq gtEq){
+		writeSimpleBinary(gtEq, Inst.GTEQ);
+	}
+	@Override public void visitLtEq(Expression.LtEq ltEq){
+		writeSimpleBinary(ltEq, Inst.LTEQ);
+	}
+	@Override public void visitAdd(Expression.Add add){
+		writeSimpleBinary(add, Inst.ADD);
+	}
+	@Override public void visitSubtract(Expression.Subtract subtract){
+		writeSimpleBinary(subtract, Inst.SUBTRACT);
+	}
+	@Override public void visitMultiply(Expression.Multiply multiply){
+		writeSimpleBinary(multiply, Inst.MULTIPLY);
+	}
+	@Override public void visitDivide(Expression.Divide divide){
+		writeSimpleBinary(divide, Inst.DIVIDE);
+	}
+	@Override public void visitOr(Expression.Or or){
+		writeInst(or.e1);
+		write(Inst.JUMPIF);
+		removeStack();
+		int p = getNextWritePoint();
+		write2((short)0);
+		writeInst(or.e2);
+		write(Inst.JUMP);
+		int p2 = getNextWritePoint();
+		write2((short)0);
+		write2At(p, getJumpCoord(p));
+		write(Inst.TRUE);
+		addStack();
+		write2At(p2, getJumpCoord(p2));
+	}
+	@Override public void visitAnd(Expression.And and){
+		writeInst(and.e1);
+		write(Inst.JUMPELSE);
+		removeStack();
+		int p = getNextWritePoint();
+		write2((short)0);
+		writeInst(and.e2);
+		write(Inst.JUMP);
+		int p2 = getNextWritePoint();
+		write2((short)0);
+		write2At(p, getJumpCoord(p));
+		write(Inst.FALSE);
+		addStack();
 		write2At(p2, getJumpCoord(p2));
 	}
 	@Override public void visitNumber(Expression.Number number){
-		if(0==number.getNumber()) write(Inst.N0);
-		else if(1==number.getNumber()) write(Inst.N1);
-		else if(2==number.getNumber()) write(Inst.N2);
-		else if(3==number.getNumber()) write(Inst.N3);
-		else if(4==number.getNumber()) write(Inst.N4);
-		else if(5==number.getNumber()) write(Inst.N5);
-		else if(-1==number.getNumber()) write(Inst.NM1);
+		if(0==number.number) write(Inst.N0);
+		else if(1==number.number) write(Inst.N1);
+		else if(2==number.number) write(Inst.N2);
+		else if(3==number.number) write(Inst.N3);
+		else if(4==number.number) write(Inst.N4);
+		else if(5==number.number) write(Inst.N5);
+		else if(-1==number.number) write(Inst.NM1);
 		else{
 			write(Inst.PUSH);
-			write(obj(number.getNumber()));
+			write(obj(number.number));
 		}
 		addStack();
 	}
 	@Override public void visitNamespace(Expression.Namespace namespace){
 		write(Inst.PUSH);
-		write(obj(namespace.getNamespace()));
+		write(obj(namespace.namespace));
 		addStack();
 	}
 	@Override public void visitColor(Expression.Color color){
 		write(Inst.PUSH);
-		write(obj(color.getRgb()));
+		write(obj(color.rgb));
 		addStack();
 	}
 	@Override public void visitIdentifier(Expression.Identifier identifier){
-		Definition definition = getDefinition(identifier.getIdentifier());
+		Definition definition = getDefinition(identifier.identifier);
 		if(definition!=null){
 			if(definition.constant){
 				write(Inst.PUSH);
@@ -344,36 +341,27 @@ public class CafCompiler implements StatementVisitor, ExpressionVisitor{
 			}
 		}else{
 			write(Inst.GET_PROPERTY);
-			write(identifier(identifier.getIdentifier()));
+			write(identifier(identifier.identifier));
 			write(getStackPoint(getBlock().initializerStackPosition));
 		}
 		addStack();
 	}
 	@Override public void visitConstruct(Expression.Construct construct){
 		write(Inst.NEW);
-		write(identifier(construct.getIdentifier()));
+		write(identifier(construct.identifier));
 		addStack();
 		pushBlock();
-		for(Statement s : construct.getStatements()) writeInst(s);
+		for(Statement s : construct.statements) writeInst(s);
 		popBlock();
 		write(Inst.MAKE);
 		removeStack();
 	}
-	@Override public void visitConstant(Expression.Constant constant){
-		switch(constant){
-			case TRUE:
-				write(Inst.TRUE);
-				break;
-			case FALSE:
-				write(Inst.FALSE);
-				break;
-			default:
-				error("Unknown constant '"+constant+"'");
-		}
+	@Override public void visitBool(Expression.Bool bool){
+		write(bool.value ? Inst.TRUE : Inst.FALSE);
 		addStack();
 	}
 	@Override public void visitDebug(Expression.Debug debug){
-		writeInst(debug.getExpression());
+		writeInst(debug.expression);
 		write(Inst.DEBUG);
 	}
 
@@ -394,7 +382,8 @@ public class CafCompiler implements StatementVisitor, ExpressionVisitor{
 	}
 
 	private void error(String message){
-		throw CafCompileException.create(script, stmt!=null ? stmt.getPosition() : 0, message);
+		int sourcePosition = stmt!=null ? stmt.getPosition() : 0;
+		throw new CafCompileException(sourcePosition, message);
 	}
 
 	private byte newVariableId(){
