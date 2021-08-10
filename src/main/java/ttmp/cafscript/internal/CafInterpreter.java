@@ -9,8 +9,6 @@ import ttmp.cafscript.definitions.initializer.Initializer;
 import ttmp.cafscript.exceptions.CafException;
 
 public class CafInterpreter{ // TODO needs global constants, probably needs to be put on bottom of the stack before root init
-	private static final int STACK_SIZE = 31; // TODO adjustable?
-
 	private final CafScriptEngine engine;
 	private final CafScript script;
 
@@ -237,7 +235,7 @@ public class CafInterpreter{ // TODO needs global constants, probably needs to b
 	}
 
 	private void push(Object o){
-		if(stackSize==STACK_SIZE)
+		if(stackSize==stack.length)
 			throw new CafException("StackOverflow.com");
 		stack[stackSize++] = o;
 	}
