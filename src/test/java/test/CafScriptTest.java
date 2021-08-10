@@ -8,6 +8,7 @@ import org.junit.jupiter.api.function.Executable;
 import ttmp.cafscript.CafScriptEngine;
 import ttmp.cafscript.definitions.initializer.Initializer;
 import ttmp.cafscript.definitions.initializer.TestInitializer;
+import ttmp.cafscript.exceptions.CafCompileException;
 import ttmp.cafscript.internal.CafDebugEngine;
 import ttmp.cafscript.internal.CafInterpreter;
 
@@ -52,6 +53,12 @@ public class CafScriptTest{
 				operationTest(engine, "operation_test/arithmetics",
 						3.0, -1.0, 2.0, 1.0/2)));
 
+		tests.add(DynamicTest.dynamicTest("Compile Error Test: Lex - Garbage", compileErrorTest(engine, "compile_error_test/lex_garbage")));
+		tests.add(DynamicTest.dynamicTest("Compile Error Test: Lex - Invalid Chars", compileErrorTest(engine, "compile_error_test/lex_invalid_chars")));
+		tests.add(DynamicTest.dynamicTest("Compile Error Test: Parse - Missing Brace", compileErrorTest(engine, "compile_error_test/parse_missing_brace")));
+		tests.add(DynamicTest.dynamicTest("Compile Error Test: Parse - Wrong Type #1", compileErrorTest(engine, "compile_error_test/parse_wrong_type_1")));
+		tests.add(DynamicTest.dynamicTest("Compile Error Test: Parse - Wrong Type #2", compileErrorTest(engine, "compile_error_test/parse_wrong_type_2")));
+
 		return tests;
 	}
 
@@ -69,6 +76,21 @@ public class CafScriptTest{
 
 	private Executable operationTest(CafScriptEngine engine, String filename, Object... expectedValues){
 		return () -> new CafInterpreter(engine, engine.compile(readScript(filename))).execute(new TestInitializer(expectedValues));
+	}
+
+	private Executable compileErrorTest(CafScriptEngine engine, String filename){
+		return () -> {
+			String script = readScript(filename);
+			try{
+				engine.compile(script);
+			}catch(CafCompileException ex){
+				ex.prettyPrint(script);
+				ex.printStackTrace();
+				System.out.println("Compilation successfully failed");
+				return;
+			}
+			throw new RuntimeException("You're supposed to be dead?");
+		};
 	}
 
 	private String readScript(String filename) throws IOException{

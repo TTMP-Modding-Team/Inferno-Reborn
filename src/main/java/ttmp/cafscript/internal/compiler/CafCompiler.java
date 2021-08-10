@@ -6,7 +6,6 @@ import it.unimi.dsi.fastutil.objects.Object2ByteMap;
 import it.unimi.dsi.fastutil.objects.Object2ByteOpenHashMap;
 import ttmp.cafscript.CafScript;
 import ttmp.cafscript.exceptions.CafCompileException;
-import ttmp.cafscript.exceptions.CafException;
 import ttmp.cafscript.internal.Inst;
 
 import javax.annotation.Nullable;
@@ -30,7 +29,7 @@ public class CafCompiler implements StatementVisitor, ExpressionVisitor{
 	private int currentStack = 1; // Root initializer is always in stack
 	private int maxStack = 1;
 
-	private Statement stmt;
+	private int currentSourcePosition;
 
 	private boolean finished;
 
@@ -108,12 +107,17 @@ public class CafCompiler implements StatementVisitor, ExpressionVisitor{
 	}
 
 	public void writeInst(Statement stmt){
-		this.stmt = stmt;
+		int c = this.currentSourcePosition;
+		this.currentSourcePosition = stmt.getPosition();
 		stmt.visit(this);
+		this.currentSourcePosition = c;
 	}
 
 	public void writeInst(Expression expr){
+		int c = this.currentSourcePosition;
+		this.currentSourcePosition = expr.position;
 		expr.visit(this);
+		this.currentSourcePosition = c;
 	}
 
 	@Override public void visitAssign(Statement.Assign assign){
@@ -382,12 +386,11 @@ public class CafCompiler implements StatementVisitor, ExpressionVisitor{
 	}
 
 	private void error(String message){
-		int sourcePosition = stmt!=null ? stmt.getPosition() : 0;
-		throw new CafCompileException(sourcePosition, message);
+		throw new CafCompileException(this.currentSourcePosition, message);
 	}
 
 	private byte newVariableId(){
-		if(variables==256) throw new CafException("Too many variables");
+		if(variables==256) error("Too many variables");
 		return (byte)variables++;
 	}
 
@@ -395,8 +398,7 @@ public class CafCompiler implements StatementVisitor, ExpressionVisitor{
 		blocks.add(new Block(currentStack));
 	}
 	private void popBlock(){
-		if(blocks.isEmpty())
-			throw new CafException("Internal definition error");
+		if(blocks.isEmpty()) error("Internal definition error");
 		blocks.remove(blocks.size()-1);
 	}
 
@@ -406,7 +408,7 @@ public class CafCompiler implements StatementVisitor, ExpressionVisitor{
 
 	private void setDefinition(String name, Definition definition){
 		if(blocks.get(blocks.size()-1).definitions.putIfAbsent(name, definition)!=null)
-			throw new CafException("Property with name '"+name+"' is already defined");
+			error("Property with name '"+name+"' is already defined");
 	}
 
 	@Nullable private Definition getDefinition(String name){
@@ -431,7 +433,7 @@ public class CafCompiler implements StatementVisitor, ExpressionVisitor{
 	}
 	private void removeStack(int amount){
 		currentStack -= amount;
-		if(currentStack<0) throw new CafException("Internal stack count error");
+		if(currentStack<0) error("Internal stack count error");
 	}
 
 	private static <T> T[] populate(Object2ByteMap<T> map, T[] array){
