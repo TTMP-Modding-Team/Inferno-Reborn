@@ -298,8 +298,8 @@ public class CafParser{
 				d = r;
 			}else{
 				e = token==TokenType.STAR ?
-						new Expression.Add(e.position, e, e2) :
-						new Expression.Subtract(e.position, e, e2);
+						new Expression.Multiply(e.position, e, e2) :
+						new Expression.Divide(e.position, e, e2);
 			}
 		}while(lexer.guessNext2(TokenType.STAR, TokenType.SLASH));
 		return e;

@@ -26,7 +26,7 @@ public abstract class Statement{
 		}
 
 		@Override public String toString(){
-			return "Assign{"+
+			return position+":Assign{"+
 					"property='"+property+'\''+
 					", value="+value+
 					'}';
@@ -48,7 +48,7 @@ public abstract class Statement{
 		}
 
 		@Override public String toString(){
-			return "AssignLazy{"+
+			return position+":AssignLazy{"+
 					"property='"+property+'\''+
 					", statements="+statements+
 					'}';
@@ -70,7 +70,7 @@ public abstract class Statement{
 		}
 
 		@Override public String toString(){
-			return "Define{"+
+			return position+":Define{"+
 					"property='"+property+'\''+
 					", value="+value+
 					'}';
@@ -90,7 +90,7 @@ public abstract class Statement{
 		}
 
 		@Override public String toString(){
-			return "Apply{"+
+			return position+":Apply{"+
 					"value="+value+
 					'}';
 		}
@@ -113,7 +113,7 @@ public abstract class Statement{
 		}
 
 		@Override public String toString(){
-			return "If{"+
+			return position+":If{"+
 					"condition="+condition+
 					", ifThen="+ifThen+
 					", elseThen="+elseThen+
@@ -134,7 +134,7 @@ public abstract class Statement{
 		}
 
 		@Override public String toString(){
-			return "StatementList{"+
+			return position+":StatementList{"+
 					"statements="+statements+
 					'}';
 		}
@@ -153,7 +153,7 @@ public abstract class Statement{
 		}
 
 		@Override public String toString(){
-			return "Debug{"+
+			return position+":Debug{"+
 					"value="+value+
 					'}';
 		}

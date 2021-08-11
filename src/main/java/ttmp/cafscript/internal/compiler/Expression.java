@@ -81,7 +81,7 @@ public abstract class Expression{
 		}
 
 		@Override public String toString(){
-			return "Comma{"+
+			return position+":Comma{"+
 					"expressions="+expressions+
 					'}';
 		}
@@ -104,7 +104,7 @@ public abstract class Expression{
 		}
 
 		@Override public String toString(){
-			return "!"+expression;
+			return position+":!"+expression;
 		}
 	}
 
@@ -125,7 +125,7 @@ public abstract class Expression{
 		}
 
 		@Override public String toString(){
-			return "-"+expression;
+			return position+":-"+expression;
 		}
 	}
 
@@ -140,7 +140,7 @@ public abstract class Expression{
 		}
 
 		@Override public String toString(){
-			return getClass().getSimpleName()+"{"+e1+", "+e2+"}";
+			return position+":"+getClass().getSimpleName()+"{"+e1+", "+e2+"}";
 		}
 	}
 
@@ -328,7 +328,7 @@ public abstract class Expression{
 		}
 
 		@Override public String toString(){
-			return "Ternary{"+
+			return position+":Ternary{"+
 					"condition="+condition+
 					", ifThen="+ifThen+
 					", elseThen="+elseThen+
@@ -360,7 +360,7 @@ public abstract class Expression{
 			expectType(Double.class, expectedType);
 		}
 		@Override public String toString(){
-			return String.valueOf(number);
+			return position+":"+number;
 		}
 	}
 
@@ -390,7 +390,7 @@ public abstract class Expression{
 			expectType(ResourceLocation.class, expectedType);
 		}
 		@Override public String toString(){
-			return "<"+namespace+">";
+			return position+":<"+namespace+">";
 		}
 	}
 
@@ -417,7 +417,7 @@ public abstract class Expression{
 			expectType(Integer.class, expectedType);
 		}
 		@Override public String toString(){
-			return "#"+rgb;
+			return position+":#"+rgb;
 		}
 	}
 
@@ -434,7 +434,7 @@ public abstract class Expression{
 		}
 		@Override public void checkType(@Nullable Class<?> expectedType){}
 		@Override public String toString(){
-			return identifier;
+			return position+":"+identifier;
 		}
 	}
 
@@ -453,7 +453,7 @@ public abstract class Expression{
 		}
 		@Override public void checkType(@Nullable Class<?> expectedType){}
 		@Override public String toString(){
-			return "Construct{"+
+			return position+":Construct{"+
 					"identifier='"+identifier+'\''+
 					", statements="+statements+
 					'}';
@@ -475,7 +475,7 @@ public abstract class Expression{
 			expression.checkType(expectedType);
 		}
 		@Override public String toString(){
-			return "debug "+expression;
+			return position+":debug "+expression;
 		}
 	}
 
@@ -502,7 +502,7 @@ public abstract class Expression{
 		}
 
 		@Override public String toString(){
-			return value ? "true" : "false";
+			return position+(value ? ":true" : ":false");
 		}
 	}
 }

@@ -2,6 +2,7 @@ package ttmp.cafscript;
 
 import com.google.common.primitives.Shorts;
 import ttmp.cafscript.internal.Inst;
+import ttmp.cafscript.internal.Lines;
 
 import java.util.Locale;
 
@@ -13,12 +14,15 @@ public final class CafScript{
 	private final int variables;
 	private final int maxStack;
 
-	public CafScript(byte[] inst, Object[] objects, String[] identifiers, int variables, int maxStack){
+	private final Lines lines;
+
+	public CafScript(byte[] inst, Object[] objects, String[] identifiers, int variables, int maxStack, Lines lines){
 		this.inst = inst;
 		this.objects = objects;
 		this.identifiers = identifiers;
 		this.variables = variables;
 		this.maxStack = maxStack;
+		this.lines = lines;
 	}
 
 	public int getInstSize(){
@@ -48,12 +52,23 @@ public final class CafScript{
 		return maxStack;
 	}
 
+	public Lines getLines(){
+		return lines;
+	}
+
 	public String format(){
 		StringBuilder stb = new StringBuilder("CafScript{");
 		stb.append("\nVariables: ").append(variables);
 		stb.append("\nMaximum Stack Size: ").append(maxStack);
 		stb.append("\nBytecodes: ").append(inst.length).append(" entries");
+		int lastLine = 0;
 		for(int i = 0; i<inst.length; i++){
+			int line = lines.getLine(i);
+			if(line!=lastLine){
+				lastLine = line;
+				if(line<=0) stb.append("\n    | [L:???]");
+				else stb.append("\n    | [L:").append(line).append("]");
+			}
 			stb.append(String.format("\n %3d| ", i));
 			switch(inst[i]){
 				case Inst.PUSH:

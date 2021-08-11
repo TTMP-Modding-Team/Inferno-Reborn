@@ -30,13 +30,13 @@ public class CafScriptTest{
 
 		tests.add(DynamicTest.dynamicTest("Compile Test 1", compileTest(engine, "compile_test/1")));
 		tests.add(DynamicTest.dynamicTest("Compile Test 2", compileTest(engine, "compile_test/2")));
+		tests.add(DynamicTest.dynamicTest("Compile Test 3", compileTest(engine, "compile_test/3")));
+		tests.add(DynamicTest.dynamicTest("Compile Test 4", compileTest(engine, "compile_test/4")));
 
-		tests.add(DynamicTest.dynamicTest("Run Test: Debug",
-				runTest(engine, "run_test/debug")));
-		tests.add(DynamicTest.dynamicTest("Run Test: Init",
-				runTest(engine, "run_test/init", () -> PrintInitializer.INSTANCE)));
-		tests.add(DynamicTest.dynamicTest("Run Test: Defines",
-				runTest(engine, "run_test/defines")));
+		tests.add(DynamicTest.dynamicTest("Run Test: Debug", runTest(engine, "run_test/debug")));
+		tests.add(DynamicTest.dynamicTest("Run Test: Defines", runTest(engine, "run_test/defines")));
+		tests.add(DynamicTest.dynamicTest("Run Test: Empty", runTest(engine, "run_test/empty")));
+		tests.add(DynamicTest.dynamicTest("Run Test: Init", runTest(engine, "run_test/init", () -> PrintInitializer.INSTANCE)));
 
 		tests.add(DynamicTest.dynamicTest("Operation Test: Constants",
 				operationTest(engine, "operation_test/constants",
@@ -94,6 +94,9 @@ public class CafScriptTest{
 	}
 
 	private String readScript(String filename) throws IOException{
-		return FileUtils.readFileToString(new File("src/test/resources/scripts/"+filename+".caf"), StandardCharsets.UTF_8);
+		long t = System.currentTimeMillis();
+		String s = FileUtils.readFileToString(new File("src/test/resources/scripts/"+filename+".caf"), StandardCharsets.UTF_8);
+		System.out.println("Reading script from file took "+(System.currentTimeMillis()-t)+" ms.");
+		return s;
 	}
 }

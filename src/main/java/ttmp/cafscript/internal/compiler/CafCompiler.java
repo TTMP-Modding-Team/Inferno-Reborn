@@ -7,6 +7,7 @@ import it.unimi.dsi.fastutil.objects.Object2ByteOpenHashMap;
 import ttmp.cafscript.CafScript;
 import ttmp.cafscript.exceptions.CafCompileException;
 import ttmp.cafscript.internal.Inst;
+import ttmp.cafscript.internal.Lines;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
@@ -23,6 +24,8 @@ public class CafCompiler implements StatementVisitor, ExpressionVisitor{
 	public final Object2ByteMap<String> identifiers = new Object2ByteOpenHashMap<>();
 
 	private final List<Block> blocks = new ArrayList<>();
+
+	private final Lines.Builder lines = new Lines.Builder();
 
 	public int variables;
 
@@ -57,7 +60,8 @@ public class CafCompiler implements StatementVisitor, ExpressionVisitor{
 				populate(objs, new Object[objs.size()]),
 				populate(identifiers, new String[identifiers.size()]),
 				variables,
-				maxStack);
+				maxStack,
+				lines.build(script, inst.size()));
 	}
 
 	private void write(byte inst){
@@ -107,6 +111,7 @@ public class CafCompiler implements StatementVisitor, ExpressionVisitor{
 	}
 
 	public void writeInst(Statement stmt){
+		lines.line(inst.size(), stmt.position);
 		int c = this.currentSourcePosition;
 		this.currentSourcePosition = stmt.position;
 		stmt.visit(this);
@@ -114,6 +119,7 @@ public class CafCompiler implements StatementVisitor, ExpressionVisitor{
 	}
 
 	public void writeInst(Expression expr){
+		lines.line(inst.size(), expr.position);
 		int c = this.currentSourcePosition;
 		this.currentSourcePosition = expr.position;
 		expr.visit(this);
