@@ -3,6 +3,7 @@ package ttmp.cafscript.definitions.initializer;
 import it.unimi.dsi.fastutil.ints.IntArrayList;
 import it.unimi.dsi.fastutil.ints.IntList;
 import ttmp.cafscript.exceptions.CafException;
+import ttmp.cafscript.internal.CafInterpreter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,7 +24,7 @@ public class TestInitializer implements Initializer<Boolean>{
 		this.expectedValues = expectedValues;
 	}
 
-	@Override public void apply(Object o){
+	@Override public void apply(CafInterpreter interpreter, Object o){
 		int size = provided.size();
 		if(expectedValues.length>size) provided.add(o);
 		else throw new CafException("Too many values provided: "+size);

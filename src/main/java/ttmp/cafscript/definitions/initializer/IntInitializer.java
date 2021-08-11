@@ -1,5 +1,7 @@
 package ttmp.cafscript.definitions.initializer;
 
+import ttmp.cafscript.internal.CafInterpreter;
+
 public class IntInitializer implements Initializer<Integer>{
 	private int value;
 
@@ -8,7 +10,7 @@ public class IntInitializer implements Initializer<Integer>{
 		this.value = defaultValue;
 	}
 
-	@Override public void apply(Object o){
+	@Override public void apply(CafInterpreter interpreter, Object o){
 		this.value = ((Double)o).intValue();
 	}
 

@@ -6,7 +6,7 @@ import ttmp.cafscript.CafScript;
 import ttmp.cafscript.CafScriptEngine;
 import ttmp.cafscript.definitions.InitDefinition;
 import ttmp.cafscript.definitions.initializer.Initializer;
-import ttmp.cafscript.exceptions.CafException;
+import ttmp.cafscript.exceptions.CafEvalException;
 
 public class CafInterpreter{ // TODO needs global constants, probably needs to be put on bottom of the stack before root init
 	private final CafScriptEngine engine;
@@ -24,6 +24,17 @@ public class CafInterpreter{ // TODO needs global constants, probably needs to b
 
 		this.stack = new Object[script.getMaxStack()];
 		this.variable = new Object[script.getVariables()];
+	}
+
+	public CafScriptEngine getEngine(){
+		return engine;
+	}
+	public CafScript getScript(){
+		return script;
+	}
+
+	public int getCurrentLine(){
+		return script.getLines().getLine(ip-1);
 	}
 
 	public Object execute(Initializer<?> initializer){
@@ -142,16 +153,16 @@ public class CafInterpreter{ // TODO needs global constants, probably needs to b
 				}
 				case Inst.GET_PROPERTY:{
 					String identifier = identifier();
-					push(expectInitializer(getNBelowTop(nextUnsigned())).getPropertyValue(identifier));
+					push(expectInitializer(getNBelowTop(nextUnsigned())).getPropertyValue(this, identifier));
 					break;
 				}
 				case Inst.SET_PROPERTY:{
 					Object o = pop();
-					expectInitializer(peek()).setPropertyValue(identifier(), o);
-				}
+					expectInitializer(peek()).setPropertyValue(this, identifier(), o);
 					break;
+				}
 				case Inst.SET_PROPERTY_LAZY:{
-					Initializer<?> i2 = expectInitializer(peek()).setPropertyValueLazy(identifier(), ip+2);
+					Initializer<?> i2 = expectInitializer(peek()).setPropertyValueLazy(this, identifier(), ip+2);
 					if(i2!=null){
 						ip += 2;
 						push(i2);
@@ -160,7 +171,7 @@ public class CafInterpreter{ // TODO needs global constants, probably needs to b
 				}
 				case Inst.APPLY:{
 					Object o = pop();
-					expectInitializer(peek()).apply(o);
+					expectInitializer(peek()).apply(this, o);
 					break;
 				}
 				case Inst.GET_VARIABLE:
@@ -172,15 +183,13 @@ public class CafInterpreter{ // TODO needs global constants, probably needs to b
 				case Inst.NEW:{
 					String identifier = identifier();
 					InitDefinition<?> def = engine.getKnownTypes().get(identifier);
-					if(def==null) throw new CafException("Unknown type '"+identifier+"'");
+					if(def==null) error("Unknown type '"+identifier+"'");
 					push(def.createInitializer());
 					break;
 				}
 				case Inst.MAKE:{
-					Object o = pop();
-					if(!(o instanceof Initializer<?>))
-						throw new CafException("Expected initializer");
-					push(((Initializer<?>)o).finish());
+					Initializer<?> o = expectInitializer(pop());
+					push(o.finish());
 					break;
 				}
 				case Inst.JUMP:
@@ -200,13 +209,13 @@ public class CafInterpreter{ // TODO needs global constants, probably needs to b
 						return expectInitializer(pop()).finish();
 					else{
 						Object o = expectInitializer(pop()).finish();
-						expectInitializer(peek()).setPropertyValue(identifier(), o);
+						expectInitializer(peek()).setPropertyValue(this, identifier(), o);
 						break;
 					}
 				case Inst.END:
 					return expectInitializer(pop()).finish();
 				default:
-					throw new CafException("Unknown bytecode '"+script.getInst(ip-1)+"'");
+					error("Unknown bytecode '"+script.getInst(ip-1)+"'");
 			}
 		}
 	}
@@ -229,55 +238,54 @@ public class CafInterpreter{ // TODO needs global constants, probably needs to b
 
 	private void pushObj(){
 		int i = nextUnsigned();
-		if(script.getObjectSize()>i)
-			push(script.getObject(i));
-		else throw new CafException("Object index out of bounds ("+i+")");
+		if(script.getObjectSize()<=i) error("Object index out of bounds ("+i+")");
+		push(script.getObject(i));
 	}
 
 	private void push(Object o){
-		if(stackSize==stack.length)
-			throw new CafException("StackOverflow.com");
+		if(stackSize==stack.length) error("Stack overflow");
 		stack[stackSize++] = o;
 	}
 
 	private Object pop(){
-		if(stackSize==0)
-			throw new CafException("StackUnderflow.com");
+		if(stackSize==0) error("Stack underflow");
 		return stack[--stackSize];
 	}
 
 	private Object peek(){
-		if(stackSize==0)
-			throw new CafException("StackUnderflow.com");
+		if(stackSize==0) error("Stack underflow");
 		return stack[stackSize-1];
 	}
 
 	private Object getNBelowTop(int i){
-		if(i<stackSize){
-			return stack[stackSize-1-i];
-		}else throw new CafException("Kinda hard to get object "+i+" below top from stack... when the stack size is "+stackSize);
+		if(i>=stackSize) error("Kinda hard to get object "+i+" below top from stack... when the stack size is "+stackSize);
+		return stack[stackSize-1-i];
 	}
 
 	private double popNumber(){
 		Object o = pop();
-		if(!(o instanceof Double)) throw new CafException("Not a number");
-		else return (double)o;
+		if(!(o instanceof Double)) error("Not a number");
+		return (double)o;
 	}
 
 	private boolean popBoolean(){
 		Object o = pop();
-		if(!(o instanceof Boolean)) throw new CafException("Not a boolean");
-		else return (boolean)o;
+		if(!(o instanceof Boolean)) error("Not a boolean");
+		return (boolean)o;
 	}
 
-	private static Initializer<?> expectInitializer(Object o){
-		if(!(o instanceof Initializer)) throw new CafException("Not an initializer");
-		else return (Initializer<?>)o;
+	private Initializer<?> expectInitializer(Object o){
+		if(!(o instanceof Initializer)) error("Not an initializer");
+		return (Initializer<?>)o;
 	}
 
 	private String identifier(){
 		int i = nextUnsigned();
-		if(script.getIdentifierSize()>i) return script.getIdentifier(i);
-		else throw new CafException("Identifier index out of bounds ("+i+")");
+		if(script.getIdentifierSize()<=i) error("Identifier index out of bounds ("+i+")");
+		return script.getIdentifier(i);
+	}
+
+	private void error(String message){
+		throw new CafEvalException(getCurrentLine(), message);
 	}
 }

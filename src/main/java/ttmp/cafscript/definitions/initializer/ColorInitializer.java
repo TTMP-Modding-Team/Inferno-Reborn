@@ -1,9 +1,11 @@
 package ttmp.cafscript.definitions.initializer;
 
+import ttmp.cafscript.internal.CafInterpreter;
+
 public class ColorInitializer implements Initializer<Integer>{
 	private int color;
 
-	@Override public void apply(Object o){
+	@Override public void apply(CafInterpreter interpreter, Object o){
 		this.color = (Integer)o;
 	}
 
