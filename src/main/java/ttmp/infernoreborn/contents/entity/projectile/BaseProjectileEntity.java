@@ -18,6 +18,7 @@ public abstract class BaseProjectileEntity extends ProjectileEntity {
         super(type, world);
     }
 
+    @Override
     public void tick(){
         Entity entity = this.getOwner();
         //noinspection deprecation
@@ -50,12 +51,11 @@ public abstract class BaseProjectileEntity extends ProjectileEntity {
         return NetworkHooks.getEntitySpawningPacket(this);
     }
 
-    public void shootEntityToTarget(Entity shooter, Entity target, float velocity, float inaccuracy){
+    public void shootEntityToTarget(Entity shooter, Entity target, float velocity){
         this.setPos(shooter.getX(), shooter.getEyeY(), shooter.getZ());
         double xDiff = target.getX()-shooter.getX();
         double yDiff = target.getY(1/3.0)-shooter.getY();
         double zDiff = target.getZ()-shooter.getZ();
-        double xzDistance = MathHelper.sqrt(xDiff*xDiff+zDiff*zDiff);
-        this.shoot(xDiff, yDiff+xzDistance*0.2, zDiff, velocity, inaccuracy);
+        this.shoot(xDiff, yDiff, zDiff, velocity, 0);
     }
 }

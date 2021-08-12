@@ -12,12 +12,12 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import ttmp.infernoreborn.contents.entity.projectile.CreeperMissileEntity;
 
-@OnlyIn(Dist.CLIENT)
 public class CreeperMissileEntityRenderer extends EntityRenderer<CreeperMissileEntity> {
     public CreeperMissileEntityRenderer(EntityRendererManager manager) {
         super(manager);
     }
 
+    @Override
     public void render(CreeperMissileEntity entity, float entityYaw, float partialTicks, MatrixStack stack, IRenderTypeBuffer typeBuffer, int packedLight) {
         SkullTileEntityRenderer.renderSkull(null, 180, SkullBlock.Types.CREEPER, null, 0, stack, typeBuffer, packedLight);
         super.render(entity, entityYaw, partialTicks, stack, typeBuffer, packedLight);
@@ -26,6 +26,7 @@ public class CreeperMissileEntityRenderer extends EntityRenderer<CreeperMissileE
     /**
      * Returns the location of an entity's texture.
      */
+    @Override
     public ResourceLocation getTextureLocation(CreeperMissileEntity pEntity) {
         return PlayerContainer.BLOCK_ATLAS;
     }

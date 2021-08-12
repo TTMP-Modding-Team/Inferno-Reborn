@@ -182,17 +182,17 @@ public final class Abilities{
 
 	public static final RegistryObject<Ability> WINDBLAST_1 = REGISTER.register("windblast_1", () ->
 			new Ability(new Ability.Properties(0xA1CEE3, 0xA1CEE3)
-					.addTargetedSkill(4, 120, wind((world) -> new DamagingWindEntity(world).setDamage(4), 1, 1, 1))
+					.addTargetedSkill(4, 120, wind((world) -> new DamagingWindEntity(world).setDamage(4), 1, 1))
 					.drops(EssenceType.AIR, 3)));
 
 	public static final RegistryObject<Ability> WINDBLAST_2 = REGISTER.register("windblast_2", () ->
 			new Ability(new Ability.Properties(0xA1CEE3, 0xA1CEE3)
-					.addTargetedSkill(8, 180, wind((world) -> new DamagingWindEntity(world).setDamage(6), 1, 1, 1))
+					.addTargetedSkill(8, 180, wind((world) -> new DamagingWindEntity(world).setDamage(6), 1, 1))
 					.drops(EssenceType.AIR, 6)));
 
 	public static final RegistryObject<Ability> WINDBLAST_3 = REGISTER.register("windblast_3", () ->
 			new Ability(new Ability.Properties(0xA1CEE3, 0xA1CEE3)
-					.addTargetedSkill(12, 240, wind((world) -> new DamagingWindEntity(world).setDamage(8), 1, 1, 1))
+					.addTargetedSkill(12, 240, wind((world) -> new DamagingWindEntity(world).setDamage(8), 1, 1))
 					.drops(EssenceType.AIR, 9)));
 
 	public static final RegistryObject<Ability> BULLETPROOF = REGISTER.register("bulletproof", () ->
@@ -444,15 +444,15 @@ public final class Abilities{
 
 	public static final RegistryObject<Ability> BLAZE_WAVE = REGISTER.register("blaze_wave", () ->
 			new Ability(new Ability.Properties(0xFF680C, 0xFF680C)
-					.addTargetedSkill(30, 180, wind((world) -> new DamagingWindEntity(world).doSetFire(true), 1, 1, 1))));
+					.addTargetedSkill(30, 180, wind((world) -> new DamagingWindEntity(world).doSetFire(true), 1, 1))));
 
 	public static final RegistryObject<Ability> FREEZE_WAVE = REGISTER.register("freeze_wave", () ->
 			new Ability(new Ability.Properties(0x92B9FA, 0x92B9FA)
-					.addTargetedSkill(30, 120, wind((world) -> new EffectWindEntity(world).addEffect(new EffectInstance(Effects.MOVEMENT_SLOWDOWN, 300)), 1, 1, 1))));
+					.addTargetedSkill(30, 120, wind((world) -> new EffectWindEntity(world).addEffect(new EffectInstance(Effects.MOVEMENT_SLOWDOWN, 300)), 1, 1))));
 
 	public static final RegistryObject<Ability> ENVENOM = REGISTER.register("envenom", () ->
 			new Ability(new Ability.Properties(0x4E9331, 0x4E9331)
-					.addTargetedSkill(30, 160, wind((world) -> new EffectWindEntity(world).addEffect(new EffectInstance(Effects.POISON, 100, 2)), 1, 1, 1))));
+					.addTargetedSkill(30, 160, wind((world) -> new EffectWindEntity(world).addEffect(new EffectInstance(Effects.POISON, 100, 2)), 1, 1))));
 
 	public static final RegistryObject<Ability> ASSASSINATE = REGISTER.register("assassinate", () ->
 			new Ability(new Ability.Properties(0x332B40, 0x332B40)
@@ -541,7 +541,7 @@ public final class Abilities{
 					.addTargetedSkill(10, 100, (entity, holder, target) -> {
 						CreeperMissileEntity missile = new CreeperMissileEntity(ModEntities.CREEPER_MISSILE_ENTITY.get(), entity.level);
 						missile.setPos(entity.getX(), entity.getEyeY(), entity.getZ());
-						missile.shootEntityToTarget(entity, target, 1, 1);
+						missile.shootEntityToTarget(entity, target, 1);
 						entity.level.addFreshEntity(missile);
 						return true;
 					})));
@@ -622,12 +622,12 @@ public final class Abilities{
 			}
 		};
 	}
-	private static AbilitySkill.TargetedSkillAction wind(Function<World, AbstractWindEntity> constructor, float velocity, float inaccuracy, int color){
+	private static AbilitySkill.TargetedSkillAction wind(Function<World, AbstractWindEntity> constructor, float velocity, int color){
 		return (entity, holder, target) -> {
 			AbstractWindEntity wind = constructor.apply(entity.level);
 			wind.setOwner(entity);
 			wind.setColor(color);
-			wind.shootEntityToTarget(entity, target, velocity, inaccuracy);
+			wind.shootEntityToTarget(entity, target, velocity);
 			entity.level.addFreshEntity(wind);
 			return true;
 		};

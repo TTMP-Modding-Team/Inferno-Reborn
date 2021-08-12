@@ -178,7 +178,6 @@ public class InfernoReborn{
 				SkullTileEntityRenderer.MODEL_BY_TYPE.put(GoldenSkullBlock.TYPE, SkullTileEntityRenderer.MODEL_BY_TYPE.get(SkullBlock.Types.SKELETON));
 				SkullTileEntityRenderer.SKIN_BY_TYPE.put(GoldenSkullBlock.TYPE, new ResourceLocation(MODID, "textures/entity/golden_skull.png"));
 			});
-			RenderingRegistry.registerEntityRenderingHandler(ModEntities.TEST_WIND_ENTITY.get(), WindEntityRenderer::new);
 			RenderingRegistry.registerEntityRenderingHandler(ModEntities.DAMAGING_WIND_ENTITY.get(), WindEntityRenderer::new);
 			RenderingRegistry.registerEntityRenderingHandler(ModEntities.EFFECT_WIND_ENTITY.get(), WindEntityRenderer::new);
 			RenderingRegistry.registerEntityRenderingHandler(ModEntities.ANVIL.get(), AnvilEntityRenderer::new);
