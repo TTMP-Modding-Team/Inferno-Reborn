@@ -12,7 +12,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.vector.Matrix3f;
 import net.minecraft.util.math.vector.Matrix4f;
 import net.minecraft.util.math.vector.Vector3f;
-import ttmp.infernoreborn.contents.entity.wind.AbstractWindEntity;
+import ttmp.infernoreborn.contents.entity.projectile.wind.AbstractWindEntity;
 
 import static ttmp.infernoreborn.InfernoReborn.MODID;
 

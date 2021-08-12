@@ -1,6 +1,6 @@
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-package ttmp.infernoreborn.contents.entity.wind;
+package ttmp.infernoreborn.contents.entity.projectile.wind;
 
 import mcp.MethodsReturnNonnullByDefault;
 

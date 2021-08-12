@@ -6,9 +6,10 @@ import net.minecraftforge.fml.RegistryObject;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import ttmp.infernoreborn.contents.entity.AnvilEntity;
-import ttmp.infernoreborn.contents.entity.wind.DamagingWindEntity;
-import ttmp.infernoreborn.contents.entity.wind.EffectWindEntity;
-import ttmp.infernoreborn.contents.entity.wind.TestWindEntity;
+import ttmp.infernoreborn.contents.entity.projectile.CreeperMissileEntity;
+import ttmp.infernoreborn.contents.entity.projectile.wind.DamagingWindEntity;
+import ttmp.infernoreborn.contents.entity.projectile.wind.EffectWindEntity;
+import ttmp.infernoreborn.contents.entity.projectile.wind.TestWindEntity;
 
 import static ttmp.infernoreborn.InfernoReborn.MODID;
 
@@ -37,5 +38,9 @@ public final class ModEntities{
 			EntityType.Builder.<AnvilEntity>of(AnvilEntity::new, EntityClassification.MISC)
 					.sized(0.3125F, 0.3125F).clientTrackingRange(64).updateInterval(1)
 					.build("inferno_anvil"));
+	public static final RegistryObject<EntityType<CreeperMissileEntity>> CREEPER_MISSILE_ENTITY = REGISTER.register("creeper_missile_entity", () ->
+			EntityType.Builder.<CreeperMissileEntity>of(CreeperMissileEntity::new, EntityClassification.MISC)
+					.sized(0.3125f, 0.3125f).clientTrackingRange(64).updateInterval(1)
+					.build("inferno_creeper_missile"));
 
 }

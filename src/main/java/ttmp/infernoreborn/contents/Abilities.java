@@ -11,6 +11,7 @@ import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.entity.monster.SlimeEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.projectile.PotionEntity;
+import net.minecraft.entity.projectile.ProjectileEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.particles.ParticleTypes;
@@ -42,9 +43,10 @@ import ttmp.infernoreborn.contents.ability.AbilitySkill;
 import ttmp.infernoreborn.contents.ability.OnAbilityEvent;
 import ttmp.infernoreborn.contents.ability.cooldown.Cooldown;
 import ttmp.infernoreborn.contents.entity.AnvilEntity;
-import ttmp.infernoreborn.contents.entity.wind.AbstractWindEntity;
-import ttmp.infernoreborn.contents.entity.wind.DamagingWindEntity;
-import ttmp.infernoreborn.contents.entity.wind.EffectWindEntity;
+import ttmp.infernoreborn.contents.entity.projectile.CreeperMissileEntity;
+import ttmp.infernoreborn.contents.entity.projectile.wind.AbstractWindEntity;
+import ttmp.infernoreborn.contents.entity.projectile.wind.DamagingWindEntity;
+import ttmp.infernoreborn.contents.entity.projectile.wind.EffectWindEntity;
 import ttmp.infernoreborn.network.ModNet;
 import ttmp.infernoreborn.network.ParticleMsg;
 import ttmp.infernoreborn.util.EssenceType;
@@ -536,7 +538,14 @@ public final class Abilities{
 	public static final RegistryObject<Ability> PYROMANIA = REGISTER.register("pyromania", () ->
 			new Ability(new Ability.Properties(0xD94F00, 0xD94F00)));
 	public static final RegistryObject<Ability> GUNPOWDER_SWARM = REGISTER.register("gunpowder_swarm", () ->
-			new Ability(new Ability.Properties(0x00C800, 0x00C800)));
+			new Ability(new Ability.Properties(0x00C800, 0x00C800)
+					.addTargetedSkill(10, 100, (entity, holder, target) -> {
+						CreeperMissileEntity missile = new CreeperMissileEntity(ModEntities.CREEPER_MISSILE_ENTITY.get(), entity.level);
+						missile.setPos(entity.getX(), entity.getEyeY(), entity.getZ());
+						missile.shootEntityToTarget(entity, target, 1, 1);
+						entity.level.addFreshEntity(missile);
+						return true;
+					})));
 	public static final RegistryObject<Ability> KILLER_QUEEN = REGISTER.register("killer_queen", () ->
 			new Ability(new Ability.Properties(0xE3AADD, 0xE3AADD)
 					.onUpdate((entity, holder) -> {
@@ -619,17 +628,11 @@ public final class Abilities{
 			AbstractWindEntity wind = constructor.apply(entity.level);
 			wind.setOwner(entity);
 			wind.setColor(color);
-			wind.setPos(entity.getX(), entity.getY(), entity.getZ());
-			double xDiff = target.getX()-entity.getX();
-			double yDiff = target.getY(1/3.0)-wind.getY();
-			double zDiff = target.getZ()-entity.getZ();
-			double xzDistance = MathHelper.sqrt(xDiff*xDiff+zDiff*zDiff);
-			wind.shoot(xDiff, yDiff+xzDistance*0.2, zDiff, velocity, inaccuracy);
+			wind.shootEntityToTarget(entity, target, velocity, inaccuracy);
 			entity.level.addFreshEntity(wind);
 			return true;
 		};
 	}
-
 
 	@FunctionalInterface
 	private interface SkinEffect{

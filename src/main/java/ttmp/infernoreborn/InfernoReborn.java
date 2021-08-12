@@ -4,6 +4,7 @@ import net.minecraft.block.SkullBlock;
 import net.minecraft.client.gui.ScreenManager;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.RenderTypeLookup;
+import net.minecraft.client.renderer.entity.CreeperRenderer;
 import net.minecraft.client.renderer.tileentity.SkullTileEntityRenderer;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.item.ItemModelsProperties;
@@ -39,6 +40,7 @@ import ttmp.infernoreborn.client.color.GeneratorInfernoSparkColor;
 import ttmp.infernoreborn.client.color.PrimalInfernoSparkColor;
 import ttmp.infernoreborn.client.color.SparkColor;
 import ttmp.infernoreborn.client.render.AnvilEntityRenderer;
+import ttmp.infernoreborn.client.render.CreeperMissileEntityRenderer;
 import ttmp.infernoreborn.client.render.GoldenSkullTileEntityRenderer;
 import ttmp.infernoreborn.client.render.WindEntityRenderer;
 import ttmp.infernoreborn.client.screen.EssenceHolderScreen;
@@ -180,6 +182,7 @@ public class InfernoReborn{
 			RenderingRegistry.registerEntityRenderingHandler(ModEntities.DAMAGING_WIND_ENTITY.get(), WindEntityRenderer::new);
 			RenderingRegistry.registerEntityRenderingHandler(ModEntities.EFFECT_WIND_ENTITY.get(), WindEntityRenderer::new);
 			RenderingRegistry.registerEntityRenderingHandler(ModEntities.ANVIL.get(), AnvilEntityRenderer::new);
+			RenderingRegistry.registerEntityRenderingHandler(ModEntities.CREEPER_MISSILE_ENTITY.get(), CreeperMissileEntityRenderer::new);
 
 			ClientRegistry.bindTileEntityRenderer(ModTileEntities.GOLDEN_SKULL.get(), GoldenSkullTileEntityRenderer::new);
 		}
