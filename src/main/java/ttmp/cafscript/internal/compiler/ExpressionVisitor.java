@@ -24,4 +24,5 @@ public interface ExpressionVisitor{
 	void visitConstruct(Expression.Construct construct);
 	void visitBool(Expression.Bool bool);
 	void visitDebug(Expression.Debug debug);
+	void visitBundle(Expression.BundleConstant bundleConstant);
 }

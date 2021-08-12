@@ -1,6 +1,7 @@
 package ttmp.cafscript.internal.compiler;
 
 import ttmp.cafscript.exceptions.CafCompileException;
+import ttmp.cafscript.obj.Bundle;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
@@ -126,12 +127,16 @@ public class CafParser{
 		if(!lexer.guessNext(TokenType.COMMA)) return e;
 		List<Expression> expressions = new ArrayList<>();
 		expressions.add(e);
-		while(true){
+		do{
 			lexer.next();
 			expressions.add(ternary());
-			if(!lexer.guessNext(TokenType.COMMA))
+		}while(lexer.guessNext(TokenType.COMMA));
+		for(Expression expr : expressions)
+			if(!expr.isConstant())
 				return new Expression.Comma(e.position, expressions);
-		}
+		List<Object> list = new ArrayList<>();
+		for(Expression expr : expressions) list.add(expr.getConstantObject());
+		return new Expression.BundleConstant(e.position, new Bundle(list.toArray()));
 	}
 
 	private Expression ternary(){

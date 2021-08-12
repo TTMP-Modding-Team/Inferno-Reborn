@@ -79,7 +79,7 @@ public abstract class Expression{
 			visitor.visitComma(this);
 		}
 		@Override public void checkType(@Nullable Class<?> expectedType){
-			expectType(Bundle.class, expectedType);
+			expectType(BundleConstant.class, expectedType);
 		}
 
 		@Override public String toString(){
@@ -513,6 +513,26 @@ public abstract class Expression{
 
 		@Override public String toString(){
 			return position+(value ? ":true" : ":false");
+		}
+	}
+
+	public static class BundleConstant extends Expression{
+		public final Bundle bundle;
+
+		public BundleConstant(int position, Bundle bundle){
+			super(position);
+			this.bundle = bundle;
+		}
+
+		@Override public void visit(ExpressionVisitor visitor){
+			visitor.visitBundle(this);
+		}
+		@Override public void checkType(@Nullable Class<?> expectedType){
+			expectType(Bundle.class, expectedType);
+		}
+
+		@Override public String toString(){
+			return "Bundle{"+bundle+"}";
 		}
 	}
 }

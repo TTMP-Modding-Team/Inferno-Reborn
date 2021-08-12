@@ -378,6 +378,11 @@ public class CafCompiler implements StatementVisitor, ExpressionVisitor{
 		writeInst(debug.expression);
 		write(Inst.DEBUG);
 	}
+	@Override public void visitBundle(Expression.BundleConstant bundleConstant){
+		write(Inst.PUSH);
+		write(obj(bundleConstant.bundle));
+		addStack();
+	}
 
 	private byte obj(Object o){
 		int size = objs.size();
