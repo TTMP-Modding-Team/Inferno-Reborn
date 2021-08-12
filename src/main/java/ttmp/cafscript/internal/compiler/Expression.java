@@ -4,6 +4,8 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.ResourceLocationException;
 import ttmp.cafscript.exceptions.CafCompileException;
 import ttmp.cafscript.exceptions.CafException;
+import ttmp.cafscript.obj.Bundle;
+import ttmp.cafscript.obj.RGB;
 
 import javax.annotation.Nullable;
 import java.util.List;
@@ -77,7 +79,7 @@ public abstract class Expression{
 			visitor.visitComma(this);
 		}
 		@Override public void checkType(@Nullable Class<?> expectedType){
-			expectType(Object[].class, expectedType);
+			expectType(Bundle.class, expectedType);
 		}
 
 		@Override public String toString(){
@@ -376,6 +378,10 @@ public abstract class Expression{
 				throw new CafException("Invalid namespace '"+substring+"'", ex);
 			}
 		}
+		public Namespace(int position, ResourceLocation namespace){
+			super(position);
+			this.namespace = namespace;
+		}
 
 		@Override public void visit(ExpressionVisitor visitor){
 			visitor.visitNamespace(this);
@@ -395,13 +401,17 @@ public abstract class Expression{
 	}
 
 	public static class Color extends Expression{
-		public final int rgb;
+		public final RGB rgb;
 
 		public Color(int position, String color){
 			super(position);
 			String substring = color.substring(1);
 			if(substring.length()!=6) throw new CafException("Invalid color '"+color+"'");
-			rgb = Integer.parseInt(substring, 16);
+			this.rgb = new RGB(Integer.parseInt(substring, 16));
+		}
+		public Color(int position, RGB color){
+			super(position);
+			this.rgb = color;
 		}
 
 		@Override public void visit(ExpressionVisitor visitor){
@@ -414,7 +424,7 @@ public abstract class Expression{
 			return rgb;
 		}
 		@Override public void checkType(@Nullable Class<?> expectedType){
-			expectType(Integer.class, expectedType);
+			expectType(RGB.class, expectedType);
 		}
 		@Override public String toString(){
 			return position+":#"+rgb;

@@ -22,17 +22,22 @@ public class TestInitializer implements Initializer<Boolean>{
 	public TestInitializer(boolean errorIfFails, Object... expectedValues){
 		this.errorIfFails = errorIfFails;
 		this.expectedValues = expectedValues;
+		for(int i = 0; i<expectedValues.length; i++){
+			if(expectedValues[i] instanceof Integer){
+				expectedValues[i] = ((Integer)expectedValues[i]).doubleValue();
+			}
+		}
 	}
 
 	@Override public void apply(CafInterpreter interpreter, Object o){
 		int size = provided.size();
 		if(expectedValues.length>size) provided.add(o);
-		else throw new CafException("Too many values provided: "+size);
+		else interpreter.error("Too many values provided: "+size);
 	}
 
-	@Override public Boolean finish(){
+	@Override public Boolean finish(CafInterpreter interpreter){
 		if(provided.size()!=expectedValues.length)
-			throw new CafException("Too few of values provided: "+provided.size());
+			interpreter.error("Too few of values provided: "+provided.size());
 		IntList wrongMatchIndices = new IntArrayList();
 		for(int i = 0; i<provided.size(); i++){
 			Object p = provided.get(i);

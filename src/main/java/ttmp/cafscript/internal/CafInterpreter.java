@@ -7,6 +7,9 @@ import ttmp.cafscript.CafScriptEngine;
 import ttmp.cafscript.definitions.InitDefinition;
 import ttmp.cafscript.definitions.initializer.Initializer;
 import ttmp.cafscript.exceptions.CafEvalException;
+import ttmp.cafscript.exceptions.CafNoFunctionException;
+import ttmp.cafscript.exceptions.CafNoPropertyException;
+import ttmp.cafscript.obj.Bundle;
 
 public class CafInterpreter{ // TODO needs global constants, probably needs to be put on bottom of the stack before root init
 	private final CafScriptEngine engine;
@@ -130,25 +133,25 @@ public class CafInterpreter{ // TODO needs global constants, probably needs to b
 				}
 				case Inst.BUNDLE2:{
 					Object o1 = pop(), o2 = pop();
-					push(new Object[]{o2, o1});
+					push(new Bundle(o2, o1));
 					break;
 				}
 				case Inst.BUNDLE3:{
 					Object o1 = pop(), o2 = pop(), o3 = pop();
-					push(new Object[]{o3, o2, o1});
+					push(new Bundle(o3, o2, o1));
 					break;
 				}
 				case Inst.BUNDLE4:{
 					Object o1 = pop(), o2 = pop(), o3 = pop(), o4 = pop();
-					push(new Object[]{o4, o3, o2, o1});
+					push(new Bundle(o4, o3, o2, o1));
 					break;
 				}
 				case Inst.BUNDLEN:{
-					int fuck = nextUnsigned();
-					Object[] bundle = new Object[fuck];
-					for(int i = fuck; i>0; i--)
+					int size = nextUnsigned();
+					Object[] bundle = new Object[size];
+					for(int i = size; i>0; i--)
 						bundle[i-1] = pop();
-					push(bundle);
+					push(new Bundle(bundle));
 					break;
 				}
 				case Inst.GET_PROPERTY:{
@@ -189,7 +192,7 @@ public class CafInterpreter{ // TODO needs global constants, probably needs to b
 				}
 				case Inst.MAKE:{
 					Initializer<?> o = expectInitializer(pop());
-					push(o.finish());
+					push(o.finish(this));
 					break;
 				}
 				case Inst.JUMP:
@@ -206,14 +209,14 @@ public class CafInterpreter{ // TODO needs global constants, probably needs to b
 					break;
 				case Inst.FINISH_PROPERTY_INIT:
 					if(stackSize==startingStack+1)
-						return expectInitializer(pop()).finish();
+						return expectInitializer(pop()).finish(this);
 					else{
-						Object o = expectInitializer(pop()).finish();
+						Object o = expectInitializer(pop()).finish(this);
 						expectInitializer(peek()).setPropertyValue(this, identifier(), o);
 						break;
 					}
 				case Inst.END:
-					return expectInitializer(pop()).finish();
+					return expectInitializer(pop()).finish(this);
 				default:
 					error("Unknown bytecode '"+script.getInst(ip-1)+"'");
 			}
@@ -285,7 +288,27 @@ public class CafInterpreter{ // TODO needs global constants, probably needs to b
 		return script.getIdentifier(i);
 	}
 
-	private void error(String message){
+	public final void error(String message){
 		throw new CafEvalException(getCurrentLine(), message);
+	}
+
+	public final double expectNumber(Object o){
+		if(!(o instanceof Double)) error("Expected number but provided "+o.getClass().getSimpleName());
+		return (double)o;
+	}
+	public final boolean expectBoolean(Object o){
+		if(!(o instanceof Boolean)) error("Expected number but provided "+o.getClass().getSimpleName());
+		return (boolean)o;
+	}
+	public final <T> T expectType(Class<T> expectedType, Object o){
+		if(!expectedType.isInstance(o)) error("Expected "+expectedType.getSimpleName()+" but provided "+o.getClass().getSimpleName());
+		return expectedType.cast(o);
+	}
+
+	public final <T> T noPropertyError(String property){
+		throw new CafNoPropertyException(getCurrentLine(), property);
+	}
+	public final void noApplyFunctionError(){
+		throw new CafNoFunctionException(getCurrentLine(), "Apply function is not defined");
 	}
 }

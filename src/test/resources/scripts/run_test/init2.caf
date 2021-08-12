@@ -1,0 +1,36 @@
+debug Number{
+    : 1.5
+}
+debug Number{
+    : 3.14
+}
+debug Bool{
+    : true
+}
+debug Bool{
+    : false
+}
+
+debug Random{}
+debug Random{}
+debug Random{}
+debug Random{}
+debug Random{}
+
+debug Random{}
+debug Random{}
+debug Random{}
+debug Random{}
+debug Random{}
+
+debug RandomNumber{}
+debug RandomNumber{}
+debug RandomNumber{}
+debug RandomNumber{}
+debug RandomNumber{}
+
+debug RandomNumber{}
+debug RandomNumber{}
+debug RandomNumber{}
+debug RandomNumber{}
+debug RandomNumber{}

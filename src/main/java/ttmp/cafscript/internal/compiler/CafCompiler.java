@@ -179,7 +179,9 @@ public class CafCompiler implements StatementVisitor, ExpressionVisitor{
 		int goElse = getNextWritePoint();
 		write2((short)0);
 
+		pushBlock();
 		for(Statement s : apply.ifThen) writeInst(s);
+		popBlock();
 
 		if(!apply.elseThen.isEmpty()){
 			write(Inst.JUMP);
@@ -187,7 +189,10 @@ public class CafCompiler implements StatementVisitor, ExpressionVisitor{
 			write2((short)0);
 			write2At(goElse, getJumpCoord(goElse));
 
+			pushBlock();
 			for(Statement s : apply.elseThen) writeInst(s);
+			popBlock();
+
 			write2At(ifEnd, getJumpCoord(ifEnd));
 		}else{
 			write2At(goElse, getJumpCoord(goElse));
@@ -364,7 +369,6 @@ public class CafCompiler implements StatementVisitor, ExpressionVisitor{
 		for(Statement s : construct.statements) writeInst(s);
 		popBlock();
 		write(Inst.MAKE);
-		removeStack();
 	}
 	@Override public void visitBool(Expression.Bool bool){
 		write(bool.value ? Inst.TRUE : Inst.FALSE);

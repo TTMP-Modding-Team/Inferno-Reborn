@@ -23,7 +23,7 @@ public class PrintInitializer implements Initializer<Object>{
 		System.out.println(": "+o);
 	}
 
-	@Override public Object finish(){
+	@Override public Object finish(CafInterpreter interpreter){
 		return INSTANCE;
 	}
 }

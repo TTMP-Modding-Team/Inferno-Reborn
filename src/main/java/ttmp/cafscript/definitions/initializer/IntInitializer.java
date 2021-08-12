@@ -11,10 +11,10 @@ public class IntInitializer implements Initializer<Integer>{
 	}
 
 	@Override public void apply(CafInterpreter interpreter, Object o){
-		this.value = ((Double)o).intValue();
+		this.value = (int)interpreter.expectNumber(o);
 	}
 
-	@Override public Integer finish(){
+	@Override public Integer finish(CafInterpreter interpreter){
 		return value;
 	}
 }
