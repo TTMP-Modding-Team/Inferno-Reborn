@@ -527,6 +527,13 @@ public abstract class Expression{
 		@Override public void visit(ExpressionVisitor visitor){
 			visitor.visitBundle(this);
 		}
+
+		@Override public boolean isConstant(){
+			return true;
+		}
+		@Override public Object getConstantObject(){
+			return bundle;
+		}
 		@Override public void checkType(@Nullable Class<?> expectedType){
 			expectType(Bundle.class, expectedType);
 		}
