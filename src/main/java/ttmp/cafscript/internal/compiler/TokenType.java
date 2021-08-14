@@ -17,8 +17,8 @@ public enum TokenType{
 	LT, LT_EQ,
 	// > >=
 	GT, GT_EQ,
-	// . ,
-	DOT, COMMA,
+	// . .. ,
+	DOT, DOT_DOT, COMMA,
 	// & &&
 	AND, AND_AND,
 	// | ||
@@ -30,7 +30,7 @@ public enum TokenType{
 	// : ;
 	COLON, SEMICOLON,
 	// RESERVED SHITS
-	DEFINE, TRUE, FALSE, IF, ELSE, DEBUG,
+	DEFINE, TRUE, FALSE, IF, ELSE, DEBUG, FOR, REPEAT, IN,
 	// SHITS
-	NUMBER, NAMESPACE, COLOR, IDENTIFIER
+	NUMBER, NAMESPACE, COLOR, IDENTIFIER, STRING
 }

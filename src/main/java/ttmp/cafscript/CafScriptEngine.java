@@ -3,6 +3,7 @@ package ttmp.cafscript;
 import com.google.common.collect.ImmutableMap;
 import ttmp.cafscript.definitions.InitDefinition;
 import ttmp.cafscript.definitions.StandardDefinitions;
+import ttmp.cafscript.exceptions.CafCompileException;
 import ttmp.cafscript.internal.compiler.CafCompiler;
 
 import javax.annotation.Nullable;
@@ -21,6 +22,7 @@ public class CafScriptEngine{
 			.put("Bool", StandardDefinitions.BOOL)
 			.put("Random", StandardDefinitions.RANDOM)
 			.put("RandomNumber", StandardDefinitions.RANDOM_NUMBER)
+			.put("Set", StandardDefinitions.SET)
 			.build();
 
 	private final Map<String, InitDefinition<?>> knownTypes;
@@ -50,6 +52,19 @@ public class CafScriptEngine{
 		return this;
 	}
 
+	@Nullable public CafScript tryCompile(String script, ErrorHandler<CafCompileException> compileExceptionHandler){
+		try{
+			return compile(script);
+		}catch(CafCompileException ex){
+			compileExceptionHandler.handle(ex, this, script);
+			return null;
+		}
+	}
+
+	/**
+	 * @throws ttmp.cafscript.exceptions.CafCompileException on compile error
+	 *
+	 */
 	public CafScript compile(String script){
 		return new CafCompiler(script).parseAndCompile();
 	}

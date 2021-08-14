@@ -6,6 +6,7 @@ import ttmp.cafscript.exceptions.CafCompileException;
 import ttmp.cafscript.exceptions.CafException;
 import ttmp.cafscript.obj.Bundle;
 import ttmp.cafscript.obj.RGB;
+import ttmp.cafscript.obj.Range;
 
 import javax.annotation.Nullable;
 import java.util.List;
@@ -59,7 +60,7 @@ public abstract class Expression{
 	public abstract void checkType(@Nullable Class<?> expectedType);
 
 	protected void expectType(Class<?> comparingType, @Nullable Class<?> expectedType){
-		if(expectedType!=null&&expectedType!=comparingType)
+		if(expectedType!=null&&!expectedType.isAssignableFrom(comparingType))
 			error("Invalid expression, expected "+expectedType.getSimpleName()+" but provided "+comparingType.getSimpleName());
 	}
 
@@ -86,6 +87,22 @@ public abstract class Expression{
 			return position+":Comma{"+
 					"expressions="+expressions+
 					'}';
+		}
+	}
+
+	public static class Append extends Expression{
+		public final List<Expression> expressions;
+
+		public Append(int position, List<Expression> expressions){
+			super(position);
+			this.expressions = expressions;
+		}
+
+		@Override public void visit(ExpressionVisitor visitor){
+			visitor.visitAppend(this);
+		}
+		@Override public void checkType(@Nullable Class<?> expectedType){
+			expectType(String.class, expectedType);
 		}
 	}
 
@@ -308,6 +325,19 @@ public abstract class Expression{
 		}
 	}
 
+	public static class RangeOperator extends Binary{
+		public RangeOperator(int position, Expression e1, Expression e2){
+			super(position, e1, e2);
+		}
+
+		@Override public void visit(ExpressionVisitor visitor){
+			visitor.visitRange(this);
+		}
+		@Override public void checkType(@Nullable Class<?> expectedType){
+			expectType(Range.class, expectedType);
+		}
+	}
+
 	public static class Ternary extends Expression{
 		public final Expression condition;
 		public final Expression ifThen;
@@ -403,12 +433,6 @@ public abstract class Expression{
 	public static class Color extends Expression{
 		public final RGB rgb;
 
-		public Color(int position, String color){
-			super(position);
-			String substring = color.substring(1);
-			if(substring.length()!=6) throw new CafException("Invalid color '"+color+"'");
-			this.rgb = new RGB(Integer.parseInt(substring, 16));
-		}
 		public Color(int position, RGB color){
 			super(position);
 			this.rgb = color;
@@ -539,7 +563,61 @@ public abstract class Expression{
 		}
 
 		@Override public String toString(){
-			return "Bundle{"+bundle+"}";
+			return position+":Bundle{"+bundle+"}";
+		}
+	}
+
+	public static class StringLiteral extends Expression{
+		public final String string;
+
+		public StringLiteral(int position, String string){
+			super(position);
+			this.string = string;
+		}
+
+		@Override public void visit(ExpressionVisitor visitor){
+			visitor.visitStringLiteral(this);
+		}
+
+		@Override public boolean isConstant(){
+			return true;
+		}
+		@Override public Object getConstantObject(){
+			return string;
+		}
+		@Override public void checkType(@Nullable Class<?> expectedType){
+			expectType(String.class, expectedType);
+		}
+
+		@Override public String toString(){
+			return position+":'"+string+'\'';
+		}
+	}
+
+	public static class RangeConstant extends Expression{
+		public final Range range;
+
+		public RangeConstant(int position, Range range){
+			super(position);
+			this.range = range;
+		}
+
+		@Override public void visit(ExpressionVisitor visitor){
+			visitor.visitRangeConstant(this);
+		}
+
+		@Override public boolean isConstant(){
+			return true;
+		}
+		@Override public Object getConstantObject(){
+			return range;
+		}
+		@Override public void checkType(@Nullable Class<?> expectedType){
+			expectType(Range.class, expectedType);
+		}
+
+		@Override public String toString(){
+			return position+":"+range;
 		}
 	}
 }

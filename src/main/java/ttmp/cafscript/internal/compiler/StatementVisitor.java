@@ -7,5 +7,7 @@ public interface StatementVisitor{
 	void visitApply(Statement.Apply apply);
 	void visitIf(Statement.If apply);
 	void visitStatements(Statement.StatementList statementList);
+	void visitFor(Statement.For forStatement);
+	void visitRepeat(Statement.Repeat repeat);
 	void visitDebug(Statement.Debug debug);
 }

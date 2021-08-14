@@ -39,7 +39,7 @@ public class CafCompiler implements StatementVisitor, ExpressionVisitor{
 	public CafCompiler(String script){
 		this.script = script;
 		this.identifiers.defaultReturnValue((byte)-1);
-		this.pushBlock();
+		this.pushBlock(true);
 	}
 
 	public CafScript parseAndCompile(){
@@ -201,6 +201,67 @@ public class CafCompiler implements StatementVisitor, ExpressionVisitor{
 	@Override public void visitStatements(Statement.StatementList statementList){
 		for(Statement s : statementList.statements) writeInst(s);
 	}
+	@Override public void visitFor(Statement.For forStatement){
+		writeInst(forStatement.collection);
+		write(Inst.MAKE_ITERATOR);
+		addStack();
+		int p = getNextWritePoint();
+		write(Inst.JUMP_OR_NEXT);
+		int p2 = getNextWritePoint();
+		write2((short)0);
+		addStack();
+
+		pushBlock();
+		Definition definition = Definition.variable(newVariableId());
+		setDefinition(forStatement.variable, definition);
+		write(Inst.SET_VARIABLE);
+		write(definition.varId);
+		removeStack();
+
+		for(Statement s : forStatement.statements) writeInst(s);
+		popBlock();
+
+		write(Inst.JUMP);
+		write2(getJumpCoord(getNextWritePoint(), p));
+		write2At(p2, getJumpCoord(p2));
+		removeStack();
+	}
+	@Override public void visitRepeat(Statement.Repeat repeat){
+		if(repeat.times.isConstant()){
+			double d = repeat.times.expectConstantObject(Double.class);
+			if(d<1) return;
+			else if(d<2){
+				pushBlock();
+				for(Statement statement : repeat.statements)
+					writeInst(statement);
+				popBlock();
+				return;
+			}
+		}
+		writeInst(repeat.times);
+		addStack();
+		{
+			int pStart = getNextWritePoint();
+			write(Inst.JUMP_IF_LT1);
+			int pToEnd = getNextWritePoint();
+			write2((short)0);
+			removeStack();
+
+			pushBlock();
+			for(Statement statement : repeat.statements)
+				writeInst(statement);
+			popBlock();
+
+			write(Inst.SUB1);
+			write(Inst.JUMP);
+			write2(getJumpCoord(getNextWritePoint(), pStart));
+
+			write2At(pToEnd, getJumpCoord(pToEnd));
+		}
+		write(Inst.DISCARD);
+		removeStack();
+
+	}
 	@Override public void visitDebug(Statement.Debug debug){
 		writeInst(debug.value);
 		write(Inst.DEBUG);
@@ -228,6 +289,29 @@ public class CafCompiler implements StatementVisitor, ExpressionVisitor{
 			default:
 				if(size>255) error("Bundle too large");
 				write(Inst.BUNDLEN);
+				write((byte)size);
+		}
+		removeStack(size-1);
+	}
+	@Override public void visitAppend(Expression.Append append){
+		int size = append.expressions.size();
+		for(Expression e : append.expressions) writeInst(e);
+		switch(size){
+			case 0:
+			case 1:
+				error("Cannot append "+size+" elements");
+			case 2:
+				write(Inst.APPEND2);
+				break;
+			case 3:
+				write(Inst.APPEND3);
+				break;
+			case 4:
+				write(Inst.APPEND4);
+				break;
+			default:
+				if(size>255) error("Append too large");
+				write(Inst.APPENDN);
 				write((byte)size);
 		}
 		removeStack(size-1);
@@ -279,16 +363,51 @@ public class CafCompiler implements StatementVisitor, ExpressionVisitor{
 		writeSimpleBinary(ltEq, Inst.LTEQ);
 	}
 	@Override public void visitAdd(Expression.Add add){
+		if(add.e1.isConstant()){
+			double v = add.e1.expectConstantObject(Double.class);
+			if(v==1){
+				writeInst(add.e2);
+				write(Inst.ADD1);
+				return;
+			}else if(v==0){
+				writeInst(add.e2);
+				return;
+			}
+		}else if(add.e2.isConstant()){
+			double v = add.e2.expectConstantObject(Double.class);
+			if(v==1){
+				writeInst(add.e1);
+				write(Inst.ADD1);
+				return;
+			}else if(v==0){
+				writeInst(add.e1);
+				return;
+			}
+		}
 		writeSimpleBinary(add, Inst.ADD);
 	}
 	@Override public void visitSubtract(Expression.Subtract subtract){
+		if(subtract.e2.isConstant()){
+			double v = subtract.e2.expectConstantObject(Double.class);
+			if(v==1){
+				writeInst(subtract.e1);
+				write(Inst.SUB1);
+				return;
+			}else if(v==0){
+				writeInst(subtract.e1);
+				return;
+			}
+		}
 		writeSimpleBinary(subtract, Inst.SUBTRACT);
 	}
 	@Override public void visitMultiply(Expression.Multiply multiply){
-		writeSimpleBinary(multiply, Inst.MULTIPLY);
+		if(multiply.e1.isConstant()&&multiply.e1.expectConstantObject(Double.class)==1) writeInst(multiply.e2);
+		else if(multiply.e2.isConstant()&&multiply.e2.expectConstantObject(Double.class)==1) writeInst(multiply.e1);
+		else writeSimpleBinary(multiply, Inst.MULTIPLY);
 	}
 	@Override public void visitDivide(Expression.Divide divide){
-		writeSimpleBinary(divide, Inst.DIVIDE);
+		if(divide.e2.isConstant()&&divide.e2.expectConstantObject(Double.class)==1) writeInst(divide.e1);
+		else writeSimpleBinary(divide, Inst.DIVIDE);
 	}
 	@Override public void visitOr(Expression.Or or){
 		writeInst(or.e1);
@@ -320,6 +439,9 @@ public class CafCompiler implements StatementVisitor, ExpressionVisitor{
 		addStack();
 		write2At(p2, getJumpCoord(p2));
 	}
+	@Override public void visitRange(Expression.RangeOperator rangeOperator){
+		writeSimpleBinary(rangeOperator, Inst.RANGE);
+	}
 	@Override public void visitNumber(Expression.Number number){
 		if(0==number.number) write(Inst.N0);
 		else if(1==number.number) write(Inst.N1);
@@ -329,20 +451,16 @@ public class CafCompiler implements StatementVisitor, ExpressionVisitor{
 		else if(5==number.number) write(Inst.N5);
 		else if(-1==number.number) write(Inst.NM1);
 		else{
-			write(Inst.PUSH);
-			write(obj(number.number));
+			writeObj(number.number);
+			return;
 		}
 		addStack();
 	}
 	@Override public void visitNamespace(Expression.Namespace namespace){
-		write(Inst.PUSH);
-		write(obj(namespace.namespace));
-		addStack();
+		writeObj(namespace.namespace);
 	}
 	@Override public void visitColor(Expression.Color color){
-		write(Inst.PUSH);
-		write(obj(color.rgb));
-		addStack();
+		writeObj(color.rgb);
 	}
 	@Override public void visitIdentifier(Expression.Identifier identifier){
 		Definition definition = getDefinition(identifier.identifier);
@@ -365,7 +483,7 @@ public class CafCompiler implements StatementVisitor, ExpressionVisitor{
 		write(Inst.NEW);
 		write(identifier(construct.identifier));
 		addStack();
-		pushBlock();
+		pushBlock(true);
 		for(Statement s : construct.statements) writeInst(s);
 		popBlock();
 		write(Inst.MAKE);
@@ -379,8 +497,18 @@ public class CafCompiler implements StatementVisitor, ExpressionVisitor{
 		write(Inst.DEBUG);
 	}
 	@Override public void visitBundle(Expression.BundleConstant bundleConstant){
+		writeObj(bundleConstant.bundle);
+	}
+	@Override public void visitStringLiteral(Expression.StringLiteral stringLiteral){
+		writeObj(stringLiteral.string);
+	}
+	@Override public void visitRangeConstant(Expression.RangeConstant rangeConstant){
+		writeObj(rangeConstant.range);
+	}
+
+	private void writeObj(Object o){
 		write(Inst.PUSH);
-		write(obj(bundleConstant.bundle));
+		write(obj(o));
 		addStack();
 	}
 
@@ -410,7 +538,12 @@ public class CafCompiler implements StatementVisitor, ExpressionVisitor{
 	}
 
 	private void pushBlock(){
-		blocks.add(new Block(currentStack));
+		pushBlock(false);
+	}
+	private void pushBlock(boolean newInitializerPosition){
+		blocks.add(new Block(newInitializerPosition ?
+				currentStack :
+				blocks.get(blocks.size()-1).initializerStackPosition));
 	}
 	private void popBlock(){
 		if(blocks.isEmpty()) error("Internal definition error");

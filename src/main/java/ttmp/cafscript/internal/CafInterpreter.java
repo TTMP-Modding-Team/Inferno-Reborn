@@ -10,6 +10,9 @@ import ttmp.cafscript.exceptions.CafEvalException;
 import ttmp.cafscript.exceptions.CafNoFunctionException;
 import ttmp.cafscript.exceptions.CafNoPropertyException;
 import ttmp.cafscript.obj.Bundle;
+import ttmp.cafscript.obj.Range;
+
+import java.util.Iterator;
 
 public class CafInterpreter{ // TODO needs global constants, probably needs to be put on bottom of the stack before root init
 	private final CafScriptEngine engine;
@@ -55,6 +58,9 @@ public class CafInterpreter{ // TODO needs global constants, probably needs to b
 					break;
 				case Inst.DISCARD:
 					pop();
+					break;
+				case Inst.DUP:
+					push(peek());
 					break;
 				case Inst.TRUE:
 					push(true);
@@ -131,6 +137,12 @@ public class CafInterpreter{ // TODO needs global constants, probably needs to b
 					push(d2>=d1);
 					break;
 				}
+				case Inst.ADD1:
+					push(popNumber()+1);
+					break;
+				case Inst.SUB1:
+					push(popNumber()-1);
+					break;
 				case Inst.BUNDLE2:{
 					Object o1 = pop(), o2 = pop();
 					push(new Bundle(o2, o1));
@@ -149,9 +161,33 @@ public class CafInterpreter{ // TODO needs global constants, probably needs to b
 				case Inst.BUNDLEN:{
 					int size = nextUnsigned();
 					Object[] bundle = new Object[size];
-					for(int i = size; i>0; i--)
-						bundle[i-1] = pop();
+					for(int i = size-1; i>=0; i--)
+						bundle[i] = pop();
 					push(new Bundle(bundle));
+					break;
+				}
+				case Inst.APPEND2:{
+					Object o1 = pop(), o2 = pop();
+					push(String.valueOf(o2)+o1);
+					break;
+				}
+				case Inst.APPEND3:{
+					Object o1 = pop(), o2 = pop(), o3 = pop();
+					push(String.valueOf(o3)+o2+o1);
+					break;
+				}
+				case Inst.APPEND4:{
+					Object o1 = pop(), o2 = pop(), o3 = pop(), o4 = pop();
+					push(String.valueOf(o4)+o3+o2+o1);
+					break;
+				}
+				case Inst.APPENDN:{
+					int size = nextUnsigned();
+					StringBuilder stb = new StringBuilder();
+					for(int i = size-1; i>=0; i--)
+						stb.append(getNBelowTop(i));
+					discard(size);
+					push(stb.toString());
 					break;
 				}
 				case Inst.GET_PROPERTY:{
@@ -183,6 +219,11 @@ public class CafInterpreter{ // TODO needs global constants, probably needs to b
 				case Inst.SET_VARIABLE:
 					variable[nextUnsigned()] = pop();
 					break;
+				case Inst.RANGE:{
+					double d1 = popNumber(), d2 = popNumber();
+					push(new Range(d2, d1));
+					break;
+				}
 				case Inst.NEW:{
 					String identifier = identifier();
 					InitDefinition<?> def = engine.getKnownTypes().get(identifier);
@@ -190,11 +231,12 @@ public class CafInterpreter{ // TODO needs global constants, probably needs to b
 					push(def.createInitializer());
 					break;
 				}
-				case Inst.MAKE:{
-					Initializer<?> o = expectInitializer(pop());
-					push(o.finish(this));
+				case Inst.MAKE:
+					push(expectInitializer(pop()).finish(this));
 					break;
-				}
+				case Inst.MAKE_ITERATOR:
+					push(expectIterable(pop()).iterator());
+					break;
 				case Inst.JUMP:
 					ip += next2();
 					break;
@@ -204,6 +246,20 @@ public class CafInterpreter{ // TODO needs global constants, probably needs to b
 				case Inst.JUMPELSE:
 					ip += popBoolean() ? 2 : next2();
 					break;
+				case Inst.JUMP_IF_LT1:
+					ip += peekNumber()<1 ? next2() : 2;
+					break;
+				case Inst.JUMP_OR_NEXT:{
+					Iterator<?> it = expectIterator(peek());
+					if(it.hasNext()){
+						push(it.next());
+						ip += 2;
+					}else{
+						discard(1);
+						ip += next2();
+					}
+					break;
+				}
 				case Inst.DEBUG:
 					engine.debug(peek());
 					break;
@@ -265,8 +321,19 @@ public class CafInterpreter{ // TODO needs global constants, probably needs to b
 		return stack[stackSize-1-i];
 	}
 
+	private void discard(int amount){
+		if(amount>stackSize) error("Stack underflow");
+		stackSize -= amount;
+	}
+
 	private double popNumber(){
 		Object o = pop();
+		if(!(o instanceof Double)) error("Not a number");
+		return (double)o;
+	}
+
+	private double peekNumber(){
+		Object o = peek();
 		if(!(o instanceof Double)) error("Not a number");
 		return (double)o;
 	}
@@ -280,6 +347,16 @@ public class CafInterpreter{ // TODO needs global constants, probably needs to b
 	private Initializer<?> expectInitializer(Object o){
 		if(!(o instanceof Initializer)) error("Not an initializer");
 		return (Initializer<?>)o;
+	}
+
+	private Iterable<?> expectIterable(Object o){
+		if(!(o instanceof Iterable<?>)) error("Expected Iterable but provided "+o.getClass().getSimpleName());
+		return (Iterable<?>)o;
+	}
+
+	private Iterator<?> expectIterator(Object o){
+		if(!(o instanceof Iterator<?>)) error("Expected Iterator but provided "+o.getClass().getSimpleName());
+		return (Iterator<?>)o;
 	}
 
 	private String identifier(){

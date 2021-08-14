@@ -2,6 +2,8 @@ package ttmp.cafscript.internal.compiler;
 
 import ttmp.cafscript.exceptions.CafCompileException;
 import ttmp.cafscript.obj.Bundle;
+import ttmp.cafscript.obj.RGB;
+import ttmp.cafscript.obj.Range;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
@@ -34,6 +36,10 @@ public class CafParser{
 				return applyStmt();
 			case IF:
 				return ifStmt();
+			case FOR:
+				return forStmt();
+			case REPEAT:
+				return repeatStmt();
 			case DEBUG:
 				return debugStmt();
 			default:
@@ -78,17 +84,42 @@ public class CafParser{
 		if(lexer.next().is(TokenType.ELSE)){
 			then = Collections.emptyList();
 			lexer.next();
-			elseThen = ifBody();
+			elseThen = body();
 		}else{
-			then = ifBody();
+			then = body();
 			if(lexer.guessNext(TokenType.ELSE)){
 				lexer.next();
-				elseThen = ifBody();
+				elseThen = body();
 			}else elseThen = Collections.emptyList();
 		}
 		if(condition.isConstant())
 			return new Statement.StatementList(start, condition.expectConstantObject(Boolean.class) ? then : elseThen);
 		return new Statement.If(start, condition, then, Objects.requireNonNull(elseThen));
+	}
+
+	private Statement forStmt(){
+		int start = lexer.current().start;
+		lexer.expectNext(TokenType.L_PAREN, "Invalid for statement, expected '('");
+		lexer.expectNext(TokenType.IDENTIFIER, "Invalid for statement, expected identifier");
+		String property = literalValue(lexer.current());
+		lexer.expectNext(TokenType.IN, "Invalid for statement, expected 'in'");
+		lexer.next();
+		Expression expr = expr(Iterable.class);
+		lexer.expectNext(TokenType.R_PAREN, "Invalid if statement, expected ')'");
+		lexer.next();
+		List<Statement> body = body();
+		return new Statement.For(start, property, expr, body);
+	}
+
+	private Statement repeatStmt(){
+		int start = lexer.current().start;
+		lexer.expectNext(TokenType.L_PAREN, "Invalid repeat statement, expected '('");
+		lexer.next();
+		Expression times = expr(Double.class);
+		lexer.expectNext(TokenType.R_PAREN, "Invalid repeat statement, expected ')'");
+		lexer.next();
+		List<Statement> body = body();
+		return new Statement.Repeat(start, times, body);
 	}
 
 	private Statement.Debug debugStmt(){
@@ -97,9 +128,14 @@ public class CafParser{
 		return new Statement.Debug(start, expr(null));
 	}
 
-	private List<Statement> ifBody(){
+	private List<Statement> body(){
 		if(lexer.current().is(TokenType.L_BRACE)) return block();
-		else return Collections.singletonList(stmt());
+		else{
+			Statement stmt = stmt();
+			if(stmt instanceof Statement.Define)
+				throw new CafCompileException(stmt.position, "Only declaration inside block");
+			return Collections.singletonList(stmt);
+		}
 	}
 
 	private List<Statement> block(){
@@ -123,13 +159,13 @@ public class CafParser{
 	}
 
 	private Expression comma(){
-		Expression e = ternary();
+		Expression e = stringConjunction();
 		if(!lexer.guessNext(TokenType.COMMA)) return e;
 		List<Expression> expressions = new ArrayList<>();
 		expressions.add(e);
 		do{
 			lexer.next();
-			expressions.add(ternary());
+			expressions.add(stringConjunction());
 		}while(lexer.guessNext(TokenType.COMMA));
 		for(Expression expr : expressions)
 			if(!expr.isConstant())
@@ -137,6 +173,38 @@ public class CafParser{
 		List<Object> list = new ArrayList<>();
 		for(Expression expr : expressions) list.add(expr.getConstantObject());
 		return new Expression.BundleConstant(e.position, new Bundle(list.toArray()));
+	}
+
+	private Expression stringConjunction(){
+		Expression e = ternary();
+		if(!lexer.guessNext(TokenType.OR)) return e;
+		List<Expression> expressions = new ArrayList<>();
+		expressions.add(e);
+		do{
+			lexer.next();
+			expressions.add(ternary());
+		}while(lexer.guessNext(TokenType.OR));
+
+		for(int i = 1; i<expressions.size(); i++){
+			Expression next = expressions.get(i);
+			if(next.isConstant()){
+				Expression prev = expressions.get(i-1);
+				if(prev.isConstant()){
+					expressions.set(i-1, new Expression.StringLiteral(
+							prev.position,
+							String.valueOf(prev.getConstantObject())+next.getConstantObject()));
+					expressions.remove(i--);
+				}
+			}
+		}
+		switch(expressions.size()){
+			case 0:
+				throw new IllegalStateException("Internal error, please contact your local pufferfish");
+			case 1:
+				return expressions.get(0);
+			default:
+				return new Expression.Append(e.position, expressions);
+		}
 	}
 
 	private Expression ternary(){
@@ -286,7 +354,7 @@ public class CafParser{
 	}
 
 	private Expression factor(){
-		Expression e = unary();
+		Expression e = range();
 		if(!lexer.guessNext2(TokenType.STAR, TokenType.SLASH)) return e;
 		Double d = e.isConstant() ?
 				e.expectConstantObject(Double.class) :
@@ -294,7 +362,7 @@ public class CafParser{
 		do{
 			TokenType token = lexer.current().type;
 			lexer.next();
-			Expression e2 = unary();
+			Expression e2 = range();
 			if(d!=null&&e2.isConstant()){
 				double d2 = e2.expectConstantObject(Double.class);
 				double r = token==TokenType.STAR ? d*d2 :
@@ -307,6 +375,20 @@ public class CafParser{
 						new Expression.Divide(e.position, e, e2);
 			}
 		}while(lexer.guessNext2(TokenType.STAR, TokenType.SLASH));
+		return e;
+	}
+
+	private Expression range(){
+		Expression e = unary();
+		while(lexer.guessNext(TokenType.DOT_DOT)){
+			lexer.next();
+			Expression e2 = range();
+			e = e.isConstant()&&e2.isConstant() ?
+					new Expression.RangeConstant(e.position,
+							new Range(e.expectConstantObject(Double.class),
+									e2.expectConstantObject(Double.class))) :
+					new Expression.RangeOperator(e.position, e, e2);
+		}
 		return e;
 	}
 
@@ -353,7 +435,10 @@ public class CafParser{
 			case NAMESPACE:
 				return new Expression.Namespace(current.start, literalValue(current));
 			case COLOR:
-				return new Expression.Color(current.start, literalValue(current));
+				return new Expression.Color(current.start, new RGB(hex(current.start+1, 6)));
+			case STRING:{
+				return new Expression.StringLiteral(current.start, stringLiteral(current));
+			}
 			case IDENTIFIER:{
 				String literal = complexIdentifier();
 				if(lexer.guessNext(TokenType.L_BRACE)){
@@ -379,5 +464,47 @@ public class CafParser{
 
 	private String literalValue(Token token){
 		return script.substring(token.start, token.start+token.length);
+	}
+
+	private String stringLiteral(Token token){
+		StringBuilder stb = new StringBuilder();
+		for(int i = token.start+1; i<token.start+token.length-1; i++){
+			char c = script.charAt(i);
+			if(c=='\\'){
+				char c2 = script.charAt(++i);
+				switch(c2){
+					case 't':
+						stb.append('\t');
+						break;
+					case 'n':
+						stb.append('\n');
+						break;
+					case '\\':
+						stb.append('\\');
+						break;
+					case '"':
+						stb.append('"');
+						break;
+					case '\'':
+						stb.append('\'');
+						break;
+					case 'u':
+						stb.append(Character.toChars(hex(i+1, 4)));
+						break;
+					default:
+						throw new CafCompileException(i, "Invalid string literal, invalid special character '"+c2+'\'');
+				}
+			}else stb.append(c);
+		}
+		return stb.toString();
+	}
+
+	private int hex(int i, int digits){
+		String substring = script.substring(i, i+digits);
+		try{
+			return Integer.parseInt(substring, 16);
+		}catch(NumberFormatException ex){
+			throw new CafCompileException(i, "Invalid value '"+substring+"'");
+		}
 	}
 }

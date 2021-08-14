@@ -2,6 +2,7 @@ package ttmp.cafscript.internal.compiler;
 
 public interface ExpressionVisitor{
 	void visitComma(Expression.Comma comma);
+	void visitAppend(Expression.Append append);
 	void visitNot(Expression.Not not);
 	void visitNegate(Expression.Negate negate);
 	void visitTernary(Expression.Ternary ternary);
@@ -17,6 +18,7 @@ public interface ExpressionVisitor{
 	void visitDivide(Expression.Divide divide);
 	void visitOr(Expression.Or or);
 	void visitAnd(Expression.And and);
+	void visitRange(Expression.RangeOperator rangeOperator);
 	void visitNumber(Expression.Number number);
 	void visitNamespace(Expression.Namespace namespace);
 	void visitColor(Expression.Color color);
@@ -25,4 +27,6 @@ public interface ExpressionVisitor{
 	void visitBool(Expression.Bool bool);
 	void visitDebug(Expression.Debug debug);
 	void visitBundle(Expression.BundleConstant bundleConstant);
+	void visitStringLiteral(Expression.StringLiteral stringLiteral);
+	void visitRangeConstant(Expression.RangeConstant rangeConstant);
 }

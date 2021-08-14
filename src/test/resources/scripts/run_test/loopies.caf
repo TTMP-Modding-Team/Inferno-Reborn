@@ -1,0 +1,17 @@
+repeat(3){
+    debug "I eat"
+}
+
+for(e in "borger", "chicken", "fries"){
+    debug "eat "|e
+}
+
+for(e in Set{
+    : "borger"
+    : "chicken"
+    : "fries"
+    : "fries"
+    : "chicken"
+}){
+    debug "yummy "|e
+}

@@ -77,6 +77,9 @@ public final class CafScript{
 				case Inst.DISCARD:
 					stb.append("DISCARD");
 					break;
+				case Inst.DUP:
+					stb.append("DUP");
+					break;
 				case Inst.TRUE:
 					stb.append("TRUE");
 					break;
@@ -140,6 +143,12 @@ public final class CafScript{
 				case Inst.GTEQ:
 					stb.append("GTEQ");
 					break;
+				case Inst.ADD1:
+					stb.append("ADD1");
+					break;
+				case Inst.SUB1:
+					stb.append("SUB1");
+					break;
 				case Inst.BUNDLE2:
 					stb.append("BUNDLE2");
 					break;
@@ -151,6 +160,18 @@ public final class CafScript{
 					break;
 				case Inst.BUNDLEN:
 					stb.append("BUNDLEN ").append(Byte.toUnsignedInt(inst[++i]));
+					break;
+				case Inst.APPEND2:
+					stb.append("APPEND2");
+					break;
+				case Inst.APPEND3:
+					stb.append("APPEND3");
+					break;
+				case Inst.APPEND4:
+					stb.append("APPEND4");
+					break;
+				case Inst.APPENDN:
+					stb.append("APPENDN ").append(Byte.toUnsignedInt(inst[++i]));
 					break;
 				case Inst.GET_PROPERTY:
 					stb.append("GET_PROPERTY ").append(inst[++i]).append(" ").append(Byte.toUnsignedInt(inst[++i]))
@@ -173,11 +194,17 @@ public final class CafScript{
 				case Inst.SET_VARIABLE:
 					stb.append("SET_VARIABLE ").append(Byte.toUnsignedInt(inst[++i]));
 					break;
+				case Inst.RANGE:
+					stb.append("RANGE");
+					break;
 				case Inst.NEW:
 					stb.append("NEW ").append(inst[++i]).append("   #").append(identifiers[inst[i]]);
 					break;
 				case Inst.MAKE:
 					stb.append("MAKE");
+					break;
+				case Inst.MAKE_ITERATOR:
+					stb.append("MAKE_ITERATOR");
 					break;
 				case Inst.JUMP:
 					stb.append("JUMP ").append(Shorts.fromBytes(inst[++i], inst[++i]));
@@ -187,6 +214,12 @@ public final class CafScript{
 					break;
 				case Inst.JUMPELSE:
 					stb.append("JUMPELSE ").append(Shorts.fromBytes(inst[++i], inst[++i]));
+					break;
+				case Inst.JUMP_IF_LT1:
+					stb.append("JUMP_IF_LT1 ").append(Shorts.fromBytes(inst[++i], inst[++i]));
+					break;
+				case Inst.JUMP_OR_NEXT:
+					stb.append("JUMP_OR_NEXT ").append(Shorts.fromBytes(inst[++i], inst[++i]));
 					break;
 				case Inst.DEBUG:
 					stb.append("DEBUG");

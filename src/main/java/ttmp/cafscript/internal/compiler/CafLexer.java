@@ -20,6 +20,9 @@ public class CafLexer{
 		RESERVED_WORDS.put("if", TokenType.IF);
 		RESERVED_WORDS.put("else", TokenType.ELSE);
 		RESERVED_WORDS.put("debug", TokenType.DEBUG);
+		RESERVED_WORDS.put("for", TokenType.FOR);
+		RESERVED_WORDS.put("repeat", TokenType.REPEAT);
+		RESERVED_WORDS.put("in", TokenType.IN);
 	}
 
 	private static final Pattern COLOR_PATTERN = Pattern.compile("[0-9a-fA-F]{6}");
@@ -132,7 +135,7 @@ public class CafLexer{
 				case '>':
 					return doubleToken('=', tokenStart, TokenType.GT_EQ, TokenType.GT);
 				case '.':
-					return new Token(TokenType.DOT, tokenStart, 1);
+					return doubleToken('.', tokenStart, TokenType.DOT_DOT, TokenType.DOT);
 				case ',':
 					return new Token(TokenType.COMMA, tokenStart, 1);
 				case '&':
@@ -171,6 +174,12 @@ public class CafLexer{
 						throw new CafCompileException(charIndex-1, "Invalid color '"+literal+"'");
 					charIndex += literal.length();
 					return new Token(TokenType.COLOR, tokenStart, 1+literal.length());
+				}
+				case '"':
+				case '\'':{
+					String literal = grabStringLiteral(--charIndex);
+					charIndex += literal.length();
+					return new Token(TokenType.STRING, tokenStart, literal.length());
 				}
 				default:{
 					if(c>='0'&&c<='9'){ // is number
@@ -216,20 +225,20 @@ public class CafLexer{
 
 	private String grabNumberLiteral(int from){
 		int i = from;
-		boolean seenDot = false;
 		boolean seenNumber = false;
+		int dot = -1;
 		for(; i<script.length(); i++){
 			char charAt = script.charAt(i);
 			if(charAt=='.'){
-				if(seenDot) return "";
+				if(dot>=0) break;
 				else{
-					seenDot = true;
+					dot = i;
 					seenNumber = false;
 				}
 			}else if(charAt<'0'||charAt>'9') break;
 			else seenNumber = true;
 		}
-		return seenNumber ? script.substring(from, i) : "";
+		return script.substring(from, seenNumber ? i : dot);
 	}
 
 	private String grabNamespaceLiteral(int from){
@@ -248,6 +257,24 @@ public class CafLexer{
 				return "";
 		}
 		return "";
+	}
+
+	private String grabStringLiteral(int from){
+		char terminator = charAt(from);
+		for(int i = from+1; i<script.length(); i++){
+			char c = script.charAt(i);
+			switch(c){
+				case '\r':
+				case '\n':
+					throw new CafCompileException(i, "Unterminated string literal");
+				case '\\':
+					++i;
+					break;
+				default:
+					if(c==terminator) return script.substring(from, i+1);
+			}
+		}
+		throw new CafCompileException(script.length()-1, "Unterminated string literal");
 	}
 
 	@Nullable private Matcher matcher;

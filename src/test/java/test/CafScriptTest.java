@@ -7,6 +7,7 @@ import org.junit.jupiter.api.TestFactory;
 import org.junit.jupiter.api.function.Executable;
 import ttmp.cafscript.CafScript;
 import ttmp.cafscript.CafScriptEngine;
+import ttmp.cafscript.definitions.initializer.AssertInitializer;
 import ttmp.cafscript.definitions.initializer.Initializer;
 import ttmp.cafscript.definitions.initializer.TestInitializer;
 import ttmp.cafscript.exceptions.CafCompileException;
@@ -21,6 +22,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Objects;
 import java.util.function.Supplier;
 
 public class CafScriptTest{
@@ -40,6 +42,9 @@ public class CafScriptTest{
 		tests.add(DynamicTest.dynamicTest("Run Test: Empty", runTest(engine, "run_test/empty")));
 		tests.add(DynamicTest.dynamicTest("Run Test: Init", runTest(engine, "run_test/init", () -> PrintInitializer.INSTANCE)));
 		tests.add(DynamicTest.dynamicTest("Run Test: Init 2", runTest(engine, "run_test/init2")));
+		tests.add(DynamicTest.dynamicTest("Run Test: Loopers", runTest(engine, "run_test/loopers")));
+		tests.add(DynamicTest.dynamicTest("Run Test: Loopies", runTest(engine, "run_test/loopies")));
+		tests.add(DynamicTest.dynamicTest("Run Test: What the fuck did you just fucking say about me, you little bitch?", runTest(engine, "run_test/whatthefuckdidyousaytome")));
 
 		tests.add(DynamicTest.dynamicTest("Operation Test: Constants",
 				operationTest(engine, "operation_test/constants",
@@ -55,6 +60,28 @@ public class CafScriptTest{
 		tests.add(DynamicTest.dynamicTest("Operation Test: Arithmetics",
 				operationTest(engine, "operation_test/arithmetics",
 						3, -1, 2, 1.0/2)));
+		tests.add(DynamicTest.dynamicTest("Operation Test: Strings",
+				operationTest(engine, "operation_test/strings",
+						"Test",
+						"Hello world I guess",
+						"ABCDEFGabcdefg12345678901234568058908342",
+						"Yeah, that's some good test suite \uD83D\uDE0E",
+						"Press L if you agree",
+						"L",
+						".",
+						"",
+						" ",
+						"\t",
+						"\n",
+						"\t\n\t",
+						"\"\"",
+						"Should I write another test case with exact same script but using ' instead of \"?",
+						"Nah")));
+
+		tests.add(DynamicTest.dynamicTest("Assertion Test: Operation Optimization",
+				assertTest(engine, "assertion_test/operation_optimization")));
+		tests.add(DynamicTest.dynamicTest("Assertion Test: Operation Optimization #2",
+				assertTest(engine, "assertion_test/operation_optimization_2")));
 
 		tests.add(DynamicTest.dynamicTest("Compile Error Test: Lex - Garbage", compileErrorTest(engine, "compile_error_test/lex_garbage")));
 		tests.add(DynamicTest.dynamicTest("Compile Error Test: Lex - Invalid Chars", compileErrorTest(engine, "compile_error_test/lex_invalid_chars")));
@@ -66,7 +93,7 @@ public class CafScriptTest{
 	}
 
 	private Executable compileTest(CafScriptEngine engine, String filename){
-		return () -> engine.compile(readScript(filename));
+		return () -> engine.tryCompile(readScript(filename), this::logAndError);
 	}
 
 	private Executable runTest(CafScriptEngine engine, String filename){
@@ -74,15 +101,19 @@ public class CafScriptTest{
 	}
 	private Executable runTest(CafScriptEngine engine, String filename, @Nullable Supplier<Initializer<?>> initializer){
 		return () -> {
-			CafScript script = engine.compile(readScript(filename));
+			CafScript script = engine.tryCompile(readScript(filename), this::logAndError);
 			long t = System.currentTimeMillis();
-			new CafInterpreter(engine, script).execute(initializer==null ? Initializer.EMPTY : initializer.get());
+			new CafInterpreter(engine, Objects.requireNonNull(script)).execute(initializer==null ? Initializer.EMPTY : initializer.get());
 			System.out.println("Execution took "+(System.currentTimeMillis()-t)+" ms.");
 		};
 	}
 
 	private Executable operationTest(CafScriptEngine engine, String filename, Object... expectedValues){
 		return runTest(engine, filename, () -> new TestInitializer(expectedValues));
+	}
+
+	private Executable assertTest(CafScriptEngine engine, String filename){
+		return runTest(engine, filename, AssertInitializer::new);
 	}
 
 	private Executable compileErrorTest(CafScriptEngine engine, String filename){
@@ -105,5 +136,10 @@ public class CafScriptTest{
 		String s = FileUtils.readFileToString(new File("src/test/resources/scripts/"+filename+".caf"), StandardCharsets.UTF_8);
 		System.out.println("Reading script from file took "+(System.currentTimeMillis()-t)+" ms.");
 		return s;
+	}
+
+	private void logAndError(CafCompileException exception, CafScriptEngine engine, String script){
+		exception.prettyPrint(script);
+		throw new RuntimeException("Compile failed", exception);
 	}
 }

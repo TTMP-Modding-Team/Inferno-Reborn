@@ -1,10 +1,11 @@
 package ttmp.cafscript.obj;
 
 import java.util.Arrays;
+import java.util.Iterator;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
-public final class Bundle{
+public final class Bundle implements Iterable<Object>{
 	private final Object[] objects;
 
 	public Bundle(Object... objects){
@@ -34,5 +35,9 @@ public final class Bundle{
 		return Arrays.stream(objects)
 				.map(Objects::toString)
 				.collect(Collectors.joining(", "));
+	}
+
+	@Override public Iterator<Object> iterator(){
+		return Arrays.asList(objects).iterator();
 	}
 }

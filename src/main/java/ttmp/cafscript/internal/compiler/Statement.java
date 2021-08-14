@@ -140,6 +140,53 @@ public abstract class Statement{
 		}
 	}
 
+	public static final class For extends Statement{
+		public final String variable;
+		public final Expression collection;
+		public final List<Statement> statements;
+
+		public For(int position, String variable, Expression collection, List<Statement> statements){
+			super(position);
+			this.variable = variable;
+			this.collection = collection;
+			this.statements = statements;
+		}
+
+		@Override public void visit(StatementVisitor visitor){
+			visitor.visitFor(this);
+		}
+
+		@Override public String toString(){
+			return position+":For{"+
+					"variable='"+variable+'\''+
+					", collection="+collection+
+					", statements="+statements+
+					'}';
+		}
+	}
+
+	public static final class Repeat extends Statement{
+		public final Expression times;
+		public final List<Statement> statements;
+
+		public Repeat(int position, Expression times, List<Statement> statements){
+			super(position);
+			this.times = times;
+			this.statements = statements;
+		}
+
+		@Override public void visit(StatementVisitor visitor){
+			visitor.visitRepeat(this);
+		}
+
+		@Override public String toString(){
+			return position+":Repeat{"+
+					"times="+times+
+					", statements="+statements+
+					'}';
+		}
+	}
+
 	public static final class Debug extends Statement{
 		public final Expression value;
 
