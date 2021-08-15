@@ -331,7 +331,6 @@ public class CafParser{
 
 	private Expression factor(){
 		Expression e = range();
-
 		while(true){
 			boolean star;
 			lexer.next();
