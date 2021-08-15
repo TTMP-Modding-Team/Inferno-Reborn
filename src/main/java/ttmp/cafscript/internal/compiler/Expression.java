@@ -48,8 +48,28 @@ public abstract class Expression{
 		Object o = getConstantObject();
 		if(o==null) error("Expected constant");
 		if(!classOf.isInstance(o)) error("Invalid expression, expected "+classOf.getSimpleName());
-		//noinspection ConstantConditions,unchecked
+		// noinspection unchecked
 		return (T)o;
+	}
+
+	/**
+	 * Get numeric constant. This is mostly equivalent to {@code expectConstantObject(Double.class)}.
+	 */
+	public double expectConstantNumber(){
+		Object o = getConstantObject();
+		if(o==null) error("Expected constant");
+		if(!(o instanceof Double)) error("Invalid expression, expected number");
+		return (double)o;
+	}
+
+	/**
+	 * Get boolean constant. This is mostly equivalent to {@code expectConstantObject(Boolean.class)}.
+	 */
+	public boolean expectConstantBool(){
+		Object o = getConstantObject();
+		if(o==null) error("Expected constant");
+		if(!(o instanceof Boolean)) error("Invalid expression, expected Boolean");
+		return (boolean)o;
 	}
 
 	/**
@@ -64,7 +84,7 @@ public abstract class Expression{
 			error("Invalid expression, expected "+expectedType.getSimpleName()+" but provided "+comparingType.getSimpleName());
 	}
 
-	protected void error(String message){
+	protected final void error(String message){
 		throw new CafCompileException(position, message);
 	}
 

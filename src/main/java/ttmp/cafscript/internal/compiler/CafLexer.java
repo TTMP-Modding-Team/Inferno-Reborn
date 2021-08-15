@@ -80,16 +80,42 @@ public class CafLexer{
 		return false;
 	}
 
-	public boolean guessNext2(TokenType... tokens){
-		return guessNext2(true, tokens);
+	/**
+	 * @param token1 First token to match
+	 * @param token2 Second token to match
+	 * @return 1 if first token matches, 2 if second token matches, 0 if nothing matches
+	 */
+	public int guessNext2(TokenType token1, TokenType token2){
+		return guessNext2(token1, token2, true);
 	}
-	public boolean guessNext2(boolean skipNewline, TokenType... tokens){
+	public int guessNext2(TokenType token1, TokenType token2, boolean skipNewline){
 		int index = tokenIndex;
 		Token t = skipNewline ? next() : next0();
-		for(TokenType token : tokens)
-			if(t.is(token)) return true;
+		if(t.is(token1)) return 1;
+		if(t.is(token2)) return 2;
 		tokenIndex = index;
-		return false;
+		return 0;
+	}
+
+	/**
+	 * @param token1 First token to match
+	 * @param token2 Second token to match
+	 * @param token3 Third token to match
+	 * @param token4 Fourth token to match
+	 * @return 1 if first token matches, 2 if second token matches, 3 if third token matches, 4 if fourth token matches, 0 if nothing matches
+	 */
+	public int guessNext4(TokenType token1, TokenType token2, TokenType token3, TokenType token4){
+		return guessNext4(token1, token2, token3, token4, true);
+	}
+	public int guessNext4(TokenType token1, TokenType token2, TokenType token3, TokenType token4, boolean skipNewline){
+		int index = tokenIndex;
+		Token t = skipNewline ? next() : next0();
+		if(t.is(token1)) return 1;
+		if(t.is(token2)) return 2;
+		if(t.is(token3)) return 3;
+		if(t.is(token4)) return 4;
+		tokenIndex = index;
+		return 0;
 	}
 
 	private Token readTokenFromSource(){

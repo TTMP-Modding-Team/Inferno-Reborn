@@ -214,168 +214,145 @@ public class CafParser{
 		Expression ifThen = ternary();
 		lexer.expectNext(TokenType.COLON, "Invalid ternary operator, expected ':'");
 		Expression elseThen = ternary();
-		if(e.isConstant())
-			return e.expectConstantObject(Boolean.class) ? ifThen : elseThen;
+		if(e.isConstant()) return e.expectConstantBool() ? ifThen : elseThen;
 		return new Expression.Ternary(e.position, e, ifThen, elseThen);
 	}
 
 	private Expression or(){
 		Expression e = and();
-		if(!lexer.guessNext(TokenType.OR_OR)) return e;
-		Boolean b = e.isConstant() ?
-				e.expectConstantObject(Boolean.class) :
-				null;
-		do{
+		while(lexer.guessNext(TokenType.OR_OR)){
 			lexer.next();
 			Expression e2 = and();
-			if(b==null){
-				e = new Expression.Or(e.position, e, e2);
-			}else if(!b){
-				e = e2;
-				b = e.isConstant() ?
-						e.expectConstantObject(Boolean.class) :
-						null;
-			}
-		}while(lexer.guessNext(TokenType.OR_OR));
+			if(e.isConstant()){
+				if(!e.expectConstantBool()) e = e2;
+			}else if(e2.isConstant()){
+				if(e2.expectConstantBool()) e = e2;
+			}else e = new Expression.Or(e.position, e, and());
+		}
 		return e;
 	}
 
 	private Expression and(){
 		Expression e = eq();
-		if(!lexer.guessNext(TokenType.AND_AND)) return e;
-		Boolean b = e.isConstant() ?
-				e.expectConstantObject(Boolean.class) :
-				null;
-		do{
+		while(lexer.guessNext(TokenType.AND_AND)){
 			lexer.next();
 			Expression e2 = eq();
-			if(b==null){
-				e = new Expression.And(e.position, e, e2);
-			}else if(b){
-				e = e2;
-				b = e.isConstant() ?
-						e.expectConstantObject(Boolean.class) :
-						null;
-			}
-		}while(lexer.guessNext(TokenType.AND_AND));
+			if(e.isConstant()){
+				if(e.expectConstantBool()) e = e2;
+			}else if(e2.isConstant()){
+				if(!e2.expectConstantBool()) e = e2;
+			}else e = new Expression.Or(e.position, e, and());
+			e = new Expression.And(e.position, e, eq());
+		}
 		return e;
 	}
 
 	private Expression eq(){
 		Expression e = comp();
-		while(lexer.guessNext2(TokenType.EQ_EQ, TokenType.BANG_EQ)){
-			TokenType token = lexer.current().type;
+		while(true){
+			boolean eq;
 			lexer.next();
-			Expression e2 = comp();
-			if(e.isConstant()&&e2.isConstant()){
-				boolean eq = Objects.equals(e.getConstantObject(), e2.getConstantObject());
-				e = new Expression.Bool(e.position, (token==TokenType.EQ_EQ)==eq);
-			}else{
-				e = token==TokenType.EQ_EQ ?
-						new Expression.Eq(e.position, e, e2) :
-						new Expression.NotEq(e.position, e, e2);
+			switch(lexer.guessNext2(TokenType.EQ_EQ, TokenType.BANG_EQ)){
+				case 1:
+					eq = true;
+					break;
+				case 2:
+					eq = false;
+					break;
+				default:
+					return e;
 			}
+			Expression e2 = comp();
+			e = e.isConstant()&&e2.isConstant() ?
+					new Expression.Bool(e.position, Objects.equals(e.getConstantObject(), e2.getConstantObject())==eq) :
+					eq ? new Expression.Eq(e.position, e, e2) :
+							new Expression.NotEq(e.position, e, e2);
 		}
-		return e;
 	}
 
 	private Expression comp(){
 		Expression e = term();
-		if(!lexer.guessNext2(TokenType.LT, TokenType.GT, TokenType.LT_EQ, TokenType.GT_EQ)) return e;
-		Double d = e.isConstant() ?
-				e.expectConstantObject(Double.class) :
-				null;
-		do{
-			TokenType token = lexer.current().type;
-			lexer.next();
+		while(true){
+			int guess = lexer.guessNext4(TokenType.LT, TokenType.GT, TokenType.LT_EQ, TokenType.GT_EQ);
+			if(guess==0) return e;
 			Expression e2 = term();
-			if(d!=null&&e2.isConstant()){
-				double d2 = e2.expectConstantObject(Double.class);
-				boolean r;
-				switch(token){
-					case LT:
-						r = d<d2;
-						break;
-					case GT:
-						r = d>d2;
-						break;
-					case LT_EQ:
-						r = d<=d2;
-						break;
-					default: // GTEQ
-						r = d>=d2;
-						break;
-				}
-				e = new Expression.Bool(e.position, r);
 
-			}else{
-				switch(token){
-					case LT:
-						e = new Expression.Lt(e.position, e, e2);
-						break;
-					case GT:
-						e = new Expression.Gt(e.position, e, e2);
-						break;
-					case LT_EQ:
-						e = new Expression.LtEq(e.position, e, e2);
-						break;
-					default: // GTEQ
-						e = new Expression.GtEq(e.position, e, e2);
-						break;
-				}
+			if(e.isConstant()&&e2.isConstant()){
+				double d = e.expectConstantNumber();
+				double d2 = e2.expectConstantNumber();
+				e = new Expression.Bool(e.position,
+						guess==1 ? d<d2 :
+								guess==2 ? d>d2 :
+										guess==3 ? d<=d2 :
+												d>=d2);
+			}else switch(guess){
+				case 1:
+					e = new Expression.Lt(e.position, e, e2);
+					break;
+				case 2:
+					e = new Expression.Gt(e.position, e, e2);
+					break;
+				case 3:
+					e = new Expression.LtEq(e.position, e, e2);
+					break;
+				case 4:
+					e = new Expression.GtEq(e.position, e, e2);
+					break;
+				default:
+					throw new CafCompileException(e.position, "Unreachable");
 			}
-		}while(lexer.guessNext2(TokenType.LT, TokenType.GT, TokenType.LT_EQ, TokenType.GT_EQ));
-		return e;
+		}
 	}
 
 	private Expression term(){
 		Expression e = factor();
-		if(!lexer.guessNext2(TokenType.PLUS, TokenType.MINUS)) return e;
-		Double d = e.isConstant() ?
-				e.expectConstantObject(Double.class) :
-				null;
-		do{
-			TokenType token = lexer.current().type;
+		while(true){
+			boolean plus;
 			lexer.next();
-			Expression e2 = factor();
-			if(d!=null&&e2.isConstant()){
-				double d2 = e2.expectConstantObject(Double.class);
-				double r = token==TokenType.PLUS ? d+d2 :
-						d-d2;
-				e = new Expression.Number(e.position, r);
-				d = r;
-			}else{
-				e = token==TokenType.PLUS ?
-						new Expression.Add(e.position, e, e2) :
-						new Expression.Subtract(e.position, e, e2);
+			switch(lexer.guessNext2(TokenType.PLUS, TokenType.MINUS)){
+				case 1:
+					plus = true;
+					break;
+				case 2:
+					plus = false;
+					break;
+				default:
+					return e;
 			}
-		}while(lexer.guessNext2(TokenType.PLUS, TokenType.MINUS));
-		return e;
+			Expression e2 = factor();
+			if(e.isConstant()&&e2.isConstant()){
+				double d = e.expectConstantNumber();
+				double d2 = e2.expectConstantNumber();
+				e = new Expression.Number(e.position, plus ? d+d2 : d-d2);
+			}else e = plus ? new Expression.Add(e.position, e, e2) :
+					new Expression.Subtract(e.position, e, e2);
+		}
 	}
 
 	private Expression factor(){
 		Expression e = range();
-		if(!lexer.guessNext2(TokenType.STAR, TokenType.SLASH)) return e;
-		Double d = e.isConstant() ?
-				e.expectConstantObject(Double.class) :
-				null;
-		do{
-			TokenType token = lexer.current().type;
+
+		while(true){
+			boolean star;
 			lexer.next();
-			Expression e2 = range();
-			if(d!=null&&e2.isConstant()){
-				double d2 = e2.expectConstantObject(Double.class);
-				double r = token==TokenType.STAR ? d*d2 :
-						d/d2;
-				e = new Expression.Number(e.position, r);
-				d = r;
-			}else{
-				e = token==TokenType.STAR ?
-						new Expression.Multiply(e.position, e, e2) :
-						new Expression.Divide(e.position, e, e2);
+			switch(lexer.guessNext2(TokenType.STAR, TokenType.SLASH)){
+				case 1:
+					star = true;
+					break;
+				case 2:
+					star = false;
+					break;
+				default:
+					return e;
 			}
-		}while(lexer.guessNext2(TokenType.STAR, TokenType.SLASH));
-		return e;
+			Expression e2 = factor();
+			if(e.isConstant()&&e2.isConstant()){
+				double d = e.expectConstantNumber();
+				double d2 = e2.expectConstantNumber();
+				e = new Expression.Number(e.position, star ? d*d2 : d/d2);
+			}else e = star ? new Expression.Multiply(e.position, e, e2) :
+					new Expression.Divide(e.position, e, e2);
+		}
 	}
 
 	private Expression range(){
@@ -383,11 +360,10 @@ public class CafParser{
 		while(lexer.guessNext(TokenType.DOT_DOT)){
 			lexer.next();
 			Expression e2 = range();
-			e = e.isConstant()&&e2.isConstant() ?
-					new Expression.RangeConstant(e.position,
-							new Range(e.expectConstantObject(Double.class),
-									e2.expectConstantObject(Double.class))) :
-					new Expression.RangeOperator(e.position, e, e2);
+			if(e.isConstant()&&e2.isConstant())
+				e = new Expression.RangeConstant(e.position,
+						new Range(e.expectConstantNumber(), e2.expectConstantNumber()));
+			else e = new Expression.RangeOperator(e.position, e, e2);
 		}
 		return e;
 	}
@@ -399,14 +375,14 @@ public class CafParser{
 				lexer.next();
 				Expression e = unary();
 				return e.isConstant() ?
-						new Expression.Bool(current.start, !e.expectConstantObject(Boolean.class)) :
+						new Expression.Bool(current.start, !e.expectConstantBool()) :
 						new Expression.Not(current.start, e);
 			}
 			case MINUS:{
 				lexer.next();
 				Expression e = unary();
 				return e.isConstant() ?
-						new Expression.Number(current.start, -e.expectConstantObject(Double.class)) :
+						new Expression.Number(current.start, -e.expectConstantNumber()) :
 						new Expression.Negate(current.start, e);
 			}
 			case DEBUG:
