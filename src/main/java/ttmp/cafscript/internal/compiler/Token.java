@@ -17,4 +17,8 @@ public final class Token{
 	public boolean is(TokenType type){
 		return this.type==type;
 	}
+
+	@Override public String toString(){
+		return type+" ("+(length>1 ? start+"~"+(start+length-1) : start)+")";
+	}
 }

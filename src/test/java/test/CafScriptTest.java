@@ -30,7 +30,7 @@ public class CafScriptTest{
 	public Collection<DynamicTest> generateTests(){
 		List<DynamicTest> tests = new ArrayList<>();
 
-		CafDebugEngine engine = new CafDebugEngine();
+		CafDebugEngine engine = new CafDebugEngine(true, true);
 
 		tests.add(DynamicTest.dynamicTest("Compile Test 1", compileTest(engine, "compile_test/1")));
 		tests.add(DynamicTest.dynamicTest("Compile Test 2", compileTest(engine, "compile_test/2")));

@@ -250,22 +250,13 @@ public class CafParser{
 	private Expression eq(){
 		Expression e = comp();
 		while(true){
-			boolean eq;
+			int guess = lexer.guessNext2(TokenType.EQ_EQ, TokenType.BANG_EQ);
+			if(guess==0) return e;
 			lexer.next();
-			switch(lexer.guessNext2(TokenType.EQ_EQ, TokenType.BANG_EQ)){
-				case 1:
-					eq = true;
-					break;
-				case 2:
-					eq = false;
-					break;
-				default:
-					return e;
-			}
 			Expression e2 = comp();
 			e = e.isConstant()&&e2.isConstant() ?
-					new Expression.Bool(e.position, Objects.equals(e.getConstantObject(), e2.getConstantObject())==eq) :
-					eq ? new Expression.Eq(e.position, e, e2) :
+					new Expression.Bool(e.position, Objects.equals(e.getConstantObject(), e2.getConstantObject())==(guess==1)) :
+					guess==1 ? new Expression.Eq(e.position, e, e2) :
 							new Expression.NotEq(e.position, e, e2);
 		}
 	}
@@ -275,6 +266,7 @@ public class CafParser{
 		while(true){
 			int guess = lexer.guessNext4(TokenType.LT, TokenType.GT, TokenType.LT_EQ, TokenType.GT_EQ);
 			if(guess==0) return e;
+			lexer.next();
 			Expression e2 = term();
 
 			if(e.isConstant()&&e2.isConstant()){
@@ -295,11 +287,8 @@ public class CafParser{
 				case 3:
 					e = new Expression.LtEq(e.position, e, e2);
 					break;
-				case 4:
+				default: // 4
 					e = new Expression.GtEq(e.position, e, e2);
-					break;
-				default:
-					throw new CafCompileException(e.position, "Unreachable");
 			}
 		}
 	}
@@ -307,24 +296,15 @@ public class CafParser{
 	private Expression term(){
 		Expression e = factor();
 		while(true){
-			boolean plus;
+			int guess = lexer.guessNext2(TokenType.PLUS, TokenType.MINUS);
+			if(guess==0) return e;
 			lexer.next();
-			switch(lexer.guessNext2(TokenType.PLUS, TokenType.MINUS)){
-				case 1:
-					plus = true;
-					break;
-				case 2:
-					plus = false;
-					break;
-				default:
-					return e;
-			}
 			Expression e2 = factor();
 			if(e.isConstant()&&e2.isConstant()){
 				double d = e.expectConstantNumber();
 				double d2 = e2.expectConstantNumber();
-				e = new Expression.Number(e.position, plus ? d+d2 : d-d2);
-			}else e = plus ? new Expression.Add(e.position, e, e2) :
+				e = new Expression.Number(e.position, guess==1 ? d+d2 : d-d2);
+			}else e = guess==1 ? new Expression.Add(e.position, e, e2) :
 					new Expression.Subtract(e.position, e, e2);
 		}
 	}
@@ -332,24 +312,15 @@ public class CafParser{
 	private Expression factor(){
 		Expression e = range();
 		while(true){
-			boolean star;
+			int guess = lexer.guessNext2(TokenType.STAR, TokenType.SLASH);
+			if(guess==0) return e;
 			lexer.next();
-			switch(lexer.guessNext2(TokenType.STAR, TokenType.SLASH)){
-				case 1:
-					star = true;
-					break;
-				case 2:
-					star = false;
-					break;
-				default:
-					return e;
-			}
 			Expression e2 = factor();
 			if(e.isConstant()&&e2.isConstant()){
 				double d = e.expectConstantNumber();
 				double d2 = e2.expectConstantNumber();
-				e = new Expression.Number(e.position, star ? d*d2 : d/d2);
-			}else e = star ? new Expression.Multiply(e.position, e, e2) :
+				e = new Expression.Number(e.position, guess==1 ? d*d2 : d/d2);
+			}else e = guess==1 ? new Expression.Multiply(e.position, e, e2) :
 					new Expression.Divide(e.position, e, e2);
 		}
 	}
