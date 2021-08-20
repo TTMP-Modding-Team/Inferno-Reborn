@@ -111,7 +111,7 @@ public interface Inst{
 	 */
 	byte SET_PROPERTY = 0x41;
 	/**
-	 * Set lazy property with identifier {1}, expects CafScript object.
+	 * Set lazy property with identifier {1}, expects {@link ttmp.wtf.WtfScript WtfScript} object.
 	 * Property gets evaluated right away if the initializer doesn't accept lazy property initialization. In that case, new initializer is put into stack.
 	 * Otherwise, jump to {2}.
 	 */

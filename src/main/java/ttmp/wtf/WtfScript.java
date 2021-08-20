@@ -57,7 +57,7 @@ public final class WtfScript{
 	}
 
 	public String format(){
-		StringBuilder stb = new StringBuilder("CafScript{");
+		StringBuilder stb = new StringBuilder("WtfScript{");
 		stb.append("\nVariables: ").append(variables);
 		stb.append("\nMaximum Stack Size: ").append(maxStack);
 		stb.append("\nBytecodes: ").append(inst.length).append(" entries");
@@ -257,7 +257,7 @@ public final class WtfScript{
 	}
 
 	@Override public String toString(){
-		return "CafScript";
+		return "WtfScript";
 	}
 
 	private Object objString(int i){
