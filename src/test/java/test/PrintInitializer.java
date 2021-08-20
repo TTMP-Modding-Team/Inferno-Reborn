@@ -1,7 +1,7 @@
 package test;
 
-import ttmp.cafscript.definitions.initializer.Initializer;
-import ttmp.cafscript.internal.CafInterpreter;
+import ttmp.wtf.definitions.initializer.Initializer;
+import ttmp.wtf.internal.WtfExecutor;
 
 import javax.annotation.Nullable;
 
@@ -11,19 +11,19 @@ import javax.annotation.Nullable;
 public class PrintInitializer implements Initializer<Object>{
 	public static final PrintInitializer INSTANCE = new PrintInitializer();
 
-	@Override public void setPropertyValue(CafInterpreter interpreter, String property, Object o){
+	@Override public void setPropertyValue(WtfExecutor interpreter, String property, Object o){
 		System.out.println("Property "+property+": "+o);
 	}
-	@Nullable @Override public Initializer<?> setPropertyValueLazy(CafInterpreter interpreter, String property, int codepoint){
+	@Nullable @Override public Initializer<?> setPropertyValueLazy(WtfExecutor interpreter, String property, int codepoint){
 		System.out.println("Lazy Property "+property+": "+codepoint);
 		return INSTANCE;
 	}
 
-	@Override public void apply(CafInterpreter interpreter, Object o){
+	@Override public void apply(WtfExecutor interpreter, Object o){
 		System.out.println(": "+o);
 	}
 
-	@Override public Object finish(CafInterpreter interpreter){
+	@Override public Object finish(WtfExecutor interpreter){
 		return INSTANCE;
 	}
 }
