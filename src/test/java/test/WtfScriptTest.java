@@ -30,7 +30,7 @@ public class WtfScriptTest{
 	public Collection<DynamicTest> generateTests(){
 		List<DynamicTest> tests = new ArrayList<>();
 
-		WtfDebugEngine engine = new WtfDebugEngine(true, true);
+		WtfDebugEngine engine = new WtfDebugEngine(false, false);
 
 		tests.add(DynamicTest.dynamicTest("Compile Test 1", compileTest(engine, "compile_test/1")));
 		tests.add(DynamicTest.dynamicTest("Compile Test 2", compileTest(engine, "compile_test/2")));

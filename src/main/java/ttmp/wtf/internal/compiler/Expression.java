@@ -475,20 +475,72 @@ public abstract class Expression{
 		}
 	}
 
-	public static class Identifier extends Expression{
-		public final String identifier;
+	public static class PropertyAccess extends Expression{
+		public final String property;
 
-		public Identifier(int position, String identifier){
+		public PropertyAccess(int position, String property){
 			super(position);
-			this.identifier = identifier;
+			this.property = property;
 		}
 
 		@Override public void visit(ExpressionVisitor visitor){
-			visitor.visitIdentifier(this);
+			visitor.visitPropertyAccess(this);
 		}
 		@Override public void checkType(@Nullable Class<?> expectedType){}
 		@Override public String toString(){
-			return position+":"+identifier;
+			return position+":PropertyAccess{"+property+'}';
+		}
+	}
+
+	public static class ConstantAccess extends Expression{
+		public final String constant;
+		@Nullable public final Expression constantExpression;
+
+		public ConstantAccess(int position, String constant, @Nullable Expression constantExpression){
+			super(position);
+			this.constant = constant;
+			this.constantExpression = constantExpression;
+		}
+
+		@Override public void visit(ExpressionVisitor visitor){
+			visitor.visitConstantAccess(this);
+		}
+		@Override public boolean isConstant(){
+			return constantExpression!=null&&constantExpression.isConstant();
+		}
+		@Nullable @Override public Object getConstantObject(){
+			return constantExpression!=null ? constantExpression.getConstantObject() : null;
+		}
+		@Override public void checkType(@Nullable Class<?> expectedType){
+			if(constantExpression!=null) constantExpression.checkType(expectedType);
+		}
+		@Override public String toString(){
+			return position+":ConstantAccess{"+constant+'}';
+		}
+	}
+
+	public static class Constant extends Expression{
+		public final Object constant;
+
+		public Constant(int position, Object constant){
+			super(position);
+			this.constant = constant;
+		}
+
+		@Override public void visit(ExpressionVisitor visitor){
+			visitor.visitConstant(this);
+		}
+		@Override public boolean isConstant(){
+			return true;
+		}
+		@Nullable @Override public Object getConstantObject(){
+			return constant;
+		}
+		@Override public void checkType(@Nullable Class<?> expectedType){
+			expectType(constant.getClass(), expectedType);
+		}
+		@Override public String toString(){
+			return position+":Constant{"+constant+'}';
 		}
 	}
 

@@ -462,22 +462,26 @@ public class WtfCompiler implements StatementVisitor, ExpressionVisitor{
 	@Override public void visitColor(Expression.Color color){
 		writeObj(color.rgb);
 	}
-	@Override public void visitIdentifier(Expression.Identifier identifier){
-		Definition definition = getDefinition(identifier.identifier);
-		if(definition!=null){
-			if(definition.constant){
-				write(Inst.PUSH);
-				write(definition.constantId);
-			}else{
-				write(Inst.GET_VARIABLE);
-				write(definition.varId);
-			}
+	@Override public void visitPropertyAccess(Expression.PropertyAccess propertyAccess){
+		write(Inst.GET_PROPERTY);
+		write(identifier(propertyAccess.property));
+		write(getStackPoint(getBlock().initializerStackPosition));
+		addStack();
+	}
+	@Override public void visitConstantAccess(Expression.ConstantAccess constantAccess){
+		Definition definition = getDefinition(constantAccess.constant);
+		if(definition==null) error("No constant defined with name '"+constantAccess.constant+"'");
+		if(definition.constant){
+			write(Inst.PUSH);
+			write(definition.constantId);
 		}else{
-			write(Inst.GET_PROPERTY);
-			write(identifier(identifier.identifier));
-			write(getStackPoint(getBlock().initializerStackPosition));
+			write(Inst.GET_VARIABLE);
+			write(definition.varId);
 		}
 		addStack();
+	}
+	@Override public void visitConstant(Expression.Constant constant){
+		writeObj(constant.constant);
 	}
 	@Override public void visitConstruct(Expression.Construct construct){
 		write(Inst.NEW);

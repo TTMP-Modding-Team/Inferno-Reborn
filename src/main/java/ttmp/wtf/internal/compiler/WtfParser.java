@@ -8,16 +8,21 @@ import ttmp.wtf.obj.Range;
 import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
 public class WtfParser{
 	private final String script;
 	private final WtfLexer lexer;
 
+	private final List<Map<String, Definition>> definitions = new ArrayList<>();
+
 	public WtfParser(String script){
 		this.script = script;
 		this.lexer = new WtfLexer(script);
+		pushBlock();
 	}
 
 	@Nullable public Statement parse(){
@@ -56,14 +61,18 @@ public class WtfParser{
 				new Statement.Assign(start, property, expr(null));
 	}
 
-	private Statement.Define defineStmt(){
+	private Statement defineStmt(){
 		int start = lexer.current().start;
 		lexer.expectNext(TokenType.IDENTIFIER, "Invalid define statement, expected an identifier");
 		String property = complexIdentifier();
 		lexer.expectNext(TokenType.COLON, "Incomplete define statement, missing ':'");
 		if(lexer.next().is(TokenType.L_BRACE))
 			throw new WtfCompileException(lexer.next().start, "Defined properties cannot have constructors without type specified.");
-		return new Statement.Define(start, property, expr(null));
+		Expression expr = expr(null);
+		setDefinition(property, expr, start);
+		return expr.isConstant() ?
+				new Statement.StatementList(start, Collections.emptyList()) :
+				new Statement.Define(start, property, expr);
 	}
 
 	private Statement.Apply applyStmt(){
@@ -102,12 +111,13 @@ public class WtfParser{
 		lexer.expectNext(TokenType.L_PAREN, "Invalid for statement, expected '('");
 		lexer.expectNext(TokenType.IDENTIFIER, "Invalid for statement, expected identifier");
 		String property = literalValue(lexer.current());
+		int propertyPosition = lexer.current().start;
 		lexer.expectNext(TokenType.IN, "Invalid for statement, expected 'in'");
 		lexer.next();
 		Expression expr = expr(Iterable.class);
 		lexer.expectNext(TokenType.R_PAREN, "Invalid if statement, expected ')'");
 		lexer.next();
-		List<Statement> body = body();
+		List<Statement> body = body(property, propertyPosition);
 		return new Statement.For(start, property, expr, body);
 	}
 
@@ -129,22 +139,37 @@ public class WtfParser{
 	}
 
 	private List<Statement> body(){
-		if(lexer.current().is(TokenType.L_BRACE)) return block();
+		return body(null, 0);
+	}
+
+	private List<Statement> body(@Nullable String variable, int variablePosition){
+		pushBlock();
+		if(variable!=null) setDefinition(variable, null, variablePosition);
+		List<Statement> statements;
+		if(lexer.current().is(TokenType.L_BRACE)) statements = block(false);
 		else{
 			Statement stmt = stmt();
 			if(stmt instanceof Statement.Define)
 				throw new WtfCompileException(stmt.position, "Only declaration inside block");
-			return Collections.singletonList(stmt);
+			statements = Collections.singletonList(stmt);
 		}
+		popBlock();
+		return statements;
 	}
 
 	private List<Statement> block(){
+		return block(true);
+	}
+
+	private List<Statement> block(boolean push){
+		if(push) pushBlock();
 		List<Statement> statements = new ArrayList<>();
 		while(true){
 			switch(lexer.next().type){
 				case EOF:
 					throw new WtfCompileException(script.length()-1, "Unterminated code block");
 				case R_BRACE:
+					if(push) popBlock();
 					return statements;
 				default:
 					statements.add(stmt());
@@ -382,14 +407,16 @@ public class WtfParser{
 				return new Expression.Namespace(current.start, literalValue(current));
 			case COLOR:
 				return new Expression.Color(current.start, new RGB(hex(current.start+1, 6)));
-			case STRING:{
+			case STRING:
 				return new Expression.StringLiteral(current.start, stringLiteral(current));
-			}
 			case IDENTIFIER:{
 				String literal = complexIdentifier();
-				if(lexer.guessNext(TokenType.L_BRACE)){
-					return new Expression.Construct(current.start, literal, block());
-				}else return new Expression.Identifier(current.start, literal);
+				if(lexer.guessNext(TokenType.L_BRACE)) return new Expression.Construct(current.start, literal, block());
+				Definition definition = getDefinition(literal);
+				if(definition==null) return new Expression.PropertyAccess(current.start, literal);
+				if(definition.constantExpression!=null&&definition.constantExpression.isConstant())
+					return new Expression.Constant(current.start, Objects.requireNonNull(definition.constantExpression.getConstantObject()));
+				return new Expression.ConstantAccess(current.start, literal, definition.constantExpression);
 			}
 			default:
 				throw new WtfCompileException(current.start, "Invalid expression, expected literal");
@@ -451,6 +478,35 @@ public class WtfParser{
 			return Integer.parseInt(substring, 16);
 		}catch(NumberFormatException ex){
 			throw new WtfCompileException(i, "Invalid value '"+substring+"'");
+		}
+	}
+
+	private void setDefinition(String name, @Nullable Expression constantValue, int position){
+		Map<String, Definition> m = definitions.get(definitions.size()-1);
+		if(m.put(name, new Definition(constantValue))!=null) throw new WtfCompileException(position, "");
+	}
+
+	@Nullable private Definition getDefinition(String name){
+		for(int i = definitions.size()-1; i>=0; i--){
+			Definition d = definitions.get(i).get(name);
+			if(d!=null) return d;
+		}
+		return null;
+	}
+
+	private void pushBlock(){
+		definitions.add(new HashMap<>());
+	}
+
+	private void popBlock(){
+		definitions.remove(definitions.size()-1);
+	}
+
+	public static final class Definition{
+		@Nullable public final Expression constantExpression;
+
+		public Definition(@Nullable Expression constantExpression){
+			this.constantExpression = constantExpression;
 		}
 	}
 }

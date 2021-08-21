@@ -22,7 +22,9 @@ public interface ExpressionVisitor{
 	void visitNumber(Expression.Number number);
 	void visitNamespace(Expression.Namespace namespace);
 	void visitColor(Expression.Color color);
-	void visitIdentifier(Expression.Identifier identifier);
+	void visitPropertyAccess(Expression.PropertyAccess propertyAccess);
+	void visitConstantAccess(Expression.ConstantAccess constantAccess);
+	void visitConstant(Expression.Constant constant);
 	void visitConstruct(Expression.Construct construct);
 	void visitBool(Expression.Bool bool);
 	void visitDebug(Expression.Debug debug);
