@@ -5,6 +5,7 @@ import org.apache.commons.io.FileUtils;
 import org.junit.jupiter.api.DynamicTest;
 import org.junit.jupiter.api.TestFactory;
 import org.junit.jupiter.api.function.Executable;
+import ttmp.wtf.CompileContext;
 import ttmp.wtf.WtfScript;
 import ttmp.wtf.WtfScriptEngine;
 import ttmp.wtf.definitions.initializer.AssertInitializer;
@@ -12,7 +13,6 @@ import ttmp.wtf.definitions.initializer.Initializer;
 import ttmp.wtf.definitions.initializer.TestInitializer;
 import ttmp.wtf.exceptions.WtfCompileException;
 import ttmp.wtf.internal.WtfDebugEngine;
-import ttmp.wtf.internal.WtfExecutor;
 import ttmp.wtf.obj.RGB;
 
 import javax.annotation.Nullable;
@@ -23,6 +23,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
+import java.util.function.Function;
 import java.util.function.Supplier;
 
 public class WtfScriptTest{
@@ -77,6 +78,42 @@ public class WtfScriptTest{
 						"\"\"",
 						"Should I write another test case with exact same script but using ' instead of \"?",
 						"Nah")));
+		{
+			Object o1 = new Object(), o2 = new Object();
+			tests.add(DynamicTest.dynamicTest("Operation Test: Constants 2: Electric Boogaloo",
+					operationTest(engine, "operation_test/constants_2", CompileContext.builder()
+									.addStaticConstant("S1", 1.0)
+									.addStaticConstant("S2", "Hello World")
+									.addStaticConstant("S3", new ResourceLocation("grass"))
+									.addStaticConstant("S4", o1)
+									.addDynamicConstant("C1", Double.class)
+									.addDynamicConstant("C2", String.class)
+									.addDynamicConstant("C3", ResourceLocation.class)
+									.addDynamicConstant("C4", Object.class)
+									.build(),
+							s -> {
+								switch(s){
+									case "C1":
+										return 3.0;
+									case "C2":
+										return "ASDF";
+									case "C3":
+										return new ResourceLocation("zinfernoreborn", "abilities");
+									case "C4":
+										return o2;
+									default:
+										return null;
+								}
+							},
+							1,
+							"Hello World",
+							new ResourceLocation("grass"),
+							o1,
+							3,
+							"ASDF",
+							new ResourceLocation("zinfernoreborn", "abilities"),
+							o2)));
+		}
 
 		tests.add(DynamicTest.dynamicTest("Assertion Test: Operation Optimization",
 				assertTest(engine, "assertion_test/operation_optimization")));
@@ -97,19 +134,28 @@ public class WtfScriptTest{
 	}
 
 	private Executable runTest(WtfScriptEngine engine, String filename){
-		return runTest(engine, filename, null);
+		return runTest(engine, filename, CompileContext.DEFAULT, null);
 	}
 	private Executable runTest(WtfScriptEngine engine, String filename, @Nullable Supplier<Initializer<?>> initializer){
+		return runTest(engine, filename, CompileContext.DEFAULT, initializer, null);
+	}
+	private Executable runTest(WtfScriptEngine engine, String filename, CompileContext context, @Nullable Function<String, Object> dynamicConstantProvider){
+		return runTest(engine, filename, context, null, dynamicConstantProvider);
+	}
+	private Executable runTest(WtfScriptEngine engine, String filename, CompileContext context, @Nullable Supplier<Initializer<?>> initializer, @Nullable Function<String, Object> dynamicConstantProvider){
 		return () -> {
-			WtfScript script = engine.tryCompile(readScript(filename), this::logAndError);
+			WtfScript script = engine.tryCompile(readScript(filename), context, this::logAndError);
 			long t = System.currentTimeMillis();
-			new WtfExecutor(engine, Objects.requireNonNull(script)).execute(initializer==null ? Initializer.EMPTY : initializer.get());
+			engine.execute(Objects.requireNonNull(script), initializer==null ? Initializer.EMPTY : initializer.get(), dynamicConstantProvider);
 			System.out.println("Execution took "+(System.currentTimeMillis()-t)+" ms.");
 		};
 	}
 
 	private Executable operationTest(WtfScriptEngine engine, String filename, Object... expectedValues){
 		return runTest(engine, filename, () -> new TestInitializer(expectedValues));
+	}
+	private Executable operationTest(WtfScriptEngine engine, String filename, CompileContext context, @Nullable Function<String, Object> dynamicConstantProvider, Object... expectedValues){
+		return runTest(engine, filename, context, () -> new TestInitializer(expectedValues), dynamicConstantProvider);
 	}
 
 	private Executable assertTest(WtfScriptEngine engine, String filename){

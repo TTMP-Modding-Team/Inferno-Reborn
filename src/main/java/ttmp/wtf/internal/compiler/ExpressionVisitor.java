@@ -24,7 +24,8 @@ public interface ExpressionVisitor{
 	void visitColor(Expression.Color color);
 	void visitPropertyAccess(Expression.PropertyAccess propertyAccess);
 	void visitConstantAccess(Expression.ConstantAccess constantAccess);
-	void visitConstant(Expression.Constant constant);
+	void visitStaticConstant(Expression.StaticConstant staticConstant);
+	void visitDynamicConstant(Expression.DynamicConstant dynamicConstant);
 	void visitConstruct(Expression.Construct construct);
 	void visitBool(Expression.Bool bool);
 	void visitDebug(Expression.Debug debug);

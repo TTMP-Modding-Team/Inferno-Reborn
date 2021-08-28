@@ -493,12 +493,12 @@ public abstract class Expression{
 	}
 
 	public static class ConstantAccess extends Expression{
-		public final String constant;
+		public final String name;
 		@Nullable public final Expression constantExpression;
 
-		public ConstantAccess(int position, String constant, @Nullable Expression constantExpression){
+		public ConstantAccess(int position, String name, @Nullable Expression constantExpression){
 			super(position);
-			this.constant = constant;
+			this.name = name;
 			this.constantExpression = constantExpression;
 		}
 
@@ -515,20 +515,20 @@ public abstract class Expression{
 			if(constantExpression!=null) constantExpression.checkType(expectedType);
 		}
 		@Override public String toString(){
-			return position+":ConstantAccess{"+constant+'}';
+			return position+":ConstantAccess{"+name+'}';
 		}
 	}
 
-	public static class Constant extends Expression{
+	public static class StaticConstant extends Expression{
 		public final Object constant;
 
-		public Constant(int position, Object constant){
+		public StaticConstant(int position, Object constant){
 			super(position);
 			this.constant = constant;
 		}
 
 		@Override public void visit(ExpressionVisitor visitor){
-			visitor.visitConstant(this);
+			visitor.visitStaticConstant(this);
 		}
 		@Override public boolean isConstant(){
 			return true;
@@ -541,6 +541,29 @@ public abstract class Expression{
 		}
 		@Override public String toString(){
 			return position+":Constant{"+constant+'}';
+		}
+	}
+
+	public static class DynamicConstant extends Expression{
+		public final String name;
+		public final Class<?> constantType;
+
+		public DynamicConstant(int position, String name, Class<?> constantType){
+			super(position);
+			this.name = name;
+			this.constantType = constantType;
+		}
+
+		@Override public void visit(ExpressionVisitor visitor){
+			visitor.visitDynamicConstant(this);
+		}
+		@Override public void checkType(@Nullable Class<?> expectedType){
+			if(expectedType==null) return;
+			if(!constantType.isAssignableFrom(expectedType)&&!expectedType.isAssignableFrom(constantType))
+				error("Expected type '"+expectedType+"' and constant type '"+constantType+"' is mutually exclusive");
+		}
+		@Override public String toString(){
+			return position+":DynamicConstant{"+name+'}';
 		}
 	}
 

@@ -1,5 +1,6 @@
 package ttmp.wtf.internal.compiler;
 
+import ttmp.wtf.CompileContext;
 import ttmp.wtf.exceptions.WtfCompileException;
 import ttmp.wtf.obj.Bundle;
 import ttmp.wtf.obj.RGB;
@@ -15,12 +16,14 @@ import java.util.Objects;
 
 public class WtfParser{
 	private final String script;
+	private final CompileContext context;
 	private final WtfLexer lexer;
 
 	private final List<Map<String, Definition>> definitions = new ArrayList<>();
 
-	public WtfParser(String script){
+	public WtfParser(String script, CompileContext context){
 		this.script = script;
+		this.context = context;
 		this.lexer = new WtfLexer(script);
 		pushBlock();
 	}
@@ -413,10 +416,14 @@ public class WtfParser{
 				String literal = complexIdentifier();
 				if(lexer.guessNext(TokenType.L_BRACE)) return new Expression.Construct(current.start, literal, block());
 				Definition definition = getDefinition(literal);
-				if(definition==null) return new Expression.PropertyAccess(current.start, literal);
-				if(definition.constantExpression!=null&&definition.constantExpression.isConstant())
-					return new Expression.Constant(current.start, Objects.requireNonNull(definition.constantExpression.getConstantObject()));
-				return new Expression.ConstantAccess(current.start, literal, definition.constantExpression);
+				if(definition!=null) return definition.constantExpression!=null&&definition.constantExpression.isConstant() ?
+						new Expression.StaticConstant(current.start, Objects.requireNonNull(definition.constantExpression.getConstantObject())) :
+						new Expression.ConstantAccess(current.start, literal, definition.constantExpression);
+				Object staticConstant = context.getStaticConstant(literal);
+				if(staticConstant!=null) return new Expression.StaticConstant(current.start, staticConstant);
+				Class<?> dynamicConstant = context.getDynamicConstant(literal);
+				if(dynamicConstant!=null) return new Expression.DynamicConstant(current.start, literal, dynamicConstant);
+				return new Expression.PropertyAccess(current.start, literal);
 			}
 			default:
 				throw new WtfCompileException(current.start, "Invalid expression, expected literal");

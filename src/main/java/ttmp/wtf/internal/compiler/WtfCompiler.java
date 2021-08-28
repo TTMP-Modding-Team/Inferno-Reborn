@@ -4,8 +4,10 @@ import it.unimi.dsi.fastutil.bytes.ByteArrayList;
 import it.unimi.dsi.fastutil.bytes.ByteList;
 import it.unimi.dsi.fastutil.objects.Object2ByteMap;
 import it.unimi.dsi.fastutil.objects.Object2ByteOpenHashMap;
+import ttmp.wtf.CompileContext;
 import ttmp.wtf.WtfScript;
 import ttmp.wtf.exceptions.WtfCompileException;
+import ttmp.wtf.internal.DynamicConstantInfo;
 import ttmp.wtf.internal.Inst;
 import ttmp.wtf.internal.Lines;
 
@@ -18,10 +20,12 @@ import java.util.Objects;
 
 public class WtfCompiler implements StatementVisitor, ExpressionVisitor{
 	private final String script;
+	private final CompileContext context;
 
 	public final ByteList inst = new ByteArrayList();
 	public final Object2ByteMap<Object> objs = new Object2ByteOpenHashMap<>();
 	public final Object2ByteMap<String> identifiers = new Object2ByteOpenHashMap<>();
+	public final Map<String, DynamicConstantInfo> dynamicConstants = new HashMap<>();
 
 	private final List<Block> blocks = new ArrayList<>();
 
@@ -36,15 +40,24 @@ public class WtfCompiler implements StatementVisitor, ExpressionVisitor{
 
 	private boolean finished;
 
-	public WtfCompiler(String script){
+	public WtfCompiler(String script, CompileContext context){
 		this.script = script;
+		this.context = context;
 		this.identifiers.defaultReturnValue((byte)-1);
 		this.pushBlock(true);
+		if(!context.getDynamicConstants().isEmpty()){
+			for(Map.Entry<String, Class<?>> e : context.getDynamicConstants().entrySet()){
+				byte varId = newVariableId();
+				setDefinition(e.getKey(), Definition.variable(varId));
+				dynamicConstants.put(e.getKey(), new DynamicConstantInfo(varId, e.getValue()));
+			}
+			this.pushBlock();
+		}
 	}
 
 	public WtfScript parseAndCompile(){
 		if(!finished){
-			WtfParser parser = new WtfParser(script);
+			WtfParser parser = new WtfParser(script, context);
 			for(Statement s; (s = parser.parse())!=null; )
 				writeInst(s);
 		}
@@ -59,6 +72,7 @@ public class WtfCompiler implements StatementVisitor, ExpressionVisitor{
 		return new WtfScript(inst.toByteArray(),
 				populate(objs, new Object[objs.size()]),
 				populate(identifiers, new String[identifiers.size()]),
+				dynamicConstants,
 				variables,
 				maxStack,
 				lines.build(script, inst.size()));
@@ -469,8 +483,8 @@ public class WtfCompiler implements StatementVisitor, ExpressionVisitor{
 		addStack();
 	}
 	@Override public void visitConstantAccess(Expression.ConstantAccess constantAccess){
-		Definition definition = getDefinition(constantAccess.constant);
-		if(definition==null) error("No constant defined with name '"+constantAccess.constant+"'");
+		Definition definition = getDefinition(constantAccess.name);
+		if(definition==null) error("No constant defined with name '"+constantAccess.name+"'");
 		if(definition.constant){
 			write(Inst.PUSH);
 			write(definition.constantId);
@@ -480,8 +494,16 @@ public class WtfCompiler implements StatementVisitor, ExpressionVisitor{
 		}
 		addStack();
 	}
-	@Override public void visitConstant(Expression.Constant constant){
-		writeObj(constant.constant);
+	@Override public void visitStaticConstant(Expression.StaticConstant staticConstant){
+		writeObj(staticConstant.constant);
+	}
+	@Override public void visitDynamicConstant(Expression.DynamicConstant dynamicConstant){
+		Definition definition = getDefinition(dynamicConstant.name);
+		if(definition==null) error("No constant defined with name '"+dynamicConstant.name+"'");
+		if(definition.constant) error("Expected dynamic constant");
+		write(Inst.GET_VARIABLE);
+		write(definition.varId);
+		addStack();
 	}
 	@Override public void visitConstruct(Expression.Construct construct){
 		write(Inst.NEW);

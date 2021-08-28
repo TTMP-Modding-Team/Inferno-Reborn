@@ -7,12 +7,18 @@ import ttmp.wtf.WtfScriptEngine;
 import ttmp.wtf.definitions.InitDefinition;
 import ttmp.wtf.definitions.initializer.Initializer;
 import ttmp.wtf.exceptions.WtfEvalException;
+import ttmp.wtf.exceptions.WtfException;
 import ttmp.wtf.exceptions.WtfNoFunctionException;
 import ttmp.wtf.exceptions.WtfNoPropertyException;
 import ttmp.wtf.obj.Bundle;
 import ttmp.wtf.obj.Range;
 
+import javax.annotation.Nullable;
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.function.Function;
 
 public class WtfExecutor{ // TODO needs global constants, probably needs to be put on bottom of the stack before root init
 	private final WtfScriptEngine engine;
@@ -24,12 +30,41 @@ public class WtfExecutor{ // TODO needs global constants, probably needs to be p
 
 	private int ip;
 
-	public WtfExecutor(WtfScriptEngine engine, WtfScript script){
+	public WtfExecutor(WtfScriptEngine engine, WtfScript script, @Nullable Function<String, Object> dynamicConstantProvider){
 		this.engine = engine;
 		this.script = script;
 
 		this.stack = new Object[script.getMaxStack()];
 		this.variable = new Object[script.getVariables()];
+
+		if(!script.getDynamicConstants().isEmpty()){
+			if(dynamicConstantProvider==null) throwDynamicConstantError(script.getDynamicConstants().keySet().toArray(new String[0]), new String[0]);
+			else{
+				List<String> missing = null, wrongType = null;
+				for(Map.Entry<String, DynamicConstantInfo> e : script.getDynamicConstants().entrySet()){
+					Object o = dynamicConstantProvider.apply(e.getKey());
+					if(o==null){
+						if(missing==null) missing = new ArrayList<>();
+						missing.add(e.getKey());
+					}else if(!e.getValue().getConstantType().isInstance(o)){
+						if(wrongType==null) wrongType = new ArrayList<>();
+						wrongType.add(e.getKey());
+					}else variable[e.getValue().getVarId()] = o;
+				}
+				if(missing!=null||wrongType!=null) throwDynamicConstantError(
+						missing!=null ? missing.toArray(new String[0]) : new String[0],
+						wrongType!=null ? wrongType.toArray(new String[0]) : new String[0]);
+			}
+		}
+	}
+
+	private void throwDynamicConstantError(String[] missing, String[] wrongType){
+		if(missing.length==0){
+			if(wrongType.length==0) throw new RuntimeException("I mean... Nothing wrong with it??");
+			else throw new WtfException(wrongType.length+" provided dynamic constant doesn't match type specified at compile ("+String.join(", ", wrongType)+")");
+		}else if(wrongType.length==0) throw new WtfException(missing.length+" constants are not provided ("+String.join(", ", missing)+")");
+		else throw new WtfException(missing.length+" constants are not provided ("+String.join(", ", missing)+"), "+
+					wrongType.length+" provided dynamic constant doesn't match type specified at compile ("+String.join(", ", wrongType)+")");
 	}
 
 	public WtfScriptEngine getEngine(){

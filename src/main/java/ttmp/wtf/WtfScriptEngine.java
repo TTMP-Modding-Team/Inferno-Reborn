@@ -3,14 +3,18 @@ package ttmp.wtf;
 import com.google.common.collect.ImmutableMap;
 import ttmp.wtf.definitions.InitDefinition;
 import ttmp.wtf.definitions.StandardDefinitions;
+import ttmp.wtf.definitions.initializer.Initializer;
 import ttmp.wtf.exceptions.WtfCompileException;
+import ttmp.wtf.internal.WtfExecutor;
 import ttmp.wtf.internal.compiler.WtfCompiler;
 
 import javax.annotation.Nullable;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Random;
 import java.util.function.Consumer;
+import java.util.function.Function;
 
 /**
  * It's an engine.
@@ -53,8 +57,12 @@ public class WtfScriptEngine{
 	}
 
 	@Nullable public WtfScript tryCompile(String script, ErrorHandler<WtfCompileException> compileExceptionHandler){
+		return tryCompile(script, CompileContext.DEFAULT, compileExceptionHandler);
+	}
+
+	@Nullable public WtfScript tryCompile(String script, CompileContext context, ErrorHandler<WtfCompileException> compileExceptionHandler){
 		try{
-			return compile(script);
+			return compile(script, context);
 		}catch(WtfCompileException ex){
 			compileExceptionHandler.handle(ex, this, script);
 			return null;
@@ -63,10 +71,16 @@ public class WtfScriptEngine{
 
 	/**
 	 * @throws WtfCompileException on compile error
-	 *
 	 */
 	public WtfScript compile(String script){
-		return new WtfCompiler(script).parseAndCompile();
+		return compile(script, CompileContext.DEFAULT);
+	}
+
+	/**
+	 * @throws WtfCompileException on compile error
+	 */
+	public WtfScript compile(String script, CompileContext context){
+		return new WtfCompiler(script, context).parseAndCompile();
 	}
 
 	/**
@@ -78,5 +92,13 @@ public class WtfScriptEngine{
 	}
 	public Random getRandom(){
 		return random!=null ? random : DEFAULT_RANDOM;
+	}
+
+	public Object execute(WtfScript script, Initializer<?> initializer){
+		return execute(script, initializer, null);
+	}
+
+	public Object execute(WtfScript script, Initializer<?> initializer, @Nullable Function<String, Object> dynamicConstantProvider){
+		return new WtfExecutor(this, Objects.requireNonNull(script), dynamicConstantProvider).execute(initializer);
 	}
 }

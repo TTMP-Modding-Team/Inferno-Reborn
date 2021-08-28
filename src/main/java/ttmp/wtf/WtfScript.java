@@ -1,25 +1,36 @@
 package ttmp.wtf;
 
+import com.google.common.collect.ImmutableMap;
 import com.google.common.primitives.Shorts;
+import ttmp.wtf.internal.DynamicConstantInfo;
 import ttmp.wtf.internal.Inst;
 import ttmp.wtf.internal.Lines;
 
 import java.util.Locale;
+import java.util.Map;
 
 public final class WtfScript{
 	private final byte[] inst;
 	private final Object[] objects;
 	private final String[] identifiers;
+	private final Map<String, DynamicConstantInfo> dynamicConstants;
 
 	private final int variables;
 	private final int maxStack;
 
 	private final Lines lines;
 
-	public WtfScript(byte[] inst, Object[] objects, String[] identifiers, int variables, int maxStack, Lines lines){
+	public WtfScript(byte[] inst,
+	                 Object[] objects,
+	                 String[] identifiers,
+	                 Map<String, DynamicConstantInfo> dynamicConstants,
+	                 int variables,
+	                 int maxStack,
+	                 Lines lines){
 		this.inst = inst;
 		this.objects = objects;
 		this.identifiers = identifiers;
+		this.dynamicConstants = ImmutableMap.copyOf(dynamicConstants);
 		this.variables = variables;
 		this.maxStack = maxStack;
 		this.lines = lines;
@@ -43,6 +54,10 @@ public final class WtfScript{
 	}
 	public String getIdentifier(int at){
 		return identifiers[at];
+	}
+
+	public Map<String, DynamicConstantInfo> getDynamicConstants(){
+		return dynamicConstants;
 	}
 
 	public int getVariables(){
