@@ -12,8 +12,8 @@ import ttmp.infernoreborn.contents.ModEffects;
 
 import java.util.List;
 
-public class ItemThanatosBelt extends Item implements ICurioItem{
-	public ItemThanatosBelt(Properties properties){
+public class ThanatosBeltItem extends Item implements ICurioItem{
+	public ThanatosBeltItem(Properties properties){
 		super(properties);
 	}
 /*

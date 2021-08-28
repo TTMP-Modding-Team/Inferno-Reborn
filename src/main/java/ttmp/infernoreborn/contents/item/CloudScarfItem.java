@@ -17,15 +17,16 @@ import top.theillusivec4.curios.api.type.capability.ICurioItem;
 
 import java.util.UUID;
 
-public class ItemCloudScarf extends Item implements ICurioItem{
+public class CloudScarfItem extends Item implements ICurioItem{
 	private static final UUID MOVEMENT_SPEED_UUID = UUID.fromString("0eed5b47-e0c2-4653-9f36-128db5d39ffe");
 
-	public ItemCloudScarf(Properties properties){
+	public CloudScarfItem(Properties properties){
 		super(properties);
 	}
 
 	@Override public void curioTick(String identifier, int index, LivingEntity livingEntity, ItemStack stack){
 		Vector3d movement = livingEntity.getDeltaMovement();
+
 		if(!livingEntity.isCrouching()&&movement.y<=0.75&&isBlockFlyableBelow(livingEntity, 4.0)){
 			double velocity = (-movement.y+4)/20;
 			if(velocity>0) livingEntity.setDeltaMovement(movement.x, velocity, movement.z);

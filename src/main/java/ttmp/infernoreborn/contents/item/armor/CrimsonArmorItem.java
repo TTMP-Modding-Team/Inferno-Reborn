@@ -17,11 +17,11 @@ public class CrimsonArmorItem extends ArmorItem{
 		@Override public int getDurabilityForSlot(EquipmentSlotType slotType){
 			switch(slotType){
 				case FEET:
-					return 37*13;
+					return 481;
 				case LEGS:
-					return 37*15;
+					return 555;
 				case CHEST:
-					return 37*16;
+					return 272;
 				default:
 					return 0;
 			}

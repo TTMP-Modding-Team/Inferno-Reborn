@@ -17,11 +17,11 @@ public class BerserkerArmorItem extends ArmorItem{
 		@Override public int getDurabilityForSlot(EquipmentSlotType slotType){
 			switch(slotType){
 				case LEGS:
-					return 45*15;
+					return 675;
 				case CHEST:
-					return 45*16;
+					return 720;
 				default:
-					return 45*13;
+					return 585;
 			}
 		}
 		@Override public int getDefenseForSlot(EquipmentSlotType slotType){
