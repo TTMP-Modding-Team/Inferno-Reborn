@@ -1,1 +1,1 @@
-python uid.py|clip
+python cuid.py

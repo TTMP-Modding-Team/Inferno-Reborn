@@ -30,6 +30,8 @@ import ttmp.infernoreborn.contents.item.ability.GeneratorAbilityItem;
 import ttmp.infernoreborn.contents.item.ability.RandomAbilityItem;
 import ttmp.infernoreborn.contents.item.armor.BerserkerArmorItem;
 import ttmp.infernoreborn.contents.item.armor.CrimsonArmorItem;
+import ttmp.infernoreborn.contents.item.armor.ThanatosHeavyArmorItem;
+import ttmp.infernoreborn.contents.item.armor.ThanatosLightArmorItem;
 import ttmp.infernoreborn.util.EssenceSize;
 import ttmp.infernoreborn.util.EssenceType;
 
@@ -110,6 +112,16 @@ public final class ModItems{
 	public static final RegistryObject<Item> BERSERKER_LEGGINGS = REGISTER.register("berserker_leggings", () -> new BerserkerArmorItem(EquipmentSlotType.LEGS, artifacts(Rarity.UNCOMMON)));
 	public static final RegistryObject<Item> BERSERKER_BOOTS = REGISTER.register("berserker_boots", () -> new BerserkerArmorItem(EquipmentSlotType.FEET, artifacts(Rarity.UNCOMMON)));
 
+	public static final RegistryObject<Item> THANATOS_LIGHT_HELMET = REGISTER.register("thanatos_light_helmet", () -> new ThanatosLightArmorItem(EquipmentSlotType.HEAD, artifacts(Rarity.RARE)));
+	public static final RegistryObject<Item> THANATOS_LIGHT_CHESTPLATE = REGISTER.register("thanatos_light_chestplate", () -> new ThanatosLightArmorItem(EquipmentSlotType.CHEST, artifacts(Rarity.RARE)));
+	public static final RegistryObject<Item> THANATOS_LIGHT_LEGGINGS = REGISTER.register("thanatos_light_leggings", () -> new ThanatosLightArmorItem(EquipmentSlotType.LEGS, artifacts(Rarity.RARE)));
+	public static final RegistryObject<Item> THANATOS_LIGHT_BOOTS = REGISTER.register("thanatos_light_boots", () -> new ThanatosLightArmorItem(EquipmentSlotType.FEET, artifacts(Rarity.RARE)));
+
+	public static final RegistryObject<Item> THANATOS_HEAVY_HELMET = REGISTER.register("thanatos_heavy_helmet", () -> new ThanatosHeavyArmorItem(EquipmentSlotType.HEAD, artifacts(Rarity.RARE)));
+	public static final RegistryObject<Item> THANATOS_HEAVY_CHESTPLATE = REGISTER.register("thanatos_heavy_chestplate", () -> new ThanatosHeavyArmorItem(EquipmentSlotType.CHEST, artifacts(Rarity.RARE)));
+	public static final RegistryObject<Item> THANATOS_HEAVY_LEGGINGS = REGISTER.register("thanatos_heavy_leggings", () -> new ThanatosHeavyArmorItem(EquipmentSlotType.LEGS, artifacts(Rarity.RARE)));
+	public static final RegistryObject<Item> THANATOS_HEAVY_BOOTS = REGISTER.register("thanatos_heavy_boots", () -> new ThanatosHeavyArmorItem(EquipmentSlotType.FEET, artifacts(Rarity.RARE)));
+
 	public static final RegistryObject<Item> BLOOD_ESSENCE_SHARD = essence(EssenceType.BLOOD, EssenceSize.SHARD);
 	public static final RegistryObject<Item> BLOOD_ESSENCE_CRYSTAL = essence(EssenceType.BLOOD, EssenceSize.CRYSTAL);
 	public static final RegistryObject<Item> GREATER_BLOOD_ESSENCE_CRYSTAL = essence(EssenceType.BLOOD, EssenceSize.GREATER_CRYSTAL);
@@ -150,6 +162,9 @@ public final class ModItems{
 	public static final RegistryObject<Item> DAMASCUS_STEEL_INGOT = REGISTER.register("damascus_steel_ingot", () -> new Item(materials(Rarity.UNCOMMON)));
 	public static final RegistryObject<Item> DAMASCUS_STEEL_NUGGET = REGISTER.register("damascus_steel_nugget", () -> new Item(materials(Rarity.UNCOMMON)));
 	public static final RegistryObject<BlockItem> DAMASCUS_STEEL_BLOCK = REGISTER.register("damascus_steel_block", () -> new BlockItem(ModBlocks.DAMASCUS_STEEL_BLOCK.get(), materials(Rarity.UNCOMMON)));
+
+	public static final RegistryObject<Item> DEATH_INFUSED_LEATHER = REGISTER.register("death_infused_leather", () -> new Item(materials(Rarity.RARE)));
+	public static final RegistryObject<Item> DEATH_INFUSED_INGOT = REGISTER.register("death_infused_ingot", () -> new Item(materials(Rarity.RARE)));
 
 	public static final RegistryObject<Item> ACCELERATION_RUNE = REGISTER.register("acceleration_rune", () -> new Item(materials()));
 

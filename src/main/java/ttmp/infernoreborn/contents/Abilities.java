@@ -4,10 +4,12 @@ import net.minecraft.enchantment.ThornsEnchantment;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.MobEntity;
 import net.minecraft.entity.ai.attributes.AttributeModifier.Operation;
 import net.minecraft.entity.ai.attributes.Attributes;
 import net.minecraft.entity.effect.LightningBoltEntity;
 import net.minecraft.entity.item.ItemEntity;
+import net.minecraft.entity.monster.MagmaCubeEntity;
 import net.minecraft.entity.monster.SlimeEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.projectile.PotionEntity;
@@ -518,24 +520,25 @@ public final class Abilities{
 			new Ability(new Ability.Properties(0x7A00D0, 0x7A00D0)));
 	public static final RegistryObject<Ability> ARROW_RUSH = REGISTER.register("arrow_rush", () ->
 			new Ability(new Ability.Properties(0x7A00D0, 0x7A00D0)));
-	public static final RegistryObject<Ability> TAILWIND = REGISTER.register("tailwind", () ->
-			new Ability(new Ability.Properties(0xC0E4FF, 0xC0E4FF)));
-	public static final RegistryObject<Ability> HEADWIND = REGISTER.register("headwind", () ->
-			new Ability(new Ability.Properties(0xC0E4FF, 0xC0E4FF)));
 	public static final RegistryObject<Ability> CONDITIONAL_REFLEX = REGISTER.register("conditional_reflex", () ->
 			new Ability(new Ability.Properties(0x0, 0x0)
 					.withCooldownTicket((ticket, properties) -> properties.onAttacked((entity, holder, event) -> {
 						LivingEntity target = LivingUtils.getTarget(entity);
-						if(target!=null){
+						if (target != null) {
 							holder.cooldown().setGlobalDelay(5);
 							holder.cooldown().set(ticket, 5);
 							entity.doHurtTarget(target);
 						}
 					})).addAttribute(Attributes.ATTACK_DAMAGE, "9ff4653e-cd0e-48d1-b2ac-1627ae0f5700", 3, Operation.ADDITION)));
 	public static final RegistryObject<Ability> MAGMABLOOD = REGISTER.register("magmablood", () ->
-			new Ability(new Ability.Properties(0x400000, 0x400000)));
-	public static final RegistryObject<Ability> PYROMANIA = REGISTER.register("pyromania", () ->
-			new Ability(new Ability.Properties(0xD94F00, 0xD94F00)));
+			new Ability(new Ability.Properties(0x400000, 0x400000)
+					.onAttacked((entity, holder, event) -> {
+						World world = entity.level;
+						MagmaCubeEntity magmaCube = new MagmaCubeEntity(EntityType.MAGMA_CUBE, world);
+						magmaCube.setPos(entity.getX(), entity.getY(), entity.getZ());
+						magmaCube.setTarget((LivingEntity) event.getSource().getEntity());
+						world.addFreshEntity(magmaCube);
+					})));
 	public static final RegistryObject<Ability> GUNPOWDER_SWARM = REGISTER.register("gunpowder_swarm", () ->
 			new Ability(new Ability.Properties(0x00C800, 0x00C800)
 					.addTargetedSkill(10, 100, (entity, holder, target) -> {
@@ -561,37 +564,38 @@ public final class Abilities{
 						}
 					}).onHit((entity, holder, event) -> {
 						Entity directEntity = event.getSource().getDirectEntity();
-						if(entity==directEntity){
+						if (entity == directEntity) {
 							LivingUtils.addStackEffect(event.getEntityLiving(), ModEffects.KILLER_QUEEN.get(), 600, 0, 1, 127);
-						}else if(directEntity!=null&&event.getSource().isProjectile()){
+						} else if (directEntity != null && event.getSource().isProjectile()) {
 							entity.level.explode(entity, new LivingOnlyEntityDamageSource("explosion.player", directEntity, entity).setExplosion(),
 									null, directEntity.getX(), directEntity.getY(), directEntity.getZ(), 1.5f, false, Explosion.Mode.NONE);
 							directEntity.kill();
 						}
 					}).onAttacked((entity, holder, event) -> {
-						if(event.getSource().isExplosion()) event.setCanceled(true);
+						if (event.getSource().isExplosion()) event.setCanceled(true);
 					}).addAttribute(ModAttributes.DAMAGE_RESISTANCE.get(), "ec33a2c7-5757-413a-9a79-51d507d068aa", 0.15, Operation.MULTIPLY_BASE)));
 	public static final RegistryObject<Ability> DIABOLO = REGISTER.register("diabolo", () ->
-			new Ability(new Ability.Properties(0x4B0000, 0x4B0000)));
-	public static final RegistryObject<Ability> SERVANT = REGISTER.register("servant", () ->
-			new Ability(new Ability.Properties(0x480072, 0x480072)));
-	public static final RegistryObject<Ability> BROODLING = REGISTER.register("broodling", () ->
-			new Ability(new Ability.Properties(0x480072, 0x480072)));
-	public static final RegistryObject<Ability> GER = REGISTER.register("ger", () ->
-			new Ability(new Ability.Properties(0xFFFF19, 0xFFFF19)));
-	public static final RegistryObject<Ability> LEAVE_ME_ALONE = REGISTER.register("leave_me_alone", () ->
-			new Ability(new Ability.Properties(0xC0E4FF, 0xC0E4FF)));
-	public static final RegistryObject<Ability> BLACK_HOLE = REGISTER.register("black_hole", () ->
-			new Ability(new Ability.Properties(0x191919, 0x191919)));
+			new Ability(new Ability.Properties(0x4B0000, 0x4B0000)
+					.addSkill(10, 600, (entity, holder) -> {
+						List<Entity> entityList = entity.level.getEntities(entity, entity.getBoundingBox().inflate(6).inflate(-6), e -> {
+							if (e instanceof LivingEntity)
+								return !(e instanceof MobEntity);
+							return false;
+						});
+						for (Entity e : entityList)
+							if (!((LivingEntity) e).addEffect(new EffectInstance(ModEffects.FEAR.get(), 300)))
+								return false;
+						return entity.addEffect(new EffectInstance(ModEffects.DIABOLO.get(), 600));
+					})));
 	public static final RegistryObject<Ability> TOUCH_OF_MIDAS = REGISTER.register("touch_of_midas", () ->
 			new Ability(new Ability.Properties(0xFDF55F, 0xDD9515)
 					.onHit((entity, holder, event) -> {
-						if(entity!=event.getSource().getDirectEntity()) return;
+						if (entity != event.getSource().getDirectEntity()) return;
 						LivingEntity target = event.getEntityLiving();
 						LivingUtils.addStackEffect(target, ModEffects.HAND_OF_MIDAS.get(), 100, 0, 1, 127);
 						EffectInstance effect = target.getEffect(ModEffects.HAND_OF_MIDAS.get());
-						if(effect!=null&&target.getHealth()<=effect.getAmplifier()+1){
-							if(target.hurt(LivingUtils.midasDamage(entity), Float.MAX_VALUE)){
+						if (effect != null && target.getHealth() <= effect.getAmplifier() + 1) {
+							if (target.hurt(LivingUtils.midasDamage(entity), Float.MAX_VALUE)) {
 								target.level.addFreshEntity(new ItemEntity(target.level,
 										target.getRandomX(1),
 										target.getRandomY(),
