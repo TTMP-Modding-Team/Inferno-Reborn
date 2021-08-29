@@ -65,6 +65,7 @@ import ttmp.infernoreborn.datagen.AbilityGeneratorDataProvider;
 import ttmp.infernoreborn.datagen.BlockModelGen;
 import ttmp.infernoreborn.datagen.BlockTagGen;
 import ttmp.infernoreborn.datagen.BookDataProvider;
+import ttmp.infernoreborn.datagen.InfernalTypeDataProvider;
 import ttmp.infernoreborn.datagen.ItemModelGen;
 import ttmp.infernoreborn.datagen.ItemTagGen;
 import ttmp.infernoreborn.datagen.LootModifierGen;
@@ -143,6 +144,7 @@ public class InfernoReborn{
 			generator.addProvider(new ItemTagGen(event.getGenerator(), blockTagGen, event.getExistingFileHelper()));
 			generator.addProvider(new LootModifierGen(event.getGenerator()));
 			generator.addProvider(new LootTableGen(event.getGenerator()));
+			generator.addProvider(new InfernalTypeDataProvider(event.getGenerator()));
 		}
 		if(event.includeClient()){
 			generator.addProvider(new ItemModelGen(event.getGenerator(), event.getExistingFileHelper()));

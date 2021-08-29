@@ -1,4 +1,4 @@
-package ttmp.infernoreborn.contents.ability.generator.scheme;
+package ttmp.infernoreborn.infernaltype;
 
 import com.google.gson.JsonObject;
 import net.minecraft.network.PacketBuffer;

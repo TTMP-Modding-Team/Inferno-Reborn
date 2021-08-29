@@ -3,6 +3,8 @@ package ttmp.infernoreborn.contents.ability.generator.scheme;
 import com.google.gson.JsonObject;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.ResourceLocation;
+import ttmp.infernoreborn.infernaltype.ItemDisplay;
+import ttmp.infernoreborn.infernaltype.SpecialEffect;
 
 import javax.annotation.Nullable;
 import java.util.Objects;

@@ -1,0 +1,5 @@
+Weight: 5
+
+Abilities: {
+    debug "Uh hello sir, hi how are you"
+}

@@ -18,8 +18,8 @@ import ttmp.infernoreborn.contents.ability.generator.node.action.Give;
 import ttmp.infernoreborn.contents.ability.generator.node.condition.RollCondition;
 import ttmp.infernoreborn.contents.ability.generator.node.variable.RangedInteger;
 import ttmp.infernoreborn.contents.ability.generator.scheme.AbilityGeneratorScheme;
-import ttmp.infernoreborn.contents.ability.generator.scheme.ItemDisplay;
-import ttmp.infernoreborn.contents.ability.generator.scheme.SpecialEffect;
+import ttmp.infernoreborn.infernaltype.ItemDisplay;
+import ttmp.infernoreborn.infernaltype.SpecialEffect;
 import ttmp.infernoreborn.util.WeightedPool;
 
 import java.io.IOException;

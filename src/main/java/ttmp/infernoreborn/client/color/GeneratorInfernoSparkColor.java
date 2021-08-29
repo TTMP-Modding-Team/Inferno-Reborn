@@ -3,7 +3,7 @@ package ttmp.infernoreborn.client.color;
 import net.minecraft.client.renderer.color.IItemColor;
 import net.minecraft.item.ItemStack;
 import ttmp.infernoreborn.contents.ability.generator.scheme.AbilityGeneratorScheme;
-import ttmp.infernoreborn.contents.ability.generator.scheme.ItemDisplay;
+import ttmp.infernoreborn.infernaltype.ItemDisplay;
 import ttmp.infernoreborn.contents.item.ability.GeneratorAbilityItem;
 
 public class GeneratorInfernoSparkColor implements IItemColor{
