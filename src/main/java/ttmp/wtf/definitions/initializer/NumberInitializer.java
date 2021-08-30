@@ -10,11 +10,11 @@ public class NumberInitializer implements Initializer<Double>{
 		this.value = defaultValue;
 	}
 
-	@Override public void apply(WtfExecutor interpreter, Object o){
-		this.value = interpreter.expectNumber(o);
+	@Override public void apply(WtfExecutor executor, Object o){
+		this.value = executor.expectNumber(o);
 	}
 
-	@Override public Double finish(WtfExecutor interpreter){
+	@Override public Double finish(WtfExecutor executor){
 		return value;
 	}
 }

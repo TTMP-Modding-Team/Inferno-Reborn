@@ -8,11 +8,11 @@ import java.util.Set;
 public class SetInitializer implements Initializer<Set<Object>>{
 	private final Set<Object> set = new HashSet<>();
 
-	@Override public void apply(WtfExecutor interpreter, Object o){
+	@Override public void apply(WtfExecutor executor, Object o){
 		set.add(o);
 	}
 
-	@Override public Set<Object> finish(WtfExecutor interpreter){
+	@Override public Set<Object> finish(WtfExecutor executor){
 		return set;
 	}
 }

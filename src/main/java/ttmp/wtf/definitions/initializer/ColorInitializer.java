@@ -23,7 +23,7 @@ public class ColorInitializer implements Initializer<RGB>{
 		this.blue = rgb.getBlue()/255.0;
 	}
 
-	@Override public Object getPropertyValue(WtfExecutor interpreter, String property){
+	@Override public Object getPropertyValue(WtfExecutor executor, String property){
 		switch(property){
 			case "Red":
 				return red;
@@ -32,26 +32,26 @@ public class ColorInitializer implements Initializer<RGB>{
 			case "Blue":
 				return blue;
 			default:
-				return interpreter.noPropertyError(property);
+				return executor.noPropertyError(property);
 		}
 	}
-	@Override public void setPropertyValue(WtfExecutor interpreter, String property, Object o){
+	@Override public void setPropertyValue(WtfExecutor executor, String property, Object o){
 		switch(property){
 			case "Red":
-				red = interpreter.expectNumber(o);
+				red = executor.expectNumber(o);
 				break;
 			case "Green":
-				green = interpreter.expectNumber(o);
+				green = executor.expectNumber(o);
 				break;
 			case "Blue":
-				blue = interpreter.expectNumber(o);
+				blue = executor.expectNumber(o);
 				break;
 			default:
-				interpreter.noPropertyError(property);
+				executor.noPropertyError(property);
 				break;
 		}
 	}
-	@Nullable @Override public Initializer<?> setPropertyValueLazy(WtfExecutor interpreter, String property, int codepoint){
+	@Nullable @Override public Initializer<?> setPropertyValueLazy(WtfExecutor executor, String property, int codepoint){
 		switch(property){
 			case "Red":
 				return new NumberInitializer(red);
@@ -60,15 +60,15 @@ public class ColorInitializer implements Initializer<RGB>{
 			case "Blue":
 				return new NumberInitializer(blue);
 			default:
-				return interpreter.noPropertyError(property);
+				return executor.noPropertyError(property);
 		}
 	}
 
-	@Override public void apply(WtfExecutor interpreter, Object o){
-		set(interpreter.expectType(RGB.class, o));
+	@Override public void apply(WtfExecutor executor, Object o){
+		set(executor.expectType(RGB.class, o));
 	}
 
-	@Override public RGB finish(WtfExecutor interpreter){
+	@Override public RGB finish(WtfExecutor executor){
 		return new RGB((int)(red*255), (int)(green*255), (int)(blue*255));
 	}
 }

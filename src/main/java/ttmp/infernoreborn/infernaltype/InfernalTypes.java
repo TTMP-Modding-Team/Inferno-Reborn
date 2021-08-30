@@ -21,6 +21,7 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import org.apache.commons.io.IOUtils;
 import ttmp.infernoreborn.InfernoReborn;
+import ttmp.infernoreborn.infernaltype.wtf.ChooseAbilityInitializer;
 import ttmp.wtf.CompileContext;
 import ttmp.wtf.WtfScript;
 import ttmp.wtf.WtfScriptEngine;
@@ -42,7 +43,8 @@ import static ttmp.infernoreborn.InfernoReborn.MODID;
 public final class InfernalTypes{
 	private InfernalTypes(){}
 
-	private static final WtfScriptEngine ENGINE = new WtfScriptEngine();
+	private static final WtfScriptEngine ENGINE = new WtfScriptEngine()
+			.addType("Choose", ChooseAbilityInitializer::new);
 	private static final CompileContext COMPILE_CONTEXT = CompileContext.builder()
 			.addDynamicConstant("EntityType", ResourceLocation.class)
 			.build();

@@ -6,6 +6,7 @@ import org.junit.jupiter.api.DynamicTest;
 import org.junit.jupiter.api.TestFactory;
 import org.junit.jupiter.api.function.Executable;
 import ttmp.wtf.CompileContext;
+import ttmp.wtf.EvalContext;
 import ttmp.wtf.WtfScript;
 import ttmp.wtf.WtfScriptEngine;
 import ttmp.wtf.definitions.initializer.AssertInitializer;
@@ -23,7 +24,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
-import java.util.function.Function;
 import java.util.function.Supplier;
 
 public class WtfScriptTest{
@@ -134,19 +134,19 @@ public class WtfScriptTest{
 	}
 
 	private Executable runTest(WtfScriptEngine engine, String filename){
-		return runTest(engine, filename, CompileContext.DEFAULT, null);
+		return runTest(engine, filename, CompileContext.DEFAULT, EvalContext.DEFAULT);
 	}
 	private Executable runTest(WtfScriptEngine engine, String filename, @Nullable Supplier<Initializer<?>> initializer){
-		return runTest(engine, filename, CompileContext.DEFAULT, initializer, null);
+		return runTest(engine, filename, CompileContext.DEFAULT, EvalContext.DEFAULT, initializer);
 	}
-	private Executable runTest(WtfScriptEngine engine, String filename, CompileContext context, @Nullable Function<String, Object> dynamicConstantProvider){
-		return runTest(engine, filename, context, null, dynamicConstantProvider);
+	private Executable runTest(WtfScriptEngine engine, String filename, CompileContext compileContext, EvalContext evalContext){
+		return runTest(engine, filename, compileContext, evalContext, null);
 	}
-	private Executable runTest(WtfScriptEngine engine, String filename, CompileContext context, @Nullable Supplier<Initializer<?>> initializer, @Nullable Function<String, Object> dynamicConstantProvider){
+	private Executable runTest(WtfScriptEngine engine, String filename, CompileContext compileContext, EvalContext evalContext, @Nullable Supplier<Initializer<?>> initializer){
 		return () -> {
-			WtfScript script = engine.tryCompile(readScript(filename), context, this::logAndError);
+			WtfScript script = engine.tryCompile(readScript(filename), compileContext, this::logAndError);
 			long t = System.currentTimeMillis();
-			engine.execute(Objects.requireNonNull(script), initializer==null ? Initializer.EMPTY : initializer.get(), dynamicConstantProvider);
+			engine.execute(Objects.requireNonNull(script), initializer==null ? Initializer.EMPTY : initializer.get(), evalContext);
 			System.out.println("Execution took "+(System.currentTimeMillis()-t)+" ms.");
 		};
 	}
@@ -154,8 +154,8 @@ public class WtfScriptTest{
 	private Executable operationTest(WtfScriptEngine engine, String filename, Object... expectedValues){
 		return runTest(engine, filename, () -> new TestInitializer(expectedValues));
 	}
-	private Executable operationTest(WtfScriptEngine engine, String filename, CompileContext context, @Nullable Function<String, Object> dynamicConstantProvider, Object... expectedValues){
-		return runTest(engine, filename, context, () -> new TestInitializer(expectedValues), dynamicConstantProvider);
+	private Executable operationTest(WtfScriptEngine engine, String filename, CompileContext compileContext, EvalContext evalContext, Object... expectedValues){
+		return runTest(engine, filename, compileContext, evalContext, () -> new TestInitializer(expectedValues));
 	}
 
 	private Executable assertTest(WtfScriptEngine engine, String filename){

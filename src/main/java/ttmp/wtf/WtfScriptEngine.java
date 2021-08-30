@@ -9,12 +9,14 @@ import ttmp.wtf.internal.WtfExecutor;
 import ttmp.wtf.internal.compiler.WtfCompiler;
 
 import javax.annotation.Nullable;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Random;
 import java.util.function.Consumer;
-import java.util.function.Function;
+
+import static ttmp.wtf.WtfScript.NAME_PATTERN;
 
 /**
  * It's an engine.
@@ -29,7 +31,7 @@ public class WtfScriptEngine{
 			.put("Set", StandardDefinitions.SET)
 			.build();
 
-	private final Map<String, InitDefinition<?>> knownTypes;
+	private final Map<String, InitDefinition<?>> knownTypes, knownTypesView;
 
 	@Nullable private Consumer<Object> printer;
 	@Nullable private Random random;
@@ -41,10 +43,24 @@ public class WtfScriptEngine{
 		knownTypes = includeDefaultDefinitions ?
 				new HashMap<>(DEFAULT_DEFINITIONS) :
 				new HashMap<>();
+		knownTypesView = Collections.unmodifiableMap(knownTypes);
 	}
 
 	public Map<String, InitDefinition<?>> getKnownTypes(){
-		return knownTypes;
+		return knownTypesView;
+	}
+
+	@Nullable public InitDefinition<?> getType(String name){
+		return knownTypes.get(name);
+	}
+
+	public <T> WtfScriptEngine addType(String name, InitDefinition<T> initDefinition){
+		Objects.requireNonNull(initDefinition);
+		if(!NAME_PATTERN.matcher(name).matches())
+			throw new IllegalArgumentException("Invalid type name "+name);
+		if(knownTypes.put(name, initDefinition)!=null)
+			throw new IllegalStateException("Type name '"+name+"' is already occupied");
+		return this;
 	}
 
 	public WtfScriptEngine setDebugPrinter(Consumer<Object> printer){
@@ -95,10 +111,10 @@ public class WtfScriptEngine{
 	}
 
 	public Object execute(WtfScript script, Initializer<?> initializer){
-		return execute(script, initializer, null);
+		return execute(script, initializer, EvalContext.DEFAULT);
 	}
 
-	public Object execute(WtfScript script, Initializer<?> initializer, @Nullable Function<String, Object> dynamicConstantProvider){
-		return new WtfExecutor(this, Objects.requireNonNull(script), dynamicConstantProvider).execute(initializer);
+	public Object execute(WtfScript script, Initializer<?> initializer, EvalContext context){
+		return new WtfExecutor(this, Objects.requireNonNull(script), context).execute(initializer);
 	}
 }

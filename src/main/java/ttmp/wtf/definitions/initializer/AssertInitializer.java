@@ -19,11 +19,11 @@ public class AssertInitializer implements Initializer<Boolean>{
 		this.errorIfFails = errorIfFails;
 	}
 
-	@Override public void apply(WtfExecutor interpreter, Object o){
-		if(!interpreter.expectBoolean(o)) failedLines.add(interpreter.getCurrentLine());
+	@Override public void apply(WtfExecutor executor, Object o){
+		if(!executor.expectBoolean(o)) failedLines.add(executor.getCurrentLine());
 	}
 
-	@Override public Boolean finish(WtfExecutor interpreter){
+	@Override public Boolean finish(WtfExecutor executor){
 		if(failedLines.isEmpty()) return true;
 		else if(errorIfFails){
 			StringBuilder b = new StringBuilder()

@@ -7,4 +7,9 @@ public class WtfEvalException extends WtfException{
 		super(message);
 		this.line = line;
 	}
+
+	public WtfEvalException(int line, String message, Throwable cause){
+		super(message, cause);
+		this.line = line;
+	}
 }

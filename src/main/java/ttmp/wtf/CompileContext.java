@@ -7,12 +7,11 @@ import javax.annotation.Nullable;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
-import java.util.regex.Pattern;
+
+import static ttmp.wtf.WtfScript.NAME_PATTERN;
 
 public final class CompileContext{
 	public static final CompileContext DEFAULT = builder().build();
-
-	private static final Pattern CONSTANT_NAME = Pattern.compile("[A-Za-z][A-Za-z0-9]*(?:\\.[A-Za-z][A-Za-z0-9]*)*");
 
 	private final Map<String, Object> staticConstants;
 	private final Map<String, Class<?>> dynamicConstants;
@@ -45,19 +44,19 @@ public final class CompileContext{
 
 		public Builder addStaticConstant(String id, Object object){
 			Objects.requireNonNull(object);
-			if(!CONSTANT_NAME.matcher(id).matches())
-				throw new WtfException("Invalid constant ID '"+id+"'");
+			if(!NAME_PATTERN.matcher(id).matches())
+				throw new IllegalArgumentException("Invalid constant ID '"+id+"'");
 			if(dynamicConstants.containsKey(id)||staticConstants.put(id, object)!=null)
-				throw new WtfException("Duplicated registration of constant with ID '"+id+"'");
+				throw new IllegalStateException("Duplicated registration of constant with ID '"+id+"'");
 			return this;
 		}
 
 		public Builder addDynamicConstant(String id, Class<?> type){
 			Objects.requireNonNull(type);
-			if(!CONSTANT_NAME.matcher(id).matches())
-				throw new WtfException("Invalid constant ID '"+id+"'");
+			if(!NAME_PATTERN.matcher(id).matches())
+				throw new IllegalArgumentException("Invalid constant ID '"+id+"'");
 			if(staticConstants.containsKey(id)||dynamicConstants.put(id, type)!=null)
-				throw new WtfException("Duplicated registration of constant with ID '"+id+"'");
+				throw new IllegalStateException("Duplicated registration of constant with ID '"+id+"'");
 			return this;
 		}
 

@@ -8,8 +8,11 @@ import ttmp.wtf.internal.Lines;
 
 import java.util.Locale;
 import java.util.Map;
+import java.util.regex.Pattern;
 
 public final class WtfScript{
+	public static final Pattern NAME_PATTERN = Pattern.compile("[A-Za-z_][A-Za-z0-9_]*(?:\\.[A-Za-z_][A-Za-z0-9_]*)*");
+
 	private final byte[] inst;
 	private final Object[] objects;
 	private final String[] identifiers;

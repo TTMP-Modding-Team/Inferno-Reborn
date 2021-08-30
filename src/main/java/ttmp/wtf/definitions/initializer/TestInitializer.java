@@ -29,15 +29,15 @@ public class TestInitializer implements Initializer<Boolean>{
 		}
 	}
 
-	@Override public void apply(WtfExecutor interpreter, Object o){
+	@Override public void apply(WtfExecutor executor, Object o){
 		int size = provided.size();
 		if(expectedValues.length>size) provided.add(o);
-		else interpreter.error("Too many values provided: "+size);
+		else executor.error("Too many values provided: "+size);
 	}
 
-	@Override public Boolean finish(WtfExecutor interpreter){
+	@Override public Boolean finish(WtfExecutor executor){
 		if(provided.size()!=expectedValues.length)
-			interpreter.error("Too few of values provided: "+provided.size());
+			executor.error("Too few of values provided: "+provided.size());
 		IntList wrongMatchIndices = new IntArrayList();
 		for(int i = 0; i<provided.size(); i++){
 			Object p = provided.get(i);

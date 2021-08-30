@@ -2,4 +2,33 @@ Weight: 5
 
 Abilities: {
     debug "Uh hello sir, hi how are you"
+
+    : <infernoreborn:a1>
+    : Choose {
+        : 10, <infernoreborn:heart1>
+        : 9, <infernoreborn:heart2>
+        : 8, <infernoreborn:heart3>
+        : 7, <infernoreborn:heart4>
+        : 6, <infernoreborn:heart5>
+        : 5, <infernoreborn:heart6>
+        : 4, <infernoreborn:heart7>
+        : 3, <infernoreborn:heart8>
+    }
+    repeat(4){
+        : Choose {
+            : <infernoreborn:boringability1>
+            : <infernoreborn:boringability2>
+            : <infernoreborn:boringability3>
+            : Choose {
+                : <infernoreborn:skin1>
+                : <infernoreborn:skin2>
+                : <infernoreborn:skin3>
+            }
+            : Choose {
+                : <infernoreborn:wind1>
+                : <infernoreborn:wind2>
+                : <infernoreborn:wind3>
+            }
+        }
+    }
 }

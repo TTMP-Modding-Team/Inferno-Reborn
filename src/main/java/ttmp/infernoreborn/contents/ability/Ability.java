@@ -14,6 +14,7 @@ import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import net.minecraftforge.registries.ForgeRegistryEntry;
 import ttmp.infernoreborn.util.EssenceType;
 import ttmp.infernoreborn.util.LivingUtils;
+import ttmp.infernoreborn.util.SomeAbility;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
@@ -24,7 +25,7 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.function.BiConsumer;
 
-public class Ability extends ForgeRegistryEntry<Ability>{
+public class Ability extends ForgeRegistryEntry<Ability> implements SomeAbility{
 	private final int primaryColor, secondaryColor, highlightColor;
 	private final Multimap<Attribute, AttributeModifier> attributes;
 	private final CooldownTicket[] cooldownTickets;
@@ -120,6 +121,10 @@ public class Ability extends ForgeRegistryEntry<Ability>{
 
 	@Override public String toString(){
 		return getUnlocalizedName();
+	}
+
+	@Override public Ability getAbility(){
+		return this;
 	}
 
 	public static final class Properties{

@@ -12,11 +12,11 @@ public class BoolInitializer implements Initializer<Boolean>{
 		this.value = defaultValue;
 	}
 
-	@Override public void apply(WtfExecutor interpreter, Object o){
-		value = interpreter.expectBoolean(o);
+	@Override public void apply(WtfExecutor executor, Object o){
+		value = executor.expectBoolean(o);
 	}
 
-	@Override public Boolean finish(WtfExecutor interpreter){
+	@Override public Boolean finish(WtfExecutor executor){
 		return value;
 	}
 }

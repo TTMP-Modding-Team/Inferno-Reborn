@@ -6,36 +6,36 @@ import javax.annotation.Nullable;
 
 @FunctionalInterface
 public interface Initializer<T>{
-	Initializer<Object> EMPTY = (WtfExecutor interpreter) -> Initializer.EMPTY;
+	Initializer<Object> EMPTY = (WtfExecutor executor) -> Initializer.EMPTY;
 
 	/**
 	 * Get property value associated with given property name. Error the shit out if there is no such property.
 	 */
-	default Object getPropertyValue(WtfExecutor interpreter, String property){
-		return interpreter.noPropertyError(property);
+	default Object getPropertyValue(WtfExecutor executor, String property){
+		return executor.noPropertyError(property);
 	}
 
 	/**
 	 * Set property value associated with given property name. Error the shit out if there is no such property.
 	 */
-	default void setPropertyValue(WtfExecutor interpreter, String property, Object o){
-		interpreter.noPropertyError(property);
+	default void setPropertyValue(WtfExecutor executor, String property, Object o){
+		executor.noPropertyError(property);
 	}
 
 	/**
 	 * Set property values associated with given property name - but lazily. Returning non-null initializer will make the property value evaluated instantly.
 	 * TODO should be able to store it, while controlling lazy initialization
 	 */
-	default @Nullable Initializer<?> setPropertyValueLazy(WtfExecutor interpreter, String property, int codepoint){
-		return interpreter.noPropertyError(property);
+	default @Nullable Initializer<?> setPropertyValueLazy(WtfExecutor executor, String property, int codepoint){
+		return executor.noPropertyError(property);
 	}
 
 	/**
 	 * Apply. Exception if it doesn't accept.
 	 */
-	default void apply(WtfExecutor interpreter, Object o){
-		interpreter.noApplyFunctionError();
+	default void apply(WtfExecutor executor, Object o){
+		executor.noApplyFunctionError();
 	}
 
-	T finish(WtfExecutor interpreter);
+	T finish(WtfExecutor executor);
 }

@@ -11,19 +11,19 @@ import javax.annotation.Nullable;
 public class PrintInitializer implements Initializer<Object>{
 	public static final PrintInitializer INSTANCE = new PrintInitializer();
 
-	@Override public void setPropertyValue(WtfExecutor interpreter, String property, Object o){
+	@Override public void setPropertyValue(WtfExecutor executor, String property, Object o){
 		System.out.println("Property "+property+": "+o);
 	}
-	@Nullable @Override public Initializer<?> setPropertyValueLazy(WtfExecutor interpreter, String property, int codepoint){
+	@Nullable @Override public Initializer<?> setPropertyValueLazy(WtfExecutor executor, String property, int codepoint){
 		System.out.println("Lazy Property "+property+": "+codepoint);
 		return INSTANCE;
 	}
 
-	@Override public void apply(WtfExecutor interpreter, Object o){
+	@Override public void apply(WtfExecutor executor, Object o){
 		System.out.println(": "+o);
 	}
 
-	@Override public Object finish(WtfExecutor interpreter){
+	@Override public Object finish(WtfExecutor executor){
 		return INSTANCE;
 	}
 }

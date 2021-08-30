@@ -10,11 +10,11 @@ public class IntInitializer implements Initializer<Integer>{
 		this.value = defaultValue;
 	}
 
-	@Override public void apply(WtfExecutor interpreter, Object o){
-		this.value = (int)interpreter.expectNumber(o);
+	@Override public void apply(WtfExecutor executor, Object o){
+		this.value = (int)executor.expectNumber(o);
 	}
 
-	@Override public Integer finish(WtfExecutor interpreter){
+	@Override public Integer finish(WtfExecutor executor){
 		return value;
 	}
 }
