@@ -3,8 +3,8 @@ package ttmp.infernoreborn.network;
 import net.minecraft.network.PacketBuffer;
 import ttmp.infernoreborn.contents.Abilities;
 import ttmp.infernoreborn.contents.ability.Ability;
-import ttmp.infernoreborn.contents.ability.generator.AbilityGenerators;
-import ttmp.infernoreborn.contents.ability.generator.scheme.AbilityGeneratorScheme;
+import ttmp.infernoreborn.infernaltype.InfernalType;
+import ttmp.infernoreborn.infernaltype.InfernalTypes;
 
 import javax.annotation.Nullable;
 import java.util.LinkedHashSet;
@@ -18,17 +18,17 @@ public class SyncAbilityHolderMsg{
 			Ability ability = Abilities.getRegistry().getValue(buf.readVarInt());
 			if(ability!=null) set.add(ability);
 		}
-		return new SyncAbilityHolderMsg(entityId, set, buf.readBoolean() ? AbilityGenerators.findSchemeWithId(buf.readResourceLocation()) : null);
+		return new SyncAbilityHolderMsg(entityId, set, buf.readBoolean() ? InfernalTypes.get(buf.readResourceLocation()) : null);
 	}
 
 	private final int entityId;
 	private final Set<Ability> abilities;
-	@Nullable private final AbilityGeneratorScheme appliedGeneratorScheme;
+	@Nullable private final InfernalType appliedInfernalType;
 
-	public SyncAbilityHolderMsg(int entityId, Set<Ability> abilities, @Nullable AbilityGeneratorScheme appliedGeneratorScheme){
+	public SyncAbilityHolderMsg(int entityId, Set<Ability> abilities, @Nullable InfernalType appliedInfernalType){
 		this.entityId = entityId;
 		this.abilities = abilities;
-		this.appliedGeneratorScheme = appliedGeneratorScheme;
+		this.appliedInfernalType = appliedInfernalType;
 	}
 
 	public int getEntityId(){
@@ -37,8 +37,8 @@ public class SyncAbilityHolderMsg{
 	public Set<Ability> getAbilities(){
 		return abilities;
 	}
-	@Nullable public AbilityGeneratorScheme getAppliedGeneratorScheme(){
-		return appliedGeneratorScheme;
+	@Nullable public InfernalType getAppliedInfernalType(){
+		return appliedInfernalType;
 	}
 
 	public void write(PacketBuffer buf){
@@ -48,7 +48,7 @@ public class SyncAbilityHolderMsg{
 			int id = Abilities.getRegistry().getID(a);
 			if(id!=-1) buf.writeVarInt(id);
 		}
-		buf.writeBoolean(appliedGeneratorScheme!=null);
-		if(appliedGeneratorScheme!=null) buf.writeResourceLocation(appliedGeneratorScheme.getId());
+		buf.writeBoolean(appliedInfernalType!=null);
+		if(appliedInfernalType!=null) buf.writeResourceLocation(appliedInfernalType.getId());
 	}
 }

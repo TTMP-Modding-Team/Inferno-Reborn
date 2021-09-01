@@ -41,7 +41,7 @@ public class InfernoRebornJeiPlugin implements IModPlugin{
 	}
 	@Override public void registerItemSubtypes(ISubtypeRegistration registration){
 		registration.registerSubtypeInterpreter(ModItems.INFERNO_SPARK.get(), (stack, context) -> Arrays.toString(FixedAbilityItem.getAbilities(stack)));
-		registration.registerSubtypeInterpreter(ModItems.GENERATOR_INFERNO_SPARK.get(), (stack, context) -> String.valueOf(GeneratorAbilityItem.getGenerator(stack)));
+		registration.registerSubtypeInterpreter(ModItems.GENERATOR_INFERNO_SPARK.get(), (stack, context) -> String.valueOf(GeneratorAbilityItem.getType(stack)));
 		registration.registerSubtypeInterpreter(ModItems.SIGIL.get(), (stack, context) -> String.valueOf(SigilItem.getSigil(stack)));
 	}
 	@Override public void registerCategories(IRecipeCategoryRegistration registration){

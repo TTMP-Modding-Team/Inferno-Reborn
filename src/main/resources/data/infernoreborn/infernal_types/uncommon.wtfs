@@ -1,0 +1,58 @@
+Weight: 10
+
+Abilities: {
+    : Choose {
+        : 1, NoAbility
+        : 2, <infernoreborn:heart>
+        : 4, <infernoreborn:heart2>
+        : 8, <infernoreborn:heart3>
+        : 4, <infernoreborn:heart4>
+        : 2, <infernoreborn:heart5>
+        : 1, <infernoreborn:heart6>
+        : 1, <infernoreborn:heart7>
+    }
+    : Choose {
+        : 64, NoAbility
+        : 16, <infernoreborn:wood_skin>
+        : 16, <infernoreborn:rock_skin>
+        : 4, <infernoreborn:iron_skin>
+        : 1, <infernoreborn:diamond_skin>
+    }
+
+    repeat(2~8){
+        : Choose {
+            : <infernoreborn:bulletproof>
+            : <infernoreborn:vampire>
+            : <infernoreborn:crowd_control>
+            : <infernoreborn:survival_expert>
+            : <infernoreborn:the_brain>
+            : <infernoreborn:toughness>
+            : <infernoreborn:swiftness>
+            : <infernoreborn:eviolite_chansey>
+            : Choose {
+                : <infernoreborn:mud_skin>
+                : <infernoreborn:frozen_skin>
+                : <infernoreborn:woolly_skin>
+                : <infernoreborn:fuzzy_skin>
+                : <infernoreborn:thorn_skin>
+            }
+        }
+    }
+
+    if(Random{}){
+        repeat(1~2){
+            : Choose {
+                : <infernoreborn:destiny_bond>
+                : <infernoreborn:focus>
+                : <infernoreborn:guts>
+                : <infernoreborn:magma_skin>
+                : <infernoreborn:health_kit>
+                : <infernoreborn:telekinesis>
+                : <infernoreborn:aether_walker>
+                : <infernoreborn:thunderbolt>
+                : <infernoreborn:the_red>
+                : <infernoreborn:emperors_aura>
+            }
+        }
+    }
+}

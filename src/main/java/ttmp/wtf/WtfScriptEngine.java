@@ -110,11 +110,11 @@ public class WtfScriptEngine{
 		return random!=null ? random : DEFAULT_RANDOM;
 	}
 
-	public Object execute(WtfScript script, Initializer<?> initializer){
+	public <T> T execute(WtfScript script, Initializer<T> initializer){
 		return execute(script, initializer, EvalContext.DEFAULT);
 	}
 
-	public Object execute(WtfScript script, Initializer<?> initializer, EvalContext context){
+	public <T> T execute(WtfScript script, Initializer<T> initializer, EvalContext context){
 		return new WtfExecutor(this, Objects.requireNonNull(script), context).execute(initializer);
 	}
 }

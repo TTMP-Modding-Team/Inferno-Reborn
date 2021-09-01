@@ -81,15 +81,16 @@ public class WtfExecutor{
 		return script.getLines().getLine(ip-1);
 	}
 
-	public Object execute(Initializer<?> initializer){
+	public <T> T execute(Initializer<T> initializer){
 		return execute(initializer, 0);
 	}
 
-	public Object execute(Initializer<?> initializer, int start){
+	public <T> T execute(Initializer<T> initializer, int start){
 		try{
 			ip = start;
 			int startingStack = 0;
 			push(initializer);
+			LOOP:
 			while(true){
 				switch(next()){
 					case Inst.PUSH:
@@ -302,20 +303,20 @@ public class WtfExecutor{
 					case Inst.DEBUG:
 						engine.debug(peek());
 						break;
-					case Inst.FINISH_PROPERTY_INIT:
-						if(stackSize==startingStack+1)
-							return expectInitializer(pop()).finish(this);
-						else{
-							Object o = expectInitializer(pop()).finish(this);
-							expectInitializer(peek()).setPropertyValue(this, identifier(), o);
-							break;
-						}
+					case Inst.FINISH_PROPERTY_INIT:{
+						if(stackSize==startingStack+1) break LOOP;
+						Object o = expectInitializer(pop()).finish(this);
+						expectInitializer(peek()).setPropertyValue(this, identifier(), o);
+						break;
+					}
 					case Inst.END:
-						return expectInitializer(pop()).finish(this);
+						break LOOP;
 					default:
 						error("Unknown bytecode '"+script.getInst(ip-1)+"'");
 				}
 			}
+			if(peek()!=initializer) error("Expected root initializer");
+			return initializer.finish(this);
 		}catch(WtfException ex){
 			throw ex;
 		}catch(Exception ex){

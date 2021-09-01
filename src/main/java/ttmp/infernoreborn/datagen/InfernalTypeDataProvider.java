@@ -32,14 +32,18 @@ public class InfernalTypeDataProvider implements IDataProvider{
 	}
 
 	protected void generate(Consumer<InfernalType> consumer){
-		consumer.accept(new InfernalType(new ResourceLocation(MODID, "test"),
-				SpecialEffect.create(0xFFFFFF), new ItemDisplay(0xFFFFFF)));
+		consumer.accept(new InfernalType(new ResourceLocation(MODID, "empty"), null, null));
+
+		consumer.accept(new InfernalType(new ResourceLocation(MODID, "common"), SpecialEffect.create(0xFFFFFF), new ItemDisplay(0xFFFFFF)));
+		consumer.accept(new InfernalType(new ResourceLocation(MODID, "uncommon"), SpecialEffect.create(0xFF00FF, 0x00FFFF, 0xFFFF00), new ItemDisplay(0xFFFF00)));
+		consumer.accept(new InfernalType(new ResourceLocation(MODID, "rare"), SpecialEffect.create(0xFF00FF), new ItemDisplay(0xFF00FF)));
+		consumer.accept(new InfernalType(new ResourceLocation(MODID, "epic"), SpecialEffect.create(0x000000), new ItemDisplay(0x444444)));
 	}
 
 	@Override public void run(DirectoryCache directoryCache){
 		Path output = this.generator.getOutputFolder();
 		Set<ResourceLocation> set = Sets.newHashSet();
-		generate((t) -> {
+		generate(t -> {
 			ResourceLocation id = t.getId();
 			if(!set.add(id)) throw new IllegalStateException("Duplicate ability generator "+id);
 			Path path = createPath(output, id);

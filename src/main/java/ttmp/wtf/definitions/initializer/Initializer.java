@@ -6,7 +6,14 @@ import javax.annotation.Nullable;
 
 @FunctionalInterface
 public interface Initializer<T>{
-	Initializer<Object> EMPTY = (WtfExecutor executor) -> Initializer.EMPTY;
+	Initializer<Object> EMPTY = new Initializer<Object>(){
+		@Override public Object finish(WtfExecutor executor){
+			return this;
+		}
+		@Override public String toString(){
+			return "Initializer.EMPTY";
+		}
+	};
 
 	/**
 	 * Get property value associated with given property name. Error the shit out if there is no such property.

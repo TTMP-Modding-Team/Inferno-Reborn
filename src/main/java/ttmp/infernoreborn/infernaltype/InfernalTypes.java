@@ -8,6 +8,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonParseException;
 import com.mojang.datafixers.util.Pair;
 import net.minecraft.client.resources.ReloadListener;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.profiler.IProfiler;
@@ -19,13 +20,24 @@ import net.minecraftforge.event.AddReloadListenerEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.network.PacketDistributor;
 import org.apache.commons.io.IOUtils;
 import ttmp.infernoreborn.InfernoReborn;
+import ttmp.infernoreborn.contents.ability.holder.ServerAbilityHolder;
+import ttmp.infernoreborn.infernaltype.wtf.AbilitiesInitializer;
+import ttmp.infernoreborn.infernaltype.wtf.AbilityGenerationContext;
 import ttmp.infernoreborn.infernaltype.wtf.ChooseAbilityInitializer;
+import ttmp.infernoreborn.infernaltype.wtf.DeferredAbilityGeneratorInitializer;
+import ttmp.infernoreborn.infernaltype.wtf.ImmediateAbilityGeneratorInitializer;
+import ttmp.infernoreborn.network.ModNet;
+import ttmp.infernoreborn.network.SyncInfernalTypeMsg;
+import ttmp.infernoreborn.util.SomeAbility;
 import ttmp.wtf.CompileContext;
 import ttmp.wtf.WtfScript;
 import ttmp.wtf.WtfScriptEngine;
+import ttmp.wtf.exceptions.WtfCompileException;
 import ttmp.wtf.exceptions.WtfException;
+import ttmp.wtf.internal.WtfExecutor;
 
 import javax.annotation.Nullable;
 import java.io.BufferedReader;
@@ -34,8 +46,11 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import static ttmp.infernoreborn.InfernoReborn.MODID;
@@ -46,17 +61,93 @@ public final class InfernalTypes{
 	private static final WtfScriptEngine ENGINE = new WtfScriptEngine()
 			.addType("Choose", ChooseAbilityInitializer::new);
 	private static final CompileContext COMPILE_CONTEXT = CompileContext.builder()
+			.addStaticConstant("NoAbility", SomeAbility.NONE)
 			.addDynamicConstant("EntityType", ResourceLocation.class)
 			.build();
 
 	private static Map<ResourceLocation, InfernalType> infernalTypes = Collections.emptyMap();
 	private static Map<ResourceLocation, WtfScript> generators = Collections.emptyMap();
 
+	/**
+	 * Client use only. Don't touch it. I will cut your throat if you fuck with this.
+	 *
+	 * @deprecated I SAID DON'T
+	 */
+	@SuppressWarnings("DeprecatedIsStillUsed") // shut up intellij idc
+	@Deprecated
+	public static void setInfernalTypes(Collection<InfernalType> infernalTypes){
+		Map<ResourceLocation, InfernalType> m = new HashMap<>();
+		for(InfernalType t : infernalTypes) m.put(t.getId(), t);
+		InfernalTypes.infernalTypes = m;
+		generators = Collections.emptyMap();
+	}
+
 	public static Collection<InfernalType> getInfernalTypes(){
 		return infernalTypes.values();
 	}
 	@Nullable public static InfernalType get(ResourceLocation id){
 		return infernalTypes.get(id);
+	}
+
+	public static void generate(LivingEntity entity, ServerAbilityHolder holder){
+		if(generators.isEmpty()) return;
+
+		AbilityGenerationContext context = new AbilityGenerationContext(entity, holder);
+		List<InfernalTypeStuff> list = new ArrayList<>();
+		int wgtSum = 0;
+		for(Map.Entry<ResourceLocation, WtfScript> e : generators.entrySet()){
+			WtfScript script = e.getValue();
+			WtfExecutor executor = new WtfExecutor(ENGINE, script, context);
+			DeferredAbilityGeneratorInitializer deferredAbilityGeneratorInitializer = ENGINE.execute(script, new DeferredAbilityGeneratorInitializer());
+			if(deferredAbilityGeneratorInitializer.getWeight()>0){
+				list.add(new InfernalTypeStuff(e.getKey(), executor, deferredAbilityGeneratorInitializer));
+				wgtSum += deferredAbilityGeneratorInitializer.getWeight();
+			}
+		}
+
+		switch(list.size()){
+			case 0:
+				return;
+			case 1:
+				apply(holder, list.get(0));
+				return;
+			default:
+				int r = ENGINE.getRandom().nextInt(wgtSum);
+				for(InfernalTypeStuff o : list){
+					if((r -= o.deferredAbilityGeneratorInitializer.getWeight())>=0) continue;
+					apply(holder, o);
+					break;
+				}
+		}
+	}
+
+	private static void apply(ServerAbilityHolder holder, InfernalTypeStuff stuff){
+		InfernalType infernalType = infernalTypes.get(stuff.typeId);
+		if(infernalType==null) InfernoReborn.LOGGER.warn("Referencing unknown infernal type {}", stuff.typeId);
+		else holder.setAppliedInfernalType(infernalType);
+		if(stuff.deferredAbilityGeneratorInitializer.hasAbilities())
+			stuff.executor.execute(AbilitiesInitializer::new, stuff.deferredAbilityGeneratorInitializer.getAbilitiesCodepoint());
+	}
+
+	public static void generate(LivingEntity entity, ServerAbilityHolder holder, InfernalType type){
+		WtfScript script = generators.get(type.getId());
+		if(script==null){
+			InfernoReborn.LOGGER.error("Cannot generate ability with InfernalType of {} because script is not attached", type);
+			return;
+		}
+		ENGINE.execute(script, new ImmediateAbilityGeneratorInitializer(), new AbilityGenerationContext(entity, holder));
+	}
+
+	private static final class InfernalTypeStuff{
+		public final ResourceLocation typeId;
+		public final WtfExecutor executor;
+		public final DeferredAbilityGeneratorInitializer deferredAbilityGeneratorInitializer;
+
+		private InfernalTypeStuff(ResourceLocation typeId, WtfExecutor executor, DeferredAbilityGeneratorInitializer deferredAbilityGeneratorInitializer){
+			this.typeId = typeId;
+			this.executor = executor;
+			this.deferredAbilityGeneratorInitializer = deferredAbilityGeneratorInitializer;
+		}
 	}
 
 	@Mod.EventBusSubscriber(modid = MODID)
@@ -77,7 +168,7 @@ public final class InfernalTypes{
 
 				WtfScript script = readScript(m, r, id);
 				if(script==null){
-					InfernoReborn.LOGGER.warn("Infernal Type {} has valid JSON file but invalid/no script attached.", id);
+					InfernoReborn.LOGGER.warn("Infernal Type {} has valid JSON file but script is invalid or not provided.", id);
 					continue;
 				}
 				map.put(id, new Pair<>(json, script));
@@ -105,7 +196,14 @@ public final class InfernalTypes{
 			try(IResource iresource = m.getResource(res);
 			    InputStream inputstream = iresource.getInputStream();
 			    Reader reader = new BufferedReader(new InputStreamReader(inputstream, StandardCharsets.UTF_8))){
-				return ENGINE.compile(IOUtils.toString(reader), COMPILE_CONTEXT);
+
+				String script = IOUtils.toString(reader);
+				try{
+					return ENGINE.compile(script, COMPILE_CONTEXT);
+				}catch(WtfCompileException ex){
+					InfernoReborn.LOGGER.error("Couldn't parse script file {} from {} due to compile error", id, res);
+					ex.prettyPrint(script, InfernoReborn.LOGGER::error);
+				}
 			}catch(IllegalArgumentException|IOException|WtfException ex){
 				InfernoReborn.LOGGER.error("Couldn't parse script file {} from {}", id, res, ex);
 			}
@@ -144,7 +242,7 @@ public final class InfernalTypes{
 		public static void onPlayerLoggedIn(PlayerEvent.PlayerLoggedInEvent event){
 			PlayerEntity player = event.getPlayer();
 			if(player instanceof ServerPlayerEntity){
-				// TODO ModNet.CHANNEL.send(PacketDistributor.PLAYER.with(() -> (ServerPlayerEntity)player), new SyncAbilitySchemeMsg(AbilityGenerators.getSchemes()));
+				ModNet.CHANNEL.send(PacketDistributor.PLAYER.with(() -> (ServerPlayerEntity)player), new SyncInfernalTypeMsg(getInfernalTypes()));
 			}
 		}
 	}

@@ -146,7 +146,8 @@ public class WtfScriptTest{
 		return () -> {
 			WtfScript script = engine.tryCompile(readScript(filename), compileContext, this::logAndError);
 			long t = System.currentTimeMillis();
-			engine.execute(Objects.requireNonNull(script), initializer==null ? Initializer.EMPTY : initializer.get(), evalContext);
+			if(initializer==null) engine.execute(Objects.requireNonNull(script), Initializer.EMPTY, evalContext);
+			else engine.execute(Objects.requireNonNull(script), initializer.get(), evalContext);
 			System.out.println("Execution took "+(System.currentTimeMillis()-t)+" ms.");
 		};
 	}

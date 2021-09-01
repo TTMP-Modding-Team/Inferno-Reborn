@@ -1,0 +1,38 @@
+Weight: 20
+
+Abilities: {
+    : Choose {
+        : 32, NoAbility
+        : 16, <infernoreborn:heart>
+        : 8, <infernoreborn:heart2>
+        : 4, <infernoreborn:heart3>
+        : 2, <infernoreborn:heart4>
+        : 1, <infernoreborn:heart5>
+    }
+    : Choose {
+        : 32, NoAbility
+        : 8, <infernoreborn:wood_skin>
+        : 4, <infernoreborn:rock_skin>
+        : 2, <infernoreborn:iron_skin>
+    }
+
+    repeat(1~4){
+        : Choose {
+            : <infernoreborn:bulletproof>
+            : <infernoreborn:vampire>
+            : <infernoreborn:crowd_control>
+            : <infernoreborn:survival_expert>
+            : <infernoreborn:the_brain>
+            : <infernoreborn:toughness>
+            : <infernoreborn:swiftness>
+            : <infernoreborn:eviolite_chansey>
+            : Choose {
+                : <infernoreborn:mud_skin>
+                : <infernoreborn:frozen_skin>
+                : <infernoreborn:woolly_skin>
+                : <infernoreborn:fuzzy_skin>
+                : <infernoreborn:thorn_skin>
+            }
+        }
+    }
+}

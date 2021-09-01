@@ -8,6 +8,12 @@ import javax.annotation.Nullable;
 import java.util.Objects;
 
 public final class InfernalType{
+	public static InfernalType read(PacketBuffer buf){
+		return new InfernalType(buf.readResourceLocation(),
+				buf.readBoolean() ? SpecialEffect.read(buf) : null,
+				buf.readBoolean() ? ItemDisplay.read(buf) : null);
+	}
+
 	private final ResourceLocation id;
 	@Nullable private final SpecialEffect specialEffect;
 	@Nullable private final ItemDisplay itemDisplay;

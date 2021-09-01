@@ -1,5 +1,7 @@
 package ttmp.wtf.exceptions;
 
+import java.util.function.Consumer;
+
 public final class WtfCompileException extends WtfException{
 	public final int position;
 
@@ -28,8 +30,11 @@ public final class WtfCompileException extends WtfException{
 	}
 
 	public void prettyPrint(String script){
+		prettyPrint(script, System.out::println);
+	}
+	public void prettyPrint(String script, Consumer<String> printer){
 		WtfCompileException.LineAndColumn lineAndColumn = calculateLineAndColumn(script);
-		System.out.println(position+"("+lineAndColumn+"): "+getMessage());
+		printer.accept(position+"("+lineAndColumn+"): "+getMessage());
 		String lineString = String.valueOf(lineAndColumn.line);
 
 		int printEnd = Math.min(script.length(), position+15);
@@ -38,10 +43,11 @@ public final class WtfCompileException extends WtfException{
 		idx = script.indexOf('\r', position);
 		if(idx>=0&&idx<printEnd) printEnd = idx;
 
-		System.out.println(" "+lineString+" | "+script.substring(position-lineAndColumn.column+1, printEnd));
+		printer.accept(" "+lineString+" | "+script.substring(position-lineAndColumn.column+1, printEnd));
+		StringBuilder stb = new StringBuilder();
 		for(int i = 1+lineString.length()+2+lineAndColumn.column; i>0; i--)
-			System.out.print(" ");
-		System.out.println("^");
+			stb.append(' ');
+		printer.accept(stb.append('^').toString());
 	}
 
 	public static final class LineAndColumn{

@@ -61,7 +61,6 @@ import ttmp.infernoreborn.contents.block.GoldenSkullBlock;
 import ttmp.infernoreborn.contents.item.EssenceNetAccessorItem;
 import ttmp.infernoreborn.contents.item.JudgementItem;
 import ttmp.infernoreborn.contents.sigil.holder.SigilHolder;
-import ttmp.infernoreborn.datagen.AbilityGeneratorDataProvider;
 import ttmp.infernoreborn.datagen.BlockModelGen;
 import ttmp.infernoreborn.datagen.BlockTagGen;
 import ttmp.infernoreborn.datagen.BookDataProvider;
@@ -136,7 +135,6 @@ public class InfernoReborn{
 	public static void gatherData(GatherDataEvent event){
 		DataGenerator generator = event.getGenerator();
 		if(event.includeServer()){
-			generator.addProvider(new AbilityGeneratorDataProvider(event.getGenerator()));
 			generator.addProvider(new BookDataProvider(event.getGenerator()));
 			generator.addProvider(new RecipeGen(event.getGenerator()));
 			BlockTagGen blockTagGen = new BlockTagGen(event.getGenerator(), event.getExistingFileHelper());

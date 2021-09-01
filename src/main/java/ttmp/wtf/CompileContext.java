@@ -1,7 +1,6 @@
 package ttmp.wtf;
 
 import com.google.common.collect.ImmutableMap;
-import ttmp.wtf.exceptions.WtfException;
 
 import javax.annotation.Nullable;
 import java.util.HashMap;

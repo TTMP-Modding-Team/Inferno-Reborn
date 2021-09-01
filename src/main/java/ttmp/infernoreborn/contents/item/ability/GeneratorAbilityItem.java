@@ -13,12 +13,12 @@ import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.Constants;
-import ttmp.infernoreborn.contents.ability.generator.AbilityGenerator;
-import ttmp.infernoreborn.contents.ability.generator.AbilityGenerators;
-import ttmp.infernoreborn.contents.ability.generator.scheme.AbilityGeneratorScheme;
 import ttmp.infernoreborn.contents.ability.holder.ServerAbilityHolder;
+import ttmp.infernoreborn.infernaltype.InfernalType;
+import ttmp.infernoreborn.infernaltype.InfernalTypes;
 
 import javax.annotation.Nullable;
+import java.util.Comparator;
 import java.util.List;
 
 public class GeneratorAbilityItem extends AbstractAbilityItem{
@@ -28,45 +28,40 @@ public class GeneratorAbilityItem extends AbstractAbilityItem{
 
 	@Override public void fillItemCategory(ItemGroup group, NonNullList<ItemStack> itemStacks){
 		if(!this.allowdedIn(group)) return;
-		for(AbilityGeneratorScheme scheme : AbilityGenerators.getSchemes()){
-			if(scheme.getItemDisplay()==null) continue;
-			ItemStack stack = new ItemStack(this);
-			setGenerator(stack, scheme);
-			itemStacks.add(stack);
-		}
+		InfernalTypes.getInfernalTypes().stream()
+				.sorted(Comparator.comparing(InfernalType::getId))
+				.forEachOrdered(infernalType -> {
+					if(infernalType.getItemDisplay()==null) return;
+					ItemStack stack = new ItemStack(this);
+					setType(stack, infernalType);
+					itemStacks.add(stack);
+				});
 	}
 
 	@Override protected boolean generate(ItemStack stack, LivingEntity entity){
 		ServerAbilityHolder h = ServerAbilityHolder.of(entity);
 		if(h==null) return false;
-		AbilityGenerator generator = getGenerator(stack);
-		if(generator==null) return false;
-		h.generate(entity, generator);
+		InfernalType type = getType(stack);
+		if(type==null) return false;
+		h.clear();
+		InfernalTypes.generate(entity, h, type);
 		return true;
 	}
 
 	@Override public void appendHoverText(ItemStack stack, @Nullable World world, List<ITextComponent> text, ITooltipFlag flags){
-		AbilityGeneratorScheme scheme = getScheme(stack);
-		if(scheme!=null)
-			text.add(new TranslationTextComponent("ability_generator."+scheme.getId().getNamespace()+"."+scheme.getId().getPath()).setStyle(Style.EMPTY.applyFormat(TextFormatting.GRAY)));
+		InfernalType type = getType(stack);
+		if(type!=null)
+			text.add(new TranslationTextComponent("ability_generator."+type.getId().getNamespace()+"."+type.getId().getPath()).setStyle(Style.EMPTY.applyFormat(TextFormatting.GRAY)));
 	}
 
-	@Nullable public static AbilityGenerator getGenerator(ItemStack stack){
+	@Nullable public static InfernalType getType(ItemStack stack){
 		CompoundNBT tag = stack.getTag();
-		if(tag==null||!tag.contains("Generator", Constants.NBT.TAG_STRING)) return null;
-		return AbilityGenerators.findGeneratorWithId(new ResourceLocation(tag.getString("Generator")));
+		if(tag==null||!tag.contains("Type", Constants.NBT.TAG_STRING)) return null;
+		return InfernalTypes.get(new ResourceLocation(tag.getString("Type")));
 	}
-	@Nullable public static AbilityGeneratorScheme getScheme(ItemStack stack){
-		CompoundNBT tag = stack.getTag();
-		if(tag==null||!tag.contains("Generator", Constants.NBT.TAG_STRING)) return null;
-		return AbilityGenerators.findSchemeWithId(new ResourceLocation(tag.getString("Generator")));
-	}
-	public static void setGenerator(ItemStack stack, @Nullable AbilityGenerator generator){
-		setGenerator(stack, generator==null ? null : generator.getScheme());
-	}
-	public static void setGenerator(ItemStack stack, @Nullable AbilityGeneratorScheme scheme){
+	public static void setType(ItemStack stack, @Nullable InfernalType type){
 		CompoundNBT tag = stack.getOrCreateTag();
-		if(scheme==null) tag.remove("Generator");
-		else tag.putString("Generator", scheme.getId().toString());
+		if(type==null) tag.remove("Type");
+		else tag.putString("Type", type.getId().toString());
 	}
 }

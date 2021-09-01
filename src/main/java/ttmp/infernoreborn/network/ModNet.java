@@ -15,11 +15,11 @@ import ttmp.infernoreborn.capability.TickingTaskHandler;
 import ttmp.infernoreborn.client.ParticlePlacingTask;
 import ttmp.infernoreborn.client.screen.EssenceHolderScreen;
 import ttmp.infernoreborn.contents.ability.Ability;
-import ttmp.infernoreborn.contents.ability.generator.AbilityGenerators;
 import ttmp.infernoreborn.contents.ability.holder.ClientAbilityHolder;
 import ttmp.infernoreborn.contents.container.EssenceHolderContainer;
 import ttmp.infernoreborn.contents.container.SigilScrapperContainer;
 import ttmp.infernoreborn.contents.sigil.holder.SigilHolder;
+import ttmp.infernoreborn.infernaltype.InfernalTypes;
 import ttmp.infernoreborn.util.EssenceHolder;
 import ttmp.infernoreborn.util.EssenceType;
 
@@ -38,8 +38,8 @@ public final class ModNet{
 			NETVERSION::equals);
 
 	public static void init(){
-		CHANNEL.registerMessage(0, SyncAbilitySchemeMsg.class,
-				SyncAbilitySchemeMsg::write, SyncAbilitySchemeMsg::read,
+		CHANNEL.registerMessage(0, SyncInfernalTypeMsg.class,
+				SyncInfernalTypeMsg::write, SyncInfernalTypeMsg::read,
 				Client::handleSyncAbilityGeneratorList);
 		CHANNEL.registerMessage(1, SyncAbilityHolderMsg.class,
 				SyncAbilityHolderMsg::write, SyncAbilityHolderMsg::read,
@@ -87,9 +87,10 @@ public final class ModNet{
 	private static final class Client{
 		private Client(){}
 
-		public static void handleSyncAbilityGeneratorList(SyncAbilitySchemeMsg msg, Supplier<NetworkEvent.Context> ctx){
+		public static void handleSyncAbilityGeneratorList(SyncInfernalTypeMsg msg, Supplier<NetworkEvent.Context> ctx){
 			ctx.get().setPacketHandled(true);
-			ctx.get().enqueueWork(() -> AbilityGenerators.setSchemes(msg.getSchemes()));
+			//noinspection deprecation
+			ctx.get().enqueueWork(() -> InfernalTypes.setInfernalTypes(msg.getInfernalTypes()));
 		}
 
 		public static void handleSyncAbilityHolderMsg(SyncAbilityHolderMsg msg, Supplier<NetworkEvent.Context> ctx){
@@ -103,7 +104,7 @@ public final class ModNet{
 				if(h==null) return;
 				h.clear();
 				for(Ability a : msg.getAbilities()) h.add(a);
-				h.setAppliedGeneratorScheme(msg.getAppliedGeneratorScheme());
+				h.setAppliedInfernalType(msg.getAppliedInfernalType());
 			});
 		}
 

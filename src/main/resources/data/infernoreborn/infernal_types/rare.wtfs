@@ -1,0 +1,65 @@
+Weight: 5
+
+Abilities: {
+    : Choose {
+        : 4, <infernoreborn:heart2>
+        : 8, <infernoreborn:heart3>
+        : 16, <infernoreborn:heart4>
+        : 32, <infernoreborn:heart5>
+        : 8, <infernoreborn:heart6>
+        : 2, <infernoreborn:heart7>
+        : 1, <infernoreborn:heart8>
+    }
+    : Choose {
+        : 64, NoAbility
+        : 16, <infernoreborn:rock_skin>
+        : 16, <infernoreborn:iron_skin>
+        : 4, <infernoreborn:diamond_skin>
+        : 1, <infernoreborn:netherite_skin>
+    }
+
+    if(Random{ Roll: 0.2 }){
+         : Choose {
+             : <infernoreborn:mud_skin>
+             : <infernoreborn:frozen_skin>
+             : <infernoreborn:woolly_skin>
+             : <infernoreborn:fuzzy_skin>
+             : <infernoreborn:thorn_skin>
+         }
+    }
+
+    repeat(4~8){
+        : Choose {
+            : <infernoreborn:bulletproof>
+            : <infernoreborn:vampire>
+            : <infernoreborn:crowd_control>
+            : <infernoreborn:survival_expert>
+            : <infernoreborn:the_brain>
+            : <infernoreborn:toughness>
+            : <infernoreborn:swiftness>
+            : <infernoreborn:eviolite_chansey>
+            : Choose {
+                : <infernoreborn:mud_skin>
+                : <infernoreborn:frozen_skin>
+                : <infernoreborn:woolly_skin>
+                : <infernoreborn:fuzzy_skin>
+                : <infernoreborn:thorn_skin>
+            }
+        }
+    }
+
+    repeat(1~3){
+        : Choose {
+            : <infernoreborn:destiny_bond>
+            : <infernoreborn:focus>
+            : <infernoreborn:guts>
+            : <infernoreborn:magma_skin>
+            : <infernoreborn:health_kit>
+            : <infernoreborn:telekinesis>
+            : <infernoreborn:aether_walker>
+            : <infernoreborn:thunderbolt>
+            : <infernoreborn:the_red>
+            : <infernoreborn:emperors_aura>
+        }
+    }
+}
