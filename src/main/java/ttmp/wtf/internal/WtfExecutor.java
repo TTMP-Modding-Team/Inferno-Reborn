@@ -3,6 +3,7 @@ package ttmp.wtf.internal;
 import com.google.common.primitives.Ints;
 import com.google.common.primitives.Shorts;
 import ttmp.wtf.EvalContext;
+import ttmp.wtf.Wtf;
 import ttmp.wtf.WtfScript;
 import ttmp.wtf.WtfScriptEngine;
 import ttmp.wtf.definitions.InitDefinition;
@@ -15,6 +16,7 @@ import ttmp.wtf.obj.Bundle;
 import ttmp.wtf.obj.Range;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -81,10 +83,16 @@ public class WtfExecutor{
 		return script.getLines().getLine(ip-1);
 	}
 
+	/**
+	 * @throws WtfEvalException on evaluation error
+	 */
 	public <T> T execute(Initializer<T> initializer){
 		return execute(initializer, 0);
 	}
 
+	/**
+	 * @throws WtfEvalException on evaluation error
+	 */
 	public <T> T execute(Initializer<T> initializer, int start){
 		try{
 			ip = start;
@@ -109,44 +117,40 @@ public class WtfExecutor{
 						push(false);
 						break;
 					case Inst.N0:
-						push(0.0);
+						push(0);
 						break;
 					case Inst.N1:
-						push(1.0);
+						push(1);
 						break;
 					case Inst.N2:
-						push(2.0);
+						push(2);
 						break;
 					case Inst.N3:
-						push(3.0);
+						push(3);
 						break;
 					case Inst.N4:
-						push(4.0);
+						push(4);
 						break;
 					case Inst.N5:
-						push(5.0);
+						push(5);
 						break;
 					case Inst.NM1:
-						push(-1.0);
+						push(-1);
 						break;
 					case Inst.ADD:
-						push(popNumber()+popNumber());
+						push(Wtf.add(popNumberObject(), popNumberObject()));
 						break;
-					case Inst.SUBTRACT:{
-						double d1 = popNumber(), d2 = popNumber();
-						push(d2-d1);
+					case Inst.SUBTRACT:
+						push(Wtf.subtractr(popNumberObject(), popNumberObject()));
 						break;
-					}
 					case Inst.MULTIPLY:
-						push(popNumber()*popNumber());
+						push(Wtf.multiply(popNumberObject(), popNumberObject()));
 						break;
-					case Inst.DIVIDE:{
-						double d1 = popNumber(), d2 = popNumber();
-						push(d2/d1);
+					case Inst.DIVIDE:
+						push(Wtf.divider(popNumberObject(), popNumberObject()));
 						break;
-					}
 					case Inst.NEGATE:
-						push(-popNumber());
+						push(Wtf.negate(popNumberObject()));
 						break;
 					case Inst.NOT:
 						push(!popBoolean());
@@ -177,12 +181,18 @@ public class WtfExecutor{
 						push(d2>=d1);
 						break;
 					}
-					case Inst.ADD1:
-						push(popNumber()+1);
+					case Inst.ADD1:{
+						Number n = popNumberObject();
+						if(n instanceof Integer) push(n.intValue()+1);
+						else push(n.doubleValue()+1);
 						break;
-					case Inst.SUB1:
-						push(popNumber()-1);
+					}
+					case Inst.SUB1:{
+						Number n = popNumberObject();
+						if(n instanceof Integer) push(n.intValue()-1);
+						else push(n.doubleValue()-1);
 						break;
+					}
 					case Inst.BUNDLE2:{
 						Object o1 = pop(), o2 = pop();
 						push(new Bundle(o2, o1));
@@ -260,10 +270,16 @@ public class WtfExecutor{
 						variable[nextUnsigned()] = pop();
 						break;
 					case Inst.RANGE:{
-						double d1 = popNumber(), d2 = popNumber();
-						push(new Range(d2, d1));
+						int to = popInt(), from = popInt();
+						push(new Range(from, to));
 						break;
 					}
+					case Inst.RAND:
+						push(Wtf.randomInt(engine.getRandom(), popInt(), popInt()));
+						break;
+					case Inst.RANDN:
+						push(Wtf.randomInt(engine.getRandom(), next4(), next4()));
+						break;
 					case Inst.NEW:{
 						String identifier = identifier();
 						InitDefinition<?> def = engine.getType(identifier);
@@ -287,7 +303,7 @@ public class WtfExecutor{
 						ip += popBoolean() ? 2 : next2();
 						break;
 					case Inst.JUMP_IF_LT1:
-						ip += peekNumber()<1 ? next2() : 2;
+						ip += peekInt()<1 ? next2() : 2;
 						break;
 					case Inst.JUMP_OR_NEXT:{
 						Iterator<?> it = expectIterator(peek());
@@ -321,6 +337,9 @@ public class WtfExecutor{
 			throw ex;
 		}catch(Exception ex){
 			throw new WtfEvalException(getCurrentLine(), "Encountered error during evaluation", ex);
+		}finally{
+			Arrays.fill(stack, null);
+			stackSize = 0;
 		}
 	}
 
@@ -373,14 +392,26 @@ public class WtfExecutor{
 
 	private double popNumber(){
 		Object o = pop();
-		if(!(o instanceof Double)) error("Not a number");
-		return (double)o;
+		if(!(o instanceof Number)) error("Not a number");
+		return ((Number)o).doubleValue();
 	}
 
-	private double peekNumber(){
+	private Number popNumberObject(){
+		Object o = pop();
+		if(!(o instanceof Number)) error("Not a number");
+		return (Number)o;
+	}
+
+	private int popInt(){
+		Object o = pop();
+		if(!(o instanceof Integer)) error("Not an integer");
+		return (int)o;
+	}
+
+	private double peekInt(){
 		Object o = peek();
-		if(!(o instanceof Double)) error("Not a number");
-		return (double)o;
+		if(!(o instanceof Integer)) error("Not an integer");
+		return (int)o;
 	}
 
 	private boolean popBoolean(){
@@ -415,11 +446,15 @@ public class WtfExecutor{
 	}
 
 	public final double expectNumber(Object o){
-		if(!(o instanceof Double)) error("Expected number but provided "+o.getClass().getSimpleName());
+		if(!(o instanceof Number)) error("Expected number but provided "+o.getClass().getSimpleName());
 		return (double)o;
 	}
+	public final int expectInt(Object o){
+		if(!(o instanceof Integer)) error("Expected integer but provided "+o.getClass().getSimpleName());
+		return (int)o;
+	}
 	public final boolean expectBoolean(Object o){
-		if(!(o instanceof Boolean)) error("Expected number but provided "+o.getClass().getSimpleName());
+		if(!(o instanceof Boolean)) error("Expected boolean but provided "+o.getClass().getSimpleName());
 		return (boolean)o;
 	}
 	public final <T> T expectType(Class<T> expectedType, Object o){
@@ -430,7 +465,7 @@ public class WtfExecutor{
 	public final <T> T noPropertyError(String property){
 		throw new WtfNoPropertyException(getCurrentLine(), property);
 	}
-	public final void noApplyFunctionError(){
-		throw new WtfNoFunctionException(getCurrentLine(), "Apply function is not defined");
+	public final void noApplyFunctionError(Class<?> aClass){
+		throw new WtfNoFunctionException(getCurrentLine(), "Apply function not defined for "+aClass.getSimpleName());
 	}
 }

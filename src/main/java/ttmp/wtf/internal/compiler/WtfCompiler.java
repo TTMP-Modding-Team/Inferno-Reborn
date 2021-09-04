@@ -242,7 +242,7 @@ public class WtfCompiler implements StatementVisitor, ExpressionVisitor{
 	}
 	@Override public void visitRepeat(Statement.Repeat repeat){
 		if(repeat.times.isConstant()){
-			double d = repeat.times.expectConstantObject(Double.class);
+			double d = repeat.times.expectConstantInt();
 			if(d<1) return;
 			else if(d<2){
 				pushBlock();
@@ -378,7 +378,7 @@ public class WtfCompiler implements StatementVisitor, ExpressionVisitor{
 	}
 	@Override public void visitAdd(Expression.Add add){
 		if(add.e1.isConstant()){
-			double v = add.e1.expectConstantObject(Double.class);
+			double v = add.e1.expectConstantNumber();
 			if(v==1){
 				writeInst(add.e2);
 				write(Inst.ADD1);
@@ -388,7 +388,7 @@ public class WtfCompiler implements StatementVisitor, ExpressionVisitor{
 				return;
 			}
 		}else if(add.e2.isConstant()){
-			double v = add.e2.expectConstantObject(Double.class);
+			double v = add.e2.expectConstantNumber();
 			if(v==1){
 				writeInst(add.e1);
 				write(Inst.ADD1);
@@ -402,7 +402,7 @@ public class WtfCompiler implements StatementVisitor, ExpressionVisitor{
 	}
 	@Override public void visitSubtract(Expression.Subtract subtract){
 		if(subtract.e2.isConstant()){
-			double v = subtract.e2.expectConstantObject(Double.class);
+			double v = subtract.e2.expectConstantNumber();
 			if(v==1){
 				writeInst(subtract.e1);
 				write(Inst.SUB1);
@@ -415,12 +415,12 @@ public class WtfCompiler implements StatementVisitor, ExpressionVisitor{
 		writeSimpleBinary(subtract, Inst.SUBTRACT);
 	}
 	@Override public void visitMultiply(Expression.Multiply multiply){
-		if(multiply.e1.isConstant()&&multiply.e1.expectConstantObject(Double.class)==1) writeInst(multiply.e2);
-		else if(multiply.e2.isConstant()&&multiply.e2.expectConstantObject(Double.class)==1) writeInst(multiply.e1);
+		if(multiply.e1.isConstant()&&multiply.e1.expectConstantNumber()==1) writeInst(multiply.e2);
+		else if(multiply.e2.isConstant()&&multiply.e2.expectConstantNumber()==1) writeInst(multiply.e1);
 		else writeSimpleBinary(multiply, Inst.MULTIPLY);
 	}
 	@Override public void visitDivide(Expression.Divide divide){
-		if(divide.e2.isConstant()&&divide.e2.expectConstantObject(Double.class)==1) writeInst(divide.e1);
+		if(divide.e2.isConstant()&&divide.e2.expectConstantNumber()==1) writeInst(divide.e1);
 		else writeSimpleBinary(divide, Inst.DIVIDE);
 	}
 	@Override public void visitOr(Expression.Or or){
@@ -456,16 +456,29 @@ public class WtfCompiler implements StatementVisitor, ExpressionVisitor{
 	@Override public void visitRange(Expression.RangeOperator rangeOperator){
 		writeSimpleBinary(rangeOperator, Inst.RANGE);
 	}
-	@Override public void visitNumber(Expression.Number number){
-		if(0==number.number) write(Inst.N0);
-		else if(1==number.number) write(Inst.N1);
-		else if(2==number.number) write(Inst.N2);
-		else if(3==number.number) write(Inst.N3);
-		else if(4==number.number) write(Inst.N4);
-		else if(5==number.number) write(Inst.N5);
-		else if(-1==number.number) write(Inst.NM1);
+	@Override public void visitRandomInt(Expression.RandomInt randomInt){
+		if(randomInt.a.isConstant()&&randomInt.b.isConstant()){
+			write(Inst.RANDN);
+			write4(randomInt.a.expectConstantInt());
+			write4(randomInt.b.expectConstantInt());
+			addStack();
+		}else{
+			writeInst(randomInt.a);
+			writeInst(randomInt.b);
+			write(Inst.RAND);
+			removeStack();
+		}
+	}
+	@Override public void visitNumber(Expression.NumberConstant numberConstant){
+		if(0==numberConstant.number) write(Inst.N0);
+		else if(1==numberConstant.number) write(Inst.N1);
+		else if(2==numberConstant.number) write(Inst.N2);
+		else if(3==numberConstant.number) write(Inst.N3);
+		else if(4==numberConstant.number) write(Inst.N4);
+		else if(5==numberConstant.number) write(Inst.N5);
+		else if(-1==numberConstant.number) write(Inst.NM1);
 		else{
-			writeObj(number.number);
+			writeObj(numberConstant.number);
 			return;
 		}
 		addStack();

@@ -1,0 +1,6 @@
+repeat(15) debug 1~100
+
+debug "====="
+
+for(i in 1..15)
+    debug i|": "|1~100

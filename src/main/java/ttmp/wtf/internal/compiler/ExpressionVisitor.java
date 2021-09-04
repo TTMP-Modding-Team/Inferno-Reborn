@@ -19,7 +19,8 @@ public interface ExpressionVisitor{
 	void visitOr(Expression.Or or);
 	void visitAnd(Expression.And and);
 	void visitRange(Expression.RangeOperator rangeOperator);
-	void visitNumber(Expression.Number number);
+	void visitRandomInt(Expression.RandomInt randomInt);
+	void visitNumber(Expression.NumberConstant numberConstant);
 	void visitNamespace(Expression.Namespace namespace);
 	void visitColor(Expression.Color color);
 	void visitPropertyAccess(Expression.PropertyAccess propertyAccess);

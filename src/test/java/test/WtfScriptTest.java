@@ -13,6 +13,7 @@ import ttmp.wtf.definitions.initializer.AssertInitializer;
 import ttmp.wtf.definitions.initializer.Initializer;
 import ttmp.wtf.definitions.initializer.TestInitializer;
 import ttmp.wtf.exceptions.WtfCompileException;
+import ttmp.wtf.exceptions.WtfEvalException;
 import ttmp.wtf.internal.WtfDebugEngine;
 import ttmp.wtf.obj.RGB;
 
@@ -45,6 +46,8 @@ public class WtfScriptTest{
 		tests.add(DynamicTest.dynamicTest("Run Test: Init 2", runTest(engine, "run_test/init2")));
 		tests.add(DynamicTest.dynamicTest("Run Test: Loopers", runTest(engine, "run_test/loopers")));
 		tests.add(DynamicTest.dynamicTest("Run Test: Loopies", runTest(engine, "run_test/loopies")));
+		tests.add(DynamicTest.dynamicTest("Run Test: Random", runTest(engine, "run_test/random")));
+		tests.add(DynamicTest.dynamicTest("Run Test: Ternary", runTest(engine, "run_test/ternary")));
 		tests.add(DynamicTest.dynamicTest("Run Test: What the fuck did you just fucking say about me, you little bitch?", runTest(engine, "run_test/whatthefuckdidyousaytome")));
 
 		tests.add(DynamicTest.dynamicTest("Operation Test: Constants",
@@ -60,7 +63,7 @@ public class WtfScriptTest{
 						0)));
 		tests.add(DynamicTest.dynamicTest("Operation Test: Arithmetics",
 				operationTest(engine, "operation_test/arithmetics",
-						3, -1, 2, 1.0/2)));
+						3, -1, 2, 1/2, .5, .5)));
 		tests.add(DynamicTest.dynamicTest("Operation Test: Strings",
 				operationTest(engine, "operation_test/strings",
 						"Test",
@@ -125,6 +128,42 @@ public class WtfScriptTest{
 		tests.add(DynamicTest.dynamicTest("Compile Error Test: Parse - Missing Brace", compileErrorTest(engine, "compile_error_test/parse_missing_brace")));
 		tests.add(DynamicTest.dynamicTest("Compile Error Test: Parse - Wrong Type #1", compileErrorTest(engine, "compile_error_test/parse_wrong_type_1")));
 		tests.add(DynamicTest.dynamicTest("Compile Error Test: Parse - Wrong Type #2", compileErrorTest(engine, "compile_error_test/parse_wrong_type_2")));
+		tests.add(DynamicTest.dynamicTest("Compile Error Test: Parse - Wrong Type #3", compileErrorTest(engine, "compile_error_test/parse_wrong_type_3")));
+		{
+			CompileContext intTestCompileContext = CompileContext.builder()
+					.addDynamicConstant("I5", Number.class)
+					.addDynamicConstant("D5", Number.class)
+					.build();
+			EvalContext intTestEvalContext = s -> {
+				switch(s){
+					case "I5":
+						return 5;
+					case "D5":
+						return 5.0;
+					default:
+						return null;
+				}
+			};
+			tests.add(DynamicTest.dynamicTest("Error Test: Int #1", errorTest(engine,
+					"error_test/int_1",
+					intTestCompileContext,
+					intTestEvalContext,
+					null,
+					3)));
+			tests.add(DynamicTest.dynamicTest("Error Test: Int #2", errorTest(engine,
+					"error_test/int_2",
+					intTestCompileContext,
+					intTestEvalContext,
+					null,
+					2)));
+			tests.add(DynamicTest.dynamicTest("Error Test: Int #3", errorTest(engine,
+					"error_test/int_3",
+					intTestCompileContext,
+					intTestEvalContext,
+					null,
+					2)));
+		}
+
 
 		return tests;
 	}
@@ -172,6 +211,25 @@ public class WtfScriptTest{
 				ex.prettyPrint(script);
 				ex.printStackTrace();
 				System.out.println("Compilation successfully failed");
+				return;
+			}
+			throw new RuntimeException("You're supposed to be dead?");
+		};
+	}
+
+	private Executable errorTest(WtfScriptEngine engine, String filename, int expectedErrorLine){
+		return errorTest(engine, filename, CompileContext.DEFAULT, EvalContext.DEFAULT, null, expectedErrorLine);
+	}
+	private Executable errorTest(WtfScriptEngine engine, String filename, CompileContext compileContext, EvalContext evalContext, @Nullable Supplier<Initializer<?>> initializer, int expectedErrorLine){
+		return () -> {
+			WtfScript script = engine.tryCompile(readScript(filename), compileContext, this::logAndError);
+			Initializer<?> i = initializer!=null ? initializer.get() : Initializer.EMPTY;
+			try{
+				engine.execute(Objects.requireNonNull(script), i, evalContext);
+			}catch(WtfEvalException ex){
+				if(ex.line!=expectedErrorLine) throw new RuntimeException("Error occurred in line "+ex.line+" instead of line "+expectedErrorLine, ex);
+				System.out.println("Evaluation successfully failed");
+				ex.printStackTrace(System.out);
 				return;
 			}
 			throw new RuntimeException("You're supposed to be dead?");

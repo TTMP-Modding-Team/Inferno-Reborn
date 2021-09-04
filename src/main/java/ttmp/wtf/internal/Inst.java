@@ -135,6 +135,15 @@ public interface Inst{
 	byte RANGE = 0x46;
 
 	/**
+	 * Return random int between int #2 ~ #1 from stack, inclusive
+	 */
+	byte RAND = 0x47;
+	/**
+	 * Return random int between {4} ~ {4}, inclusive
+	 */
+	byte RANDN = 0x48;
+
+	/**
 	 * Create new {@link ttmp.wtf.definitions.initializer.Initializer Initializer} based on identifier {1} and pushes it
 	 */
 	byte NEW = 0x50;

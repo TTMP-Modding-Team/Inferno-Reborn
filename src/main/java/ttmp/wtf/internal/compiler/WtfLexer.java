@@ -170,6 +170,8 @@ public class WtfLexer{
 					return doubleToken('|', tokenStart, TokenType.OR_OR, TokenType.OR);
 				case '?':
 					return new Token(TokenType.QUESTION, tokenStart, 1);
+				case '~':
+					return new Token(TokenType.TILDE, tokenStart, 1);
 				case '+':
 					return new Token(TokenType.PLUS, tokenStart, 1);
 				case '-':
@@ -213,7 +215,12 @@ public class WtfLexer{
 						if(literal.isEmpty())
 							throw new WtfCompileException(charIndex, "Invalid number");
 						charIndex += literal.length();
-						return new Token(TokenType.NUMBER, tokenStart, literal.length());
+						try{
+							Integer.parseInt(literal);
+							return new Token(TokenType.INT, tokenStart, literal.length());
+						}catch(NumberFormatException ex){
+							return new Token(TokenType.NUMBER, tokenStart, literal.length());
+						}
 					}else{
 						String literal = grabIdentifierLiteral(--charIndex);
 						if(literal.isEmpty())

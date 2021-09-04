@@ -90,7 +90,7 @@ public final class ModNet{
 		public static void handleSyncAbilityGeneratorList(SyncInfernalTypeMsg msg, Supplier<NetworkEvent.Context> ctx){
 			ctx.get().setPacketHandled(true);
 			//noinspection deprecation
-			ctx.get().enqueueWork(() -> InfernalTypes.setInfernalTypes(msg.getInfernalTypes()));
+			ctx.get().enqueueWork(() -> InfernalTypes.syncInfernalTypes(msg.getInfernalTypes()));
 		}
 
 		public static void handleSyncAbilityHolderMsg(SyncAbilityHolderMsg msg, Supplier<NetworkEvent.Context> ctx){

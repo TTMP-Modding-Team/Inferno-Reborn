@@ -41,7 +41,7 @@ public interface Initializer<T>{
 	 * Apply. Exception if it doesn't accept.
 	 */
 	default void apply(WtfExecutor executor, Object o){
-		executor.noApplyFunctionError();
+		executor.noApplyFunctionError(this.getClass());
 	}
 
 	T finish(WtfExecutor executor);

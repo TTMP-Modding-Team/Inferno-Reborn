@@ -25,6 +25,8 @@ public enum TokenType{
 	OR, OR_OR,
 	// ?
 	QUESTION,
+	// ~
+	TILDE,
 	// + - * /
 	PLUS, MINUS, STAR, SLASH,
 	// : ;
@@ -32,5 +34,5 @@ public enum TokenType{
 	// RESERVED SHITS
 	DEFINE, TRUE, FALSE, IF, ELSE, DEBUG, FOR, REPEAT, IN,
 	// SHITS
-	NUMBER, NAMESPACE, COLOR, IDENTIFIER, STRING
+	NUMBER, INT, NAMESPACE, COLOR, IDENTIFIER, STRING
 }

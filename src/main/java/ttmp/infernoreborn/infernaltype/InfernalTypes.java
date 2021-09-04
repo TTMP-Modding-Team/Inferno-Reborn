@@ -21,6 +21,7 @@ import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.network.PacketDistributor;
+import net.minecraftforge.fml.server.ServerLifecycleHooks;
 import org.apache.commons.io.IOUtils;
 import ttmp.infernoreborn.InfernoReborn;
 import ttmp.infernoreborn.contents.ability.holder.ServerAbilityHolder;
@@ -36,6 +37,7 @@ import ttmp.wtf.CompileContext;
 import ttmp.wtf.WtfScript;
 import ttmp.wtf.WtfScriptEngine;
 import ttmp.wtf.exceptions.WtfCompileException;
+import ttmp.wtf.exceptions.WtfEvalException;
 import ttmp.wtf.exceptions.WtfException;
 import ttmp.wtf.internal.WtfExecutor;
 
@@ -52,6 +54,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import static ttmp.infernoreborn.InfernoReborn.MODID;
 
@@ -75,11 +78,14 @@ public final class InfernalTypes{
 	 */
 	@SuppressWarnings("DeprecatedIsStillUsed") // shut up intellij idc
 	@Deprecated
-	public static void setInfernalTypes(Collection<InfernalType> infernalTypes){
+	public static void syncInfernalTypes(Collection<InfernalType> infernalTypes){
+		if(ServerLifecycleHooks.getCurrentServer()!=null) return;
 		Map<ResourceLocation, InfernalType> m = new HashMap<>();
 		for(InfernalType t : infernalTypes) m.put(t.getId(), t);
 		InfernalTypes.infernalTypes = m;
 		generators = Collections.emptyMap();
+		InfernoReborn.LOGGER.debug("infernalTypes: {}",
+				InfernalTypes.infernalTypes.keySet().stream().map(Object::toString).collect(Collectors.joining(", ")));
 	}
 
 	public static Collection<InfernalType> getInfernalTypes(){
@@ -96,14 +102,21 @@ public final class InfernalTypes{
 		List<InfernalTypeStuff> list = new ArrayList<>();
 		int wgtSum = 0;
 		for(Map.Entry<ResourceLocation, WtfScript> e : generators.entrySet()){
-			WtfScript script = e.getValue();
-			WtfExecutor executor = new WtfExecutor(ENGINE, script, context);
-			DeferredAbilityGeneratorInitializer deferredAbilityGeneratorInitializer = ENGINE.execute(script, new DeferredAbilityGeneratorInitializer());
-			if(deferredAbilityGeneratorInitializer.getWeight()>0){
-				list.add(new InfernalTypeStuff(e.getKey(), executor, deferredAbilityGeneratorInitializer));
-				wgtSum += deferredAbilityGeneratorInitializer.getWeight();
+			WtfExecutor executor = new WtfExecutor(ENGINE, e.getValue(), context);
+			try{
+				DeferredAbilityGeneratorInitializer deferredAbilityGeneratorInitializer = executor.execute(new DeferredAbilityGeneratorInitializer());
+				if(deferredAbilityGeneratorInitializer.getWeight()>0){
+					list.add(new InfernalTypeStuff(e.getKey(), executor, deferredAbilityGeneratorInitializer));
+					wgtSum += deferredAbilityGeneratorInitializer.getWeight();
+				}
+			}catch(WtfEvalException ex){
+				InfernoReborn.LOGGER.warn("Script error occurred during initialization of infernal type {}", e.getKey(), ex);
 			}
 		}
+
+		InfernoReborn.LOGGER.debug("Fuck {}", list.stream()
+				.map(e -> e.typeId+" - "+e.deferredAbilityGeneratorInitializer.getWeight())
+				.collect(Collectors.joining(", ")));
 
 		switch(list.size()){
 			case 0:
@@ -125,8 +138,13 @@ public final class InfernalTypes{
 		InfernalType infernalType = infernalTypes.get(stuff.typeId);
 		if(infernalType==null) InfernoReborn.LOGGER.warn("Referencing unknown infernal type {}", stuff.typeId);
 		else holder.setAppliedInfernalType(infernalType);
-		if(stuff.deferredAbilityGeneratorInitializer.hasAbilities())
-			stuff.executor.execute(AbilitiesInitializer::new, stuff.deferredAbilityGeneratorInitializer.getAbilitiesCodepoint());
+		if(stuff.deferredAbilityGeneratorInitializer.hasAbilities()){
+			try{
+				stuff.executor.execute(new AbilitiesInitializer(stuff.executor.getContext()), stuff.deferredAbilityGeneratorInitializer.getAbilitiesCodepoint());
+			}catch(WtfEvalException ex){
+				InfernoReborn.LOGGER.warn("Script error occurred during generating of infernal type {}", stuff.typeId, ex);
+			}
+		}
 	}
 
 	public static void generate(LivingEntity entity, ServerAbilityHolder holder, InfernalType type){
@@ -222,11 +240,15 @@ public final class InfernalTypes{
 				WtfScript script = e.getValue().getSecond();
 				infernalTypes.put(id, new InfernalType(id, json.getAsJsonObject()));
 				generators.put(id, script);
+				InfernoReborn.LOGGER.debug("Reading infernal type {}", id);
 			}
 
 			InfernalTypes.infernalTypes = infernalTypes.build();
 			InfernalTypes.generators = generators.build();
 			// TODO sync
+			InfernoReborn.LOGGER.debug("infernalTypes: {}, generators: {}",
+					InfernalTypes.infernalTypes.keySet().stream().map(Object::toString).collect(Collectors.joining(", ")),
+					InfernalTypes.generators.keySet().stream().map(Object::toString).collect(Collectors.joining(", ")));
 		}
 
 		@Override public String getName(){

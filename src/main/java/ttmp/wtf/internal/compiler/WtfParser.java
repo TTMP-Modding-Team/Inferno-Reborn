@@ -1,6 +1,7 @@
 package ttmp.wtf.internal.compiler;
 
 import ttmp.wtf.CompileContext;
+import ttmp.wtf.Wtf;
 import ttmp.wtf.exceptions.WtfCompileException;
 import ttmp.wtf.obj.Bundle;
 import ttmp.wtf.obj.RGB;
@@ -128,7 +129,7 @@ public class WtfParser{
 		int start = lexer.current().start;
 		lexer.expectNext(TokenType.L_PAREN, "Invalid repeat statement, expected '('");
 		lexer.next();
-		Expression times = expr(Double.class);
+		Expression times = expr(Integer.class);
 		lexer.expectNext(TokenType.R_PAREN, "Invalid repeat statement, expected ')'");
 		lexer.next();
 		List<Statement> body = body();
@@ -241,6 +242,7 @@ public class WtfParser{
 		lexer.next();
 		Expression ifThen = ternary();
 		lexer.expectNext(TokenType.COLON, "Invalid ternary operator, expected ':'");
+		lexer.next();
 		Expression elseThen = ternary();
 		if(e.isConstant()) return e.expectConstantBool() ? ifThen : elseThen;
 		return new Expression.Ternary(e.position, e, ifThen, elseThen);
@@ -255,7 +257,7 @@ public class WtfParser{
 				if(!e.expectConstantBool()) e = e2;
 			}else if(e2.isConstant()){
 				if(e2.expectConstantBool()) e = e2;
-			}else e = new Expression.Or(e.position, e, and());
+			}else e = new Expression.Or(e.position, e, e2);
 		}
 		return e;
 	}
@@ -269,8 +271,7 @@ public class WtfParser{
 				if(e.expectConstantBool()) e = e2;
 			}else if(e2.isConstant()){
 				if(!e2.expectConstantBool()) e = e2;
-			}else e = new Expression.Or(e.position, e, and());
-			e = new Expression.And(e.position, e, eq());
+			}else e = new Expression.And(e.position, e, e2);
 		}
 		return e;
 	}
@@ -283,19 +284,19 @@ public class WtfParser{
 			lexer.next();
 			Expression e2 = comp();
 			e = e.isConstant()&&e2.isConstant() ?
-					new Expression.Bool(e.position, Objects.equals(e.getConstantObject(), e2.getConstantObject())==(guess==1)) :
+					new Expression.Bool(e.position, Wtf.equals(e.expectConstantObject(), e2.expectConstantObject())==(guess==1)) :
 					guess==1 ? new Expression.Eq(e.position, e, e2) :
 							new Expression.NotEq(e.position, e, e2);
 		}
 	}
 
 	private Expression comp(){
-		Expression e = term();
+		Expression e = range();
 		while(true){
 			int guess = lexer.guessNext4(TokenType.LT, TokenType.GT, TokenType.LT_EQ, TokenType.GT_EQ);
 			if(guess==0) return e;
 			lexer.next();
-			Expression e2 = term();
+			Expression e2 = range();
 
 			if(e.isConstant()&&e2.isConstant()){
 				double d = e.expectConstantNumber();
@@ -321,6 +322,28 @@ public class WtfParser{
 		}
 	}
 
+	private Expression range(){
+		Expression e = random();
+		while(lexer.guessNext(TokenType.DOT_DOT)){
+			lexer.next();
+			Expression e2 = random();
+			e = e.isConstant()&&e2.isConstant() ?
+					new Expression.RangeConstant(e.position, new Range(e.expectConstantInt(), e2.expectConstantInt())) :
+					new Expression.RangeOperator(e.position, e, e2);
+		}
+		return e;
+	}
+
+	private Expression random(){
+		Expression e = term();
+		while(lexer.guessNext(TokenType.TILDE)){
+			lexer.next();
+			Expression e2 = term();
+			e = new Expression.RandomInt(e.position, e, e2);
+		}
+		return e;
+	}
+
 	private Expression term(){
 		Expression e = factor();
 		while(true){
@@ -329,41 +352,32 @@ public class WtfParser{
 			lexer.next();
 			Expression e2 = factor();
 			if(e.isConstant()&&e2.isConstant()){
-				double d = e.expectConstantNumber();
-				double d2 = e2.expectConstantNumber();
-				e = new Expression.Number(e.position, guess==1 ? d+d2 : d-d2);
+				Number a = e.expectConstantObject(Number.class);
+				Number b = e2.expectConstantObject(Number.class);
+				e = new Expression.StaticConstant(e.position, guess==1 ? Wtf.add(a, b) : Wtf.subtract(a, b));
 			}else e = guess==1 ? new Expression.Add(e.position, e, e2) :
 					new Expression.Subtract(e.position, e, e2);
 		}
 	}
 
 	private Expression factor(){
-		Expression e = range();
+		Expression e = unary();
 		while(true){
 			int guess = lexer.guessNext2(TokenType.STAR, TokenType.SLASH);
 			if(guess==0) return e;
 			lexer.next();
-			Expression e2 = factor();
+			Expression e2 = unary();
 			if(e.isConstant()&&e2.isConstant()){
-				double d = e.expectConstantNumber();
-				double d2 = e2.expectConstantNumber();
-				e = new Expression.Number(e.position, guess==1 ? d*d2 : d/d2);
+				Number a = e.expectConstantObject(Number.class);
+				Number b = e2.expectConstantObject(Number.class);
+				try{
+					e = new Expression.StaticConstant(e.position, guess==1 ? Wtf.multiply(a, b) : Wtf.divide(a, b));
+				}catch(ArithmeticException ex){
+					throw new WtfCompileException(e.position, "Divide by zero");
+				}
 			}else e = guess==1 ? new Expression.Multiply(e.position, e, e2) :
 					new Expression.Divide(e.position, e, e2);
 		}
-	}
-
-	private Expression range(){
-		Expression e = unary();
-		while(lexer.guessNext(TokenType.DOT_DOT)){
-			lexer.next();
-			Expression e2 = range();
-			if(e.isConstant()&&e2.isConstant())
-				e = new Expression.RangeConstant(e.position,
-						new Range(e.expectConstantNumber(), e2.expectConstantNumber()));
-			else e = new Expression.RangeOperator(e.position, e, e2);
-		}
-		return e;
 	}
 
 	private Expression unary(){
@@ -380,7 +394,7 @@ public class WtfParser{
 				lexer.next();
 				Expression e = unary();
 				return e.isConstant() ?
-						new Expression.Number(current.start, -e.expectConstantNumber()) :
+						new Expression.StaticConstant(current.start, Wtf.negate(e.expectConstantObject(Number.class))) :
 						new Expression.Negate(current.start, e);
 			}
 			case DEBUG:
@@ -405,7 +419,9 @@ public class WtfParser{
 			case FALSE:
 				return new Expression.Bool(current.start, false);
 			case NUMBER:
-				return new Expression.Number(current.start, literalValue(current));
+				return new Expression.NumberConstant(current.start, literalValue(current));
+			case INT:
+				return new Expression.StaticConstant(current.start, Integer.parseInt(literalValue(current)));
 			case NAMESPACE:
 				return new Expression.Namespace(current.start, literalValue(current));
 			case COLOR:

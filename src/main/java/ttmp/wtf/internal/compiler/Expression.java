@@ -36,6 +36,12 @@ public abstract class Expression{
 		return null;
 	}
 
+	public Object expectConstantObject(){
+		Object o = getConstantObject();
+		if(o==null) error("Expected constant");
+		return o;
+	}
+
 	/**
 	 * Get constant with type {@code T}. Throws compile error if the expression doesn't produce constant, or the type of constant is not {@code T}.
 	 *
@@ -45,30 +51,36 @@ public abstract class Expression{
 	 * @throws WtfCompileException if the expression doesn't produce constant, or the type of constant is not {@code T}
 	 */
 	public <T> T expectConstantObject(Class<T> classOf){
-		Object o = getConstantObject();
-		if(o==null) error("Expected constant");
+		Object o = expectConstantObject();
 		if(!classOf.isInstance(o)) error("Invalid expression, expected "+classOf.getSimpleName());
 		// noinspection unchecked
 		return (T)o;
 	}
 
 	/**
-	 * Get numeric constant. This is mostly equivalent to {@code expectConstantObject(Double.class)}.
+	 * Get numeric constant. This is mostly equivalent to {@code expectConstantObject(Number.class)}.
 	 */
 	public double expectConstantNumber(){
-		Object o = getConstantObject();
-		if(o==null) error("Expected constant");
-		if(!(o instanceof Double)) error("Invalid expression, expected number");
-		return (double)o;
+		Object o = expectConstantObject();
+		if(!(o instanceof Number)) error("Invalid expression, expected number but provided with "+o.getClass().getSimpleName());
+		return ((Number)o).doubleValue();
+	}
+
+	/**
+	 * Get integer constant. This is mostly equivalent to {@code expectConstantObject(Integer.class)}.
+	 */
+	public int expectConstantInt(){
+		Object o = expectConstantObject();
+		if(!(o instanceof Integer)) error("Invalid expression, expected integer but provided with "+o.getClass().getSimpleName());
+		return (int)o;
 	}
 
 	/**
 	 * Get boolean constant. This is mostly equivalent to {@code expectConstantObject(Boolean.class)}.
 	 */
 	public boolean expectConstantBool(){
-		Object o = getConstantObject();
-		if(o==null) error("Expected constant");
-		if(!(o instanceof Boolean)) error("Invalid expression, expected Boolean");
+		Object o = expectConstantObject();
+		if(!(o instanceof Boolean)) error("Invalid expression, expected boolean but provided with "+o.getClass().getSimpleName());
 		return (boolean)o;
 	}
 
@@ -81,7 +93,7 @@ public abstract class Expression{
 
 	protected void expectType(Class<?> comparingType, @Nullable Class<?> expectedType){
 		if(expectedType!=null&&!expectedType.isAssignableFrom(comparingType))
-			error("Invalid expression, expected "+expectedType.getSimpleName()+" but provided "+comparingType.getSimpleName());
+			error("Invalid expression, expected "+expectedType.getSimpleName()+" but provided with "+comparingType.getSimpleName());
 	}
 
 	protected final void error(String message){
@@ -190,8 +202,8 @@ public abstract class Expression{
 
 		@Override public void checkType(@Nullable Class<?> expectedType){
 			expectType(Boolean.class, expectedType);
-			this.e1.checkType(Double.class);
-			this.e2.checkType(Double.class);
+			this.e1.checkType(java.lang.Number.class);
+			this.e2.checkType(java.lang.Number.class);
 		}
 	}
 
@@ -201,9 +213,9 @@ public abstract class Expression{
 		}
 
 		@Override public void checkType(@Nullable Class<?> expectedType){
-			expectType(Double.class, expectedType);
-			this.e1.checkType(Double.class);
-			this.e2.checkType(Double.class);
+			expectType(java.lang.Number.class, expectedType);
+			this.e1.checkType(java.lang.Number.class);
+			this.e2.checkType(java.lang.Number.class);
 		}
 	}
 
@@ -358,6 +370,25 @@ public abstract class Expression{
 		}
 	}
 
+	public static class RandomInt extends Expression{
+		public final Expression a;
+		public final Expression b;
+
+		public RandomInt(int position, Expression a, Expression b){
+			super(position);
+			this.a = a;
+			this.b = b;
+		}
+
+		@Override public void visit(ExpressionVisitor visitor){
+			visitor.visitRandomInt(this);
+		}
+		@Override public void checkType(@Nullable Class<?> expectedType){
+			expectType(Integer.class, expectedType);
+
+		}
+	}
+
 	public static class Ternary extends Expression{
 		public final Expression condition;
 		public final Expression ifThen;
@@ -388,13 +419,13 @@ public abstract class Expression{
 		}
 	}
 
-	public static class Number extends Expression{
+	public static class NumberConstant extends Expression{
 		public final double number;
 
-		public Number(int position, String number){
+		public NumberConstant(int position, String number){
 			this(position, Double.parseDouble(number));
 		}
-		public Number(int position, double number){
+		public NumberConstant(int position, double number){
 			super(position);
 			this.number = number;
 		}

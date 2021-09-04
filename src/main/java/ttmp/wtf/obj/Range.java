@@ -4,23 +4,23 @@ import java.util.Iterator;
 import java.util.NoSuchElementException;
 import java.util.Objects;
 
-public final class Range implements Iterable<Double>{
-	private final double from;
-	private final double to;
+public final class Range implements Iterable<Integer>{
+	private final int from;
+	private final int to;
 
-	public Range(double from, double to){
+	public Range(int from, int to){
 		this.from = from;
 		this.to = to;
 	}
 
-	public double getFrom(){
+	public int getFrom(){
 		return from;
 	}
-	public double getTo(){
+	public int getTo(){
 		return to;
 	}
 
-	@Override public Iterator<Double> iterator(){
+	@Override public Iterator<Integer> iterator(){
 		return new RangeIterator(from, to);
 	}
 
@@ -38,24 +38,26 @@ public final class Range implements Iterable<Double>{
 		return from+".."+to;
 	}
 
-	public static final class RangeIterator implements Iterator<Double>{
-		private final double from, to;
-		private int nextIndex;
+	private static final class RangeIterator implements Iterator<Integer>{
+		private final int to;
+		private int next;
+		private final boolean reverse;
 
-		public RangeIterator(double from, double to){
-			this.from = from;
+		public RangeIterator(int from, int to){
+			this.next = from;
 			this.to = to;
+			this.reverse = from>to;
 		}
 
 		@Override public boolean hasNext(){
-			return (to>from ? to-from : from-to)<nextIndex;
+			return reverse ? next>=to : next<=to;
 		}
-		@Override public Double next(){
+		@Override public Integer next(){
 			if(!hasNext()) throw new NoSuchElementException();
-			nextIndex++;
-			return from<to ?
-					Math.min(to, from+nextIndex) :
-					Math.max(to, from-nextIndex);
+			int n = next;
+			if(reverse) next--;
+			else next++;
+			return n;
 		}
 	}
 }

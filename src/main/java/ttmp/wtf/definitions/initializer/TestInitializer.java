@@ -2,6 +2,7 @@ package ttmp.wtf.definitions.initializer;
 
 import it.unimi.dsi.fastutil.ints.IntArrayList;
 import it.unimi.dsi.fastutil.ints.IntList;
+import ttmp.wtf.Wtf;
 import ttmp.wtf.exceptions.WtfException;
 import ttmp.wtf.internal.WtfExecutor;
 
@@ -40,10 +41,8 @@ public class TestInitializer implements Initializer<Boolean>{
 			executor.error("Too few of values provided: "+provided.size());
 		IntList wrongMatchIndices = new IntArrayList();
 		for(int i = 0; i<provided.size(); i++){
-			Object p = provided.get(i);
-			if(!p.equals(expectedValues[i])){
+			if(!Wtf.equals(provided.get(i), expectedValues[i]))
 				wrongMatchIndices.add(i);
-			}
 		}
 		if(wrongMatchIndices.isEmpty()) return true;
 		else if(errorIfFails){

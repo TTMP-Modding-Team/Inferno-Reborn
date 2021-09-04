@@ -22,11 +22,11 @@ public class DeferredAbilityGeneratorInitializer implements Initializer<Deferred
 	}
 
 	@Override public Object getPropertyValue(WtfExecutor executor, String property){
-		if("Weight".equals(property)) return (double)weight;
+		if("Weight".equals(property)) return weight;
 		return executor.noPropertyError(property);
 	}
 	@Override public void setPropertyValue(WtfExecutor executor, String property, Object o){
-		if("Weight".equals(property)) weight = executor.expectType(Number.class, o).intValue();
+		if("Weight".equals(property)) weight = executor.expectInt(o);
 		else executor.noPropertyError(property);
 	}
 	@Nullable @Override public Initializer<?> setPropertyValueLazy(WtfExecutor executor, String property, int codepoint){

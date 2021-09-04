@@ -18,7 +18,7 @@ Abilities: {
         : 1, <infernoreborn:netherite_skin>
     }
 
-    if(Random{ Roll: 0.2 }){
+    if(1~5==1){
          : Choose {
              : <infernoreborn:mud_skin>
              : <infernoreborn:frozen_skin>

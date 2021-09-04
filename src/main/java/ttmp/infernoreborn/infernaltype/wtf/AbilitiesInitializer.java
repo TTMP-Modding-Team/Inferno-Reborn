@@ -20,12 +20,9 @@ public class AbilitiesInitializer implements Initializer<Void>{
 	}
 
 	@Override public void apply(WtfExecutor executor, Object o){
-		Initializer.super.apply(executor, o);
-		if(o instanceof SomeAbility){
-			addAbility(((SomeAbility)o).getAbility());
-		}else if(o instanceof ResourceLocation){
-			addAbility((ResourceLocation)o);
-		}
+		if(o instanceof SomeAbility) addAbility(((SomeAbility)o).getAbility());
+		else if(o instanceof ResourceLocation) addAbility((ResourceLocation)o);
+		else executor.error("Expected ability but provided "+o.getClass().getSimpleName());
 	}
 
 	private void addAbility(ResourceLocation id){

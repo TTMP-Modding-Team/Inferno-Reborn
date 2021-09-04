@@ -31,7 +31,7 @@ public class ChooseAbilityInitializer implements Initializer<SomeAbility>{
 			Bundle b = (Bundle)o;
 			if(b.size()!=2) executor.error("Expected bundle with size of 2 instead of "+b.size());
 			Object o2 = b.get(1);
-			int weight = (int)executor.expectNumber(b.get(0));
+			int weight = executor.expectInt(b.get(0));
 			if(o2 instanceof ResourceLocation) put((ResourceLocation)o2, weight);
 			else if(o2 instanceof SomeAbility) put(((SomeAbility)o2).getAbility(), weight);
 			else executor.error("Cannot handle object of type "+o.getClass().getSimpleName());

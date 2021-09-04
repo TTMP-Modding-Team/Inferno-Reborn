@@ -1,0 +1,4 @@
+repeat(I5) // Integer 5
+    debug "a"
+repeat(D5) // Double 5
+    debug "b"

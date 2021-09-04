@@ -1,6 +1,7 @@
 package ttmp.wtf;
 
 import com.google.common.collect.ImmutableMap;
+import com.google.common.primitives.Ints;
 import com.google.common.primitives.Shorts;
 import ttmp.wtf.internal.DynamicConstantInfo;
 import ttmp.wtf.internal.Inst;
@@ -214,6 +215,13 @@ public final class WtfScript{
 					break;
 				case Inst.RANGE:
 					stb.append("RANGE");
+					break;
+				case Inst.RAND:
+					stb.append("RAND");
+					break;
+				case Inst.RANDN:
+					stb.append("RANDN ").append(Ints.fromBytes(inst[++i], inst[++i], inst[++i], inst[++i]))
+							.append(' ').append(Ints.fromBytes(inst[++i], inst[++i], inst[++i], inst[++i]));
 					break;
 				case Inst.NEW:
 					stb.append("NEW ").append(inst[++i]).append("   #").append(identifiers[inst[i]]);

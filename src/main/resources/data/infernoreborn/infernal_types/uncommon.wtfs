@@ -39,7 +39,7 @@ Abilities: {
         }
     }
 
-    if(Random{}){
+    if(1~2==1){
         repeat(1~2){
             : Choose {
                 : <infernoreborn:destiny_bond>
