@@ -103,21 +103,21 @@ public interface Inst{
 
 	// 0x40~0x5F Advanced Operators
 	/**
-	 * Get property with identifier {1}, to initializer from stack {1} below from top
+	 * Get property from {@link ttmp.wtf.definitions.initializer.Initializer Initializer} {1} below from top of stack, named with identifier {1}. Pushes 1.
 	 */
 	byte GET_PROPERTY = 0x40;
 	/**
-	 * Set property with identifier {1} to 1 popped obj. Top of the stack after popping is expected to be {@link ttmp.wtf.definitions.initializer.Initializer Initializer}.
+	 * Set property to {@link ttmp.wtf.definitions.initializer.Initializer Initializer} {1} below from top of stack, named with identifier {1}. Pops 1.
 	 */
 	byte SET_PROPERTY = 0x41;
 	/**
-	 * Set lazy property with identifier {1}, expects {@link ttmp.wtf.WtfScript WtfScript} object.
+	 * Set lazy property to {@link ttmp.wtf.definitions.initializer.Initializer Initializer} {1} below from top of stack, named with identifier {1}.<br>
 	 * Property gets evaluated right away if the initializer doesn't accept lazy property initialization. In that case, new initializer is put into stack.
 	 * Otherwise, jump to {2}.
 	 */
 	byte SET_PROPERTY_LAZY = 0x42;
 	/**
-	 * Pop one and apply. Top of the stack after popping is expected to be {@link ttmp.wtf.definitions.initializer.Initializer Initializer}.
+	 * Apply 1 popped object to {@link ttmp.wtf.definitions.initializer.Initializer Initializer} {1} below from top of stack.
 	 */
 	byte APPLY = 0x43;
 	/**
@@ -185,8 +185,9 @@ public interface Inst{
 	byte DEBUG = 0x70;
 
 	/**
-	 * Finish initialization for property with identifier {1}.
-	 * Top of the stack is expected to be {@link ttmp.wtf.definitions.initializer.Initializer}.
+	 * Pop an {@link ttmp.wtf.definitions.initializer.Initializer Initializer} from
+	 * stack and call {@link ttmp.wtf.definitions.initializer.Initializer#finish(WtfExecutor) finish()}.
+	 * The product is set to another {@link ttmp.wtf.definitions.initializer.Initializer Initializer} {1} below from top of stack, as property with identifier {1}.
 	 */
 	byte FINISH_PROPERTY_INIT = 0x7E;
 	/**

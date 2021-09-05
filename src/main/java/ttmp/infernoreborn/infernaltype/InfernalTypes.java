@@ -114,10 +114,6 @@ public final class InfernalTypes{
 			}
 		}
 
-		InfernoReborn.LOGGER.debug("Fuck {}", list.stream()
-				.map(e -> e.typeId+" - "+e.deferredAbilityGeneratorInitializer.getWeight())
-				.collect(Collectors.joining(", ")));
-
 		switch(list.size()){
 			case 0:
 				return;
@@ -241,6 +237,7 @@ public final class InfernalTypes{
 				infernalTypes.put(id, new InfernalType(id, json.getAsJsonObject()));
 				generators.put(id, script);
 				InfernoReborn.LOGGER.debug("Reading infernal type {}", id);
+				InfernoReborn.LOGGER.debug(script.format());
 			}
 
 			InfernalTypes.infernalTypes = infernalTypes.build();

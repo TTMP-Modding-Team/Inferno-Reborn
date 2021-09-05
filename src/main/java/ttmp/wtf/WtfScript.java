@@ -193,14 +193,15 @@ public final class WtfScript{
 					stb.append("APPENDN ").append(Byte.toUnsignedInt(inst[++i]));
 					break;
 				case Inst.GET_PROPERTY:
-					stb.append("GET_PROPERTY ").append(inst[++i]).append(" ").append(Byte.toUnsignedInt(inst[++i]))
-							.append("   #").append(identifiers[inst[i-1]]);
+					stb.append("GET_PROPERTY ").append(Byte.toUnsignedInt(inst[++i])).append(" ").append(inst[++i])
+							.append("   #").append(identifiers[inst[i]]);
 					break;
 				case Inst.SET_PROPERTY:
-					stb.append("SET_PROPERTY ").append(inst[++i]).append("   #").append(identifiers[inst[i]]);
+					stb.append("SET_PROPERTY ").append(Byte.toUnsignedInt(inst[++i])).append(" ").append(inst[++i])
+							.append("   #").append(identifiers[inst[i]]);
 					break;
 				case Inst.SET_PROPERTY_LAZY:
-					stb.append("SET_PROPERTY_LAZY ").append(inst[++i])
+					stb.append("SET_PROPERTY_LAZY ").append(Byte.toUnsignedInt(inst[++i])).append(" ").append(inst[++i])
 							.append(" ").append(Shorts.fromBytes(inst[++i], inst[++i]))
 							.append("   #").append(identifiers[inst[i-2]]);
 					break;
@@ -251,7 +252,8 @@ public final class WtfScript{
 					stb.append("DEBUG");
 					break;
 				case Inst.FINISH_PROPERTY_INIT:
-					stb.append("FINISH_PROPERTY_INIT ").append(inst[++i]).append("   #").append(identifiers[inst[i]]);
+					stb.append("FINISH_PROPERTY_INIT ").append(Byte.toUnsignedInt(inst[++i]))
+							.append(" ").append(inst[++i]).append("   #").append(identifiers[inst[i]]);
 					break;
 				case Inst.END:
 					stb.append("END");

@@ -143,23 +143,28 @@ public class WtfCompiler implements StatementVisitor, ExpressionVisitor{
 	@Override public void visitAssign(Statement.Assign assign){
 		writeInst(assign.value);
 		write(Inst.SET_PROPERTY);
+		write(getStackPoint(getBlock().initializerStackPosition));
 		write(identifier(assign.property));
 		removeStack();
 	}
 	@Override public void visitAssignLazy(Statement.AssignLazy assignLazy){
 		write(Inst.SET_PROPERTY_LAZY);
+		int initializerStackPosition = getBlock().initializerStackPosition;
+		write(getStackPoint(initializerStackPosition));
 		byte identifier = identifier(assignLazy.property);
 		write(identifier);
 		int p = getNextWritePoint();
 		write2((short)0);
 		addStack();
-		pushBlock();
+		pushBlock(true);
 		for(Statement s : assignLazy.statements)
 			writeInst(s);
 		popBlock();
 		write(Inst.FINISH_PROPERTY_INIT);
+		write(getStackPoint(initializerStackPosition));
 		write(identifier);
 		write2At(p, getJumpCoord(p));
+		removeStack();
 	}
 	@Override public void visitDefine(Statement.Define define){
 		Expression e = define.value;
@@ -179,6 +184,7 @@ public class WtfCompiler implements StatementVisitor, ExpressionVisitor{
 	@Override public void visitApply(Statement.Apply apply){
 		writeInst(apply.value);
 		write(Inst.APPLY);
+		write(getStackPoint(getBlock().initializerStackPosition));
 		removeStack();
 	}
 	@Override public void visitIf(Statement.If apply){
@@ -491,8 +497,8 @@ public class WtfCompiler implements StatementVisitor, ExpressionVisitor{
 	}
 	@Override public void visitPropertyAccess(Expression.PropertyAccess propertyAccess){
 		write(Inst.GET_PROPERTY);
-		write(identifier(propertyAccess.property));
 		write(getStackPoint(getBlock().initializerStackPosition));
+		write(identifier(propertyAccess.property));
 		addStack();
 	}
 	@Override public void visitConstantAccess(Expression.ConstantAccess constantAccess){

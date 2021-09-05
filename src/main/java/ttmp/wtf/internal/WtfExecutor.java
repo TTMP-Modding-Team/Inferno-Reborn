@@ -240,29 +240,24 @@ public class WtfExecutor{
 						push(stb.toString());
 						break;
 					}
-					case Inst.GET_PROPERTY:{
-						String identifier = identifier();
-						push(expectInitializer(getNBelowTop(nextUnsigned())).getPropertyValue(this, identifier));
+					case Inst.GET_PROPERTY:
+						push(expectInitializer(getNBelowTop(nextUnsigned())).getPropertyValue(this, identifier()));
 						break;
-					}
-					case Inst.SET_PROPERTY:{
-						Object o = pop();
-						expectInitializer(peek()).setPropertyValue(this, identifier(), o);
+					case Inst.SET_PROPERTY:
+						expectInitializer(getNBelowTop(nextUnsigned())).setPropertyValue(this, identifier(), pop());
 						break;
-					}
 					case Inst.SET_PROPERTY_LAZY:{
-						Initializer<?> i2 = expectInitializer(peek()).setPropertyValueLazy(this, identifier(), ip+2);
+						Initializer<?> i2 = expectInitializer(getNBelowTop(nextUnsigned()))
+								.setPropertyValueLazy(this, identifier(), ip+2);
 						if(i2!=null){
 							ip += 2;
 							push(i2);
 						}else ip += next2();
 						break;
 					}
-					case Inst.APPLY:{
-						Object o = pop();
-						expectInitializer(peek()).apply(this, o);
+					case Inst.APPLY:
+						expectInitializer(getNBelowTop(nextUnsigned())).apply(this, pop());
 						break;
-					}
 					case Inst.GET_VARIABLE:
 						push(variable[nextUnsigned()]);
 						break;
@@ -319,12 +314,11 @@ public class WtfExecutor{
 					case Inst.DEBUG:
 						engine.debug(peek());
 						break;
-					case Inst.FINISH_PROPERTY_INIT:{
+					case Inst.FINISH_PROPERTY_INIT:
 						if(stackSize==startingStack+1) break LOOP;
-						Object o = expectInitializer(pop()).finish(this);
-						expectInitializer(peek()).setPropertyValue(this, identifier(), o);
+						expectInitializer(getNBelowTop(nextUnsigned()))
+								.setPropertyValue(this, identifier(), expectInitializer(pop()).finish(this));
 						break;
-					}
 					case Inst.END:
 						break LOOP;
 					default:

@@ -250,7 +250,7 @@ public class ServerAbilityHolder implements AbilityHolder, ICapabilitySerializab
 		CompoundNBT nbt = new CompoundNBT();
 		if(!abilities.isEmpty()) nbt.put("abilities", StupidUtils.writeToNbt(abilities, Abilities.getRegistry()));
 		if(this.generateAbility) nbt.putBoolean("generateAbility", true);
-		if(appliedInfernalType!=null) nbt.putString("appliedGeneratorScheme", appliedInfernalType.getId().toString());
+		if(appliedInfernalType!=null) nbt.putString("infernalType", appliedInfernalType.getId().toString());
 		this.cooldown.save(nbt);
 		return nbt;
 	}
@@ -262,8 +262,8 @@ public class ServerAbilityHolder implements AbilityHolder, ICapabilitySerializab
 		ListNBT abilities = nbt.getList("abilities", Constants.NBT.TAG_STRING);
 		StupidUtils.read(abilities, Abilities.getRegistry(), this::add);
 		this.generateAbility = nbt.getBoolean("generateAbility");
-		this.appliedInfernalType = nbt.contains("appliedGeneratorScheme", Constants.NBT.TAG_STRING) ?
-				InfernalTypes.get(new ResourceLocation(nbt.getString("appliedGeneratorScheme"))) :
+		this.appliedInfernalType = nbt.contains("infernalType", Constants.NBT.TAG_STRING) ?
+				InfernalTypes.get(new ResourceLocation(nbt.getString("infernalType"))) :
 				null;
 		this.cooldown.load(nbt);
 	}
