@@ -2,54 +2,66 @@ package ttmp.wtf;
 
 import java.util.Random;
 
+/**
+ * Bunch of utility methods for WtfScript.
+ */
 public final class Wtf{
 	private Wtf(){}
 
+	/**
+	 * Equality check used in WtfScript.
+	 * @return If both object is {@link Number}, comparison between two double values. Otherwise, result of {@code equals()} call.
+	 */
 	public static boolean equals(Object o1, Object o2){
 		if(!(o1 instanceof Number)) return o1.equals(o2);
 		if(!(o2 instanceof Number)) return false;
 		return Double.compare(((Number)o1).doubleValue(), ((Number)o2).doubleValue())==0;
 	}
 
-	public static Number add(Number n1, Number n2){
-		if(n1 instanceof Integer&&n2 instanceof Integer) return n1.intValue()+n2.intValue();
-		else return n1.doubleValue()+n2.doubleValue();
-	}
-
-	public static Number subtract(Number n1, Number n2){
-		if(n1 instanceof Integer&&n2 instanceof Integer) return n1.intValue()-n2.intValue();
-		else return n1.doubleValue()-n2.doubleValue();
-	}
-
-	public static Number subtractr(Number n1, Number n2){
-		if(n1 instanceof Integer&&n2 instanceof Integer) return n2.intValue()-n1.intValue();
-		else return n2.doubleValue()-n1.doubleValue();
-	}
-
-	public static Number multiply(Number n1, Number n2){
-		if(n1 instanceof Integer&&n2 instanceof Integer) return n1.intValue()*n2.intValue();
-		else return n1.doubleValue()*n2.doubleValue();
+	/**
+	 * Addition method used in WtfScript.
+	 * @return {@code a+b}. The result is {@link Integer} if both {@code a} and {@code b} are {@link Integer}.
+	 */
+	public static Number add(Number a, Number b){
+		if(a instanceof Integer&&b instanceof Integer) return a.intValue()+b.intValue();
+		else return a.doubleValue()+b.doubleValue();
 	}
 
 	/**
-	 * @throws ArithmeticException If {@code n1} and {@code n2} is both integers and {@code n2} is 0
+	 * Subtraction method used in WtfScript.
+	 * @return {@code a-b}. The result is {@link Integer} if both {@code a} and {@code b} are {@link Integer}.
 	 */
-	public static Number divide(Number n1, Number n2){
-		if(n1 instanceof Integer&&n2 instanceof Integer) return n1.intValue()/n2.intValue();
-		else return n1.doubleValue()/n2.doubleValue();
+	public static Number subtract(Number a, Number b){
+		if(a instanceof Integer&&b instanceof Integer) return a.intValue()-b.intValue();
+		else return a.doubleValue()-b.doubleValue();
 	}
 
 	/**
-	 * {@link Wtf#divide(Number, Number)} but parameter is flipped, TODO remove it lmao
-	 * @throws ArithmeticException If {@code n1} and {@code n2} is both integers and {@code n1} is 0
+	 * Multiplication method used in WtfScript.
+	 * @return {@code a*b}. The result is {@link Integer} if both {@code a} and {@code b} are {@link Integer}.
 	 */
-	public static Number divider(Number n1, Number n2){
-		if(n1 instanceof Integer&&n2 instanceof Integer) return n2.intValue()/n1.intValue();
-		else return n2.doubleValue()/n1.doubleValue();
+	public static Number multiply(Number a, Number b){
+		if(a instanceof Integer&&b instanceof Integer) return a.intValue()*b.intValue();
+		else return a.doubleValue()*b.doubleValue();
 	}
 
+	/**
+	 * Division method used in WtfScript.
+	 * @return {@code a/b}. The result is {@link Integer} if both {@code a} and {@code b} are {@link Integer}.
+	 * @throws ArithmeticException If {@code a} and {@code b} is both {@link Integer} and {@code b} is 0
+	 */
+	public static Number divide(Number a, Number b){
+		if(a instanceof Integer&&b instanceof Integer) return a.intValue()/b.intValue();
+		else return a.doubleValue()/b.doubleValue();
+	}
+
+	/**
+	 * Negation method used in WtfScript.
+	 * @return {@code -n}. The result is {@link Integer} if {@code n} is {@link Integer}.
+	 */
 	public static Number negate(Number n){
-		return n instanceof Integer ? -n.intValue() : -n.doubleValue();
+		if(n instanceof Integer) return -n.intValue();
+		else return -n.doubleValue();
 	}
 
 	/**

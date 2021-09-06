@@ -41,31 +41,30 @@ public class WtfExecutor{
 		this.stack = new Object[script.getMaxStack()];
 		this.variable = new Object[script.getVariables()];
 
+		setDynamicConstants();
+	}
+
+	public void setDynamicConstants(){
 		if(!script.getDynamicConstants().isEmpty()){
-			List<String> missing = null, wrongType = null;
+			List<String> errors = null;
 			for(Map.Entry<String, DynamicConstantInfo> e : script.getDynamicConstants().entrySet()){
 				Object o = context.getDynamicConstant(e.getKey());
 				if(o==null){
-					if(missing==null) missing = new ArrayList<>();
-					missing.add(e.getKey());
+					if(errors==null) errors = new ArrayList<>();
+					errors.add("Dynamic constant '"+e.getKey()+"' is not provided");
 				}else if(!e.getValue().getConstantType().isInstance(o)){
-					if(wrongType==null) wrongType = new ArrayList<>();
-					wrongType.add(e.getKey());
+					if(errors==null) errors = new ArrayList<>();
+					errors.add("Dynamic constant '"+e.getKey()+"' doesn't match type specified at compilation (expected "+
+							e.getValue().getConstantType().getSimpleName()+", provided "+o.getClass().getSimpleName()+")");
 				}else variable[e.getValue().getVarId()] = o;
 			}
-			if(missing!=null||wrongType!=null) throwDynamicConstantError(
-					missing!=null ? missing.toArray(new String[0]) : new String[0],
-					wrongType!=null ? wrongType.toArray(new String[0]) : new String[0]);
+			if(errors!=null){
+				if(errors.size()==1){
+					throw new WtfException(errors.get(0));
+				}
+				throw new WtfException(errors.size()+" errors setting dynamic constants:\n"+String.join("\n", errors));
+			}
 		}
-	}
-
-	private void throwDynamicConstantError(String[] missing, String[] wrongType){
-		if(missing.length==0){
-			if(wrongType.length==0) throw new RuntimeException("I mean... Nothing wrong with it??");
-			else throw new WtfException(wrongType.length+" provided dynamic constant doesn't match type specified at compile ("+String.join(", ", wrongType)+")");
-		}else if(wrongType.length==0) throw new WtfException(missing.length+" constants are not provided ("+String.join(", ", missing)+")");
-		else throw new WtfException(missing.length+" constants are not provided ("+String.join(", ", missing)+"), "+
-					wrongType.length+" provided dynamic constant doesn't match type specified at compile ("+String.join(", ", wrongType)+")");
 	}
 
 	public WtfScriptEngine getEngine(){
@@ -101,9 +100,12 @@ public class WtfExecutor{
 			LOOP:
 			while(true){
 				switch(next()){
-					case Inst.PUSH:
-						pushObj();
+					case Inst.PUSH:{
+						int i = nextUnsigned();
+						if(script.getObjectSize()<=i) error("Object index out of bounds ("+i+")");
+						push(script.getObject(i));
 						break;
+					}
 					case Inst.DISCARD:
 						pop();
 						break;
@@ -138,22 +140,22 @@ public class WtfExecutor{
 						push(-1);
 						break;
 					case Inst.ADD:
-						push(Wtf.add(popNumberObject(), popNumberObject()));
+						setAndDiscard(1, Wtf.add(expectNumberObject(peek(1)), expectNumberObject(peek())));
 						break;
 					case Inst.SUBTRACT:
-						push(Wtf.subtractr(popNumberObject(), popNumberObject()));
+						setAndDiscard(1, Wtf.subtract(expectNumberObject(peek(1)), expectNumberObject(peek())));
 						break;
 					case Inst.MULTIPLY:
-						push(Wtf.multiply(popNumberObject(), popNumberObject()));
+						setAndDiscard(1, Wtf.multiply(expectNumberObject(peek(1)), expectNumberObject(peek())));
 						break;
 					case Inst.DIVIDE:
-						push(Wtf.divider(popNumberObject(), popNumberObject()));
+						setAndDiscard(1, Wtf.divide(expectNumberObject(peek(1)), expectNumberObject(peek())));
 						break;
 					case Inst.NEGATE:
-						push(Wtf.negate(popNumberObject()));
+						push(Wtf.negate(expectNumberObject(pop())));
 						break;
 					case Inst.NOT:
-						push(!popBoolean());
+						push(!expectBoolean(pop()));
 						break;
 					case Inst.EQ:
 						push(pop().equals(pop()));
@@ -161,53 +163,39 @@ public class WtfExecutor{
 					case Inst.NEQ:
 						push(!pop().equals(pop()));
 						break;
-					case Inst.LT:{
-						double d1 = popNumber(), d2 = popNumber();
-						push(d2<d1);
+					case Inst.LT:
+						setAndDiscard(1, expectNumber(peek(1))<expectNumber(peek()));
 						break;
-					}
-					case Inst.GT:{
-						double d1 = popNumber(), d2 = popNumber();
-						push(d2>d1);
+					case Inst.GT:
+						setAndDiscard(1, expectNumber(peek(1))>expectNumber(peek()));
 						break;
-					}
-					case Inst.LTEQ:{
-						double d1 = popNumber(), d2 = popNumber();
-						push(d2<=d1);
+					case Inst.LTEQ:
+						setAndDiscard(1, expectNumber(peek(1))<=expectNumber(peek()));
 						break;
-					}
-					case Inst.GTEQ:{
-						double d1 = popNumber(), d2 = popNumber();
-						push(d2>=d1);
+					case Inst.GTEQ:
+						setAndDiscard(1, expectNumber(peek(1))>=expectNumber(peek()));
 						break;
-					}
 					case Inst.ADD1:{
-						Number n = popNumberObject();
+						Number n = expectNumberObject(pop());
 						if(n instanceof Integer) push(n.intValue()+1);
 						else push(n.doubleValue()+1);
 						break;
 					}
 					case Inst.SUB1:{
-						Number n = popNumberObject();
+						Number n = expectNumberObject(pop());
 						if(n instanceof Integer) push(n.intValue()-1);
 						else push(n.doubleValue()-1);
 						break;
 					}
-					case Inst.BUNDLE2:{
-						Object o1 = pop(), o2 = pop();
-						push(new Bundle(o2, o1));
+					case Inst.BUNDLE2:
+						setAndDiscard(1, new Bundle(peek(1), peek()));
 						break;
-					}
-					case Inst.BUNDLE3:{
-						Object o1 = pop(), o2 = pop(), o3 = pop();
-						push(new Bundle(o3, o2, o1));
+					case Inst.BUNDLE3:
+						setAndDiscard(2, new Bundle(peek(2), peek(1), peek()));
 						break;
-					}
-					case Inst.BUNDLE4:{
-						Object o1 = pop(), o2 = pop(), o3 = pop(), o4 = pop();
-						push(new Bundle(o4, o3, o2, o1));
+					case Inst.BUNDLE4:
+						setAndDiscard(3, new Bundle(peek(3), peek(2), peek(1), peek()));
 						break;
-					}
 					case Inst.BUNDLEN:{
 						int size = nextUnsigned();
 						Object[] bundle = new Object[size];
@@ -216,38 +204,32 @@ public class WtfExecutor{
 						push(new Bundle(bundle));
 						break;
 					}
-					case Inst.APPEND2:{
-						Object o1 = pop(), o2 = pop();
-						push(String.valueOf(o2)+o1);
+					case Inst.APPEND2:
+						setAndDiscard(1, String.valueOf(peek(1))+peek());
 						break;
-					}
-					case Inst.APPEND3:{
-						Object o1 = pop(), o2 = pop(), o3 = pop();
-						push(String.valueOf(o3)+o2+o1);
+					case Inst.APPEND3:
+						setAndDiscard(2, String.valueOf(peek(2))+peek(1)+peek());
 						break;
-					}
-					case Inst.APPEND4:{
-						Object o1 = pop(), o2 = pop(), o3 = pop(), o4 = pop();
-						push(String.valueOf(o4)+o3+o2+o1);
+					case Inst.APPEND4:
+						setAndDiscard(3, String.valueOf(peek(3))+peek(2)+peek(1)+peek());
 						break;
-					}
 					case Inst.APPENDN:{
 						int size = nextUnsigned();
 						StringBuilder stb = new StringBuilder();
 						for(int i = size-1; i>=0; i--)
-							stb.append(getNBelowTop(i));
+							stb.append(peek(i));
 						discard(size);
 						push(stb.toString());
 						break;
 					}
 					case Inst.GET_PROPERTY:
-						push(expectInitializer(getNBelowTop(nextUnsigned())).getPropertyValue(this, identifier()));
+						push(expectInitializer(peek(nextUnsigned())).getPropertyValue(this, identifier()));
 						break;
 					case Inst.SET_PROPERTY:
-						expectInitializer(getNBelowTop(nextUnsigned())).setPropertyValue(this, identifier(), pop());
+						expectInitializer(peek(nextUnsigned())).setPropertyValue(this, identifier(), pop());
 						break;
 					case Inst.SET_PROPERTY_LAZY:{
-						Initializer<?> i2 = expectInitializer(getNBelowTop(nextUnsigned()))
+						Initializer<?> i2 = expectInitializer(peek(nextUnsigned()))
 								.setPropertyValueLazy(this, identifier(), ip+2);
 						if(i2!=null){
 							ip += 2;
@@ -256,7 +238,7 @@ public class WtfExecutor{
 						break;
 					}
 					case Inst.APPLY:
-						expectInitializer(getNBelowTop(nextUnsigned())).apply(this, pop());
+						expectInitializer(peek(nextUnsigned())).apply(this, pop());
 						break;
 					case Inst.GET_VARIABLE:
 						push(variable[nextUnsigned()]);
@@ -264,13 +246,11 @@ public class WtfExecutor{
 					case Inst.SET_VARIABLE:
 						variable[nextUnsigned()] = pop();
 						break;
-					case Inst.RANGE:{
-						int to = popInt(), from = popInt();
-						push(new Range(from, to));
+					case Inst.RANGE:
+						setAndDiscard(1, new Range(expectInt(peek(1)), expectInt(peek())));
 						break;
-					}
 					case Inst.RAND:
-						push(Wtf.randomInt(engine.getRandom(), popInt(), popInt()));
+						setAndDiscard(1, Wtf.randomInt(engine.getRandom(), expectInt(peek(1)), expectInt(peek())));
 						break;
 					case Inst.RANDN:
 						push(Wtf.randomInt(engine.getRandom(), next4(), next4()));
@@ -292,13 +272,13 @@ public class WtfExecutor{
 						ip += next2();
 						break;
 					case Inst.JUMPIF:
-						ip += popBoolean() ? next2() : 2;
+						ip += expectBoolean(pop()) ? next2() : 2;
 						break;
 					case Inst.JUMPELSE:
-						ip += popBoolean() ? 2 : next2();
+						ip += expectBoolean(pop()) ? 2 : next2();
 						break;
 					case Inst.JUMP_IF_LT1:
-						ip += peekInt()<1 ? next2() : 2;
+						ip += expectInt(peek())<1 ? next2() : 2;
 						break;
 					case Inst.JUMP_OR_NEXT:{
 						Iterator<?> it = expectIterator(peek());
@@ -316,7 +296,7 @@ public class WtfExecutor{
 						break;
 					case Inst.FINISH_PROPERTY_INIT:
 						if(stackSize==startingStack+1) break LOOP;
-						expectInitializer(getNBelowTop(nextUnsigned()))
+						expectInitializer(peek(nextUnsigned()))
 								.setPropertyValue(this, identifier(), expectInitializer(pop()).finish(this));
 						break;
 					case Inst.END:
@@ -353,12 +333,6 @@ public class WtfExecutor{
 		return Ints.fromBytes(next(), next(), next(), next());
 	}
 
-	private void pushObj(){
-		int i = nextUnsigned();
-		if(script.getObjectSize()<=i) error("Object index out of bounds ("+i+")");
-		push(script.getObject(i));
-	}
-
 	private void push(Object o){
 		if(stackSize==stack.length) error("Stack overflow");
 		stack[stackSize++] = o;
@@ -374,44 +348,33 @@ public class WtfExecutor{
 		return stack[stackSize-1];
 	}
 
-	private Object getNBelowTop(int i){
-		if(i>=stackSize) error("Kinda hard to get object "+i+" below top from stack... when the stack size is "+stackSize);
+	/**
+	 * Peek stack {@code i} below top; {@code peek(0)} is equivalent to {@code peek()}.
+	 */
+	private Object peek(int i){
+		if(i>=stackSize) error("Kinda hard to get object "+i+" below top... when the stack size is "+stackSize);
 		return stack[stackSize-1-i];
+	}
+
+	/**
+	 * Set object to stack at {@code i} below top. Does not modify stack size.
+	 */
+	private void set(int i, Object o){
+		if(i>=stackSize) error("Kinda hard to set object "+i+" below top... when the stack size is "+stackSize);
+		stack[stackSize-1-i] = o;
+	}
+
+	/**
+	 * Set object to stack at {@code i}, and discard everything on top of it.
+	 */
+	private void setAndDiscard(int i, Object o){
+		if(i>=stackSize) error("Kinda hard to set object "+i+" below top... when the stack size is "+stackSize);
+		stack[(stackSize -= i)-1] = o;
 	}
 
 	private void discard(int amount){
 		if(amount>stackSize) error("Stack underflow");
 		stackSize -= amount;
-	}
-
-	private double popNumber(){
-		Object o = pop();
-		if(!(o instanceof Number)) error("Not a number");
-		return ((Number)o).doubleValue();
-	}
-
-	private Number popNumberObject(){
-		Object o = pop();
-		if(!(o instanceof Number)) error("Not a number");
-		return (Number)o;
-	}
-
-	private int popInt(){
-		Object o = pop();
-		if(!(o instanceof Integer)) error("Not an integer");
-		return (int)o;
-	}
-
-	private double peekInt(){
-		Object o = peek();
-		if(!(o instanceof Integer)) error("Not an integer");
-		return (int)o;
-	}
-
-	private boolean popBoolean(){
-		Object o = pop();
-		if(!(o instanceof Boolean)) error("Not a boolean");
-		return (boolean)o;
 	}
 
 	private Initializer<?> expectInitializer(Object o){
@@ -446,6 +409,10 @@ public class WtfExecutor{
 	public final int expectInt(Object o){
 		if(!(o instanceof Integer)) error("Expected integer but provided "+o.getClass().getSimpleName());
 		return (int)o;
+	}
+	public final Number expectNumberObject(Object o){
+		if(!(o instanceof Number)) error("Expected number but provided "+o.getClass().getSimpleName());
+		return (Number)o;
 	}
 	public final boolean expectBoolean(Object o){
 		if(!(o instanceof Boolean)) error("Expected boolean but provided "+o.getClass().getSimpleName());

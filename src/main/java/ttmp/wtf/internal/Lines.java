@@ -20,8 +20,7 @@ public final class Lines{
 	public int getLine(int index){
 		int i = 0;
 		for(RunLength line : lines){
-			int p = line.length;
-			i += p;
+			i += line.length;
 			if(index<i) return line.run;
 		}
 		return -1;
@@ -78,10 +77,8 @@ public final class Lines{
 		}
 
 		private static int getLine(int[] posForLines, int pos){
-			for(int i = 0; i<posForLines.length; i++){
-				int posForLine = posForLines[i];
-				if(posForLine>=pos) return i+1;
-			}
+			for(int i = 0; i<posForLines.length; i++)
+				if(posForLines[i]>=pos) return i+1;
 			return -1;
 		}
 

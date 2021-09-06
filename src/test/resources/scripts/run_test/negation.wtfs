@@ -1,0 +1,8 @@
+debug -5
+debug -5.0
+
+
+define A: debug 5
+
+debug A
+debug -A

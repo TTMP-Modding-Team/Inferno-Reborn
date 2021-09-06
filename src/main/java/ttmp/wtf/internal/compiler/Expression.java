@@ -171,8 +171,8 @@ public abstract class Expression{
 			visitor.visitNegate(this);
 		}
 		@Override public void checkType(@Nullable Class<?> expectedType){
-			expectType(Double.class, expectedType);
-			expression.checkType(Double.class);
+			expectType(Number.class, expectedType);
+			expression.checkType(Number.class);
 		}
 
 		@Override public String toString(){

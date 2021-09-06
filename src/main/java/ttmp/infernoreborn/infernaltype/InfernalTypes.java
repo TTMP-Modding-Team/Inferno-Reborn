@@ -84,7 +84,7 @@ public final class InfernalTypes{
 		for(InfernalType t : infernalTypes) m.put(t.getId(), t);
 		InfernalTypes.infernalTypes = m;
 		generators = Collections.emptyMap();
-		InfernoReborn.LOGGER.debug("infernalTypes: {}",
+		InfernoReborn.LOGGER.debug("syncing infernal types: {}",
 				InfernalTypes.infernalTypes.keySet().stream().map(Object::toString).collect(Collectors.joining(", ")));
 	}
 
@@ -243,9 +243,6 @@ public final class InfernalTypes{
 			InfernalTypes.infernalTypes = infernalTypes.build();
 			InfernalTypes.generators = generators.build();
 			// TODO sync
-			InfernoReborn.LOGGER.debug("infernalTypes: {}, generators: {}",
-					InfernalTypes.infernalTypes.keySet().stream().map(Object::toString).collect(Collectors.joining(", ")),
-					InfernalTypes.generators.keySet().stream().map(Object::toString).collect(Collectors.joining(", ")));
 		}
 
 		@Override public String getName(){

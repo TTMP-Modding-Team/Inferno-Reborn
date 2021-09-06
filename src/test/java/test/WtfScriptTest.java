@@ -14,7 +14,7 @@ import ttmp.wtf.definitions.initializer.Initializer;
 import ttmp.wtf.definitions.initializer.TestInitializer;
 import ttmp.wtf.exceptions.WtfCompileException;
 import ttmp.wtf.exceptions.WtfEvalException;
-import ttmp.wtf.internal.WtfDebugEngine;
+import ttmp.wtf.WtfDebugEngine;
 import ttmp.wtf.obj.RGB;
 
 import javax.annotation.Nullable;
@@ -46,6 +46,7 @@ public class WtfScriptTest{
 		tests.add(DynamicTest.dynamicTest("Run Test: Init 2", runTest(engine, "run_test/init2")));
 		tests.add(DynamicTest.dynamicTest("Run Test: Loopers", runTest(engine, "run_test/loopers")));
 		tests.add(DynamicTest.dynamicTest("Run Test: Loopies", runTest(engine, "run_test/loopies")));
+		tests.add(DynamicTest.dynamicTest("Run Test: Negation", runTest(engine, "run_test/negation")));
 		tests.add(DynamicTest.dynamicTest("Run Test: Random", runTest(engine, "run_test/random")));
 		tests.add(DynamicTest.dynamicTest("Run Test: Ternary", runTest(engine, "run_test/ternary")));
 		tests.add(DynamicTest.dynamicTest("Run Test: What the fuck did you just fucking say about me, you little bitch?", runTest(engine, "run_test/whatthefuckdidyousaytome")));

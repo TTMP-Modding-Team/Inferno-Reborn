@@ -1,8 +1,5 @@
-package ttmp.wtf.internal;
+package ttmp.wtf;
 
-import ttmp.wtf.CompileContext;
-import ttmp.wtf.WtfScript;
-import ttmp.wtf.WtfScriptEngine;
 import ttmp.wtf.internal.compiler.Statement;
 import ttmp.wtf.internal.compiler.Token;
 import ttmp.wtf.internal.compiler.TokenType;
