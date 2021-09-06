@@ -91,6 +91,16 @@ public class WtfCompiler implements StatementVisitor, ExpressionVisitor{
 		this.inst.add((byte)(inst >> 8));
 		this.inst.add((byte)inst);
 	}
+	private void write8(long inst){
+		this.inst.add((byte)(inst >> 56));
+		this.inst.add((byte)(inst >> 48));
+		this.inst.add((byte)(inst >> 40));
+		this.inst.add((byte)(inst >> 32));
+		this.inst.add((byte)(inst >> 24));
+		this.inst.add((byte)(inst >> 16));
+		this.inst.add((byte)(inst >> 8));
+		this.inst.add((byte)inst);
+	}
 
 	private int getNextWritePoint(){
 		return this.inst.size();
@@ -475,26 +485,6 @@ public class WtfCompiler implements StatementVisitor, ExpressionVisitor{
 			removeStack();
 		}
 	}
-	@Override public void visitNumber(Expression.NumberConstant numberConstant){
-		if(0==numberConstant.number) write(Inst.N0);
-		else if(1==numberConstant.number) write(Inst.N1);
-		else if(2==numberConstant.number) write(Inst.N2);
-		else if(3==numberConstant.number) write(Inst.N3);
-		else if(4==numberConstant.number) write(Inst.N4);
-		else if(5==numberConstant.number) write(Inst.N5);
-		else if(-1==numberConstant.number) write(Inst.NM1);
-		else{
-			writeObj(numberConstant.number);
-			return;
-		}
-		addStack();
-	}
-	@Override public void visitNamespace(Expression.Namespace namespace){
-		writeObj(namespace.namespace);
-	}
-	@Override public void visitColor(Expression.Color color){
-		writeObj(color.rgb);
-	}
 	@Override public void visitPropertyAccess(Expression.PropertyAccess propertyAccess){
 		write(Inst.GET_PROPERTY);
 		write(getStackPoint(getBlock().initializerStackPosition));
@@ -513,8 +503,39 @@ public class WtfCompiler implements StatementVisitor, ExpressionVisitor{
 		}
 		addStack();
 	}
-	@Override public void visitStaticConstant(Expression.StaticConstant staticConstant){
-		writeObj(staticConstant.constant);
+	@Override public void visitConstant(Expression.Constant constant){
+		if(constant.constant instanceof Integer){
+			int i = (int)constant.constant;
+			switch(i){
+				case 0:
+					write(Inst.I0);
+					break;
+				case 1:
+					write(Inst.I1);
+					break;
+				case -1:
+					write(Inst.IM1);
+					break;
+				default:
+					write(Inst.I);
+					write4(i);
+			}
+		}else if(constant.constant instanceof Double){
+			double d = (double)constant.constant;
+			if(d==0.0) write(Inst.D0);
+			else if(d==1.0) write(Inst.D1);
+			else if(d==-1.0) write(Inst.DM1);
+			else{
+				write(Inst.D);
+				write8(Double.doubleToRawLongBits(d));
+			}
+		}else if(constant.constant instanceof Boolean){
+			write((boolean)constant.constant ? Inst.TRUE : Inst.FALSE);
+		}else{
+			write(Inst.PUSH);
+			write(obj(constant.constant));
+		}
+		addStack();
 	}
 	@Override public void visitDynamicConstant(Expression.DynamicConstant dynamicConstant){
 		Definition definition = getDefinition(dynamicConstant.name);
@@ -540,21 +561,6 @@ public class WtfCompiler implements StatementVisitor, ExpressionVisitor{
 	@Override public void visitDebug(Expression.Debug debug){
 		writeInst(debug.expression);
 		write(Inst.DEBUG);
-	}
-	@Override public void visitBundle(Expression.BundleConstant bundleConstant){
-		writeObj(bundleConstant.bundle);
-	}
-	@Override public void visitStringLiteral(Expression.StringLiteral stringLiteral){
-		writeObj(stringLiteral.string);
-	}
-	@Override public void visitRangeConstant(Expression.RangeConstant rangeConstant){
-		writeObj(rangeConstant.range);
-	}
-
-	private void writeObj(Object o){
-		write(Inst.PUSH);
-		write(obj(o));
-		addStack();
 	}
 
 	private byte obj(Object o){

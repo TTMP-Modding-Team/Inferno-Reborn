@@ -1,11 +1,7 @@
 package ttmp.wtf.internal.compiler;
 
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.ResourceLocationException;
 import ttmp.wtf.exceptions.WtfCompileException;
-import ttmp.wtf.exceptions.WtfException;
 import ttmp.wtf.obj.Bundle;
-import ttmp.wtf.obj.RGB;
 import ttmp.wtf.obj.Range;
 
 import javax.annotation.Nullable;
@@ -112,7 +108,7 @@ public abstract class Expression{
 			visitor.visitComma(this);
 		}
 		@Override public void checkType(@Nullable Class<?> expectedType){
-			expectType(BundleConstant.class, expectedType);
+			expectType(Bundle.class, expectedType);
 		}
 
 		@Override public String toString(){
@@ -135,6 +131,12 @@ public abstract class Expression{
 		}
 		@Override public void checkType(@Nullable Class<?> expectedType){
 			expectType(String.class, expectedType);
+		}
+
+		@Override public String toString(){
+			return position+":Append{"+
+					"expressions="+expressions+
+					'}';
 		}
 	}
 
@@ -385,7 +387,8 @@ public abstract class Expression{
 		}
 		@Override public void checkType(@Nullable Class<?> expectedType){
 			expectType(Integer.class, expectedType);
-
+			a.checkType(Integer.class);
+			b.checkType(Integer.class);
 		}
 	}
 
@@ -416,93 +419,6 @@ public abstract class Expression{
 					", ifThen="+ifThen+
 					", elseThen="+elseThen+
 					'}';
-		}
-	}
-
-	public static class NumberConstant extends Expression{
-		public final double number;
-
-		public NumberConstant(int position, String number){
-			this(position, Double.parseDouble(number));
-		}
-		public NumberConstant(int position, double number){
-			super(position);
-			this.number = number;
-		}
-
-		@Override public void visit(ExpressionVisitor visitor){
-			visitor.visitNumber(this);
-		}
-		@Override public boolean isConstant(){
-			return true;
-		}
-		@Nullable @Override public Object getConstantObject(){
-			return number;
-		}
-		@Override public void checkType(@Nullable Class<?> expectedType){
-			expectType(Double.class, expectedType);
-		}
-		@Override public String toString(){
-			return position+":"+number;
-		}
-	}
-
-	public static class Namespace extends Expression{
-		public final ResourceLocation namespace;
-
-		public Namespace(int position, String namespace){
-			super(position);
-			String substring = namespace.substring(1, namespace.length()-1);
-			try{
-				this.namespace = new ResourceLocation(substring);
-			}catch(ResourceLocationException ex){
-				throw new WtfException("Invalid namespace '"+substring+"'", ex);
-			}
-		}
-		public Namespace(int position, ResourceLocation namespace){
-			super(position);
-			this.namespace = namespace;
-		}
-
-		@Override public void visit(ExpressionVisitor visitor){
-			visitor.visitNamespace(this);
-		}
-		@Override public boolean isConstant(){
-			return true;
-		}
-		@Nullable @Override public Object getConstantObject(){
-			return namespace;
-		}
-		@Override public void checkType(@Nullable Class<?> expectedType){
-			expectType(ResourceLocation.class, expectedType);
-		}
-		@Override public String toString(){
-			return position+":<"+namespace+">";
-		}
-	}
-
-	public static class Color extends Expression{
-		public final RGB rgb;
-
-		public Color(int position, RGB color){
-			super(position);
-			this.rgb = color;
-		}
-
-		@Override public void visit(ExpressionVisitor visitor){
-			visitor.visitColor(this);
-		}
-		@Override public boolean isConstant(){
-			return true;
-		}
-		@Nullable @Override public Object getConstantObject(){
-			return rgb;
-		}
-		@Override public void checkType(@Nullable Class<?> expectedType){
-			expectType(RGB.class, expectedType);
-		}
-		@Override public String toString(){
-			return position+":#"+rgb;
 		}
 	}
 
@@ -550,16 +466,16 @@ public abstract class Expression{
 		}
 	}
 
-	public static class StaticConstant extends Expression{
+	public static class Constant extends Expression{
 		public final Object constant;
 
-		public StaticConstant(int position, Object constant){
+		public Constant(int position, Object constant){
 			super(position);
 			this.constant = constant;
 		}
 
 		@Override public void visit(ExpressionVisitor visitor){
-			visitor.visitStaticConstant(this);
+			visitor.visitConstant(this);
 		}
 		@Override public boolean isConstant(){
 			return true;
@@ -663,87 +579,6 @@ public abstract class Expression{
 
 		@Override public String toString(){
 			return position+(value ? ":true" : ":false");
-		}
-	}
-
-	public static class BundleConstant extends Expression{
-		public final Bundle bundle;
-
-		public BundleConstant(int position, Bundle bundle){
-			super(position);
-			this.bundle = bundle;
-		}
-
-		@Override public void visit(ExpressionVisitor visitor){
-			visitor.visitBundle(this);
-		}
-
-		@Override public boolean isConstant(){
-			return true;
-		}
-		@Override public Object getConstantObject(){
-			return bundle;
-		}
-		@Override public void checkType(@Nullable Class<?> expectedType){
-			expectType(Bundle.class, expectedType);
-		}
-
-		@Override public String toString(){
-			return position+":Bundle{"+bundle+"}";
-		}
-	}
-
-	public static class StringLiteral extends Expression{
-		public final String string;
-
-		public StringLiteral(int position, String string){
-			super(position);
-			this.string = string;
-		}
-
-		@Override public void visit(ExpressionVisitor visitor){
-			visitor.visitStringLiteral(this);
-		}
-
-		@Override public boolean isConstant(){
-			return true;
-		}
-		@Override public Object getConstantObject(){
-			return string;
-		}
-		@Override public void checkType(@Nullable Class<?> expectedType){
-			expectType(String.class, expectedType);
-		}
-
-		@Override public String toString(){
-			return position+":'"+string+'\'';
-		}
-	}
-
-	public static class RangeConstant extends Expression{
-		public final Range range;
-
-		public RangeConstant(int position, Range range){
-			super(position);
-			this.range = range;
-		}
-
-		@Override public void visit(ExpressionVisitor visitor){
-			visitor.visitRangeConstant(this);
-		}
-
-		@Override public boolean isConstant(){
-			return true;
-		}
-		@Override public Object getConstantObject(){
-			return range;
-		}
-		@Override public void checkType(@Nullable Class<?> expectedType){
-			expectType(Range.class, expectedType);
-		}
-
-		@Override public String toString(){
-			return position+":"+range;
 		}
 	}
 }

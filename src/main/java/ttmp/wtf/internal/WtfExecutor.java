@@ -1,6 +1,7 @@
 package ttmp.wtf.internal;
 
 import com.google.common.primitives.Ints;
+import com.google.common.primitives.Longs;
 import com.google.common.primitives.Shorts;
 import ttmp.wtf.EvalContext;
 import ttmp.wtf.Wtf;
@@ -118,26 +119,29 @@ public class WtfExecutor{
 					case Inst.FALSE:
 						push(false);
 						break;
-					case Inst.N0:
+					case Inst.I:
+						push(next4());
+						break;
+					case Inst.I0:
 						push(0);
 						break;
-					case Inst.N1:
+					case Inst.I1:
 						push(1);
 						break;
-					case Inst.N2:
-						push(2);
-						break;
-					case Inst.N3:
-						push(3);
-						break;
-					case Inst.N4:
-						push(4);
-						break;
-					case Inst.N5:
-						push(5);
-						break;
-					case Inst.NM1:
+					case Inst.IM1:
 						push(-1);
+						break;
+					case Inst.D:
+						push(Double.longBitsToDouble(next8()));
+						break;
+					case Inst.D0:
+						push(0.0);
+						break;
+					case Inst.D1:
+						push(1.0);
+						break;
+					case Inst.DM1:
+						push(-1.0);
 						break;
 					case Inst.ADD:
 						setAndDiscard(1, Wtf.add(expectNumberObject(peek(1)), expectNumberObject(peek())));
@@ -331,6 +335,9 @@ public class WtfExecutor{
 	}
 	private int next4(){
 		return Ints.fromBytes(next(), next(), next(), next());
+	}
+	private long next8(){
+		return Longs.fromBytes(next(), next(), next(), next(), next(), next(), next(), next());
 	}
 
 	private void push(Object o){

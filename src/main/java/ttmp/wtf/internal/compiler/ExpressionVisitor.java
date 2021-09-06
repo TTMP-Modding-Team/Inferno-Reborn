@@ -20,17 +20,11 @@ public interface ExpressionVisitor{
 	void visitAnd(Expression.And and);
 	void visitRange(Expression.RangeOperator rangeOperator);
 	void visitRandomInt(Expression.RandomInt randomInt);
-	void visitNumber(Expression.NumberConstant numberConstant);
-	void visitNamespace(Expression.Namespace namespace);
-	void visitColor(Expression.Color color);
 	void visitPropertyAccess(Expression.PropertyAccess propertyAccess);
 	void visitConstantAccess(Expression.ConstantAccess constantAccess);
-	void visitStaticConstant(Expression.StaticConstant staticConstant);
+	void visitConstant(Expression.Constant constant);
 	void visitDynamicConstant(Expression.DynamicConstant dynamicConstant);
 	void visitConstruct(Expression.Construct construct);
 	void visitBool(Expression.Bool bool);
 	void visitDebug(Expression.Debug debug);
-	void visitBundle(Expression.BundleConstant bundleConstant);
-	void visitStringLiteral(Expression.StringLiteral stringLiteral);
-	void visitRangeConstant(Expression.RangeConstant rangeConstant);
 }

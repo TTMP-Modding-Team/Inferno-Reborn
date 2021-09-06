@@ -1,8 +1,11 @@
 package ttmp.wtf.internal.compiler;
 
+import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.ResourceLocationException;
 import ttmp.wtf.CompileContext;
 import ttmp.wtf.Wtf;
 import ttmp.wtf.exceptions.WtfCompileException;
+import ttmp.wtf.exceptions.WtfException;
 import ttmp.wtf.obj.Bundle;
 import ttmp.wtf.obj.RGB;
 import ttmp.wtf.obj.Range;
@@ -201,7 +204,7 @@ public class WtfParser{
 				return new Expression.Comma(e.position, expressions);
 		List<Object> list = new ArrayList<>();
 		for(Expression expr : expressions) list.add(expr.getConstantObject());
-		return new Expression.BundleConstant(e.position, new Bundle(list.toArray()));
+		return new Expression.Constant(e.position, new Bundle(list.toArray()));
 	}
 
 	private Expression stringConjunction(){
@@ -219,7 +222,7 @@ public class WtfParser{
 			if(next.isConstant()){
 				Expression prev = expressions.get(i-1);
 				if(prev.isConstant()){
-					expressions.set(i-1, new Expression.StringLiteral(
+					expressions.set(i-1, new Expression.Constant(
 							prev.position,
 							String.valueOf(prev.getConstantObject())+next.getConstantObject()));
 					expressions.remove(i--);
@@ -328,7 +331,7 @@ public class WtfParser{
 			lexer.next();
 			Expression e2 = random();
 			e = e.isConstant()&&e2.isConstant() ?
-					new Expression.RangeConstant(e.position, new Range(e.expectConstantInt(), e2.expectConstantInt())) :
+					new Expression.Constant(e.position, new Range(e.expectConstantInt(), e2.expectConstantInt())) :
 					new Expression.RangeOperator(e.position, e, e2);
 		}
 		return e;
@@ -354,7 +357,7 @@ public class WtfParser{
 			if(e.isConstant()&&e2.isConstant()){
 				Number a = e.expectConstantObject(Number.class);
 				Number b = e2.expectConstantObject(Number.class);
-				e = new Expression.StaticConstant(e.position, guess==1 ? Wtf.add(a, b) : Wtf.subtract(a, b));
+				e = new Expression.Constant(e.position, guess==1 ? Wtf.add(a, b) : Wtf.subtract(a, b));
 			}else e = guess==1 ? new Expression.Add(e.position, e, e2) :
 					new Expression.Subtract(e.position, e, e2);
 		}
@@ -371,7 +374,7 @@ public class WtfParser{
 				Number a = e.expectConstantObject(Number.class);
 				Number b = e2.expectConstantObject(Number.class);
 				try{
-					e = new Expression.StaticConstant(e.position, guess==1 ? Wtf.multiply(a, b) : Wtf.divide(a, b));
+					e = new Expression.Constant(e.position, guess==1 ? Wtf.multiply(a, b) : Wtf.divide(a, b));
 				}catch(ArithmeticException ex){
 					throw new WtfCompileException(e.position, "Divide by zero");
 				}
@@ -394,7 +397,7 @@ public class WtfParser{
 				lexer.next();
 				Expression e = unary();
 				return e.isConstant() ?
-						new Expression.StaticConstant(current.start, Wtf.negate(e.expectConstantObject(Number.class))) :
+						new Expression.Constant(current.start, Wtf.negate(e.expectConstantObject(Number.class))) :
 						new Expression.Negate(current.start, e);
 			}
 			case DEBUG:
@@ -419,24 +422,31 @@ public class WtfParser{
 			case FALSE:
 				return new Expression.Bool(current.start, false);
 			case NUMBER:
-				return new Expression.NumberConstant(current.start, literalValue(current));
+				return new Expression.Constant(current.start, Double.parseDouble(literalValue(current)));
 			case INT:
-				return new Expression.StaticConstant(current.start, Integer.parseInt(literalValue(current)));
-			case NAMESPACE:
-				return new Expression.Namespace(current.start, literalValue(current));
+				return new Expression.Constant(current.start, Integer.parseInt(literalValue(current)));
+			case NAMESPACE:{
+				String namespace = literalValue(current);
+				String substring = namespace.substring(1, namespace.length()-1);
+				try{
+					return new Expression.Constant(current.start, new ResourceLocation(substring));
+				}catch(ResourceLocationException ex){
+					throw new WtfException("Invalid namespace '"+substring+"'", ex);
+				}
+			}
 			case COLOR:
-				return new Expression.Color(current.start, new RGB(hex(current.start+1, 6)));
+				return new Expression.Constant(current.start, new RGB(hex(current.start+1, 6)));
 			case STRING:
-				return new Expression.StringLiteral(current.start, stringLiteral(current));
+				return new Expression.Constant(current.start, stringLiteral(current));
 			case IDENTIFIER:{
 				String literal = complexIdentifier();
 				if(lexer.guessNext(TokenType.L_BRACE)) return new Expression.Construct(current.start, literal, block());
 				Definition definition = getDefinition(literal);
 				if(definition!=null) return definition.constantExpression!=null&&definition.constantExpression.isConstant() ?
-						new Expression.StaticConstant(current.start, Objects.requireNonNull(definition.constantExpression.getConstantObject())) :
+						new Expression.Constant(current.start, Objects.requireNonNull(definition.constantExpression.getConstantObject())) :
 						new Expression.ConstantAccess(current.start, literal, definition.constantExpression);
 				Object staticConstant = context.getStaticConstant(literal);
-				if(staticConstant!=null) return new Expression.StaticConstant(current.start, staticConstant);
+				if(staticConstant!=null) return new Expression.Constant(current.start, staticConstant);
 				Class<?> dynamicConstant = context.getDynamicConstant(literal);
 				if(dynamicConstant!=null) return new Expression.DynamicConstant(current.start, literal, dynamicConstant);
 				return new Expression.PropertyAccess(current.start, literal);

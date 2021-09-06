@@ -17,13 +17,40 @@ public interface Inst{
 
 	byte TRUE = 0x10;
 	byte FALSE = 0x11;
-	byte N0 = 0x12;
-	byte N1 = 0x13;
-	byte N2 = 0x14;
-	byte N3 = 0x15;
-	byte N4 = 0x16;
-	byte N5 = 0x17;
-	byte NM1 = 0x18;
+
+	/**
+	 * Push int {4}
+	 */
+	byte I = 0x12;
+	/**
+	 * Push int 0
+	 */
+	byte I0 = 0x13;
+	/**
+	 * Push int 1
+	 */
+	byte I1 = 0x14;
+	/**
+	 * Push int -1
+	 */
+	byte IM1 = 0x15;
+
+	/**
+	 * Push number {8}
+	 */
+	byte D = 0x16;
+	/**
+	 * Push number 0.0
+	 */
+	byte D0 = 0x17;
+	/**
+	 * Push number 1.0
+	 */
+	byte D1 = 0x18;
+	/**
+	 * Push number -1.0
+	 */
+	byte DM1 = 0x19;
 
 	// 0x20~0x3F Primitive Operations
 	/**
