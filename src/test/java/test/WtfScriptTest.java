@@ -11,7 +11,6 @@ import ttmp.wtf.WtfScript;
 import ttmp.wtf.WtfScriptEngine;
 import ttmp.wtf.definitions.initializer.AssertInitializer;
 import ttmp.wtf.definitions.initializer.Initializer;
-import ttmp.wtf.definitions.initializer.TestInitializer;
 import ttmp.wtf.exceptions.WtfCompileException;
 import ttmp.wtf.exceptions.WtfEvalException;
 import ttmp.wtf.WtfDebugEngine;

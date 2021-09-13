@@ -1,8 +1,9 @@
-package ttmp.wtf.definitions.initializer;
+package test;
 
 import it.unimi.dsi.fastutil.ints.IntArrayList;
 import it.unimi.dsi.fastutil.ints.IntList;
 import ttmp.wtf.Wtf;
+import ttmp.wtf.definitions.initializer.Initializer;
 import ttmp.wtf.exceptions.WtfException;
 import ttmp.wtf.internal.WtfExecutor;
 
