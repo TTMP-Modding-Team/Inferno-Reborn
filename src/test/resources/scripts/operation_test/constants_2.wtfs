@@ -1,0 +1,19 @@
+// S1: 1
+// S2: "Hello World"
+// S3: <minecraft:grass>
+// S4: *random object*
+
+// C1: 3
+// C2: "ASDF"
+// C3: <zinfernoreborn:abilities>
+// C4: *random object 2*
+
+: S1
+: S2
+: S3
+: S4
+
+: C1
+: C2
+: C3
+: C4

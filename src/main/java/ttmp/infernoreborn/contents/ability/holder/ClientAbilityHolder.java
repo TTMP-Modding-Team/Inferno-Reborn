@@ -12,7 +12,7 @@ import ttmp.infernoreborn.capability.Caps;
 import ttmp.infernoreborn.contents.ability.Ability;
 import ttmp.infernoreborn.contents.ability.cooldown.Cooldown;
 import ttmp.infernoreborn.contents.ability.cooldown.EmptyCooldown;
-import ttmp.infernoreborn.contents.ability.generator.scheme.AbilityGeneratorScheme;
+import ttmp.infernoreborn.infernaltype.InfernalType;
 
 import javax.annotation.Nullable;
 import java.util.LinkedHashSet;
@@ -28,7 +28,7 @@ public class ClientAbilityHolder implements AbilityHolder, ICapabilityProvider{
 
 	private final Set<Ability> abilities = new LinkedHashSet<>();
 
-	@Nullable private AbilityGeneratorScheme appliedGeneratorScheme;
+	@Nullable private InfernalType appliedInfernalType;
 
 	@Override public Set<Ability> getAbilities(){
 		return abilities;
@@ -47,10 +47,10 @@ public class ClientAbilityHolder implements AbilityHolder, ICapabilityProvider{
 	}
 
 	@Override public void update(LivingEntity entity){
-		if(appliedGeneratorScheme!=null&&appliedGeneratorScheme.getSpecialEffect()!=null){
+		if(appliedInfernalType!=null&&appliedInfernalType.getSpecialEffect()!=null){
 			Random rand = entity.getRandom();
 			if(rand.nextBoolean()){
-				int[] colors = appliedGeneratorScheme.getSpecialEffect().getColors();
+				int[] colors = appliedInfernalType.getSpecialEffect().getColors();
 				int color = colors[rand.nextInt(colors.length)];
 				float r = (color >> 16&0xFF)/255f;
 				float g = (color >> 8&0xFF)/255f;
@@ -78,10 +78,10 @@ public class ClientAbilityHolder implements AbilityHolder, ICapabilityProvider{
 		return cap==Caps.abilityHolder ? self.cast() : LazyOptional.empty();
 	}
 
-	@Nullable public AbilityGeneratorScheme getAppliedGeneratorScheme(){
-		return appliedGeneratorScheme;
+	@Nullable public InfernalType getAppliedInfernalType(){
+		return appliedInfernalType;
 	}
-	public void setAppliedGeneratorScheme(@Nullable AbilityGeneratorScheme appliedGeneratorScheme){
-		this.appliedGeneratorScheme = appliedGeneratorScheme;
+	public void setAppliedInfernalType(@Nullable InfernalType appliedInfernalType){
+		this.appliedInfernalType = appliedInfernalType;
 	}
 }

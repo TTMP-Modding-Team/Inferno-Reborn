@@ -28,9 +28,8 @@ import ttmp.infernoreborn.contents.ability.OnAbilityEvent;
 import ttmp.infernoreborn.contents.ability.OnAbilityUpdate;
 import ttmp.infernoreborn.contents.ability.cooldown.Cooldown;
 import ttmp.infernoreborn.contents.ability.cooldown.ServerCooldown;
-import ttmp.infernoreborn.contents.ability.generator.AbilityGenerator;
-import ttmp.infernoreborn.contents.ability.generator.AbilityGenerators;
-import ttmp.infernoreborn.contents.ability.generator.scheme.AbilityGeneratorScheme;
+import ttmp.infernoreborn.infernaltype.InfernalType;
+import ttmp.infernoreborn.infernaltype.InfernalTypes;
 import ttmp.infernoreborn.network.ModNet;
 import ttmp.infernoreborn.network.SyncAbilityHolderMsg;
 import ttmp.infernoreborn.util.LazyPopulatedList;
@@ -89,7 +88,7 @@ public class ServerAbilityHolder implements AbilityHolder, ICapabilitySerializab
 		}
 	};
 
-	@Nullable private AbilityGeneratorScheme appliedGeneratorScheme;
+	@Nullable private InfernalType appliedInfernalType;
 
 	private boolean generateAbility = true;
 
@@ -116,14 +115,14 @@ public class ServerAbilityHolder implements AbilityHolder, ICapabilitySerializab
 		this.addedAbilities.clear();
 		this.removedAbilities.addAll(this.abilities);
 		this.abilities.clear();
-		this.appliedGeneratorScheme = null;
+		this.appliedInfernalType = null;
 	}
 
-	@Nullable public AbilityGeneratorScheme getAppliedGeneratorScheme(){
-		return appliedGeneratorScheme;
+	@Nullable public InfernalType getAppliedInfernalType(){
+		return appliedInfernalType;
 	}
-	public void setAppliedGeneratorScheme(@Nullable AbilityGeneratorScheme appliedGeneratorScheme){
-		this.appliedGeneratorScheme = appliedGeneratorScheme;
+	public void setAppliedInfernalType(@Nullable InfernalType appliedInfernalType){
+		this.appliedInfernalType = appliedInfernalType;
 	}
 
 	public boolean generateAbility(){
@@ -136,7 +135,10 @@ public class ServerAbilityHolder implements AbilityHolder, ICapabilitySerializab
 	@Override
 	public void update(LivingEntity entity){
 		if(generateAbility){
-			if(entity instanceof IMob) generate(entity, null);
+			if(entity instanceof IMob){
+				clear();
+				InfernalTypes.generate(entity, this);
+			}
 			generateAbility = false;
 		}
 
@@ -212,18 +214,11 @@ public class ServerAbilityHolder implements AbilityHolder, ICapabilitySerializab
 		ModNet.CHANNEL.send(PacketDistributor.TRACKING_ENTITY.with(() -> entity),
 				new SyncAbilityHolderMsg(entity.getId(),
 						abilities,
-						appliedGeneratorScheme!=null&&appliedGeneratorScheme.getSpecialEffect()!=null ? appliedGeneratorScheme : null));
+						appliedInfernalType!=null&&appliedInfernalType.getSpecialEffect()!=null ? appliedInfernalType : null));
 	}
 
 	@Override public Cooldown cooldown(){
 		return cooldown;
-	}
-
-	public void generate(LivingEntity entity, @Nullable AbilityGenerator generator){
-		clear();
-		if(generator==null) generator = AbilityGenerators.getWeightedPool().nextItem(entity.getRandom(), g -> g.canGenerate(entity));
-		if(generator!=null) generator.generate(entity);
-		this.appliedGeneratorScheme = generator!=null ? generator.getScheme() : null;
 	}
 
 	protected void onAbilityAdded(Ability ability, LivingEntity entity){
@@ -255,7 +250,7 @@ public class ServerAbilityHolder implements AbilityHolder, ICapabilitySerializab
 		CompoundNBT nbt = new CompoundNBT();
 		if(!abilities.isEmpty()) nbt.put("abilities", StupidUtils.writeToNbt(abilities, Abilities.getRegistry()));
 		if(this.generateAbility) nbt.putBoolean("generateAbility", true);
-		if(appliedGeneratorScheme!=null) nbt.putString("appliedGeneratorScheme", appliedGeneratorScheme.getId().toString());
+		if(appliedInfernalType!=null) nbt.putString("infernalType", appliedInfernalType.getId().toString());
 		this.cooldown.save(nbt);
 		return nbt;
 	}
@@ -267,8 +262,8 @@ public class ServerAbilityHolder implements AbilityHolder, ICapabilitySerializab
 		ListNBT abilities = nbt.getList("abilities", Constants.NBT.TAG_STRING);
 		StupidUtils.read(abilities, Abilities.getRegistry(), this::add);
 		this.generateAbility = nbt.getBoolean("generateAbility");
-		this.appliedGeneratorScheme = nbt.contains("appliedGeneratorScheme", Constants.NBT.TAG_STRING) ?
-				AbilityGenerators.findSchemeWithId(new ResourceLocation(nbt.getString("appliedGeneratorScheme"))) :
+		this.appliedInfernalType = nbt.contains("infernalType", Constants.NBT.TAG_STRING) ?
+				InfernalTypes.get(new ResourceLocation(nbt.getString("infernalType"))) :
 				null;
 		this.cooldown.load(nbt);
 	}

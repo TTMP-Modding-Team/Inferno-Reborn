@@ -1,0 +1,20 @@
+debug Number{
+    : 1.5
+}
+debug Number{
+    : 3.14
+}
+debug Bool{
+    : true
+}
+debug Bool{
+    : false
+}
+
+debug Int{
+    : 3
+}
+
+debug Int{
+    : 3.14
+}

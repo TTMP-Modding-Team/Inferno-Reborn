@@ -1,0 +1,5 @@
+repeat(5) debug 1~2==1 ? "Hello" : "World"
+
+debug true ? "asdf" : "this statement will never be printed"
+
+repeat(10) debug 1~2==1 ? 1~2==1 ? 1 : 2 : 1~2==1 ? 3 : 4

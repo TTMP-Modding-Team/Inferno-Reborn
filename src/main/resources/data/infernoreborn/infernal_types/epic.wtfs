@@ -1,0 +1,51 @@
+Weight: 1
+
+Abilities: {
+    define Mode: RandomNumber{
+        Min: 0
+        Max: 3
+    }
+
+    : Mode<1 ? <infernoreborn:heart8> : Mode<2 ? <infernoreborn:heart9> : <infernoreborn:heart10>
+
+    define CommonMin: Mode<1 ? 10 : Mode<2 ? 8 : 6
+    define CommonMax: CommonMin+2
+
+    repeat(CommonMin~CommonMax){
+        : Choose {
+            : <infernoreborn:bulletproof>
+            : <infernoreborn:vampire>
+            : <infernoreborn:crowd_control>
+            : <infernoreborn:survival_expert>
+            : <infernoreborn:the_brain>
+            : <infernoreborn:toughness>
+            : <infernoreborn:swiftness>
+            : <infernoreborn:eviolite_chansey>
+            : Choose {
+                : <infernoreborn:mud_skin>
+                : <infernoreborn:frozen_skin>
+                : <infernoreborn:woolly_skin>
+                : <infernoreborn:fuzzy_skin>
+                : <infernoreborn:thorn_skin>
+            }
+        }
+    }
+
+    define RareMin: Mode<1 ? 5 : Mode<2 ? 4 : 3
+    define RareMax: Mode<1 ? 6 : Mode<2 ? 6 : 5
+
+    repeat(RareMin~RareMax){
+        : Choose {
+            : <infernoreborn:destiny_bond>
+            : <infernoreborn:focus>
+            : <infernoreborn:guts>
+            : <infernoreborn:magma_skin>
+            : <infernoreborn:health_kit>
+            : <infernoreborn:telekinesis>
+            : <infernoreborn:aether_walker>
+            : <infernoreborn:thunderbolt>
+            : <infernoreborn:the_red>
+            : <infernoreborn:emperors_aura>
+        }
+    }
+}

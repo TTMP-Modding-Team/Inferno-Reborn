@@ -63,10 +63,10 @@ import ttmp.infernoreborn.contents.block.GoldenSkullBlock;
 import ttmp.infernoreborn.contents.item.EssenceNetAccessorItem;
 import ttmp.infernoreborn.contents.item.JudgementItem;
 import ttmp.infernoreborn.contents.sigil.holder.SigilHolder;
-import ttmp.infernoreborn.datagen.AbilityGeneratorDataProvider;
 import ttmp.infernoreborn.datagen.BlockModelGen;
 import ttmp.infernoreborn.datagen.BlockTagGen;
 import ttmp.infernoreborn.datagen.BookDataProvider;
+import ttmp.infernoreborn.datagen.InfernalTypeDataProvider;
 import ttmp.infernoreborn.datagen.ItemModelGen;
 import ttmp.infernoreborn.datagen.ItemTagGen;
 import ttmp.infernoreborn.datagen.LootModifierGen;
@@ -137,7 +137,6 @@ public class InfernoReborn{
 	public static void gatherData(GatherDataEvent event){
 		DataGenerator generator = event.getGenerator();
 		if(event.includeServer()){
-			generator.addProvider(new AbilityGeneratorDataProvider(event.getGenerator()));
 			generator.addProvider(new BookDataProvider(event.getGenerator()));
 			generator.addProvider(new RecipeGen(event.getGenerator()));
 			BlockTagGen blockTagGen = new BlockTagGen(event.getGenerator(), event.getExistingFileHelper());
@@ -145,6 +144,7 @@ public class InfernoReborn{
 			generator.addProvider(new ItemTagGen(event.getGenerator(), blockTagGen, event.getExistingFileHelper()));
 			generator.addProvider(new LootModifierGen(event.getGenerator()));
 			generator.addProvider(new LootTableGen(event.getGenerator()));
+			generator.addProvider(new InfernalTypeDataProvider(event.getGenerator()));
 		}
 		if(event.includeClient()){
 			generator.addProvider(new ItemModelGen(event.getGenerator(), event.getExistingFileHelper()));

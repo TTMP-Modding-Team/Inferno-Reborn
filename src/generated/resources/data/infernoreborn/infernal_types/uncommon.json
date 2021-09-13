@@ -1,0 +1,12 @@
+{
+  "specialEffect": {
+    "colors": [
+      16711935,
+      65535,
+      16776960
+    ]
+  },
+  "itemDisplay": {
+    "color": 16776960
+  }
+}

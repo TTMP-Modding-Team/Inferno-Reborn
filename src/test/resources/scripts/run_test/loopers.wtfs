@@ -1,0 +1,7 @@
+repeat(3){
+    debug "Hey! Listen!"
+}
+
+for(link in "Link", "Link", "Link", "Lonk", "Lenk", "Lank", "Lunk", "Loonk"){
+    debug "Hey "|link|"! Listen!"
+}
