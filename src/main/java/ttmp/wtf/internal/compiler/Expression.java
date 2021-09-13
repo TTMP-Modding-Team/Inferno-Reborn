@@ -88,7 +88,7 @@ public abstract class Expression{
 	public abstract void checkType(@Nullable Class<?> expectedType);
 
 	protected void expectType(Class<?> comparingType, @Nullable Class<?> expectedType){
-		if(expectedType!=null&&!expectedType.isAssignableFrom(comparingType))
+		if(expectedType!=null&&!expectedType.isAssignableFrom(comparingType)&&!comparingType.isAssignableFrom(expectedType)) // Check mutually exclusive case
 			error("Invalid expression, expected "+expectedType.getSimpleName()+" but provided with "+comparingType.getSimpleName());
 	}
 
