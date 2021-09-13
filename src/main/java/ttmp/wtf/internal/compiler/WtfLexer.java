@@ -307,7 +307,7 @@ public class WtfLexer{
 					if(c==terminator) return script.substring(from, i+1);
 			}
 		}
-		throw new WtfCompileException(script.length()-1, "Unterminated string literal");
+		throw new WtfCompileException(script.length(), "Unterminated string literal");
 	}
 
 	@Nullable private Matcher matcher;

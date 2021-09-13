@@ -11,7 +11,7 @@ public class IntInitializer implements Initializer<Integer>{
 	}
 
 	@Override public void apply(WtfExecutor executor, Object o){
-		this.value = (int)executor.expectNumber(o);
+		this.value = executor.expectNumberObject(o).intValue();
 	}
 
 	@Override public Integer finish(WtfExecutor executor){

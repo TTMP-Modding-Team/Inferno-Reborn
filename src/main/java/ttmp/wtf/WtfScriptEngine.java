@@ -25,9 +25,8 @@ public class WtfScriptEngine{
 	private static final Random DEFAULT_RANDOM = new Random();
 	private static final Map<String, InitDefinition<?>> DEFAULT_DEFINITIONS = ImmutableMap.<String, InitDefinition<?>>builder()
 			.put("Number", StandardDefinitions.NUMBER)
+			.put("Int", StandardDefinitions.INT)
 			.put("Bool", StandardDefinitions.BOOL)
-			.put("Random", StandardDefinitions.RANDOM)
-			.put("RandomNumber", StandardDefinitions.RANDOM_NUMBER)
 			.put("Set", StandardDefinitions.SET)
 			.build();
 

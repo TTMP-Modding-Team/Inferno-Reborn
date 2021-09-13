@@ -11,26 +11,10 @@ debug Bool{
     : false
 }
 
-debug Random{}
-debug Random{}
-debug Random{}
-debug Random{}
-debug Random{}
+debug Int{
+    : 3
+}
 
-debug Random{}
-debug Random{}
-debug Random{}
-debug Random{}
-debug Random{}
-
-debug RandomNumber{}
-debug RandomNumber{}
-debug RandomNumber{}
-debug RandomNumber{}
-debug RandomNumber{}
-
-debug RandomNumber{}
-debug RandomNumber{}
-debug RandomNumber{}
-debug RandomNumber{}
-debug RandomNumber{}
+debug Int{
+    : 3.14
+}

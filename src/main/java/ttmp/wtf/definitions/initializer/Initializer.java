@@ -31,7 +31,6 @@ public interface Initializer<T>{
 
 	/**
 	 * Set property values associated with given property name - but lazily. Returning non-null initializer will make the property value evaluated instantly.
-	 * TODO should be able to store it, while controlling lazy initialization
 	 */
 	default @Nullable Initializer<?> setPropertyValueLazy(WtfExecutor executor, String property, int codepoint){
 		return executor.noPropertyError(property);

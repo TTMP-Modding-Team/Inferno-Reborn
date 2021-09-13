@@ -174,7 +174,7 @@ public class WtfParser{
 		while(true){
 			switch(lexer.next().type){
 				case EOF:
-					throw new WtfCompileException(script.length()-1, "Unterminated code block");
+					throw new WtfCompileException(script.length(), "Unterminated code block");
 				case R_BRACE:
 					if(push) popBlock();
 					return statements;
