@@ -6,55 +6,70 @@ import net.minecraft.block.material.Material;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.ai.attributes.Attribute;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
+import net.minecraft.entity.ai.attributes.AttributeModifier.Operation;
 import net.minecraft.entity.ai.attributes.Attributes;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.math.BlockRayTraceResult;
+import net.minecraft.util.math.RayTraceContext;
+import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.World;
 import top.theillusivec4.curios.api.SlotContext;
 import top.theillusivec4.curios.api.type.capability.ICurioItem;
+import ttmp.infernoreborn.contents.ModAttributes;
 
 import java.util.UUID;
 
+import static net.minecraft.util.math.RayTraceContext.BlockMode.COLLIDER;
+import static net.minecraft.util.math.RayTraceContext.FluidMode.ANY;
+
 public class CloudScarfItem extends Item implements ICurioItem{
-	private static final UUID MOVEMENT_SPEED_UUID = UUID.fromString("0eed5b47-e0c2-4653-9f36-128db5d39ffe");
+	private static final UUID ATTRIBUTE_ID = UUID.fromString("0eed5b47-e0c2-4653-9f36-128db5d39ffe");
 
 	public CloudScarfItem(Properties properties){
 		super(properties);
 	}
 
-	@Override public void curioTick(String identifier, int index, LivingEntity livingEntity, ItemStack stack){
-		Vector3d movement = livingEntity.getDeltaMovement();
+	@Override public void curioTick(String identifier, int index, LivingEntity entity, ItemStack stack){
+		if(!entity.jumping) return;
 
-		if(!livingEntity.isCrouching()&&movement.y<=0.75&&isBlockFlyableBelow(livingEntity, 4.0)){
-			double velocity = (-movement.y+4)/20;
-			if(velocity>0) livingEntity.setDeltaMovement(movement.x, velocity, movement.z);
+		double force = getPropulsion(entity, 5);
+		if(force>0){
+			Vector3d movement = entity.getDeltaMovement();
+			entity.setDeltaMovement(movement.x, movement.y+force/20, movement.z);
 		}
-		livingEntity.fallDistance = 0;
-		if(livingEntity instanceof ServerPlayerEntity)
-			((ServerPlayerEntity)livingEntity).connection.aboveGroundTickCount = 0;
+		if(entity instanceof ServerPlayerEntity)
+			((ServerPlayerEntity)entity).connection.aboveGroundTickCount = 0;
 	}
 
 	@Override public Multimap<Attribute, AttributeModifier> getAttributeModifiers(SlotContext slotContext, UUID uuid, ItemStack stack){
-		Multimap<Attribute, AttributeModifier> multimap = HashMultimap.create();
-		if(slotContext.getIdentifier().equals("necklace"))
-			multimap.put(Attributes.MOVEMENT_SPEED, new AttributeModifier(MOVEMENT_SPEED_UUID, "Armor Modifier", 0.35, AttributeModifier.Operation.MULTIPLY_TOTAL));
-		return multimap;
+		Multimap<Attribute, AttributeModifier> m = HashMultimap.create();
+		if(slotContext.getIdentifier().equals("necklace")){
+			m.put(Attributes.MOVEMENT_SPEED, new AttributeModifier(ATTRIBUTE_ID, "Cloud Scarf", 0.35, Operation.MULTIPLY_TOTAL));
+			m.put(ModAttributes.FALLING_DAMAGE_RESISTANCE.get(), new AttributeModifier(ATTRIBUTE_ID, "Cloud Scarf", 1, Operation.MULTIPLY_BASE));
+		}
+		return m;
 	}
 
 	@Override public boolean canEquipFromUse(SlotContext slotContext, ItemStack stack){
 		return true;
 	}
 
-	public static boolean isBlockFlyableBelow(LivingEntity livingEntity, double height){
-		World world = livingEntity.level;
-		if(livingEntity.isOnGround()||livingEntity.isInWall()) return true;
-		double heightCache = livingEntity.getY()-((int)livingEntity.getY())-1;
-		for(int i = 0; heightCache+i<height; i++){
-			Material material = world.getBlockState(livingEntity.blockPosition().below(i)).getMaterial();
-			if(material.blocksMotion()||material.isLiquid()) return true;
-		}
-		return false;
+	/**
+	 * Get propulsion force that decreases based on distance between ground and entity.
+	 *
+	 * @param entity        Entity.
+	 * @param atGroundLevel Propulsion force at ground level (=distance 0)
+	 * @return Calculated propulsion force, {@code 0 ~ atGroundLevel}.
+	 */
+	public static double getPropulsion(LivingEntity entity, double atGroundLevel){
+		if(entity.isOnGround()||entity.isInWall()) return atGroundLevel;
+		BlockRayTraceResult result = entity.level.clip(new RayTraceContext(entity.position(), entity.position().subtract(0, atGroundLevel, 0), COLLIDER, ANY, entity));
+		if(result.getType()!=RayTraceResult.Type.BLOCK) return 0;
+
+		double distancePercentage = (atGroundLevel-(entity.getY()-result.getLocation().y))/atGroundLevel;
+		return atGroundLevel*(distancePercentage*distancePercentage);
 	}
 }
