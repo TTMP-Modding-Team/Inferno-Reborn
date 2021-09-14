@@ -1,17 +1,16 @@
 Weight: 1
 
 Abilities: {
-    define Mode: RandomNumber{
-        Min: 0
-        Max: 3
-    }
+    define Mode: 1~3
 
-    : Mode<1 ? <infernoreborn:heart8> : Mode<2 ? <infernoreborn:heart9> : <infernoreborn:heart10>
+    : Mode==1 ? <infernoreborn:heart8> :
+        Mode==2 ? <infernoreborn:heart9> :
+            <infernoreborn:heart10>
 
-    define CommonMin: Mode<1 ? 10 : Mode<2 ? 8 : 6
-    define CommonMax: CommonMin+2
-
-    repeat(CommonMin~CommonMax){
+    repeat(
+        Mode==1 ? 10~12 :
+        Mode==2 ? 8~10 :
+            6~8){
         : Choose {
             : <infernoreborn:bulletproof>
             : <infernoreborn:vampire>
@@ -31,10 +30,10 @@ Abilities: {
         }
     }
 
-    define RareMin: Mode<1 ? 5 : Mode<2 ? 4 : 3
-    define RareMax: Mode<1 ? 6 : Mode<2 ? 6 : 5
-
-    repeat(RareMin~RareMax){
+    repeat(
+        Mode==1 ? 5~6 :
+        Mode==2 ? 4~6 :
+            3~5){
         : Choose {
             : <infernoreborn:destiny_bond>
             : <infernoreborn:focus>

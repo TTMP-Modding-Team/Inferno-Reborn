@@ -17,7 +17,6 @@ import ttmp.wtf.obj.Bundle;
 import ttmp.wtf.obj.Range;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -316,7 +315,6 @@ public class WtfExecutor{
 		}catch(Exception ex){
 			throw new WtfEvalException(getCurrentLine(), "Encountered error during evaluation", ex);
 		}finally{
-			Arrays.fill(stack, null);
 			stackSize = 0;
 		}
 	}

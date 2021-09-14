@@ -258,24 +258,23 @@ public class WtfCompiler implements StatementVisitor, ExpressionVisitor{
 	}
 	@Override public void visitRepeat(Statement.Repeat repeat){
 		if(repeat.times.isConstant()){
-			double d = repeat.times.expectConstantInt();
-			if(d<1) return;
-			else if(d<2){
-				pushBlock();
-				for(Statement statement : repeat.statements)
-					writeInst(statement);
-				popBlock();
+			int times = repeat.times.expectConstantInt();
+			if(times<5){
+				for(int i = 0; i<times; i++){
+					pushBlock();
+					for(Statement statement : repeat.statements)
+						writeInst(statement);
+					popBlock();
+				}
 				return;
 			}
 		}
 		writeInst(repeat.times);
-		addStack();
 		{
 			int pStart = getNextWritePoint();
 			write(Inst.JUMP_IF_LT1);
 			int pToEnd = getNextWritePoint();
 			write2((short)0);
-			removeStack();
 
 			pushBlock();
 			for(Statement statement : repeat.statements)
@@ -290,7 +289,6 @@ public class WtfCompiler implements StatementVisitor, ExpressionVisitor{
 		}
 		write(Inst.DISCARD);
 		removeStack();
-
 	}
 	@Override public void visitDebug(Statement.Debug debug){
 		writeInst(debug.value);
@@ -365,6 +363,7 @@ public class WtfCompiler implements StatementVisitor, ExpressionVisitor{
 		int p2 = getNextWritePoint();
 		write2((short)0);
 		write2At(p, getJumpCoord(p));
+		removeStack();
 		writeInst(ternary.elseThen);
 		write2At(p2, getJumpCoord(p2));
 	}
