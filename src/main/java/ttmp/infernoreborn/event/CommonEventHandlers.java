@@ -30,6 +30,7 @@ import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.LogicalSide;
 import net.minecraftforge.fml.common.Mod;
+import top.theillusivec4.curios.api.CuriosApi;
 import ttmp.infernoreborn.capability.EssenceNetProvider;
 import ttmp.infernoreborn.capability.MobCapability;
 import ttmp.infernoreborn.capability.PlayerCapability;
@@ -286,8 +287,15 @@ public class CommonEventHandlers{
 		}
 	}
 
+	private static final double CLOUD_SCARF_FLYING_SPEED = 0.02*2.5;
+
 	@SubscribeEvent
 	public static void onPlayerTick(TickEvent.PlayerTickEvent event){
+		if(CuriosApi.getCuriosHelper()
+				.findEquippedCurio(ModItems.CLOUD_SCARF.get(), event.player)
+				.isPresent()){
+			event.player.flyingSpeed = (float)(CLOUD_SCARF_FLYING_SPEED);
+		}
 		if(event.side!=LogicalSide.SERVER) return;
 		SigilUtils.forEachSigilHolder(event.player,
 				(sigilHolder, sigilSlot) -> SigilUtils.onTick(sigilHolder, sigilSlot, event.player));

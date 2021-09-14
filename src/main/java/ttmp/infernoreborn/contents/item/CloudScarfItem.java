@@ -1,12 +1,11 @@
 package ttmp.infernoreborn.contents.item;
 
-import com.google.common.collect.HashMultimap;
+import com.google.common.collect.ImmutableMultimap;
 import com.google.common.collect.Multimap;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.ai.attributes.Attribute;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.entity.ai.attributes.AttributeModifier.Operation;
-import net.minecraft.entity.ai.attributes.Attributes;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -33,7 +32,7 @@ public class CloudScarfItem extends Item implements ICurioItem{
 	@Override public void curioTick(String identifier, int index, LivingEntity entity, ItemStack stack){
 		if(!entity.jumping) return;
 
-		double force = getPropulsion(entity, 5);
+		double force = getPropulsion(entity, 4);
 		if(force>0){
 			Vector3d movement = entity.getDeltaMovement();
 			entity.setDeltaMovement(movement.x, movement.y+force/20, movement.z);
@@ -43,12 +42,9 @@ public class CloudScarfItem extends Item implements ICurioItem{
 	}
 
 	@Override public Multimap<Attribute, AttributeModifier> getAttributeModifiers(SlotContext slotContext, UUID uuid, ItemStack stack){
-		Multimap<Attribute, AttributeModifier> m = HashMultimap.create();
-		if(slotContext.getIdentifier().equals("necklace")){
-			m.put(Attributes.MOVEMENT_SPEED, new AttributeModifier(ATTRIBUTE_ID, "Cloud Scarf", 0.35, Operation.MULTIPLY_TOTAL));
-			m.put(ModAttributes.FALLING_DAMAGE_RESISTANCE.get(), new AttributeModifier(ATTRIBUTE_ID, "Cloud Scarf", 1, Operation.MULTIPLY_BASE));
-		}
-		return m;
+		return slotContext.getIdentifier().equals("necklace") ?
+				ImmutableMultimap.of(ModAttributes.FALLING_DAMAGE_RESISTANCE.get(), new AttributeModifier(ATTRIBUTE_ID, "Cloud Scarf", 1, Operation.MULTIPLY_BASE)) :
+				ImmutableMultimap.of();
 	}
 
 	@Override public boolean canEquipFromUse(SlotContext slotContext, ItemStack stack){
@@ -67,7 +63,8 @@ public class CloudScarfItem extends Item implements ICurioItem{
 		BlockRayTraceResult result = entity.level.clip(new RayTraceContext(entity.position(), entity.position().subtract(0, atGroundLevel, 0), COLLIDER, ANY, entity));
 		if(result.getType()!=RayTraceResult.Type.BLOCK) return 0;
 
-		double distancePercentage = (atGroundLevel-(entity.getY()-result.getLocation().y))/atGroundLevel;
-		return atGroundLevel*(distancePercentage*distancePercentage);
+		// Y'all like some math?
+		double distancePercentage = (entity.getY()-result.getLocation().y)/atGroundLevel;
+		return atGroundLevel*(distancePercentage*2-distancePercentage*distancePercentage);
 	}
 }
