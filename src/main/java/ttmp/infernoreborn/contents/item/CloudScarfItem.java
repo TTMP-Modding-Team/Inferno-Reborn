@@ -54,9 +54,10 @@ public class CloudScarfItem extends Item implements ICurioItem{
 	/**
 	 * Get propulsion force that decreases based on distance between ground and entity.
 	 *
-	 * @param entity        Entity.
+	 * @param entity        Entity
 	 * @param atGroundLevel Propulsion force at ground level (=distance 0)
-	 * @return Calculated propulsion force, {@code 0 ~ atGroundLevel}.
+	 * @param distance      Maximum distance between ground
+	 * @return Calculated propulsion force, {@code 0 ~ atGroundLevel}
 	 */
 	public static double getPropulsion(LivingEntity entity, double atGroundLevel, double distance){
 		if(entity.isOnGround()||entity.isInWall()) return atGroundLevel;
