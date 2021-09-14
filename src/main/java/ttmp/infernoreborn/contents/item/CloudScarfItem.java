@@ -32,10 +32,10 @@ public class CloudScarfItem extends Item implements ICurioItem{
 	@Override public void curioTick(String identifier, int index, LivingEntity entity, ItemStack stack){
 		if(!entity.jumping) return;
 
-		double force = getPropulsion(entity, 4);
+		double force = getPropulsion(entity, 6, 4);
 		if(force>0){
 			Vector3d movement = entity.getDeltaMovement();
-			entity.setDeltaMovement(movement.x, movement.y+force/20, movement.z);
+			entity.setDeltaMovement(movement.x, movement.y+force/(entity.isOnGround() ? 10 : 20), movement.z);
 		}
 		if(entity instanceof ServerPlayerEntity)
 			((ServerPlayerEntity)entity).connection.aboveGroundTickCount = 0;
@@ -58,13 +58,13 @@ public class CloudScarfItem extends Item implements ICurioItem{
 	 * @param atGroundLevel Propulsion force at ground level (=distance 0)
 	 * @return Calculated propulsion force, {@code 0 ~ atGroundLevel}.
 	 */
-	public static double getPropulsion(LivingEntity entity, double atGroundLevel){
+	public static double getPropulsion(LivingEntity entity, double atGroundLevel, double distance){
 		if(entity.isOnGround()||entity.isInWall()) return atGroundLevel;
-		BlockRayTraceResult result = entity.level.clip(new RayTraceContext(entity.position(), entity.position().subtract(0, atGroundLevel, 0), COLLIDER, ANY, entity));
+		BlockRayTraceResult result = entity.level.clip(new RayTraceContext(entity.position(), entity.position().subtract(0, distance, 0), COLLIDER, ANY, entity));
 		if(result.getType()!=RayTraceResult.Type.BLOCK) return 0;
 
 		// Y'all like some math?
-		double distancePercentage = (entity.getY()-result.getLocation().y)/atGroundLevel;
-		return atGroundLevel*(distancePercentage*2-distancePercentage*distancePercentage);
+		double distancePercentage = (entity.getY()-result.getLocation().y)/distance;
+		return atGroundLevel*(1-distancePercentage);
 	}
 }
