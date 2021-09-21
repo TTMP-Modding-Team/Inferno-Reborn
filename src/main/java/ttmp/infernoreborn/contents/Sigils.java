@@ -18,6 +18,7 @@ import ttmp.infernoreborn.contents.sigil.GoatEyeSigil;
 import ttmp.infernoreborn.contents.sigil.MiniHeartSigil;
 import ttmp.infernoreborn.contents.sigil.RunicShieldSigil;
 import ttmp.infernoreborn.contents.sigil.ScaldRuneSigil;
+import ttmp.infernoreborn.contents.sigil.ShieldModifierSigil;
 import ttmp.infernoreborn.contents.sigil.Sigil;
 import ttmp.infernoreborn.contents.sigil.TravelerSigil;
 
@@ -57,6 +58,18 @@ public final class Sigils{
 			new Sigil.Properties(0xFFFFFF, 0xFFFFFF, 4).allowMainhand()));
 	public static final RegistryObject<Sigil> SCALD_RUNE = REGISTER.register("scald_rune", () -> new ScaldRuneSigil(
 			new Sigil.Properties(0xFFFFFF, 0xFFFFFF, 4).allowMainhand()));
+
+	// TODO remove this shit
+	public static final RegistryObject<Sigil> SHIELD_ARMOR = REGISTER.register("shield_armor", () -> new ShieldModifierSigil(
+			new Sigil.Properties(0xFFFFFF, 0xFFFFFF, 3).allowBody().allowArmor().allowCurio(), (slot, originalShield, shield) -> shield.armor += 5));
+	public static final RegistryObject<Sigil> SHIELD_TOUGHNESS = REGISTER.register("shield_toughness", () -> new ShieldModifierSigil(
+			new Sigil.Properties(0xFFFFFF, 0xFFFFFF, 3).allowBody().allowArmor().allowCurio(), (slot, originalShield, shield) -> shield.toughness += 5));
+	public static final RegistryObject<Sigil> SHIELD_RESISTANCE = REGISTER.register("shield_resistance", () -> new ShieldModifierSigil(
+			new Sigil.Properties(0xFFFFFF, 0xFFFFFF, 3).allowBody().allowArmor().allowCurio(), (slot, originalShield, shield) -> shield.resistance += .1));
+	public static final RegistryObject<Sigil> SHIELD_REGEN = REGISTER.register("shield_regen", () -> new ShieldModifierSigil(
+			new Sigil.Properties(0xFFFFFF, 0xFFFFFF, 3).allowBody().allowArmor().allowCurio(), (slot, originalShield, shield) -> shield.regen += 0.05));
+	public static final RegistryObject<Sigil> SHIELD_RECOVERY_TIME = REGISTER.register("shield_recovery_time", () -> new ShieldModifierSigil(
+			new Sigil.Properties(0xFFFFFF, 0xFFFFFF, 3).allowBody().allowArmor().allowCurio(), (slot, originalShield, shield) -> shield.recovery += 0.025));
 
 	@SubscribeEvent
 	public static void newRegistry(RegistryEvent.NewRegistry e){

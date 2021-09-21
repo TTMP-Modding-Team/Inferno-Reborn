@@ -12,6 +12,7 @@ import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import ttmp.infernoreborn.client.render.FoundryISTER;
 import ttmp.infernoreborn.client.render.GoldenSkullISTER;
+import ttmp.infernoreborn.contents.item.CloudScarfItem;
 import ttmp.infernoreborn.contents.item.CrimsonClaymoreItem;
 import ttmp.infernoreborn.contents.item.DragonSlayerItem;
 import ttmp.infernoreborn.contents.item.EssenceHolderBookItem;
@@ -20,10 +21,10 @@ import ttmp.infernoreborn.contents.item.EssenceNetAccessorItem;
 import ttmp.infernoreborn.contents.item.EssenceNetBlockItem;
 import ttmp.infernoreborn.contents.item.ExplosiveSwordItem;
 import ttmp.infernoreborn.contents.item.FoundryBlockItem;
-import ttmp.infernoreborn.contents.item.CloudScarfItem;
-import ttmp.infernoreborn.contents.item.ThanatosBeltItem;
 import ttmp.infernoreborn.contents.item.JudgementItem;
+import ttmp.infernoreborn.contents.item.ShieldProviderItem;
 import ttmp.infernoreborn.contents.item.SigilItem;
+import ttmp.infernoreborn.contents.item.ThanatosBeltItem;
 import ttmp.infernoreborn.contents.item.TheBookItem;
 import ttmp.infernoreborn.contents.item.ability.FixedAbilityItem;
 import ttmp.infernoreborn.contents.item.ability.GeneratorAbilityItem;
@@ -32,6 +33,8 @@ import ttmp.infernoreborn.contents.item.armor.BerserkerArmorItem;
 import ttmp.infernoreborn.contents.item.armor.CrimsonArmorItem;
 import ttmp.infernoreborn.contents.item.armor.ThanatosHeavyArmorItem;
 import ttmp.infernoreborn.contents.item.armor.ThanatosLightArmorItem;
+import ttmp.infernoreborn.shield.ShieldSkins;
+import ttmp.infernoreborn.shield.SimpleShield;
 import ttmp.infernoreborn.util.EssenceSize;
 import ttmp.infernoreborn.util.EssenceType;
 
@@ -191,6 +194,9 @@ public final class ModItems{
 
 	public static final RegistryObject<Item> GOLDEN_SKULL = REGISTER.register("golden_skull", () -> new WallOrFloorItem(ModBlocks.GOLDEN_SKULL.get(), ModBlocks.GOLDEN_WALL_SKULL.get(),
 			new Item.Properties().setISTER(() -> GoldenSkullISTER::new)));
+
+	public static final RegistryObject<Item> NORMAL_RING = REGISTER.register("normal_ring", () -> new Item(artifacts().stacksTo(1)));
+	public static final RegistryObject<Item> SHIELD_RING_1 = REGISTER.register("shield_ring_1", () -> new ShieldProviderItem(artifacts().stacksTo(1), new SimpleShield(ShieldSkins.SHIELD_RING, 10, 0, 0, 0, .5, .25)));
 
 	private static RegistryObject<Item> essence(EssenceType type, EssenceSize size){
 		String id;

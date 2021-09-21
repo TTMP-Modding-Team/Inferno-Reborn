@@ -32,9 +32,7 @@ import net.minecraftforge.fml.LogicalSide;
 import net.minecraftforge.fml.common.Mod;
 import top.theillusivec4.curios.api.CuriosApi;
 import ttmp.infernoreborn.capability.EssenceNetProvider;
-import ttmp.infernoreborn.capability.MobCapability;
 import ttmp.infernoreborn.capability.PlayerCapability;
-import ttmp.infernoreborn.capability.ShieldHolder;
 import ttmp.infernoreborn.capability.SimpleTickingTaskHandler;
 import ttmp.infernoreborn.capability.TickingTaskHandler;
 import ttmp.infernoreborn.contents.ModAttributes;
@@ -45,9 +43,8 @@ import ttmp.infernoreborn.contents.ability.holder.AbilityHolder;
 import ttmp.infernoreborn.contents.ability.holder.ClientAbilityHolder;
 import ttmp.infernoreborn.contents.ability.holder.ServerAbilityHolder;
 import ttmp.infernoreborn.contents.sigil.holder.ItemSigilHolder;
-import ttmp.infernoreborn.contents.sigil.holder.PlayerSigilHolder;
 import ttmp.infernoreborn.contents.sigil.holder.SigilHolder;
-import ttmp.infernoreborn.util.ArmorSet;
+import ttmp.infernoreborn.util.ArmorSets;
 import ttmp.infernoreborn.util.LivingOnly;
 import ttmp.infernoreborn.util.LivingUtils;
 import ttmp.infernoreborn.util.SigilSlot;
@@ -64,12 +61,8 @@ public class CommonEventHandlers{
 	private static final ResourceLocation ABILITY_HOLDER_KEY = new ResourceLocation(MODID, "ability_holder");
 	private static final ResourceLocation SIGIL_HOLDER_KEY = new ResourceLocation(MODID, "sigil_holder");
 	private static final ResourceLocation PLAYER_CAP_KEY = new ResourceLocation(MODID, "player");
-	private static final ResourceLocation MOB_CAP_KEY = new ResourceLocation(MODID, "mob");
 	private static final ResourceLocation TICKING_TASK_HANDLER_KEY = new ResourceLocation(MODID, "ticking_task_handler");
 	private static final ResourceLocation ESSENCE_NET = new ResourceLocation(MODID, "essence_net");
-
-	private static final ArmorSet CRIMSON_ARMOR_SET = new ArmorSet.ItemSet(null, ModItems.CRIMSON_CHESTPLATE, ModItems.CRIMSON_LEGGINGS, ModItems.CRIMSON_BOOTS);
-	private static final ArmorSet BERSERKER_ARMOR_SET = new ArmorSet.ItemSet(ModItems.BERSERKER_HELMET, ModItems.BERSERKER_CHESTPLATE, ModItems.BERSERKER_LEGGINGS, ModItems.BERSERKER_BOOTS);
 
 	@SubscribeEvent
 	public static void attachEntityCapabilities(AttachCapabilitiesEvent<Entity> event){
@@ -77,11 +70,9 @@ public class CommonEventHandlers{
 		if(!(e instanceof LivingEntity)) return;
 		if(e instanceof PlayerEntity){
 			PlayerEntity p = (PlayerEntity)e;
-			event.addCapability(SIGIL_HOLDER_KEY, new PlayerSigilHolder(p));
 			event.addCapability(PLAYER_CAP_KEY, new PlayerCapability(p));
 		}else{
 			event.addCapability(ABILITY_HOLDER_KEY, e.level.isClientSide ? new ClientAbilityHolder() : new ServerAbilityHolder());
-			event.addCapability(MOB_CAP_KEY, new MobCapability((LivingEntity)e));
 		}
 	}
 
@@ -105,9 +96,6 @@ public class CommonEventHandlers{
 		if(!entity.level.isClientSide&&entity.invulnerableTime<=0){
 			float regen = (float)LivingUtils.getAttrib(entity, ModAttributes.REGENERATION.get());
 			if(regen>0) entity.heal(regen);
-
-			float shieldRegen = (float)LivingUtils.getAttrib(entity, ModAttributes.SHIELD_REGEN.get());
-			if(shieldRegen>0) LivingUtils.addShield(entity, shieldRegen);
 		}
 
 		AbilityHolder h = AbilityHolder.of(entity);
@@ -182,6 +170,12 @@ public class CommonEventHandlers{
 		}
 	}
 
+	@SubscribeEvent(priority = EventPriority.LOW)
+	public static void onLivingHurtLast(LivingHurtEvent event){
+		PlayerCapability pc = PlayerCapability.of(event.getEntityLiving());
+		if(pc!=null) event.setAmount(pc.applyShieldReduction(event.getAmount()));
+	}
+
 	@Nullable private static PlayerEntity player;
 	@Nullable private static Entity target;
 	private static float attackStrength;
@@ -200,20 +194,10 @@ public class CommonEventHandlers{
 	@SubscribeEvent
 	public static void onLivingDamage(LivingDamageEvent event){
 		LivingEntity entity = event.getEntityLiving();
-		ShieldHolder h = ShieldHolder.of(entity);
-		if(h!=null&&h.getShield()>0){
-			if(h.getShield()>=event.getAmount()){
-				event.setAmount(0);
-				h.setShield(h.getShield()-event.getAmount());
-			}else{
-				event.setAmount(event.getAmount()-h.getShield());
-				h.setShield(0);
-			}
-		}
 		if(event.getAmount()>0){
 			Entity directEntity = event.getSource().getDirectEntity();
 			if(entity!=directEntity){
-				if(CRIMSON_ARMOR_SET.qualifies(entity)){
+				if(ArmorSets.CRIMSON.qualifies(entity)){
 					LivingUtils.addStackEffect(entity, ModEffects.BLOOD_FRENZY.get(), 80, 0, 1, 3);
 				}
 				if(directEntity instanceof LivingEntity){
@@ -223,7 +207,7 @@ public class CommonEventHandlers{
 						float drainPortion = (float)(1+bloodFrenzy.getAmplifier())/(2+bloodFrenzy.getAmplifier());
 						e.heal(event.getAmount()*drainPortion);
 					}
-					if(isAttackStrengthFull(e, entity)&&CRIMSON_ARMOR_SET.qualifies(e)){
+					if(isAttackStrengthFull(e, entity)&&ArmorSets.CRIMSON.qualifies(e)){
 						LivingUtils.addStackEffect(e, ModEffects.BLOOD_FRENZY.get(), 80, 0, 1, 3);
 					}
 				}
@@ -279,7 +263,7 @@ public class CommonEventHandlers{
 	public static void onCriticalHit(CriticalHitEvent event){
 		ItemStack itemInHand = event.getPlayer().getItemInHand(Hand.MAIN_HAND);
 		if(itemInHand.getItem()==ModItems.DRAGON_SLAYER.get()){
-			if(BERSERKER_ARMOR_SET.qualifies(event.getPlayer())){
+			if(ArmorSets.BERSERKER.qualifies(event.getPlayer())){
 				event.setDamageModifier(event.getDamageModifier()+1.5f);
 			}else if(event.getTarget() instanceof LivingEntity&&((LivingEntity)event.getTarget()).getMaxHealth()>=30){
 				event.setDamageModifier(event.getDamageModifier()+.5f);
@@ -297,7 +281,18 @@ public class CommonEventHandlers{
 			event.player.flyingSpeed = (float)(CLOUD_SCARF_FLYING_SPEED);
 		}
 		if(event.side!=LogicalSide.SERVER) return;
+		PlayerCapability c = PlayerCapability.of(event.player);
+		if(c!=null) c.update();
 		SigilUtils.forEachSigilHolder(event.player,
 				(sigilHolder, sigilSlot) -> SigilUtils.onTick(sigilHolder, sigilSlot, event.player));
+	}
+
+	@SubscribeEvent
+	public static void onPlayerClone(PlayerEvent.Clone event){
+		PlayerEntity original = event.getOriginal();
+		LivingEntity entityLiving = event.getEntityLiving();
+		PlayerCapability c1 = PlayerCapability.of(original);
+		PlayerCapability c2 = PlayerCapability.of(entityLiving);
+		if(c1!=null&&c2!=null) c1.copyTo(c2);
 	}
 }

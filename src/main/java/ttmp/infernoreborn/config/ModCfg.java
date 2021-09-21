@@ -154,6 +154,9 @@ public final class ModCfg{
 			defaultSigilHolderConfig.setMaxPoints(ModItems.BERSERKER_CHESTPLATE.get(), 15);
 			defaultSigilHolderConfig.setMaxPoints(ModItems.BERSERKER_LEGGINGS.get(), 15);
 			defaultSigilHolderConfig.setMaxPoints(ModItems.BERSERKER_BOOTS.get(), 15);
+
+			defaultSigilHolderConfig.setMaxPoints(ModItems.NORMAL_RING.get(), 8);
+			defaultSigilHolderConfig.setMaxPoints(ModItems.SHIELD_RING_1.get(), 8);
 		}
 		return defaultSigilHolderConfig;
 	}

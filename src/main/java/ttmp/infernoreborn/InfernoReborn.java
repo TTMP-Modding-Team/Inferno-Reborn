@@ -4,7 +4,6 @@ import net.minecraft.block.SkullBlock;
 import net.minecraft.client.gui.ScreenManager;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.RenderTypeLookup;
-import net.minecraft.client.renderer.entity.CreeperRenderer;
 import net.minecraft.client.renderer.tileentity.SkullTileEntityRenderer;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.item.ItemModelsProperties;
@@ -31,9 +30,10 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import top.theillusivec4.curios.api.SlotTypeMessage;
 import top.theillusivec4.curios.api.SlotTypePreset;
+import ttmp.infernoreborn.capability.ClientPlayerShield;
 import ttmp.infernoreborn.capability.EssenceNetProvider;
 import ttmp.infernoreborn.capability.PlayerCapability;
-import ttmp.infernoreborn.capability.ShieldHolder;
+import ttmp.infernoreborn.capability.ShieldProvider;
 import ttmp.infernoreborn.capability.TickingTaskHandler;
 import ttmp.infernoreborn.client.color.EssenceHolderBookSparkColor;
 import ttmp.infernoreborn.client.color.GeneratorInfernoSparkColor;
@@ -106,6 +106,7 @@ public class InfernoReborn{
 		//InterModComms.sendTo("curios", SlotTypeMessage.REGISTER_TYPE, () -> SlotTypePreset.CURIO.getMessageBuilder().build());
 		InterModComms.sendTo("curios", SlotTypeMessage.REGISTER_TYPE, () -> SlotTypePreset.BELT.getMessageBuilder().build());
 		InterModComms.sendTo("curios", SlotTypeMessage.REGISTER_TYPE, () -> SlotTypePreset.NECKLACE.getMessageBuilder().build());
+		InterModComms.sendTo("curios", SlotTypeMessage.REGISTER_TYPE, () -> SlotTypePreset.RING.getMessageBuilder().size(2).build());
 	}
 
 	@SubscribeEvent
@@ -114,11 +115,12 @@ public class InfernoReborn{
 			registerDefaultCapability(AbilityHolder.class);
 			registerDefaultCapability(EssenceHolder.class);
 			registerDefaultCapability(SigilHolder.class);
-			registerDefaultCapability(ShieldHolder.class);
 			registerDefaultCapability(TickingTaskHandler.class);
 			registerDefaultCapability(PlayerCapability.class);
+			registerDefaultCapability(ShieldProvider.class);
 			registerDefaultCapability(EssenceNetProvider.class);
 			registerDefaultCapability(EssenceNetAccessorItem.Data.class);
+			registerDefaultCapability(ClientPlayerShield.class);
 		});
 	}
 

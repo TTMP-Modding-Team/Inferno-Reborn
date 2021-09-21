@@ -76,7 +76,7 @@ public enum SigilSlot{
 			case FEET:
 				return isEquipmentSlotEquals(stack, EquipmentSlotType.FEET);
 			case CURIO:
-				return CuriosApi.getCuriosHelper().getCurio(stack).isPresent();
+				return !CuriosApi.getCuriosHelper().getCurioTags(stack.getItem()).isEmpty();
 			default:
 				throw new IllegalStateException("Unreachable");
 		}

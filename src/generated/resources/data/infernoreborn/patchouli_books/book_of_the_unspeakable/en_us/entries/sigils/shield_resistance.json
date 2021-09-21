@@ -1,0 +1,11 @@
+{
+  "name": "sigil.infernoreborn.shield_resistance",
+  "category": "infernoreborn:sigils",
+  "icon": "infernoreborn:sigil{Sigils:\"infernoreborn:shield_resistance\"}",
+  "pages": [
+    {
+      "type": "text",
+      "text": "text.infernoreborn.sigil.shield_resistance.0"
+    }
+  ]
+}

@@ -5,33 +5,40 @@ import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.Item;
 
 import javax.annotation.Nullable;
-import java.util.EnumMap;
-import java.util.Map;
-import java.util.Map.Entry;
 import java.util.function.Supplier;
 
-public interface ArmorSet{
-	boolean qualifies(LivingEntity entity);
+public class ArmorSet{
+	@Nullable private final Supplier<Item> head;
+	@Nullable private final Supplier<Item> chest;
+	@Nullable private final Supplier<Item> legs;
+	@Nullable private final Supplier<Item> feet;
 
-	class ItemSet implements ArmorSet{
-		private final EnumMap<EquipmentSlotType, Supplier<Item>> items = new EnumMap<>(EquipmentSlotType.class);
+	public ArmorSet(@Nullable Supplier<Item> head, @Nullable Supplier<Item> chest, @Nullable Supplier<Item> legs, @Nullable Supplier<Item> feet){
+		this.head = head;
+		this.chest = chest;
+		this.legs = legs;
+		this.feet = feet;
+	}
 
-		public ItemSet(@Nullable Supplier<Item> head, @Nullable Supplier<Item> chest, @Nullable Supplier<Item> legs, @Nullable Supplier<Item> feet){
-			items.put(EquipmentSlotType.HEAD, head);
-			items.put(EquipmentSlotType.CHEST, chest);
-			items.put(EquipmentSlotType.LEGS, legs);
-			items.put(EquipmentSlotType.FEET, feet);
+	public boolean uses(EquipmentSlotType type){
+		switch(type){
+			case FEET:
+				return feet!=null;
+			case LEGS:
+				return legs!=null;
+			case CHEST:
+				return chest!=null;
+			case HEAD:
+				return head!=null;
+			default:
+				throw new IllegalArgumentException("type");
 		}
-		public ItemSet(Map<EquipmentSlotType, Supplier<Item>> set){
-			items.putAll(set);
-		}
+	}
 
-		@Override public boolean qualifies(LivingEntity entity){
-			for(Entry<EquipmentSlotType, Supplier<Item>> e : items.entrySet()){
-				if(e.getValue()==null) continue;
-				if(entity.getItemBySlot(e.getKey()).getItem()!=e.getValue().get()) return false;
-			}
-			return true;
-		}
+	public boolean qualifies(LivingEntity entity){
+		return (head==null||entity.getItemBySlot(EquipmentSlotType.HEAD).getItem()==head.get())&&
+				(chest==null||entity.getItemBySlot(EquipmentSlotType.CHEST).getItem()==chest.get())&&
+				(legs==null||entity.getItemBySlot(EquipmentSlotType.LEGS).getItem()==legs.get())&&
+				(feet==null||entity.getItemBySlot(EquipmentSlotType.FEET).getItem()==feet.get());
 	}
 }

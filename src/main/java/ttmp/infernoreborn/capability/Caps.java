@@ -16,14 +16,16 @@ public final class Caps{
 	public static Capability<EssenceHolder> essenceHolder;
 	@CapabilityInject(SigilHolder.class)
 	public static Capability<SigilHolder> sigilHolder;
-	@CapabilityInject(ShieldHolder.class)
-	public static Capability<ShieldHolder> shieldHolder;
 	@CapabilityInject(TickingTaskHandler.class)
 	public static Capability<TickingTaskHandler> tickingTaskHandler;
 	@CapabilityInject(PlayerCapability.class)
 	public static Capability<PlayerCapability> playerCapability;
+	@CapabilityInject(ShieldProvider.class)
+	public static Capability<ShieldProvider> shieldProvider;
 	@CapabilityInject(EssenceNetProvider.class)
 	public static Capability<EssenceNetProvider> essenceNetProvider;
 	@CapabilityInject(EssenceNetAccessorItem.Data.class)
 	public static Capability<EssenceNetAccessorItem.Data> essenceNetAccessorData;
+	@CapabilityInject(ClientPlayerShield.class)
+	public static Capability<ClientPlayerShield> clientPlayerShield;
 }

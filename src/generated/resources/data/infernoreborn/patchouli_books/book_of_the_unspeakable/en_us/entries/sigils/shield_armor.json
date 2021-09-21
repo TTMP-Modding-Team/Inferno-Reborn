@@ -1,0 +1,11 @@
+{
+  "name": "sigil.infernoreborn.shield_armor",
+  "category": "infernoreborn:sigils",
+  "icon": "infernoreborn:sigil{Sigils:\"infernoreborn:shield_armor\"}",
+  "pages": [
+    {
+      "type": "text",
+      "text": "text.infernoreborn.sigil.shield_armor.0"
+    }
+  ]
+}

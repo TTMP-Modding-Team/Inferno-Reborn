@@ -23,6 +23,7 @@ public final class ModTags{
 	public static final Tags.IOptionalNamedTag<Item> CURIOS_CURIO = ItemTags.createOptional(new ResourceLocation("curios", "curio"));
 	public static final Tags.IOptionalNamedTag<Item> CURIOS_BELT = ItemTags.createOptional(new ResourceLocation("curios", "belt"));
 	public static final Tags.IOptionalNamedTag<Item> CURIOS_NECKLACE = ItemTags.createOptional(new ResourceLocation("curios", "necklace"));
+	public static final Tags.IOptionalNamedTag<Item> CURIOS_RING = ItemTags.createOptional(new ResourceLocation("curios", "ring"));
 
 	public static final class Blocks{
 		private Blocks(){}

@@ -4,6 +4,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.network.NetworkDirection;
@@ -11,6 +12,8 @@ import net.minecraftforge.fml.network.NetworkEvent;
 import net.minecraftforge.fml.network.NetworkRegistry;
 import net.minecraftforge.fml.network.simple.SimpleChannel;
 import ttmp.infernoreborn.InfernoReborn;
+import ttmp.infernoreborn.capability.Caps;
+import ttmp.infernoreborn.capability.ClientPlayerShield;
 import ttmp.infernoreborn.capability.TickingTaskHandler;
 import ttmp.infernoreborn.client.ParticlePlacingTask;
 import ttmp.infernoreborn.client.screen.EssenceHolderScreen;
@@ -56,6 +59,9 @@ public final class ModNet{
 		CHANNEL.registerMessage(5, ScrapSigilMsg.class,
 				ScrapSigilMsg::write, ScrapSigilMsg::read,
 				Server::handleScrapSigil, Optional.of(NetworkDirection.PLAY_TO_SERVER));
+		CHANNEL.registerMessage(6, SyncShieldMsg.class,
+				SyncShieldMsg::write, SyncShieldMsg::read,
+				Client::handleSyncShield, Optional.of(NetworkDirection.PLAY_TO_CLIENT));
 	}
 
 	private static final class Server{
@@ -128,6 +134,19 @@ public final class ModNet{
 				if(h==null) return;
 				ParticlePlacingTask p = ParticlePlacingTask.from(msg);
 				if(p!=null) h.add(p);
+			});
+		}
+
+		@SuppressWarnings("ConstantConditions")
+		public static void handleSyncShield(SyncShieldMsg msg, Supplier<NetworkEvent.Context> ctx){
+			ctx.get().setPacketHandled(true);
+			ctx.get().enqueueWork(() -> {
+				ClientWorld level = Minecraft.getInstance().level;
+				if(level==null) return;
+				PlayerEntity player = level.getPlayerByUUID(msg.playerId);
+				if(player==null) return;
+				ClientPlayerShield c = player.getCapability(Caps.clientPlayerShield).orElse(null);
+				if(c!=null) c.update(msg);
 			});
 		}
 	}

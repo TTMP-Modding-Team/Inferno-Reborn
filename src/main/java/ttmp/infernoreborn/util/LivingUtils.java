@@ -18,7 +18,6 @@ import net.minecraft.util.text.IFormattableTextComponent;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.TranslationTextComponent;
 import ttmp.infernoreborn.InfernoReborn;
-import ttmp.infernoreborn.capability.ShieldHolder;
 
 import javax.annotation.Nullable;
 import java.util.List;
@@ -110,21 +109,6 @@ public final class LivingUtils{
 		if(a1!=null) return a1.getValue();
 		InfernoReborn.LOGGER.warn("Cannot find {} from {}", attrib, entity);
 		return attrib.getDefaultValue();
-	}
-
-	public static float getShield(LivingEntity entity){
-		ShieldHolder h = ShieldHolder.of(entity);
-		return h!=null ? h.getShield() : 0;
-	}
-
-	public static void setShield(LivingEntity entity, float shield){
-		ShieldHolder h = ShieldHolder.of(entity);
-		if(h!=null) h.setShield(shield);
-	}
-
-	public static void addShield(LivingEntity entity, float shield){
-		ShieldHolder h = ShieldHolder.of(entity);
-		if(h!=null) h.setShield(h.getShield()+shield);
 	}
 
 	public static void addToModifier(ListMultimap<Attribute, AttributeModifier> attributeMap, Attribute attribute, @Nullable UUID targetUuid, double amount, AttributeModifier.Operation operation){
