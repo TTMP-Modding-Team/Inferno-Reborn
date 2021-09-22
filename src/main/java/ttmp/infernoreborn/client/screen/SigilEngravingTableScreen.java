@@ -50,11 +50,11 @@ public abstract class SigilEngravingTableScreen extends ContainerScreen<SigilEng
 			SigilHolder holder = h2!=null ? h2 : h;
 			drawString(stack,
 					font,
-					holder.getSigils().stream().mapToInt(Sigil::getPoint).sum()+" / "+menu.getMaxPoints()+" :: "+holder.getGibberishSeed(),
+					holder.getSigils().stream().mapToInt(Sigil::getPoint).sum()+" / "+menu.getMaxPoints(),
 					leftPos+imageWidth+4+2,
 					topPos+2,
 					0xFFFFFF);
-			font.drawWordWrap(gibFactory.toText(h, h2, menu.getMaxPoints()),
+			font.drawWordWrap(gibFactory.toText(h, h2),
 					leftPos+imageWidth+4+2,
 					topPos+2+9,
 					(width-imageWidth)/2-4-20,

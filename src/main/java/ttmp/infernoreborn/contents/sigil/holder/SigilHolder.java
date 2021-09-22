@@ -26,8 +26,6 @@ public interface SigilHolder{
 
 	SigilEventContext createContext();
 
-	long getGibberishSeed();
-
 	default boolean canAdd(Sigil sigil){
 		return !has(sigil)&&
 				sigil.canBeAttachedTo(createContext())&&

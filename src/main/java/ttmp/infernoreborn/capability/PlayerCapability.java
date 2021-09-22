@@ -138,10 +138,6 @@ public class PlayerCapability implements SigilHolder, ICapabilitySerializable<Co
 		return SigilEventContext.living(player, this);
 	}
 
-	@Override public long getGibberishSeed(){
-		return player.getUUID().getMostSignificantBits()^player.getUUID().getLeastSignificantBits();
-	}
-
 	public void update(){
 		if(!player.isAlive()) return;
 		updateCurioSigilEffectAndShield();
