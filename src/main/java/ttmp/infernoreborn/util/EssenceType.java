@@ -9,7 +9,7 @@ import java.util.Locale;
 import java.util.function.Supplier;
 
 public enum EssenceType{
-	BLOOD, METAL, EARTH, MAGIC, FIRE, AIR, WATER, DEATH, DOMINANCE;
+	BLOOD, METAL, MAGIC, EARTH, FIRE, AIR, WATER, FROST, DEATH, DOMINANCE;
 
 	public final String id = name().toLowerCase(Locale.ROOT);
 

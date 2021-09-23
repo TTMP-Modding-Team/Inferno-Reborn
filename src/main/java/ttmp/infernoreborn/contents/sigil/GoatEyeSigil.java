@@ -13,6 +13,6 @@ public class GoatEyeSigil extends Sigil{
 
 	@Override protected void createSigilBookEntryContent(SigilPageBuilder builder){
 		builder.effectsFor(SigilSlot.BODY)
-				.effect(new TranslationTextComponent("text.infernoreborn.sigil.goat_eyes.effect"));
+				.beneficialEffect(new TranslationTextComponent("text.infernoreborn.sigil.goat_eyes.effect"));
 	}
 }

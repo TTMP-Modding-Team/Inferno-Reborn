@@ -1,0 +1,18 @@
+{
+  "type": "infernoreborn:shaped_sigil_engraving",
+  "pattern": [
+    "11 ",
+    "1X1",
+    " 2 "
+  ],
+  "key": {
+    "1": {
+      "item": "infernoreborn:fire_essence_shard"
+    },
+    "2": {
+      "item": "infernoreborn:death_essence_shard"
+    }
+  },
+  "sigil": "infernoreborn:faint_affliction",
+  "center": "X"
+}

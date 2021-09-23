@@ -3,11 +3,12 @@
   "values": [
     "infernoreborn:blood_essence_shard",
     "infernoreborn:metal_essence_shard",
-    "infernoreborn:earth_essence_shard",
     "infernoreborn:magic_essence_shard",
+    "infernoreborn:earth_essence_shard",
     "infernoreborn:fire_essence_shard",
     "infernoreborn:air_essence_shard",
     "infernoreborn:water_essence_shard",
+    "infernoreborn:frost_essence_shard",
     "infernoreborn:death_essence_shard",
     "infernoreborn:dominance_essence_shard"
   ]

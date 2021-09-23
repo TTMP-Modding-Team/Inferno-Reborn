@@ -1,0 +1,16 @@
+{
+  "name": "sigil.infernoreborn.faint_affliction",
+  "category": "infernoreborn:sigils",
+  "icon": "infernoreborn:sigil{Sigils:\"infernoreborn:faint_affliction\"}",
+  "pages": [
+    {
+      "type": "text",
+      "text": "text.infernoreborn.sigil.faint_affliction.0"
+    },
+    {
+      "type": "infernoreborn:sigil_effect",
+      "sigil": "infernoreborn:faint_affliction",
+      "page": "0"
+    }
+  ]
+}

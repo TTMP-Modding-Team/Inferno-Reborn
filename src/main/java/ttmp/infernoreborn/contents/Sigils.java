@@ -12,6 +12,9 @@ import net.minecraftforge.registries.RegistryBuilder;
 import ttmp.infernoreborn.contents.sigil.AfflictionSigil;
 import ttmp.infernoreborn.contents.sigil.BlessingOfMercurySigil;
 import ttmp.infernoreborn.contents.sigil.EnduranceSigil;
+import ttmp.infernoreborn.contents.sigil.FaintAfflictionSigil;
+import ttmp.infernoreborn.contents.sigil.FaintEnduranceSigil;
+import ttmp.infernoreborn.contents.sigil.FaintHeartSigil;
 import ttmp.infernoreborn.contents.sigil.FeatherFallSigil;
 import ttmp.infernoreborn.contents.sigil.FrostbiteRuneSigil;
 import ttmp.infernoreborn.contents.sigil.GoatEyeSigil;
@@ -70,6 +73,13 @@ public final class Sigils{
 			new Sigil.Properties(0xFFFFFF, 0xFFFFFF, 3).allowBody().allowArmor().allowCurio(), (slot, originalShield, shield) -> shield.regen += 0.05));
 	public static final RegistryObject<Sigil> SHIELD_RECOVERY_TIME = REGISTER.register("shield_recovery_time", () -> new ShieldModifierSigil(
 			new Sigil.Properties(0xFFFFFF, 0xFFFFFF, 3).allowBody().allowArmor().allowCurio(), (slot, originalShield, shield) -> shield.recovery += 0.025));
+
+	public static final RegistryObject<Sigil> FAINT_AFFLICTION = REGISTER.register("faint_affliction", () -> new FaintAfflictionSigil(
+			new Sigil.Properties(0xFFFFFF, 0xFFFFFF, 2).allowBody().allowMainhand()));
+	public static final RegistryObject<Sigil> FAINT_ENDURANCE = REGISTER.register("faint_endurance", () -> new FaintEnduranceSigil(
+			new Sigil.Properties(0xFFFFFF, 0xFFFFFF, 2).allowBody().allowArmor().allowCurio()));
+	public static final RegistryObject<Sigil> FAINT_HEART = REGISTER.register("faint_heart", () -> new FaintHeartSigil(
+			new Sigil.Properties(0xFFFFFF, 0xFFFFFF, 2).allowBody().allowArmor().allowCurio()));
 
 	@SubscribeEvent
 	public static void newRegistry(RegistryEvent.NewRegistry e){

@@ -1,0 +1,15 @@
+{
+  "type": "infernoreborn:shaped_sigil_engraving",
+  "pattern": [
+    "111",
+    " X ",
+    "111"
+  ],
+  "key": {
+    "1": {
+      "item": "infernoreborn:metal_essence_shard"
+    }
+  },
+  "sigil": "infernoreborn:faint_endurance",
+  "center": "X"
+}

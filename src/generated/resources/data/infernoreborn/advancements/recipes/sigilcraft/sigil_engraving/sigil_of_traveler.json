@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "rewards": {
+    "recipes": [
+      "infernoreborn:sigil_engraving/sigil_of_traveler"
+    ]
+  },
+  "criteria": {
+    "fuck": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "item": "infernoreborn:air_essence_crystal"
+          }
+        ]
+      }
+    },
+    "has_the_recipe": {
+      "trigger": "minecraft:recipe_unlocked",
+      "conditions": {
+        "recipe": "infernoreborn:sigil_engraving/sigil_of_traveler"
+      }
+    }
+  },
+  "requirements": [
+    [
+      "fuck",
+      "has_the_recipe"
+    ]
+  ]
+}
