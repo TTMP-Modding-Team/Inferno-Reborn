@@ -21,6 +21,7 @@ import ttmp.infernoreborn.contents.ModRecipes;
 import ttmp.infernoreborn.inventory.FoundryInventory;
 import ttmp.infernoreborn.util.EssenceHolder;
 import ttmp.infernoreborn.util.EssenceType;
+import ttmp.infernoreborn.util.Essences;
 import ttmp.infernoreborn.util.QuantifiedIngredient;
 
 import javax.annotation.Nullable;
@@ -31,14 +32,14 @@ public class FoundryRecipe implements IRecipe<FoundryInventory>{
 	private final ResourceLocation id;
 
 	private final QuantifiedIngredient[] ingredients;
-	@Nullable private final EssenceHolder essences;
+	@Nullable private final Essences essences;
 
 	private final int processingTime;
 
 	private final ItemStack result;
 	private final ItemStack byproduct;
 
-	public FoundryRecipe(ResourceLocation id, QuantifiedIngredient[] ingredients, @Nullable EssenceHolder essences, int processingTime, ItemStack result, ItemStack byproduct){
+	public FoundryRecipe(ResourceLocation id, QuantifiedIngredient[] ingredients, @Nullable Essences essences, int processingTime, ItemStack result, ItemStack byproduct){
 		this.id = id;
 		this.ingredients = ingredients;
 		this.essences = essences;
@@ -119,6 +120,13 @@ public class FoundryRecipe implements IRecipe<FoundryInventory>{
 	}
 	@Override public ItemStack getToastSymbol(){
 		return new ItemStack(ModItems.PRIMAL_INFERNO_SPARK.get()); // TODO
+	}
+
+	public QuantifiedIngredient[] getQuantifiedIngredients(){
+		return ingredients;
+	}
+	public Essences getEssences(){
+		return essences!=null ? essences : Essences.EMPTY;
 	}
 
 	public static class Serializer extends ForgeRegistryEntry<IRecipeSerializer<?>> implements IRecipeSerializer<FoundryRecipe>{

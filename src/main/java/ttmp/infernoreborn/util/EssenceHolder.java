@@ -5,7 +5,7 @@ import net.minecraftforge.common.util.INBTSerializable;
 
 import java.util.Arrays;
 
-public final class EssenceHolder implements INBTSerializable<CompoundNBT>{
+public final class EssenceHolder implements Essences, INBTSerializable<CompoundNBT>{
 	private final int[] essences = new int[EssenceType.values().length];
 	private final int max;
 
@@ -16,7 +16,7 @@ public final class EssenceHolder implements INBTSerializable<CompoundNBT>{
 		this.max = max;
 	}
 
-	public int getEssence(EssenceType type){
+	@Override public int getEssence(EssenceType type){
 		return essences[type.ordinal()];
 	}
 	public void setEssence(EssenceType type, int essence){
@@ -36,7 +36,7 @@ public final class EssenceHolder implements INBTSerializable<CompoundNBT>{
 		return toExtract;
 	}
 
-	public boolean insertEssences(EssenceHolder holder, boolean simulate){
+	public boolean insertEssences(Essences holder, boolean simulate){
 		for(EssenceType type : EssenceType.values()){
 			int essence = holder.getEssence(type);
 			if(essence>0&&insertEssence(type, essence, true)!=essence) return false;
@@ -49,7 +49,8 @@ public final class EssenceHolder implements INBTSerializable<CompoundNBT>{
 		}
 		return true;
 	}
-	public boolean extractEssences(EssenceHolder holder, boolean simulate){
+
+	public boolean extractEssences(Essences holder, boolean simulate){
 		for(EssenceType type : EssenceType.values()){
 			int essence = holder.getEssence(type);
 			if(essence>0&&extractEssence(type, essence, true)!=essence) return false;
@@ -63,7 +64,7 @@ public final class EssenceHolder implements INBTSerializable<CompoundNBT>{
 		return true;
 	}
 
-	public boolean isEmpty(){
+	@Override public boolean isEmpty(){
 		for(int essence : essences)
 			if(essence>0) return false;
 		return true;

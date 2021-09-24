@@ -12,16 +12,18 @@ import mezz.jei.api.registration.IRecipeRegistration;
 import mezz.jei.api.registration.ISubtypeRegistration;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.world.ClientWorld;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
+import ttmp.infernoreborn.client.screen.FoundryScreen;
 import ttmp.infernoreborn.client.screen.SigilEngravingTableScreen;
 import ttmp.infernoreborn.compat.jei.sigil.RecipeSize;
 import ttmp.infernoreborn.compat.jei.sigil.ShapedSigilEngravingRecipeCategory;
 import ttmp.infernoreborn.compat.jei.sigil.ShapedSigilTableCraftingRecipeCategory;
 import ttmp.infernoreborn.contents.ModItems;
 import ttmp.infernoreborn.contents.ModRecipes;
+import ttmp.infernoreborn.contents.item.SigilItem;
 import ttmp.infernoreborn.contents.item.ability.FixedAbilityItem;
 import ttmp.infernoreborn.contents.item.ability.GeneratorAbilityItem;
-import ttmp.infernoreborn.contents.item.SigilItem;
 import ttmp.infernoreborn.contents.recipe.sigilcraft.BaseSigilcraftRecipe;
 import ttmp.infernoreborn.contents.recipe.sigilcraft.ShapedSigilEngravingRecipe;
 import ttmp.infernoreborn.contents.recipe.sigilcraft.ShapedSigilTableCraftingRecipe;
@@ -39,11 +41,13 @@ public class InfernoRebornJeiPlugin implements IModPlugin{
 	@Override public ResourceLocation getPluginUid(){
 		return new ResourceLocation(MODID, MODID);
 	}
+
 	@Override public void registerItemSubtypes(ISubtypeRegistration registration){
 		registration.registerSubtypeInterpreter(ModItems.INFERNO_SPARK.get(), (stack, context) -> Arrays.toString(FixedAbilityItem.getAbilities(stack)));
 		registration.registerSubtypeInterpreter(ModItems.GENERATOR_INFERNO_SPARK.get(), (stack, context) -> String.valueOf(GeneratorAbilityItem.getType(stack)));
 		registration.registerSubtypeInterpreter(ModItems.SIGIL.get(), (stack, context) -> String.valueOf(SigilItem.getSigil(stack)));
 	}
+
 	@Override public void registerCategories(IRecipeCategoryRegistration registration){
 		IGuiHelper guiHelper = registration.getJeiHelpers().getGuiHelper();
 		registration.addRecipeCategories(
@@ -54,7 +58,9 @@ public class InfernoRebornJeiPlugin implements IModPlugin{
 				new ShapedSigilTableCraftingRecipeCategory(guiHelper, RecipeSize.X5),
 				new ShapedSigilTableCraftingRecipeCategory(guiHelper, RecipeSize.X7)
 		);
+		registration.addRecipeCategories(new FoundryRecipeCategory(guiHelper));
 	}
+
 	@Override public void registerRecipes(IRecipeRegistration registration){
 		ClientWorld world = Minecraft.getInstance().level;
 		if(world==null) return;
@@ -77,6 +83,9 @@ public class InfernoRebornJeiPlugin implements IModPlugin{
 			registration.addRecipes(sigilEngravingRecipes.get(s), ShapedSigilEngravingRecipeCategory.getUidBySize(s));
 			registration.addRecipes(sigilTableCraftingRecipes.get(s), ShapedSigilTableCraftingRecipeCategory.getUidBySize(s));
 		}
+
+		registration.addRecipes(world.getRecipeManager().getAllRecipesFor(ModRecipes.FOUNDRY_RECIPE_TYPE),
+				FoundryRecipeCategory.UID);
 	}
 
 	@Override public void registerRecipeCatalysts(IRecipeCatalystRegistration registration){
@@ -89,13 +98,16 @@ public class InfernoRebornJeiPlugin implements IModPlugin{
 			}
 			registration.addRecipeCatalyst(size.icon(), recipeCategories.toArray(new ResourceLocation[0]));
 		}
+		registration.addRecipeCatalyst(new ItemStack(ModItems.FOUNDRY.get()), FoundryRecipeCategory.UID);
 	}
 
 	@Override public void registerGuiHandlers(IGuiHandlerRegistration registration){
-		registration.addRecipeClickArea(SigilEngravingTableScreen.X3.class, 137, 57, 10, 4, ShapedSigilEngravingRecipeCategory.getUidBySize(RecipeSize.X3), ShapedSigilTableCraftingRecipeCategory.getUidBySize(RecipeSize.X3));
-		registration.addRecipeClickArea(SigilEngravingTableScreen.X5.class, 137, 93, 10, 4, ShapedSigilEngravingRecipeCategory.getUidBySize(RecipeSize.X5), ShapedSigilTableCraftingRecipeCategory.getUidBySize(RecipeSize.X5));
-		registration.addRecipeClickArea(SigilEngravingTableScreen.X7.class, 144, 119, 10, 4, ShapedSigilEngravingRecipeCategory.getUidBySize(RecipeSize.X7), ShapedSigilTableCraftingRecipeCategory.getUidBySize(RecipeSize.X7));
+		registration.addRecipeClickArea(SigilEngravingTableScreen.X3.class, 137, 55, 12, 8, ShapedSigilEngravingRecipeCategory.getUidBySize(RecipeSize.X3), ShapedSigilTableCraftingRecipeCategory.getUidBySize(RecipeSize.X3));
+		registration.addRecipeClickArea(SigilEngravingTableScreen.X5.class, 137, 91, 12, 8, ShapedSigilEngravingRecipeCategory.getUidBySize(RecipeSize.X5), ShapedSigilTableCraftingRecipeCategory.getUidBySize(RecipeSize.X5));
+		registration.addRecipeClickArea(SigilEngravingTableScreen.X7.class, 144, 117, 12, 8, ShapedSigilEngravingRecipeCategory.getUidBySize(RecipeSize.X7), ShapedSigilTableCraftingRecipeCategory.getUidBySize(RecipeSize.X7));
+		registration.addRecipeClickArea(FoundryScreen.class, 82, 23, 30, 10, FoundryRecipeCategory.UID);
 	}
+
 	@Nullable private RecipeSize getRecipeSize(BaseSigilcraftRecipe recipe){
 		int height = recipe.getRecipeHeight();
 		int width = recipe.getRecipeWidth();
@@ -111,4 +123,6 @@ public class InfernoRebornJeiPlugin implements IModPlugin{
 				return null;
 		}
 	}
+
+
 }
