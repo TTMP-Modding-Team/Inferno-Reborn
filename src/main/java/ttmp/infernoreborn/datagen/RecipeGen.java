@@ -226,6 +226,16 @@ public class RecipeGen extends RecipeProvider{
 				.define('1', Ingredient.of(crystal(EssenceType.FROST)))
 				.unlockedBy("fuck", has(crystal(EssenceType.FROST)))
 				.save(consumer, new ResourceLocation(MODID, "sigil_engraving/frostbite_rune"));
+		new ShapedSigilEngravingRecipeBuilder(Sigils.SCALD_RUNE.get())
+				.pattern(" 1  1")
+				.pattern("11 1 ")
+				.pattern(" 1X11")
+				.pattern("  1 1")
+				.pattern(" 1  1")
+				.defineAsCenter('X')
+				.define('1', Ingredient.of(crystal(EssenceType.FIRE)))
+				.unlockedBy("fuck", has(crystal(EssenceType.FIRE)))
+				.save(consumer, new ResourceLocation(MODID, "sigil_engraving/scald_rune"));
 
 		new FoundryRecipeBuilder(new ItemStack(ModItems.DAMASCUS_STEEL_INGOT.get()))
 				.ingredient(Ingredient.of(Tags.Items.INGOTS_IRON), 1)

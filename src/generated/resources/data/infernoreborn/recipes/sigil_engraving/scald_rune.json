@@ -1,0 +1,17 @@
+{
+  "type": "infernoreborn:shaped_sigil_engraving",
+  "pattern": [
+    " 1  1",
+    "11 1 ",
+    " 1X11",
+    "  1 1",
+    " 1  1"
+  ],
+  "key": {
+    "1": {
+      "item": "infernoreborn:fire_essence_crystal"
+    }
+  },
+  "sigil": "infernoreborn:scald_rune",
+  "center": "X"
+}
