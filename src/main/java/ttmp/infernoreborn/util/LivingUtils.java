@@ -11,19 +11,28 @@ import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.entity.ai.attributes.Attributes;
 import net.minecraft.entity.ai.attributes.ModifiableAttributeInstance;
 import net.minecraft.inventory.EquipmentSlotType;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.potion.Effect;
 import net.minecraft.potion.EffectInstance;
+import net.minecraft.util.ClassInheritanceMultiMap;
 import net.minecraft.util.DamageSource;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.IFormattableTextComponent;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraft.world.World;
+import net.minecraft.world.chunk.Chunk;
+import org.apache.logging.log4j.LogManager;
 import ttmp.infernoreborn.InfernoReborn;
 
 import javax.annotation.Nullable;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
 import static net.minecraft.item.ItemStack.ATTRIBUTE_MODIFIER_FORMAT;
+import static ttmp.infernoreborn.InfernoReborn.LOGGER;
 import static ttmp.infernoreborn.InfernoReborn.MODID;
 
 public final class LivingUtils{
@@ -140,5 +149,45 @@ public final class LivingUtils{
 		else return new TranslationTextComponent("attribute.modifier.plus."+operation.toValue(),
 				ATTRIBUTE_MODIFIER_FORMAT.format(displayAmount),
 				I18n.get(attribute.getDescriptionId())).withStyle(TextFormatting.BLUE);
+	}
+
+	public static List<LivingEntity> getLivingEntitiesInSphere(Entity entity, int radius){
+		List<LivingEntity> resultList = new ArrayList<>();
+		int range = (radius/16)+1;
+		int squareLength = 2*range+1;
+		World world = entity.level;
+		for(int i = 1; i<=Math.pow(squareLength, 2); i++){
+			Chunk chunk = world.getChunk(entity.xChunk-range+(i/squareLength), entity.zChunk-range+(i%squareLength));
+			for(int k = 0; k<chunk.getEntitySections().length; ++k){
+				for(Entity e : chunk.getEntitySections()[k]){
+					if(e instanceof LivingEntity&&e!=entity){
+						if(radius*radius>=e.distanceToSqr(entity))
+							resultList.add((LivingEntity)e);
+					}
+				}
+			}
+		}
+		return resultList;
+	}
+	public static List<LivingEntity> getLivingEntitiesInCylinder(Entity entity, int radius, int height){
+		List<LivingEntity> resultList = new ArrayList<>();
+		int range = (radius/16)+1;
+		int squareLength = 2*range+1;
+		World world = entity.level;
+		for(int i = 1; i<=Math.pow(squareLength, 2); i++){
+			Chunk chunk = world.getChunk(entity.xChunk-range+(i/squareLength), entity.zChunk-range+(i%squareLength));
+			for(int k = 0; k<chunk.getEntitySections().length; ++k){
+				for(Entity e : chunk.getEntitySections()[k]){
+					if(e instanceof LivingEntity&&e!=entity){
+						double distanceX = e.getX()-entity.getX();
+						double distanceY = Math.abs(e.getY()-entity.getY());
+						double distanceZ = e.getZ()-entity.getZ();
+						if(radius*radius>=distanceX*distanceX+distanceZ*distanceZ&&distanceY<=height)
+							resultList.add((LivingEntity)e);
+					}
+				}
+			}
+		}
+		return resultList;
 	}
 }

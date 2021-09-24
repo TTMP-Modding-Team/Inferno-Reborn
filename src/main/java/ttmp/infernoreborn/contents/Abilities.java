@@ -58,6 +58,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
 import java.util.function.Supplier;
+import java.util.stream.Collectors;
 
 import static ttmp.infernoreborn.InfernoReborn.MODID;
 
@@ -285,8 +286,8 @@ public final class Abilities{
 			new Ability(new Ability.Properties(0x00, 0x00)
 					.addSkill(10, 300, (entity, holder) -> {
 						if(entity.getLastHurtByMob()==null) return false;
-						for(Entity e : entity.level.getEntities(entity, entity.getBoundingBox().inflate(16, 8, 16)))
-							if(e instanceof LivingEntity) ((LivingEntity)e).setLastHurtByMob(entity.getLastHurtByMob());
+						for(LivingEntity e : LivingUtils.getLivingEntitiesInCylinder(entity, 32, 10))
+							e.setLastHurtByMob(entity.getLastHurtByMob());
 						return true;
 					}, (entity, holder) -> entity.getLastHurtByMob()!=null)
 					.addAttribute(Attributes.MAX_HEALTH, "2d145dfc-dda4-4fc0-aa35-6666eae0a776", 0.25, Operation.ADDITION)
@@ -401,9 +402,9 @@ public final class Abilities{
 	public static final RegistryObject<Ability> EMPERORS_AURA = REGISTER.register("emperors_aura", () ->
 			new Ability(new Ability.Properties(0xDCB600, 0xDCB600)
 					.onHit((entity, holder, event) -> {
-						for(Entity e : entity.level.getEntities(entity, entity.getBoundingBox().inflate(7.5)))
-							if(e.isAlive()&&e instanceof LivingEntity&&!(e instanceof PlayerEntity))
-								LivingUtils.addStackEffect((LivingEntity)e, Effects.DAMAGE_BOOST, 140, 0, 1, 64);
+						for(LivingEntity e : LivingUtils.getLivingEntitiesInCylinder(entity, 16, 10))
+							if(e.isAlive()&&!(e instanceof PlayerEntity))
+								LivingUtils.addStackEffect(e, Effects.DAMAGE_BOOST, 140, 0, 1, 64);
 					})
 					.addAttribute(Attributes.ATTACK_DAMAGE, "4b220817-9f85-432f-9ce8-ac9d282b5d38", 2, Operation.MULTIPLY_BASE)
 					.addAttribute(Attributes.MAX_HEALTH, "1b071763-1bae-4c09-8c95-58c06629b9a3", 1.5, Operation.MULTIPLY_BASE)
@@ -483,7 +484,7 @@ public final class Abilities{
 					.addTargetedSkill(5, 50, (entity, holder, target) -> {
 						if(!(entity.getHealth()/entity.getMaxHealth()<0.4)) return false;
 						boolean succeed = false;
-						for(Entity e : entity.level.getEntities(entity, entity.getBoundingBox().inflate(6))){
+						for(LivingEntity e : LivingUtils.getLivingEntitiesInCylinder(entity, 12, 5)){
 							if(e.hurt(DamageSource.GENERIC, 1)){
 								succeed = true;
 								entity.heal(1);
@@ -577,13 +578,11 @@ public final class Abilities{
 	public static final RegistryObject<Ability> DIABOLO = REGISTER.register("diabolo", () ->
 			new Ability(new Ability.Properties(0x4B0000, 0x4B0000)
 					.addSkill(10, 600, (entity, holder) -> {
-						List<Entity> entityList = entity.level.getEntities(entity, entity.getBoundingBox().inflate(6), e -> {
-							if(e instanceof LivingEntity)
-								return !(e instanceof MobEntity);
-							return false;
-						});
-						for(Entity e : entityList)
-							((LivingEntity)e).addEffect(new EffectInstance(ModEffects.FEAR.get(), 300, 2-(int)e.distanceToSqr(entity)/6));
+						List<LivingEntity> entityList = LivingUtils.getLivingEntitiesInCylinder(entity, 12, 3).stream()
+								.filter((e) -> !(e instanceof MobEntity))
+								.collect(Collectors.toList());
+						for(LivingEntity e : entityList)
+							e.addEffect(new EffectInstance(ModEffects.FEAR.get(), 300, 2-(int)e.distanceToSqr(entity)/6));
 
 						return entity.addEffect(new EffectInstance(ModEffects.DIABOLO.get(), 600));
 					})));
