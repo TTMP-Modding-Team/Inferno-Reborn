@@ -1,0 +1,12 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    {
+      "item": "infernoreborn:greater_frost_essence_crystal"
+    }
+  ],
+  "result": {
+    "item": "infernoreborn:frost_essence_crystal",
+    "count": 9
+  }
+}

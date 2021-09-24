@@ -133,13 +133,13 @@ public final class ModItems{
 	public static final RegistryObject<Item> METAL_ESSENCE_CRYSTAL = essence(EssenceType.METAL, EssenceSize.CRYSTAL);
 	public static final RegistryObject<Item> GREATER_METAL_ESSENCE_CRYSTAL = essence(EssenceType.METAL, EssenceSize.GREATER_CRYSTAL);
 
-	public static final RegistryObject<Item> EARTH_ESSENCE_SHARD = essence(EssenceType.EARTH, EssenceSize.SHARD);
-	public static final RegistryObject<Item> EARTH_ESSENCE_CRYSTAL = essence(EssenceType.EARTH, EssenceSize.CRYSTAL);
-	public static final RegistryObject<Item> GREATER_EARTH_ESSENCE_CRYSTAL = essence(EssenceType.EARTH, EssenceSize.GREATER_CRYSTAL);
-
 	public static final RegistryObject<Item> MAGIC_ESSENCE_SHARD = essence(EssenceType.MAGIC, EssenceSize.SHARD);
 	public static final RegistryObject<Item> MAGIC_ESSENCE_CRYSTAL = essence(EssenceType.MAGIC, EssenceSize.CRYSTAL);
 	public static final RegistryObject<Item> GREATER_MAGIC_ESSENCE_CRYSTAL = essence(EssenceType.MAGIC, EssenceSize.GREATER_CRYSTAL);
+
+	public static final RegistryObject<Item> EARTH_ESSENCE_SHARD = essence(EssenceType.EARTH, EssenceSize.SHARD);
+	public static final RegistryObject<Item> EARTH_ESSENCE_CRYSTAL = essence(EssenceType.EARTH, EssenceSize.CRYSTAL);
+	public static final RegistryObject<Item> GREATER_EARTH_ESSENCE_CRYSTAL = essence(EssenceType.EARTH, EssenceSize.GREATER_CRYSTAL);
 
 	public static final RegistryObject<Item> FIRE_ESSENCE_SHARD = essence(EssenceType.FIRE, EssenceSize.SHARD);
 	public static final RegistryObject<Item> FIRE_ESSENCE_CRYSTAL = essence(EssenceType.FIRE, EssenceSize.CRYSTAL);
@@ -152,6 +152,10 @@ public final class ModItems{
 	public static final RegistryObject<Item> WATER_ESSENCE_SHARD = essence(EssenceType.WATER, EssenceSize.SHARD);
 	public static final RegistryObject<Item> WATER_ESSENCE_CRYSTAL = essence(EssenceType.WATER, EssenceSize.CRYSTAL);
 	public static final RegistryObject<Item> GREATER_WATER_ESSENCE_CRYSTAL = essence(EssenceType.WATER, EssenceSize.GREATER_CRYSTAL);
+
+	public static final RegistryObject<Item> FROST_ESSENCE_SHARD = essence(EssenceType.FROST, EssenceSize.SHARD);
+	public static final RegistryObject<Item> FROST_ESSENCE_CRYSTAL = essence(EssenceType.FROST, EssenceSize.CRYSTAL);
+	public static final RegistryObject<Item> GREATER_FROST_ESSENCE_CRYSTAL = essence(EssenceType.FROST, EssenceSize.GREATER_CRYSTAL);
 
 	public static final RegistryObject<Item> DEATH_ESSENCE_SHARD = essence(EssenceType.DEATH, EssenceSize.SHARD);
 	public static final RegistryObject<Item> DEATH_ESSENCE_CRYSTAL = essence(EssenceType.DEATH, EssenceSize.CRYSTAL);

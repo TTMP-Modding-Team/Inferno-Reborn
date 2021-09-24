@@ -1,0 +1,17 @@
+{
+  "type": "infernoreborn:shaped_sigil_engraving",
+  "pattern": [
+    "11111",
+    " 1 1 ",
+    "  X  ",
+    " 111 ",
+    "1 1 1"
+  ],
+  "key": {
+    "1": {
+      "item": "infernoreborn:air_essence_crystal"
+    }
+  },
+  "sigil": "infernoreborn:sigil_of_traveler",
+  "center": "X"
+}

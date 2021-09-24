@@ -1,0 +1,16 @@
+{
+  "name": "sigil.infernoreborn.faint_endurance",
+  "category": "infernoreborn:sigils",
+  "icon": "infernoreborn:sigil{Sigils:\"infernoreborn:faint_endurance\"}",
+  "pages": [
+    {
+      "type": "text",
+      "text": "text.infernoreborn.sigil.faint_endurance.0"
+    },
+    {
+      "type": "infernoreborn:sigil_effect",
+      "sigil": "infernoreborn:faint_endurance",
+      "page": "0"
+    }
+  ]
+}

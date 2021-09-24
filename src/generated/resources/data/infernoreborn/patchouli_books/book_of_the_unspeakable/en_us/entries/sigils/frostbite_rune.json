@@ -6,6 +6,11 @@
     {
       "type": "text",
       "text": "text.infernoreborn.sigil.frostbite_rune.0"
+    },
+    {
+      "type": "infernoreborn:sigil_effect",
+      "sigil": "infernoreborn:frostbite_rune",
+      "page": "0"
     }
   ]
 }
