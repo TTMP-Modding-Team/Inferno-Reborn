@@ -51,7 +51,7 @@ import ttmp.infernoreborn.contents.entity.projectile.wind.EffectWindEntity;
 import ttmp.infernoreborn.network.ModNet;
 import ttmp.infernoreborn.network.ParticleMsg;
 import ttmp.infernoreborn.util.EssenceType;
-import ttmp.infernoreborn.util.LivingOnlyEntityDamageSource;
+import ttmp.infernoreborn.util.damage.LivingOnlyEntityDamageSource;
 import ttmp.infernoreborn.util.LivingUtils;
 
 import java.util.ArrayList;

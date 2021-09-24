@@ -6,7 +6,7 @@ import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.Explosion;
 import net.minecraft.world.World;
-import ttmp.infernoreborn.util.LivingOnlyEntityDamageSource;
+import ttmp.infernoreborn.util.damage.LivingOnlyEntityDamageSource;
 
 public class CreeperMissileEntity extends BaseProjectileEntity {
     public CreeperMissileEntity(EntityType<? extends CreeperMissileEntity> type, World world){

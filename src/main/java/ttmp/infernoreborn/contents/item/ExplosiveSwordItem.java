@@ -17,7 +17,7 @@ import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.Explosion;
 import net.minecraft.world.World;
 import ttmp.infernoreborn.capability.TickingTaskHandler;
-import ttmp.infernoreborn.util.LivingOnlyEntityDamageSource;
+import ttmp.infernoreborn.util.damage.LivingOnlyEntityDamageSource;
 
 import javax.annotation.Nullable;
 

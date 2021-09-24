@@ -1,4 +1,4 @@
-package ttmp.infernoreborn.util;
+package ttmp.infernoreborn.util.damage;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
