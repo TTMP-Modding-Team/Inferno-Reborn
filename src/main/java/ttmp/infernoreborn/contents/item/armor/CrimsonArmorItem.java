@@ -15,27 +15,18 @@ import static ttmp.infernoreborn.InfernoReborn.MODID;
 public class CrimsonArmorItem extends ArmorItem{
 	private static final IArmorMaterial MAT = new IArmorMaterial(){
 		@Override public int getDurabilityForSlot(EquipmentSlotType slotType){
-			switch(slotType){
-				case FEET:
-					return 481;
-				case LEGS:
-					return 555;
-				case CHEST:
-					return 272;
-				default:
-					return 0;
-			}
+			return 3000;
 		}
 		@Override public int getDefenseForSlot(EquipmentSlotType slotType){
 			switch(slotType){
-				case FEET:
-					return 3;
-				case LEGS:
-					return 7;
+				case HEAD:
+					return 0;
 				case CHEST:
 					return 8;
+				case LEGS:
+					return 7;
 				default:
-					return 0;
+					return 4;
 			}
 		}
 		@Override public int getEnchantmentValue(){

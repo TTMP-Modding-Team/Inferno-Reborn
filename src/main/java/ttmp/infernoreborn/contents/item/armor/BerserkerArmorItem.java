@@ -15,21 +15,16 @@ import static ttmp.infernoreborn.InfernoReborn.MODID;
 public class BerserkerArmorItem extends ArmorItem{
 	private static final IArmorMaterial MAT = new IArmorMaterial(){
 		@Override public int getDurabilityForSlot(EquipmentSlotType slotType){
-			switch(slotType){
-				case LEGS:
-					return 675;
-				case CHEST:
-					return 720;
-				default:
-					return 585;
-			}
+			return 3000;
 		}
 		@Override public int getDefenseForSlot(EquipmentSlotType slotType){
 			switch(slotType){
-				case LEGS:
-					return 6;
+				case HEAD:
+					return 3;
 				case CHEST:
 					return 8;
+				case LEGS:
+					return 6;
 				default:
 					return 3;
 			}

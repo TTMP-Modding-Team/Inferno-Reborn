@@ -24,7 +24,7 @@ import javax.annotation.Nullable;
 public class ExplosiveSwordItem extends SwordItem{
 	private static final IItemTier MAT = new IItemTier(){
 		@Override public int getUses(){
-			return 1561;
+			return 1500;
 		}
 		@Override public float getSpeed(){
 			return 9;

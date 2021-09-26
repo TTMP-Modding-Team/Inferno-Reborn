@@ -1,0 +1,12 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    {
+      "item": "infernoreborn:nether_steel_ingot"
+    }
+  ],
+  "result": {
+    "item": "infernoreborn:nether_steel_nugget",
+    "count": 9
+  }
+}

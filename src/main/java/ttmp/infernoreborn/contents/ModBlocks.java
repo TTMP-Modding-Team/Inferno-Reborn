@@ -30,6 +30,20 @@ public final class ModBlocks{
 
 	public static final DeferredRegister<Block> REGISTER = DeferredRegister.create(ForgeRegistries.BLOCKS, MODID);
 
+	public static final RegistryObject<Block> HEART_CRYSTAL_ORE = REGISTER.register("heart_crystal_ore", () -> new Block(
+			Properties.of(Material.STONE).lightLevel(s -> 10)));
+	public static final RegistryObject<Block> PYRITE_ORE = REGISTER.register("pyrite_ore", () -> new Block(
+			Properties.of(Material.STONE)));
+	public static final RegistryObject<Block> PYRITE_BLOCK = REGISTER.register("pyrite_block", () -> new Block(
+			Properties.of(Material.METAL)));
+	public static final RegistryObject<Block> NETHER_STEEL_BLOCK = REGISTER.register("nether_steel_block", () -> new Block(
+			Properties.of(Material.METAL)));
+	public static final RegistryObject<Block> DAMASCUS_STEEL_BLOCK = REGISTER.register("damascus_steel_block", () -> new Block(
+			Properties.of(Material.METAL).requiresCorrectToolForDrops().strength(5, 6).sound(SoundType.METAL)));
+
+	public static final RegistryObject<Block> RUNESTONE = REGISTER.register("runestone", () -> new Block(
+			Properties.of(Material.STONE)));
+
 	public static final RegistryObject<Block> SIGIL_ENGRAVING_TABLE_3X3 = REGISTER.register("sigil_engraving_table_3x3", () -> new NamedContainerBlock(Properties.of(Material.WOOD)){
 		@Override public TileEntity createTileEntity(BlockState state, IBlockReader world){
 			return SigilEngravingTableTile.new3x3();
@@ -83,9 +97,6 @@ public final class ModBlocks{
 			Properties.of(Material.GLASS).strength(1.5f).dynamicShape()));
 	public static final RegistryObject<Block> ESSENCE_NET_EXPORTER = REGISTER.register("essence_net_exporter", () -> new EssenceNetExporterBlock(
 			Properties.of(Material.GLASS).strength(1.5f).dynamicShape()));
-
-	public static final RegistryObject<Block> DAMASCUS_STEEL_BLOCK = REGISTER.register("damascus_steel_block", () -> new Block(
-			Properties.of(Material.METAL).requiresCorrectToolForDrops().strength(5, 6).sound(SoundType.METAL)));
 
 	public static final RegistryObject<Block> GOLDEN_SKULL = REGISTER.register("golden_skull", () -> new GoldenSkullBlock(
 			Properties.of(Material.DECORATION).strength(1)));

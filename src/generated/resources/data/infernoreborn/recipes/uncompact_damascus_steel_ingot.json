@@ -1,0 +1,12 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    {
+      "item": "infernoreborn:damascus_steel_ingot"
+    }
+  ],
+  "result": {
+    "item": "infernoreborn:damascus_steel_nugget",
+    "count": 9
+  }
+}

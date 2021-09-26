@@ -1,0 +1,12 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    {
+      "item": "infernoreborn:pyrite_ingot"
+    }
+  ],
+  "result": {
+    "item": "infernoreborn:pyrite_nugget",
+    "count": 9
+  }
+}

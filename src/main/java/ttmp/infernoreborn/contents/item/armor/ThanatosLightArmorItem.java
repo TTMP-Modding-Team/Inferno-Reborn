@@ -15,27 +15,18 @@ import static ttmp.infernoreborn.InfernoReborn.MODID;
 public class ThanatosLightArmorItem extends ArmorItem{
 	private static final IArmorMaterial MAT = new IArmorMaterial(){
 		@Override public int getDurabilityForSlot(EquipmentSlotType slotType){
-			switch(slotType){
-				case FEET:
-					return 481;
-				case LEGS:
-					return 555;
-				case CHEST:
-					return 272;
-				default:
-					return 0;
-			}
+			return 3000;
 		}
 		@Override public int getDefenseForSlot(EquipmentSlotType slotType){
 			switch(slotType){
-				case FEET:
+				case HEAD:
 					return 3;
-				case LEGS:
-					return 7;
 				case CHEST:
 					return 8;
+				case LEGS:
+					return 6;
 				default:
-					return 0;
+					return 3;
 			}
 		}
 		@Override public int getEnchantmentValue(){

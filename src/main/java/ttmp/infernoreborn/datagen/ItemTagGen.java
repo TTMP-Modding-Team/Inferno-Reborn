@@ -19,6 +19,10 @@ public class ItemTagGen extends ItemTagsProvider{
 	}
 
 	@Override protected void addTags(){
+		this.copy(ModTags.Blocks.ORES_HEART_CRYSTAL, ModTags.ORES_HEART_CRYSTAL);
+		this.copy(ModTags.Blocks.ORES_PYRITE, ModTags.ORES_PYRITE);
+		this.copy(ModTags.Blocks.STORAGE_BLOCKS_PYRITE, ModTags.STORAGE_BLOCKS_PYRITE);
+		this.copy(ModTags.Blocks.STORAGE_BLOCKS_NETHER_STEEL, ModTags.NUGGETS_NETHER_STEEL);
 		this.copy(ModTags.Blocks.STORAGE_BLOCKS_DAMASCUS_STEEL, ModTags.STORAGE_BLOCKS_DAMASCUS_STEEL);
 
 		Builder<Item> shards = this.tag(ModTags.ESSENCE_SHARDS);
@@ -31,10 +35,15 @@ public class ItemTagGen extends ItemTagsProvider{
 			greaterCrystals.add(type.getGreaterCrystalItem());
 		}
 
+		this.tag(ModTags.GEMS_HEART_CRYSTAL).add(ModItems.HEART_CRYSTAL.get());
+
+		this.tag(ModTags.INGOTS_PYRITE).add(ModItems.PYRITE_INGOT.get());
+		this.tag(ModTags.NUGGETS_PYRITE).add(ModItems.PYRITE_NUGGET.get());
+		this.tag(ModTags.INGOTS_NETHER_STEEL).add(ModItems.NETHER_STEEL_INGOT.get());
+		this.tag(ModTags.NUGGETS_NETHER_STEEL).add(ModItems.NETHER_STEEL_NUGGET.get());
 		this.tag(ModTags.INGOTS_DAMASCUS_STEEL).add(ModItems.DAMASCUS_STEEL_INGOT.get());
 		this.tag(ModTags.NUGGETS_DAMASCUS_STEEL).add(ModItems.DAMASCUS_STEEL_NUGGET.get());
 
-		this.tag(ModTags.CURIOS_CURIO).add(ModItems.CURIO_TEST.get());
 		this.tag(ModTags.CURIOS_BELT).add(ModItems.THANATOS_BELT.get());
 		this.tag(ModTags.CURIOS_NECKLACE).add(ModItems.CLOUD_SCARF.get());
 		this.tag(ModTags.CURIOS_RING).add(ModItems.NORMAL_RING.get(), ModItems.SHIELD_RING_1.get());

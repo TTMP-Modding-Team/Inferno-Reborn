@@ -16,6 +16,7 @@ import net.minecraft.loot.functions.CopyNbt;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.RegistryObject;
 import ttmp.infernoreborn.contents.ModBlocks;
+import ttmp.infernoreborn.contents.ModItems;
 import ttmp.infernoreborn.contents.item.EssenceNetBlockItem;
 
 import java.util.Collections;
@@ -40,10 +41,22 @@ public class LootTableGen extends LootTableProvider{
 
 	public static class BlockTables extends BlockLootTables{
 		@Override protected void addTables(){
+			add(ModBlocks.HEART_CRYSTAL_ORE.get(), createSingleItemTableWithSilkTouch(ModBlocks.HEART_CRYSTAL_ORE.get(), ModItems.HEART_CRYSTAL.get()));
+			dropSelf(ModBlocks.PYRITE_ORE.get());
+
+			dropSelf(ModBlocks.PYRITE_BLOCK.get());
+			dropSelf(ModBlocks.NETHER_STEEL_BLOCK.get());
+			dropSelf(ModBlocks.DAMASCUS_STEEL_BLOCK.get());
+
+			dropSelf(ModBlocks.RUNESTONE.get());
+
 			dropSelf(ModBlocks.SIGIL_ENGRAVING_TABLE_3X3.get());
 			dropSelf(ModBlocks.SIGIL_ENGRAVING_TABLE_5X5.get());
 			dropSelf(ModBlocks.SIGIL_ENGRAVING_TABLE_7X7.get());
 			dropSelf(ModBlocks.SIGIL_SCRAPPER.get());
+
+			dropSelf(ModBlocks.STIGMA_TABLE_5X5.get());
+			dropSelf(ModBlocks.STIGMA_TABLE_7X7.get());
 
 			dropSelf(ModBlocks.FOUNDRY_TILE.get());
 			add(ModBlocks.FOUNDRY.get(), b -> createNameableBlockEntityTable(ModBlocks.FOUNDRY.get()));
@@ -54,7 +67,6 @@ public class LootTableGen extends LootTableProvider{
 			addEssenceNetworkBlockDrop(ModBlocks.ESSENCE_NET_IMPORTER.get());
 			addEssenceNetworkBlockDrop(ModBlocks.ESSENCE_NET_EXPORTER.get());
 
-			dropSelf(ModBlocks.DAMASCUS_STEEL_BLOCK.get());
 			add(ModBlocks.GOLDEN_SKULL.get(), b -> createNameableBlockEntityTable(ModBlocks.GOLDEN_SKULL.get()));
 		}
 

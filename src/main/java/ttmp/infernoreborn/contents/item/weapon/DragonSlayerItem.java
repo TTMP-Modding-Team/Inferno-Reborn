@@ -10,7 +10,7 @@ import javax.annotation.Nullable;
 public class DragonSlayerItem extends SwordItem{
 	private static final IItemTier MAT = new IItemTier(){
 		@Override public int getUses(){
-			return 3500;
+			return 3000;
 		}
 		@Override public float getSpeed(){
 			return 6;

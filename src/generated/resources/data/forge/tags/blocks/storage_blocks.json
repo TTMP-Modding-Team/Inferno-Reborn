@@ -1,6 +1,8 @@
 {
   "replace": false,
   "values": [
+    "#forge:storage_blocks/pyrite",
+    "#forge:storage_blocks/nether_steel",
     "#forge:storage_blocks/damascus_steel"
   ]
 }

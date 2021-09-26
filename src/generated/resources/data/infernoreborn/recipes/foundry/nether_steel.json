@@ -1,0 +1,20 @@
+{
+  "type": "infernoreborn:foundry",
+  "ingredients": [
+    {
+      "ingredient": {
+        "tag": "forge:ingots/iron"
+      }
+    },
+    {
+      "ingredient": {
+        "item": "minecraft:netherite_scrap"
+      },
+      "quantity": 8
+    }
+  ],
+  "result": {
+    "item": "infernoreborn:nether_steel_ingot",
+    "count": 2
+  }
+}

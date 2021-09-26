@@ -12,19 +12,15 @@ import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import ttmp.infernoreborn.client.render.FoundryISTER;
 import ttmp.infernoreborn.client.render.GoldenSkullISTER;
-import ttmp.infernoreborn.contents.item.curio.CloudScarfItem;
-import ttmp.infernoreborn.contents.item.weapon.CrimsonClaymoreItem;
-import ttmp.infernoreborn.contents.item.weapon.DragonSlayerItem;
 import ttmp.infernoreborn.contents.item.EssenceHolderBookItem;
 import ttmp.infernoreborn.contents.item.EssenceHolderItem;
 import ttmp.infernoreborn.contents.item.EssenceNetAccessorItem;
 import ttmp.infernoreborn.contents.item.EssenceNetBlockItem;
-import ttmp.infernoreborn.contents.item.weapon.ExplosiveSwordItem;
 import ttmp.infernoreborn.contents.item.FoundryBlockItem;
+import ttmp.infernoreborn.contents.item.HeartCrystalItem;
 import ttmp.infernoreborn.contents.item.JudgementItem;
 import ttmp.infernoreborn.contents.item.ShieldProviderItem;
 import ttmp.infernoreborn.contents.item.SigilItem;
-import ttmp.infernoreborn.contents.item.curio.ThanatosBeltItem;
 import ttmp.infernoreborn.contents.item.TheBookItem;
 import ttmp.infernoreborn.contents.item.ability.FixedAbilityItem;
 import ttmp.infernoreborn.contents.item.ability.GeneratorAbilityItem;
@@ -33,6 +29,10 @@ import ttmp.infernoreborn.contents.item.armor.BerserkerArmorItem;
 import ttmp.infernoreborn.contents.item.armor.CrimsonArmorItem;
 import ttmp.infernoreborn.contents.item.armor.ThanatosHeavyArmorItem;
 import ttmp.infernoreborn.contents.item.armor.ThanatosLightArmorItem;
+import ttmp.infernoreborn.contents.item.curio.CloudScarfItem;
+import ttmp.infernoreborn.contents.item.weapon.CrimsonClaymoreItem;
+import ttmp.infernoreborn.contents.item.weapon.DragonSlayerItem;
+import ttmp.infernoreborn.contents.item.weapon.ExplosiveSwordItem;
 import ttmp.infernoreborn.shield.ShieldSkins;
 import ttmp.infernoreborn.shield.SimpleShield;
 import ttmp.infernoreborn.util.EssenceSize;
@@ -102,6 +102,8 @@ public final class ModItems{
 
 	public static final RegistryObject<Item> JUDGEMENT = REGISTER.register("judgement", () -> new JudgementItem(artifacts(Rarity.EPIC).stacksTo(1)));
 
+	public static final RegistryObject<Item> HEART_CRYSTAL = REGISTER.register("heart_crystal", () -> new HeartCrystalItem(artifacts(Rarity.RARE)));
+
 	public static final RegistryObject<Item> EXPLOSIVE_SWORD = REGISTER.register("explosive_sword", () -> new ExplosiveSwordItem(artifacts(Rarity.RARE)));
 
 	public static final RegistryObject<Item> CRIMSON_CLAYMORE = REGISTER.register("crimson_claymore", () -> new CrimsonClaymoreItem(artifacts(Rarity.RARE)));
@@ -124,6 +126,15 @@ public final class ModItems{
 	public static final RegistryObject<Item> THANATOS_HEAVY_CHESTPLATE = REGISTER.register("thanatos_heavy_chestplate", () -> new ThanatosHeavyArmorItem(EquipmentSlotType.CHEST, artifacts(Rarity.RARE)));
 	public static final RegistryObject<Item> THANATOS_HEAVY_LEGGINGS = REGISTER.register("thanatos_heavy_leggings", () -> new ThanatosHeavyArmorItem(EquipmentSlotType.LEGS, artifacts(Rarity.RARE)));
 	public static final RegistryObject<Item> THANATOS_HEAVY_BOOTS = REGISTER.register("thanatos_heavy_boots", () -> new ThanatosHeavyArmorItem(EquipmentSlotType.FEET, artifacts(Rarity.RARE)));
+
+	public static final RegistryObject<Item> THANATOS_BELT = REGISTER.register("thanatos_belt", () -> new Item(artifacts(Rarity.EPIC)));
+	public static final RegistryObject<Item> CLOUD_SCARF = REGISTER.register("cloud_scarf", () -> new CloudScarfItem(artifacts(Rarity.EPIC).stacksTo(1)));
+
+	public static final RegistryObject<Item> GOLDEN_SKULL = REGISTER.register("golden_skull", () -> new WallOrFloorItem(ModBlocks.GOLDEN_SKULL.get(), ModBlocks.GOLDEN_WALL_SKULL.get(),
+			new Item.Properties().setISTER(() -> GoldenSkullISTER::new)));
+
+	public static final RegistryObject<Item> NORMAL_RING = REGISTER.register("normal_ring", () -> new Item(artifacts().stacksTo(1)));
+	public static final RegistryObject<Item> SHIELD_RING_1 = REGISTER.register("shield_ring_1", () -> new ShieldProviderItem(artifacts().stacksTo(1), new SimpleShield(ShieldSkins.SHIELD_RING, 10, 0, 0, 0, .5, .25)));
 
 	public static final RegistryObject<Item> BLOOD_ESSENCE_SHARD = essence(EssenceType.BLOOD, EssenceSize.SHARD);
 	public static final RegistryObject<Item> BLOOD_ESSENCE_CRYSTAL = essence(EssenceType.BLOOD, EssenceSize.CRYSTAL);
@@ -165,6 +176,21 @@ public final class ModItems{
 	public static final RegistryObject<Item> DOMINANCE_ESSENCE_CRYSTAL = essence(EssenceType.DOMINANCE, EssenceSize.CRYSTAL);
 	public static final RegistryObject<Item> GREATER_DOMINANCE_ESSENCE_CRYSTAL = essence(EssenceType.DOMINANCE, EssenceSize.GREATER_CRYSTAL);
 
+	public static final RegistryObject<BlockItem> RUNESTONE = REGISTER.register("runestone", () -> new BlockItem(ModBlocks.RUNESTONE.get(), materials()));
+	public static final RegistryObject<BlockItem> FOUNDRY_TILE = REGISTER.register("foundry_tile", () -> new BlockItem(ModBlocks.FOUNDRY_TILE.get(), materials()));
+
+	public static final RegistryObject<BlockItem> HEART_CRYSTAL_ORE = REGISTER.register("heart_crystal_ore", () -> new BlockItem(
+			ModBlocks.HEART_CRYSTAL_ORE.get(), materials(Rarity.RARE)));
+	public static final RegistryObject<BlockItem> PYRITE_ORE = REGISTER.register("pyrite_ore", () -> new BlockItem(
+			ModBlocks.PYRITE_ORE.get(), materials()));
+	public static final RegistryObject<Item> PYRITE_INGOT = REGISTER.register("pyrite_ingot", () -> new Item(materials()));
+	public static final RegistryObject<Item> PYRITE_NUGGET = REGISTER.register("pyrite_nugget", () -> new Item(materials()));
+	public static final RegistryObject<BlockItem> PYRITE_BLOCK = REGISTER.register("pyrite_block", () -> new BlockItem(ModBlocks.PYRITE_BLOCK.get(), materials()));
+
+	public static final RegistryObject<Item> NETHER_STEEL_INGOT = REGISTER.register("nether_steel_ingot", () -> new Item(materials(Rarity.UNCOMMON)));
+	public static final RegistryObject<Item> NETHER_STEEL_NUGGET = REGISTER.register("nether_steel_nugget", () -> new Item(materials(Rarity.UNCOMMON)));
+	public static final RegistryObject<BlockItem> NETHER_STEEL_BLOCK = REGISTER.register("nether_steel_block", () -> new BlockItem(ModBlocks.NETHER_STEEL_BLOCK.get(), materials(Rarity.UNCOMMON)));
+
 	public static final RegistryObject<Item> CRIMSON_METAL_SCRAP = REGISTER.register("crimson_metal_scrap", () -> new Item(materials(Rarity.RARE)));
 	public static final RegistryObject<Item> DAMASCUS_STEEL_INGOT = REGISTER.register("damascus_steel_ingot", () -> new Item(materials(Rarity.UNCOMMON)));
 	public static final RegistryObject<Item> DAMASCUS_STEEL_NUGGET = REGISTER.register("damascus_steel_nugget", () -> new Item(materials(Rarity.UNCOMMON)));
@@ -183,7 +209,6 @@ public final class ModItems{
 	public static final RegistryObject<BlockItem> STIGMA_TABLE_5X5 = REGISTER.register("stigma_table_5x5", () -> new BlockItem(ModBlocks.STIGMA_TABLE_5X5.get(), artifacts()));
 	public static final RegistryObject<BlockItem> STIGMA_TABLE_7X7 = REGISTER.register("stigma_table_7x7", () -> new BlockItem(ModBlocks.STIGMA_TABLE_7X7.get(), artifacts()));
 
-	public static final RegistryObject<Item> FOUNDRY_TILE = REGISTER.register("foundry_tile", () -> new BlockItem(ModBlocks.FOUNDRY_TILE.get(), artifacts()));
 	public static final RegistryObject<Item> FOUNDRY = REGISTER.register("foundry", () -> new FoundryBlockItem(ModBlocks.FOUNDRY.get(), artifacts().setISTER(() -> () -> FoundryISTER.INSTANCE)));
 
 	public static final RegistryObject<Item> ESSENCE_HOLDER_BLOCK = REGISTER.register("essence_holder_block", () -> new BlockItem(ModBlocks.ESSENCE_HOLDER.get(), artifacts()));
@@ -193,17 +218,6 @@ public final class ModItems{
 	public static final RegistryObject<Item> ESSENCE_NET_EXPORTER = REGISTER.register("essence_net_exporter", () -> new EssenceNetBlockItem(ModBlocks.ESSENCE_NET_EXPORTER.get(), artifacts()));
 
 	public static final RegistryObject<Item> SIGIL = REGISTER.register("sigil", () -> new SigilItem(sigils()));
-
-	public static final RegistryObject<Item> CURIO_TEST = REGISTER.register("curio_test", () -> new Item(artifacts(Rarity.EPIC)));
-
-	public static final RegistryObject<Item> THANATOS_BELT = REGISTER.register("thanatos_belt", () -> new ThanatosBeltItem(artifacts(Rarity.EPIC)));
-	public static final RegistryObject<Item> CLOUD_SCARF = REGISTER.register("cloud_scarf", () -> new CloudScarfItem(artifacts(Rarity.EPIC).stacksTo(1)));
-
-	public static final RegistryObject<Item> GOLDEN_SKULL = REGISTER.register("golden_skull", () -> new WallOrFloorItem(ModBlocks.GOLDEN_SKULL.get(), ModBlocks.GOLDEN_WALL_SKULL.get(),
-			new Item.Properties().setISTER(() -> GoldenSkullISTER::new)));
-
-	public static final RegistryObject<Item> NORMAL_RING = REGISTER.register("normal_ring", () -> new Item(artifacts().stacksTo(1)));
-	public static final RegistryObject<Item> SHIELD_RING_1 = REGISTER.register("shield_ring_1", () -> new ShieldProviderItem(artifacts().stacksTo(1), new SimpleShield(ShieldSkins.SHIELD_RING, 10, 0, 0, 0, .5, .25)));
 
 	private static RegistryObject<Item> essence(EssenceType type, EssenceSize size){
 		String id;

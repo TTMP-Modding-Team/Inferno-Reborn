@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "111",
+    "111",
+    "111"
+  ],
+  "key": {
+    "1": {
+      "item": "infernoreborn:nether_steel_ingot"
+    }
+  },
+  "result": {
+    "item": "infernoreborn:nether_steel_block"
+  }
+}

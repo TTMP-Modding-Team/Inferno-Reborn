@@ -23,10 +23,10 @@ import java.util.Map.Entry;
 
 import static net.minecraft.entity.ai.attributes.AttributeModifier.Operation.ADDITION;
 
-public class CrimsonClaymoreItem extends SwordItem{ // TODO insta kill ability generated mobs, idk gl
+public class CrimsonClaymoreItem extends SwordItem{
 	private static final IItemTier MAT = new IItemTier(){
 		@Override public int getUses(){
-			return 1561;
+			return 3000;
 		}
 		@Override public float getSpeed(){
 			return 9;
