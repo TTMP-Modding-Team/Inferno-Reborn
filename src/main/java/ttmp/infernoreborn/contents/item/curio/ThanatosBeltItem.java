@@ -1,4 +1,4 @@
-package ttmp.infernoreborn.contents.item;
+package ttmp.infernoreborn.contents.item.curio;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;

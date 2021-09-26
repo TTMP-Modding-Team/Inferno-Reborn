@@ -1,4 +1,4 @@
-package ttmp.infernoreborn.contents.item;
+package ttmp.infernoreborn.contents.item.weapon;
 
 import net.minecraft.item.IItemTier;
 import net.minecraft.item.SwordItem;

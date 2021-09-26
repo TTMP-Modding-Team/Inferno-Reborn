@@ -1,4 +1,4 @@
-package ttmp.infernoreborn.contents.item;
+package ttmp.infernoreborn.contents.item.weapon;
 
 import com.google.common.collect.ImmutableMultimap;
 import com.google.common.collect.Multimap;
