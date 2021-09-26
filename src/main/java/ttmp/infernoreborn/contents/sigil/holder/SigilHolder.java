@@ -13,6 +13,9 @@ public interface SigilHolder{
 		return provider.getCapability(Caps.sigilHolder).orElse(null);
 	}
 
+	/**
+	 * @return Immutable set of currently attached sigils
+	 */
 	Set<Sigil> getSigils();
 
 	int getMaxPoints();

@@ -3,6 +3,7 @@ package ttmp.infernoreborn.contents.block;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.inventory.container.INamedContainerProvider;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Hand;
@@ -10,10 +11,9 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
-import ttmp.infernoreborn.contents.tile.SigilEngravingTableTile;
 
-public abstract class SigilEngravingTableBlock extends Block{
-	public SigilEngravingTableBlock(Properties properties){
+public abstract class NamedContainerBlock extends Block{
+	public NamedContainerBlock(Properties properties){
 		super(properties);
 	}
 
@@ -22,12 +22,12 @@ public abstract class SigilEngravingTableBlock extends Block{
 	public ActionResultType use(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult result){
 		if(world.isClientSide) return ActionResultType.SUCCESS;
 		TileEntity te = world.getBlockEntity(pos);
-		if(!(te instanceof SigilEngravingTableTile)) return ActionResultType.CONSUME;
-		player.openMenu((SigilEngravingTableTile)te);
+		if(!(te instanceof INamedContainerProvider)) return ActionResultType.CONSUME;
+		player.openMenu((INamedContainerProvider)te);
 		return ActionResultType.CONSUME;
 	}
 
-	@Override public abstract SigilEngravingTableTile createTileEntity(BlockState state, IBlockReader world);
+	@Override public abstract TileEntity createTileEntity(BlockState state, IBlockReader world);
 	@Override public boolean hasTileEntity(BlockState state){
 		return true;
 	}

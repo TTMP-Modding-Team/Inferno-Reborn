@@ -32,8 +32,8 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import org.lwjgl.opengl.GL11;
 import ttmp.infernoreborn.capability.Caps;
-import ttmp.infernoreborn.capability.ClientPlayerShield;
-import ttmp.infernoreborn.capability.ClientPlayerShield.ActiveShield;
+import ttmp.infernoreborn.capability.ClientPlayerCapability;
+import ttmp.infernoreborn.capability.ClientPlayerCapability.ActiveShield;
 import ttmp.infernoreborn.capability.SimpleTickingTaskHandler;
 import ttmp.infernoreborn.capability.TickingTaskHandler;
 import ttmp.infernoreborn.client.color.ColorUtils;
@@ -52,14 +52,14 @@ import static ttmp.infernoreborn.InfernoReborn.MODID;
 public final class ClientEventHandlers{
 	private ClientEventHandlers(){}
 
-	private static final ResourceLocation CLIENT_PLAYER_SHIELD = new ResourceLocation(MODID, "client_player_shield");
+	private static final ResourceLocation CLIENT_PLAYER_CAPS = new ResourceLocation(MODID, "client_caps");
 	private static final DecimalFormat FUCK = new DecimalFormat("#.#");
 
 	@SubscribeEvent
 	public static void attachEntityCapabilities(AttachCapabilitiesEvent<Entity> event){
 		Entity e = event.getObject();
 		if(e instanceof PlayerEntity&&e.level.isClientSide()){
-			event.addCapability(CLIENT_PLAYER_SHIELD, new ClientPlayerShield());
+			event.addCapability(CLIENT_PLAYER_CAPS, new ClientPlayerCapability((PlayerEntity)e));
 		}
 	}
 
@@ -69,7 +69,7 @@ public final class ClientEventHandlers{
 		ClientPlayerEntity player = Minecraft.getInstance().player;
 		if(player!=null){
 			//noinspection ConstantConditions
-			ClientPlayerShield shield = player.getCapability(Caps.clientPlayerShield).orElse(null);
+			ClientPlayerCapability shield = player.getCapability(Caps.clientPlayerShield).orElse(null);
 			//noinspection ConstantConditions
 			if(shield!=null){
 				event.getRight().add(shield.shields.size()+" shields");
@@ -145,7 +145,7 @@ public final class ClientEventHandlers{
 				(PlayerEntity)mc.getCameraEntity() : null;
 		if(player==null) return;
 		//noinspection ConstantConditions
-		ClientPlayerShield cps = player.getCapability(Caps.clientPlayerShield).orElse(null);
+		ClientPlayerCapability cps = player.getCapability(Caps.clientPlayerShield).orElse(null);
 		//noinspection ConstantConditions
 		if(cps==null||cps.shields.isEmpty()) return;
 

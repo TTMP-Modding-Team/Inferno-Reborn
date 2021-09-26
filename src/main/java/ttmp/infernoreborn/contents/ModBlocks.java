@@ -5,6 +5,7 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.IBlockReader;
 import net.minecraftforge.fml.RegistryObject;
 import net.minecraftforge.registries.DeferredRegister;
@@ -13,12 +14,13 @@ import ttmp.infernoreborn.contents.block.EssenceHolderBlock;
 import ttmp.infernoreborn.contents.block.FoundryBlock;
 import ttmp.infernoreborn.contents.block.GoldenSkullBlock;
 import ttmp.infernoreborn.contents.block.GoldenWallSkullBlock;
-import ttmp.infernoreborn.contents.block.SigilEngravingTableBlock;
+import ttmp.infernoreborn.contents.block.NamedContainerBlock;
 import ttmp.infernoreborn.contents.block.SigilScrapperBlock;
 import ttmp.infernoreborn.contents.block.essencenet.EssenceNetCoreBlock;
 import ttmp.infernoreborn.contents.block.essencenet.EssenceNetExporterBlock;
 import ttmp.infernoreborn.contents.block.essencenet.EssenceNetImporterBlock;
 import ttmp.infernoreborn.contents.tile.SigilEngravingTableTile;
+import ttmp.infernoreborn.contents.tile.StigmaTableTile;
 
 import static net.minecraft.state.properties.BlockStateProperties.LIT;
 import static ttmp.infernoreborn.InfernoReborn.MODID;
@@ -28,19 +30,30 @@ public final class ModBlocks{
 
 	public static final DeferredRegister<Block> REGISTER = DeferredRegister.create(ForgeRegistries.BLOCKS, MODID);
 
-	public static final RegistryObject<Block> SIGIL_ENGRAVING_TABLE_3X3 = REGISTER.register("sigil_engraving_table_3x3", () -> new SigilEngravingTableBlock(Properties.of(Material.WOOD)){
-		@Override public SigilEngravingTableTile createTileEntity(BlockState state, IBlockReader world){
+	public static final RegistryObject<Block> SIGIL_ENGRAVING_TABLE_3X3 = REGISTER.register("sigil_engraving_table_3x3", () -> new NamedContainerBlock(Properties.of(Material.WOOD)){
+		@Override public TileEntity createTileEntity(BlockState state, IBlockReader world){
 			return SigilEngravingTableTile.new3x3();
 		}
 	});
-	public static final RegistryObject<Block> SIGIL_ENGRAVING_TABLE_5X5 = REGISTER.register("sigil_engraving_table_5x5", () -> new SigilEngravingTableBlock(Properties.of(Material.WOOD)){
-		@Override public SigilEngravingTableTile createTileEntity(BlockState state, IBlockReader world){
+	public static final RegistryObject<Block> SIGIL_ENGRAVING_TABLE_5X5 = REGISTER.register("sigil_engraving_table_5x5", () -> new NamedContainerBlock(Properties.of(Material.WOOD)){
+		@Override public TileEntity createTileEntity(BlockState state, IBlockReader world){
 			return SigilEngravingTableTile.new5x5();
 		}
 	});
-	public static final RegistryObject<Block> SIGIL_ENGRAVING_TABLE_7X7 = REGISTER.register("sigil_engraving_table_7x7", () -> new SigilEngravingTableBlock(Properties.of(Material.WOOD)){
-		@Override public SigilEngravingTableTile createTileEntity(BlockState state, IBlockReader world){
+	public static final RegistryObject<Block> SIGIL_ENGRAVING_TABLE_7X7 = REGISTER.register("sigil_engraving_table_7x7", () -> new NamedContainerBlock(Properties.of(Material.WOOD)){
+		@Override public TileEntity createTileEntity(BlockState state, IBlockReader world){
 			return SigilEngravingTableTile.new7x7();
+		}
+	});
+
+	public static final RegistryObject<Block> STIGMA_TABLE_5X5 = REGISTER.register("stigma_engraving_table_5x5", () -> new NamedContainerBlock(Properties.of(Material.WOOD)){
+		@Override public TileEntity createTileEntity(BlockState state, IBlockReader world){
+			return StigmaTableTile.new5x5();
+		}
+	});
+	public static final RegistryObject<Block> STIGMA_TABLE_7X7 = REGISTER.register("stigma_engraving_table_7x7", () -> new NamedContainerBlock(Properties.of(Material.WOOD)){
+		@Override public TileEntity createTileEntity(BlockState state, IBlockReader world){
+			return StigmaTableTile.new7x7();
 		}
 	});
 
@@ -63,7 +76,7 @@ public final class ModBlocks{
 			Properties.of(Material.STONE).requiresCorrectToolForDrops().strength(3.5f).noDrops().dynamicShape()));
 
 	public static final RegistryObject<Block> ESSENCE_HOLDER = REGISTER.register("essence_holder", () -> new EssenceHolderBlock(
-			Properties.of(Material.GLASS).strength(1.5f).dynamicShape()));
+			Properties.of(Material.GLASS).strength(1.5f).dynamicShape().lightLevel(value -> 15)));
 	public static final RegistryObject<Block> ESSENCE_NET_CORE = REGISTER.register("essence_net_core", () -> new EssenceNetCoreBlock(
 			Properties.of(Material.GLASS).strength(1.5f, 3600000).dynamicShape()));
 	public static final RegistryObject<Block> ESSENCE_NET_IMPORTER = REGISTER.register("essence_net_importer", () -> new EssenceNetImporterBlock(

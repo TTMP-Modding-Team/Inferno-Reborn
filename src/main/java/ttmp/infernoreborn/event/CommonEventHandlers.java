@@ -7,6 +7,7 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.ai.attributes.Attribute;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.potion.EffectInstance;
 import net.minecraft.util.DamageSource;
@@ -45,10 +46,10 @@ import ttmp.infernoreborn.contents.ability.holder.ServerAbilityHolder;
 import ttmp.infernoreborn.contents.sigil.holder.ItemSigilHolder;
 import ttmp.infernoreborn.contents.sigil.holder.SigilHolder;
 import ttmp.infernoreborn.util.ArmorSets;
-import ttmp.infernoreborn.util.damage.LivingOnly;
 import ttmp.infernoreborn.util.LivingUtils;
 import ttmp.infernoreborn.util.SigilSlot;
 import ttmp.infernoreborn.util.SigilUtils;
+import ttmp.infernoreborn.util.damage.LivingOnly;
 
 import javax.annotation.Nullable;
 
@@ -69,8 +70,8 @@ public class CommonEventHandlers{
 		Entity e = event.getObject();
 		if(!(e instanceof LivingEntity)) return;
 		if(e instanceof PlayerEntity){
-			PlayerEntity p = (PlayerEntity)e;
-			event.addCapability(PLAYER_CAP_KEY, new PlayerCapability(p));
+			if(e instanceof ServerPlayerEntity)
+				event.addCapability(PLAYER_CAP_KEY, new PlayerCapability((ServerPlayerEntity)e));
 		}else{
 			event.addCapability(ABILITY_HOLDER_KEY, e.level.isClientSide ? new ClientAbilityHolder() : new ServerAbilityHolder());
 		}

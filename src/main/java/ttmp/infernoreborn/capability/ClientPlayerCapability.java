@@ -1,9 +1,12 @@
 package ttmp.infernoreborn.capability;
 
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.Direction;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.common.util.LazyOptional;
+import ttmp.infernoreborn.contents.sigil.holder.PlayerSigilHolder;
+import ttmp.infernoreborn.contents.sigil.holder.SigilHolder;
 import ttmp.infernoreborn.network.SyncShieldMsg;
 import ttmp.infernoreborn.shield.ShieldSkin;
 import ttmp.infernoreborn.shield.ShieldSkins;
@@ -13,8 +16,13 @@ import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ClientPlayerShield implements ICapabilityProvider{
+public class ClientPlayerCapability implements ICapabilityProvider{
+	private final PlayerSigilHolder sigils;
 	public final List<ActiveShield> shields = new ArrayList<>();
+
+	public ClientPlayerCapability(PlayerEntity player){
+		sigils = new PlayerSigilHolder(player);
+	}
 
 	public void update(SyncShieldMsg msg){
 		if(msg.shields==shields.size()){
@@ -30,14 +38,17 @@ public class ClientPlayerShield implements ICapabilityProvider{
 		}
 	}
 
-	@Nullable private LazyOptional<ClientPlayerShield> self = null;
+	@Nullable private LazyOptional<ClientPlayerCapability> self = null;
+	@Nullable private LazyOptional<SigilHolder> sigilHolderLO = null;
 
 	@Nonnull @Override public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable Direction side){
 		if(cap==Caps.clientPlayerShield){
 			if(self==null) self = LazyOptional.of(() -> this);
 			return self.cast();
-		}
-		return LazyOptional.empty();
+		}else if(cap==Caps.sigilHolder){
+			if(sigilHolderLO==null) sigilHolderLO = LazyOptional.of(() -> sigils);
+			return sigilHolderLO.cast();
+		}else return LazyOptional.empty();
 	}
 
 	public static final class ActiveShield{

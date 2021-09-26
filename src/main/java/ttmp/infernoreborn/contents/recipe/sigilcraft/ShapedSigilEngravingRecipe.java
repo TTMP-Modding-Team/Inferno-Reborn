@@ -15,10 +15,11 @@ import ttmp.infernoreborn.contents.sigil.Sigil;
 import ttmp.infernoreborn.contents.sigil.holder.SigilHolder;
 import ttmp.infernoreborn.inventory.SigilcraftInventory;
 
+import javax.annotation.Nullable;
 import java.util.Map;
 import java.util.Objects;
 
-public class ShapedSigilEngravingRecipe extends BaseSigilcraftRecipe{
+public class ShapedSigilEngravingRecipe extends BaseSigilcraftRecipe implements SigilEngravingRecipe{
 	private final Sigil sigil;
 
 	public ShapedSigilEngravingRecipe(ResourceLocation id,
@@ -27,8 +28,9 @@ public class ShapedSigilEngravingRecipe extends BaseSigilcraftRecipe{
 	                                  int height,
 	                                  NonNullList<Ingredient> ingredients,
 	                                  Sigil sigil,
-	                                  int coreIngredient){
-		super(id, group, width, height, ingredients, coreIngredient);
+	                                  int coreIngredient,
+	                                  boolean mirror){
+		super(id, group, width, height, ingredients, coreIngredient, mirror);
 		this.sigil = sigil;
 	}
 
@@ -43,6 +45,9 @@ public class ShapedSigilEngravingRecipe extends BaseSigilcraftRecipe{
 		SigilHolder h = SigilHolder.of(engraving);
 		if(h!=null) h.add(sigil);
 		return engraving;
+	}
+	@Nullable @Override public Sigil tryEngrave(SigilHolder sigilHolder, SigilcraftInventory inv){
+		return sigilHolder.canAdd(sigil)&&(matches(inv, false)||isMirror()&&matches(inv, true)) ? sigil : null;
 	}
 
 	@Override public ItemStack getResultItem(){
@@ -63,6 +68,7 @@ public class ShapedSigilEngravingRecipe extends BaseSigilcraftRecipe{
 			int center = readCenter(object, width, height);
 			NonNullList<Ingredient> ingredients = dissolvePattern(patterns, map, width, height, center, true);
 			Sigil sigil = Sigils.getRegistry().getValue(new ResourceLocation(JSONUtils.getAsString(object, "sigil")));
+			boolean mirror = JSONUtils.getAsBoolean(object, "mirror", false);
 
 			return new ShapedSigilEngravingRecipe(id,
 					group,
@@ -70,7 +76,8 @@ public class ShapedSigilEngravingRecipe extends BaseSigilcraftRecipe{
 					height,
 					ingredients,
 					Objects.requireNonNull(sigil),
-					center);
+					center,
+					mirror);
 		}
 
 		@Override public ShapedSigilEngravingRecipe fromNetwork(ResourceLocation id, PacketBuffer buffer){
@@ -83,7 +90,7 @@ public class ShapedSigilEngravingRecipe extends BaseSigilcraftRecipe{
 				ingredients.set(i, Ingredient.fromNetwork(buffer));
 
 			Sigil sigil = Sigils.getRegistry().getValue(buffer.readVarInt());
-			return new ShapedSigilEngravingRecipe(id, group, x, y, ingredients, sigil, buffer.readVarInt());
+			return new ShapedSigilEngravingRecipe(id, group, x, y, ingredients, sigil, buffer.readVarInt(), buffer.readBoolean());
 		}
 
 		@Override public void toNetwork(PacketBuffer buffer, ShapedSigilEngravingRecipe recipe){
@@ -96,6 +103,7 @@ public class ShapedSigilEngravingRecipe extends BaseSigilcraftRecipe{
 
 			buffer.writeVarInt(Sigils.getRegistry().getID(recipe.sigil));
 			buffer.writeVarInt(recipe.getCenterIngredient());
+			buffer.writeBoolean(recipe.isMirror());
 		}
 	}
 }

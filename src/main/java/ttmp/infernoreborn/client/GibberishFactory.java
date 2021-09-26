@@ -52,6 +52,35 @@ public class GibberishFactory{
 		return text;
 	}
 
+	public StringTextComponent toText(SigilHolder h, Sigil... addedSigils){
+		StringTextComponent text = new StringTextComponent("");
+		text.withStyle(ROOT_STYLE);
+		boolean first = true;
+		long t = System.currentTimeMillis();
+		double blend = getBlend(t, PHASE)*.5;
+
+		for(Sigil sigil : h.getSigils()){
+			if(sigil.getPoint()<=0) continue;
+			if(first) first = false;
+			else text.append(" ");
+			StringTextComponent subtext = new StringTextComponent(getOrCreateGibberish(sigil));
+			subtext.setStyle(subtext.getStyle().withColor(Color.fromRgb(ColorUtils.blend(sigil.getBrighterColor(), sigil.getDarkerColor(), blend))));
+			text.append(subtext);
+		}
+		double blend2 = getBlend(t, PHASE2);
+		for(Sigil sigil : addedSigils){
+			if(sigil.getPoint()<=0||h.has(sigil)) continue;
+			if(first) first = false;
+			else text.append(" ");
+			StringTextComponent subtext = new StringTextComponent(getOrCreateGibberish(sigil));
+			subtext.setStyle(subtext.getStyle().withColor(Color.fromRgb(ColorUtils.blend(sigil.getBrighterColor(), sigil.getDarkerColor(), blend2))));
+			text.append(subtext);
+		}
+
+		return text;
+	}
+
+
 	private String getOrCreateGibberish(Sigil sigil){
 		return gibberish.computeIfAbsent(sigil, GibberishFactory::createGibberish);
 	}

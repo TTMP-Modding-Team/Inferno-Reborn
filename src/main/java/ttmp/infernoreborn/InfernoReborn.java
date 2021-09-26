@@ -30,7 +30,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import top.theillusivec4.curios.api.SlotTypeMessage;
 import top.theillusivec4.curios.api.SlotTypePreset;
-import ttmp.infernoreborn.capability.ClientPlayerShield;
+import ttmp.infernoreborn.capability.ClientPlayerCapability;
 import ttmp.infernoreborn.capability.EssenceNetProvider;
 import ttmp.infernoreborn.capability.PlayerCapability;
 import ttmp.infernoreborn.capability.ShieldProvider;
@@ -47,6 +47,7 @@ import ttmp.infernoreborn.client.screen.EssenceHolderScreen;
 import ttmp.infernoreborn.client.screen.FoundryScreen;
 import ttmp.infernoreborn.client.screen.SigilEngravingTableScreen;
 import ttmp.infernoreborn.client.screen.SigilScrapperScreen;
+import ttmp.infernoreborn.client.screen.StigmaTableScreen;
 import ttmp.infernoreborn.contents.Abilities;
 import ttmp.infernoreborn.contents.ModAttributes;
 import ttmp.infernoreborn.contents.ModBlocks;
@@ -120,7 +121,7 @@ public class InfernoReborn{
 			registerDefaultCapability(ShieldProvider.class);
 			registerDefaultCapability(EssenceNetProvider.class);
 			registerDefaultCapability(EssenceNetAccessorItem.Data.class);
-			registerDefaultCapability(ClientPlayerShield.class);
+			registerDefaultCapability(ClientPlayerCapability.class);
 		});
 	}
 
@@ -166,6 +167,8 @@ public class InfernoReborn{
 				ScreenManager.register(ModContainers.SIGIL_ENGRAVING_TABLE_3X3.get(), SigilEngravingTableScreen.X3::new);
 				ScreenManager.register(ModContainers.SIGIL_ENGRAVING_TABLE_5X5.get(), SigilEngravingTableScreen.X5::new);
 				ScreenManager.register(ModContainers.SIGIL_ENGRAVING_TABLE_7X7.get(), SigilEngravingTableScreen.X7::new);
+				ScreenManager.register(ModContainers.STIGMA_TABLE_5X5.get(), StigmaTableScreen.X5::new);
+				ScreenManager.register(ModContainers.STIGMA_TABLE_7X7.get(), StigmaTableScreen.X7::new);
 				ScreenManager.register(ModContainers.SIGIL_SCRAPPER.get(), SigilScrapperScreen::new);
 				ScreenManager.register(ModContainers.FOUNDRY.get(), FoundryScreen::new);
 

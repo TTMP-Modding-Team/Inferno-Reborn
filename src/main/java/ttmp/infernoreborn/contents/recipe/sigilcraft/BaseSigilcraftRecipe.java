@@ -18,19 +18,22 @@ public abstract class BaseSigilcraftRecipe implements SigilcraftRecipe, IShapedR
 	protected final int height;
 	protected final NonNullList<Ingredient> ingredients;
 	protected final int centerIngredient;
+	protected final boolean mirror;
 
 	public BaseSigilcraftRecipe(ResourceLocation id,
 	                            String group,
 	                            int width,
 	                            int height,
 	                            NonNullList<Ingredient> ingredients,
-	                            int centerIngredient){
+	                            int centerIngredient,
+	                            boolean mirror){
 		this.id = id;
 		this.group = group;
 		this.width = width;
 		this.height = height;
 		this.ingredients = ingredients;
 		this.centerIngredient = centerIngredient;
+		this.mirror = mirror;
 	}
 
 	public int getCenterIngredient(){
@@ -44,8 +47,12 @@ public abstract class BaseSigilcraftRecipe implements SigilcraftRecipe, IShapedR
 		return indexToY(getCenterIngredient(), getRecipeWidth());
 	}
 
+	public boolean isMirror(){
+		return mirror;
+	}
+
 	@Override public boolean matches(SigilcraftInventory inv, World world){
-		return matchCore(inv)&&(matches(inv, false)||matches(inv, true));
+		return matchCore(inv)&&(matches(inv, false)||isMirror()&&matches(inv, true));
 	}
 	@Override public abstract ItemStack assemble(SigilcraftInventory inv);
 

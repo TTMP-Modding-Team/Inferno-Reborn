@@ -17,11 +17,12 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeHooks;
 import ttmp.infernoreborn.contents.ModContainers;
 import ttmp.infernoreborn.contents.ModRecipes;
+import ttmp.infernoreborn.contents.recipe.sigilcraft.SigilcraftRecipe;
+import ttmp.infernoreborn.contents.sigil.holder.SigilHolder;
 import ttmp.infernoreborn.inventory.DelegateSigilcraftInventory;
 import ttmp.infernoreborn.inventory.SigilTableInventory;
 import ttmp.infernoreborn.inventory.SigilcraftInventory;
-import ttmp.infernoreborn.contents.recipe.sigilcraft.SigilcraftRecipe;
-import ttmp.infernoreborn.contents.sigil.holder.SigilHolder;
+import ttmp.infernoreborn.util.RealIntReferenceHolder;
 
 import javax.annotation.Nullable;
 import java.util.Objects;
@@ -51,7 +52,7 @@ public abstract class SigilEngravingTableContainer extends Container{
 	private final IWorldPosCallable access;
 	private final PlayerEntity player;
 
-	private final IntReferenceHolder maxPoints = IntReferenceHolder.standalone();
+	private final RealIntReferenceHolder maxPoints = new RealIntReferenceHolder();
 
 	public SigilEngravingTableContainer(@Nullable ContainerType<?> type, int id, PlayerInventory playerInventory, int size){
 		this(type, id, playerInventory, new SigilTableInventory(size, size), IWorldPosCallable.NULL);
@@ -76,6 +77,8 @@ public abstract class SigilEngravingTableContainer extends Container{
 
 		this.access.execute((w, p) -> slotChangedCraftingGrid(w));
 		updateMaxPoint();
+
+		this.maxPoints.register(this::addDataSlot);
 	}
 
 	protected abstract int resultX();
@@ -123,6 +126,7 @@ public abstract class SigilEngravingTableContainer extends Container{
 	}
 
 	protected void updateMaxPoint(){
+		if(player.level.isClientSide()) return;
 		ItemStack stack = inventory.getCenterItem();
 		SigilHolder h = SigilHolder.of(stack);
 		if(h==null) return;

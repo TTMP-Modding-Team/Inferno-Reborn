@@ -180,6 +180,9 @@ public final class ModItems{
 	public static final RegistryObject<BlockItem> SIGIL_ENGRAVING_TABLE_7X7 = REGISTER.register("sigil_engraving_table_7x7", () -> new BlockItem(ModBlocks.SIGIL_ENGRAVING_TABLE_7X7.get(), artifacts()));
 	public static final RegistryObject<BlockItem> SIGIL_SCRAPPER = REGISTER.register("sigil_scrapper", () -> new BlockItem(ModBlocks.SIGIL_SCRAPPER.get(), artifacts()));
 
+	public static final RegistryObject<BlockItem> STIGMA_TABLE_5X5 = REGISTER.register("stigma_table_5x5", () -> new BlockItem(ModBlocks.STIGMA_TABLE_5X5.get(), artifacts()));
+	public static final RegistryObject<BlockItem> STIGMA_TABLE_7X7 = REGISTER.register("stigma_table_7x7", () -> new BlockItem(ModBlocks.STIGMA_TABLE_7X7.get(), artifacts()));
+
 	public static final RegistryObject<Item> FOUNDRY_TILE = REGISTER.register("foundry_tile", () -> new BlockItem(ModBlocks.FOUNDRY_TILE.get(), artifacts()));
 	public static final RegistryObject<Item> FOUNDRY = REGISTER.register("foundry", () -> new FoundryBlockItem(ModBlocks.FOUNDRY.get(), artifacts().setISTER(() -> () -> FoundryISTER.INSTANCE)));
 

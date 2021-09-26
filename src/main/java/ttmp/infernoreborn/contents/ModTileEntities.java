@@ -12,6 +12,7 @@ import ttmp.infernoreborn.contents.tile.FoundryProxyTile;
 import ttmp.infernoreborn.contents.tile.FoundryTile;
 import ttmp.infernoreborn.contents.tile.GoldenSkullTile;
 import ttmp.infernoreborn.contents.tile.SigilEngravingTableTile;
+import ttmp.infernoreborn.contents.tile.StigmaTableTile;
 
 import static ttmp.infernoreborn.InfernoReborn.MODID;
 
@@ -27,6 +28,11 @@ public final class ModTileEntities{
 			TileEntityType.Builder.of(SigilEngravingTableTile::new5x5, ModBlocks.SIGIL_ENGRAVING_TABLE_5X5.get()).build(null));
 	public static final RegistryObject<TileEntityType<SigilEngravingTableTile>> SIGIL_ENGRAVING_TABLE_7X7 = REGISTER.register("sigil_engraving_table_7x7", () ->
 			TileEntityType.Builder.of(SigilEngravingTableTile::new7x7, ModBlocks.SIGIL_ENGRAVING_TABLE_7X7.get()).build(null));
+
+	public static final RegistryObject<TileEntityType<StigmaTableTile>> STIGMA_TABLE_5X5 = REGISTER.register("stigma_table_5x5", () ->
+			TileEntityType.Builder.of(StigmaTableTile::new5x5, ModBlocks.STIGMA_TABLE_5X5.get()).build(null));
+	public static final RegistryObject<TileEntityType<StigmaTableTile>> STIGMA_TABLE_7X7 = REGISTER.register("stigma_table_7x7", () ->
+			TileEntityType.Builder.of(StigmaTableTile::new7x7, ModBlocks.STIGMA_TABLE_7X7.get()).build(null));
 
 	public static final RegistryObject<TileEntityType<FoundryTile>> FOUNDRY = REGISTER.register("foundry", () ->
 			TileEntityType.Builder.of(FoundryTile::new, ModBlocks.FOUNDRY.get()).build(null));

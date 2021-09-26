@@ -23,8 +23,9 @@ public class ShapedSigilTableCraftingRecipe extends BaseSigilcraftRecipe{
 	                                      int height,
 	                                      NonNullList<Ingredient> ingredients,
 	                                      ItemStack result,
-	                                      int coreIngredient){
-		super(id, group, width, height, ingredients, coreIngredient);
+	                                      int coreIngredient,
+	                                      boolean mirror){
+		super(id, group, width, height, ingredients, coreIngredient, mirror);
 		this.result = result;
 	}
 
@@ -48,6 +49,7 @@ public class ShapedSigilTableCraftingRecipe extends BaseSigilcraftRecipe{
 			int center = readCenter(object, width, height);
 			NonNullList<Ingredient> ingredients = dissolvePattern(patterns, map, width, height, center, false);
 			ItemStack result = ShapedRecipe.itemFromJson(JSONUtils.getAsJsonObject(object, "result"));
+			boolean mirror = JSONUtils.getAsBoolean(object, "mirror", false);
 
 			return new ShapedSigilTableCraftingRecipe(id,
 					group,
@@ -55,7 +57,8 @@ public class ShapedSigilTableCraftingRecipe extends BaseSigilcraftRecipe{
 					height,
 					ingredients,
 					result,
-					center);
+					center,
+					mirror);
 		}
 
 		@Override public ShapedSigilTableCraftingRecipe fromNetwork(ResourceLocation id, PacketBuffer buffer){
@@ -68,7 +71,7 @@ public class ShapedSigilTableCraftingRecipe extends BaseSigilcraftRecipe{
 				ingredients.set(i, Ingredient.fromNetwork(buffer));
 
 			ItemStack result = buffer.readItem();
-			return new ShapedSigilTableCraftingRecipe(id, group, x, y, ingredients, result, buffer.readVarInt());
+			return new ShapedSigilTableCraftingRecipe(id, group, x, y, ingredients, result, buffer.readVarInt(), buffer.readBoolean());
 		}
 
 		@Override public void toNetwork(PacketBuffer buffer, ShapedSigilTableCraftingRecipe recipe){
@@ -81,6 +84,7 @@ public class ShapedSigilTableCraftingRecipe extends BaseSigilcraftRecipe{
 
 			buffer.writeItem(recipe.getResultItem());
 			buffer.writeVarInt(recipe.getCenterIngredient());
+			buffer.writeBoolean(recipe.isMirror());
 		}
 	}
 }

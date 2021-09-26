@@ -26,6 +26,6 @@ public final class Caps{
 	public static Capability<EssenceNetProvider> essenceNetProvider;
 	@CapabilityInject(EssenceNetAccessorItem.Data.class)
 	public static Capability<EssenceNetAccessorItem.Data> essenceNetAccessorData;
-	@CapabilityInject(ClientPlayerShield.class)
-	public static Capability<ClientPlayerShield> clientPlayerShield;
+	@CapabilityInject(ClientPlayerCapability.class)
+	public static Capability<ClientPlayerCapability> clientPlayerShield;
 }

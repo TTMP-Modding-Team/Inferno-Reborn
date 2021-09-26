@@ -51,6 +51,7 @@ import ttmp.infernoreborn.contents.entity.projectile.wind.EffectWindEntity;
 import ttmp.infernoreborn.network.ModNet;
 import ttmp.infernoreborn.network.ParticleMsg;
 import ttmp.infernoreborn.util.EssenceType;
+import ttmp.infernoreborn.util.damage.Damages;
 import ttmp.infernoreborn.util.damage.LivingOnlyEntityDamageSource;
 import ttmp.infernoreborn.util.LivingUtils;
 
@@ -559,7 +560,7 @@ public final class Abilities{
 						int c = effect.getAmplifier()+1;
 						double distance = target.distanceTo(entity);
 						if(distance>6&&(distance>15||c>=target.getHealth())){
-							entity.hurt(LivingUtils.killerQueenDamage(entity), c);
+							entity.hurt(Damages.killerQueen(entity), c);
 							entity.level.explode(entity, new LivingOnlyEntityDamageSource("explosion.player", null, entity).setExplosion(),
 									null, target.getX(), target.getY(), target.getZ(), 1+c/2f, false, Explosion.Mode.NONE);
 						}
@@ -594,7 +595,7 @@ public final class Abilities{
 						LivingUtils.addStackEffect(target, ModEffects.HAND_OF_MIDAS.get(), 100, 0, 1, 127);
 						EffectInstance effect = target.getEffect(ModEffects.HAND_OF_MIDAS.get());
 						if(effect!=null&&target.getHealth()<=effect.getAmplifier()+1){
-							if(target.hurt(LivingUtils.midasDamage(entity), Float.MAX_VALUE)){
+							if(target.hurt(Damages.midas(entity), Float.MAX_VALUE)){
 								target.level.addFreshEntity(new ItemEntity(target.level,
 										target.getRandomX(1),
 										target.getRandomY(),

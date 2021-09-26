@@ -1,6 +1,10 @@
 package ttmp.infernoreborn.capability;
 
-import net.minecraft.entity.player.PlayerEntity;
+import com.google.common.collect.ArrayListMultimap;
+import com.google.common.collect.ListMultimap;
+import net.minecraft.entity.ai.attributes.Attribute;
+import net.minecraft.entity.ai.attributes.AttributeModifier;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
@@ -10,7 +14,6 @@ import net.minecraft.util.Direction;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.common.capabilities.ICapabilitySerializable;
-import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fml.network.PacketDistributor;
 import top.theillusivec4.curios.api.CuriosApi;
@@ -18,52 +21,49 @@ import top.theillusivec4.curios.api.type.capability.ICuriosItemHandler;
 import top.theillusivec4.curios.api.type.inventory.ICurioStacksHandler;
 import top.theillusivec4.curios.api.type.inventory.IDynamicStackHandler;
 import ttmp.infernoreborn.InfernoReborn;
-import ttmp.infernoreborn.contents.Sigils;
 import ttmp.infernoreborn.contents.sigil.Sigil;
-import ttmp.infernoreborn.contents.sigil.context.SigilEventContext;
+import ttmp.infernoreborn.contents.sigil.holder.PlayerSigilHolder;
 import ttmp.infernoreborn.contents.sigil.holder.SigilHolder;
 import ttmp.infernoreborn.network.ModNet;
+import ttmp.infernoreborn.network.SyncBodySigilMsg;
 import ttmp.infernoreborn.network.SyncShieldMsg;
 import ttmp.infernoreborn.shield.ArmorShield;
 import ttmp.infernoreborn.shield.MutableShield;
 import ttmp.infernoreborn.shield.Shield;
 import ttmp.infernoreborn.shield.ShieldModifier;
 import ttmp.infernoreborn.util.SigilSlot;
-import ttmp.infernoreborn.util.StupidUtils;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
-import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Objects;
-import java.util.Set;
 
 import static net.minecraft.inventory.EquipmentSlotType.Group.ARMOR;
 import static net.minecraftforge.common.util.Constants.NBT.TAG_COMPOUND;
 import static net.minecraftforge.common.util.Constants.NBT.TAG_LIST;
 
-public class PlayerCapability implements SigilHolder, ICapabilitySerializable<CompoundNBT>{
+public class PlayerCapability implements ICapabilitySerializable<CompoundNBT>{
 	@SuppressWarnings("ConstantConditions") @Nullable public static PlayerCapability of(ICapabilityProvider provider){
 		return provider.getCapability(Caps.playerCapability).orElse(null);
 	}
 
-	private final PlayerEntity player;
+	private final ServerPlayerEntity player;
 	private int judgementCooldown;
 
-	private final Set<Sigil> sigils = new LinkedHashSet<>();
+	private final PlayerSigilHolder sigils;
 
-	private int totalPoint = 0;
-	private boolean totalPointDirty;
+	private boolean syncSigil = true;
 	private boolean updateBodyShield;
 
 	private boolean syncShield = true;
+
+	private final Map<Sigil, ListMultimap<Attribute, AttributeModifier>> sigilAttributes = new HashMap<>();
 
 	@Nullable private ActiveShield bodyShield = null;
 	@Nullable private ActiveShield defaultArmorShield = null;
@@ -75,8 +75,44 @@ public class PlayerCapability implements SigilHolder, ICapabilitySerializable<Co
 	private final ItemStack[] armorCache = new ItemStack[4];
 	private final Map<CurioSlot, ItemStack> curioCache = new HashMap<>();
 
-	public PlayerCapability(PlayerEntity player){
+	public PlayerCapability(ServerPlayerEntity player){
 		this.player = player;
+		this.sigils = new PlayerSigilHolder(player){
+			@Override public boolean add(Sigil sigil, boolean force){
+				boolean add = super.add(sigil, force);
+				if(add){
+					ArrayListMultimap<Attribute, AttributeModifier> attrib = ArrayListMultimap.create();
+					sigil.applyAttributes(createContext(), SigilSlot.BODY, attrib);
+					if(!attrib.isEmpty()){
+						player.getAttributes().addTransientAttributeModifiers(attrib);
+						sigilAttributes.put(sigil, attrib);
+					}
+					syncSigil = true;
+					if(sigil instanceof ShieldModifier) updateBodyShield = true;
+				}
+				return add;
+			}
+			@Override public boolean remove(Sigil sigil){
+				boolean remove = super.remove(sigil);
+				if(remove){
+					ListMultimap<Attribute, AttributeModifier> attrib = sigilAttributes.remove(sigil);
+					if(attrib!=null) player.getAttributes().removeAttributeModifiers(attrib);
+					syncSigil = true;
+					if(sigil instanceof ShieldModifier) updateBodyShield = true;
+				}
+				return remove;
+			}
+			@Override public void clear(){
+				if(isEmpty()) return;
+				super.clear();
+				for(ListMultimap<Attribute, AttributeModifier> attrib : sigilAttributes.values()){
+					player.getAttributes().removeAttributeModifiers(attrib);
+				}
+				sigilAttributes.clear();
+				syncSigil = true;
+				updateBodyShield = true;
+			}
+		};
 		Arrays.fill(armorCache, ItemStack.EMPTY);
 	}
 
@@ -88,54 +124,6 @@ public class PlayerCapability implements SigilHolder, ICapabilitySerializable<Co
 	}
 	public void setJudgementCooldown(int judgementCooldown){
 		this.judgementCooldown = judgementCooldown;
-	}
-
-	@Override public Set<Sigil> getSigils(){
-		return Collections.unmodifiableSet(sigils);
-	}
-
-	@Override public int getMaxPoints(){
-		return 999; // TODO
-	}
-	@Override public int getTotalPoint(){
-		if(totalPointDirty){
-			totalPoint = 0;
-			for(Sigil sigil : this.sigils)
-				totalPoint += sigil.getPoint();
-			totalPointDirty = false;
-		}
-		return totalPoint;
-	}
-
-	@Override public boolean has(Sigil sigil){
-		return sigils.contains(sigil);
-	}
-	@Override public boolean add(Sigil sigil, boolean force){
-		if(!force&&!canAdd(sigil)) return false;
-		if(!sigils.add(sigil)) return false;
-		totalPointDirty = true;
-		if(sigil instanceof ShieldModifier) updateBodyShield = true;
-		return true;
-	}
-	@Override public boolean remove(Sigil sigil){
-		if(!sigils.remove(sigil)) return false;
-		totalPointDirty = true;
-		if(sigil instanceof ShieldModifier) updateBodyShield = true;
-		return true;
-	}
-	@Override public boolean isEmpty(){
-		return sigils.isEmpty();
-	}
-	@Override public void clear(){
-		if(!sigils.isEmpty()){
-			sigils.clear();
-			totalPointDirty = true;
-			updateBodyShield = true;
-		}
-	}
-
-	@Override public SigilEventContext createContext(){
-		return SigilEventContext.living(player, this);
 	}
 
 	public void update(){
@@ -154,6 +142,10 @@ public class PlayerCapability implements SigilHolder, ICapabilitySerializable<Co
 		}
 		if(msg!=null) ModNet.CHANNEL.send(PacketDistributor.TRACKING_ENTITY_AND_SELF.with(() -> player), msg);
 		syncShield = false;
+		if(syncSigil){
+			syncSigil = false;
+			ModNet.CHANNEL.send(PacketDistributor.PLAYER.with(() -> this.player), new SyncBodySigilMsg(sigils));
+		}
 	}
 
 	// What the fuck did I just wrote
@@ -305,23 +297,26 @@ public class PlayerCapability implements SigilHolder, ICapabilitySerializable<Co
 
 	public void copyTo(PlayerCapability other){
 		other.setJudgementCooldown(getJudgementCooldown());
-		for(Sigil sigil : sigils) other.add(sigil, true);
+		for(Sigil sigil : sigils.getSigils()) other.sigils.add(sigil, true);
 	}
 
 	@Nullable private LazyOptional<PlayerCapability> self;
+	@Nullable private LazyOptional<SigilHolder> sigilHolderLO;
 
 	@Nonnull @Override public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable Direction side){
-		if(cap==Caps.playerCapability||cap==Caps.sigilHolder){
+		if(cap==Caps.playerCapability){
 			if(self==null) self = LazyOptional.of(() -> this);
 			return self.cast();
-		}
-		return LazyOptional.empty();
+		}else if(cap==Caps.sigilHolder){
+			if(sigilHolderLO==null) sigilHolderLO = LazyOptional.of(() -> this.sigils);
+			return sigilHolderLO.cast();
+		}else return LazyOptional.empty();
 	}
 
 	@Override public CompoundNBT serializeNBT(){
 		CompoundNBT nbt = new CompoundNBT();
 		if(judgementCooldown>0) nbt.putInt("judgement", judgementCooldown);
-		nbt.put("sigils", StupidUtils.writeToNbt(sigils, Sigils.getRegistry()));
+		sigils.write(nbt);
 
 		if(bodyShield!=null) nbt.put("bodyShield", bodyShield.save());
 		if(defaultArmorShield!=null) nbt.put("defaultArmorShield", defaultArmorShield.save());
@@ -346,13 +341,7 @@ public class PlayerCapability implements SigilHolder, ICapabilitySerializable<Co
 
 	@Override public void deserializeNBT(CompoundNBT nbt){
 		judgementCooldown = nbt.getInt("judgement");
-		sigils.clear();
-		if(nbt.contains("sigils", TAG_LIST)){
-			ListNBT list = nbt.getList("sigils", Constants.NBT.TAG_STRING);
-			StupidUtils.read(list, Sigils.getRegistry(), sigils::add);
-		}
-		totalPointDirty = true;
-		updateBodyShield = true;
+		sigils.read(nbt);
 
 		bodyShield = nbt.contains("bodyShield", TAG_COMPOUND) ?
 				new ActiveShield(ArmorShield.BODY_SHIELD, nbt.getCompound("bodyShield")) : null;
