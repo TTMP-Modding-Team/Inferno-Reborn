@@ -1,9 +1,11 @@
 package ttmp.infernoreborn.capability;
 
 import com.google.common.collect.ArrayListMultimap;
+import com.google.common.collect.ImmutableMultimap;
 import com.google.common.collect.ListMultimap;
 import net.minecraft.entity.ai.attributes.Attribute;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
+import net.minecraft.entity.ai.attributes.Attributes;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.ItemStack;
@@ -43,6 +45,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Objects;
+import java.util.UUID;
 
 import static net.minecraft.inventory.EquipmentSlotType.Group.ARMOR;
 import static net.minecraftforge.common.util.Constants.NBT.TAG_COMPOUND;
@@ -53,10 +56,15 @@ public class PlayerCapability implements ICapabilitySerializable<CompoundNBT>{
 		return provider.getCapability(Caps.playerCapability).orElse(null);
 	}
 
+	private static final UUID HEART_CRYSTAL_ATTRIBUTE = UUID.fromString("d709bd61-cd81-434e-865a-487a293fd141");
+
 	private final ServerPlayerEntity player;
 	private int judgementCooldown;
 
 	private final PlayerSigilHolder sigils;
+
+	private int heartCrystal;
+	private int lastHeartCrystal;
 
 	private boolean syncSigil = true;
 	private boolean updateBodyShield;
@@ -126,6 +134,13 @@ public class PlayerCapability implements ICapabilitySerializable<CompoundNBT>{
 		this.judgementCooldown = judgementCooldown;
 	}
 
+	public int getHeartCrystal(){
+		return heartCrystal;
+	}
+	public void setHeartCrystal(int heartCrystal){
+		this.heartCrystal = Math.max(0, heartCrystal);
+	}
+
 	public void update(){
 		if(!player.isAlive()) return;
 		updateCurioSigilEffectAndShield();
@@ -145,6 +160,12 @@ public class PlayerCapability implements ICapabilitySerializable<CompoundNBT>{
 		if(syncSigil){
 			syncSigil = false;
 			ModNet.CHANNEL.send(PacketDistributor.PLAYER.with(() -> this.player), new SyncBodySigilMsg(sigils));
+		}
+		if(lastHeartCrystal!=heartCrystal){
+			lastHeartCrystal = heartCrystal;
+			player.getAttributes().addTransientAttributeModifiers(ImmutableMultimap.of(Attributes.MAX_HEALTH,
+					new AttributeModifier(HEART_CRYSTAL_ATTRIBUTE, "Heart Crystal",
+							heartCrystal*2, AttributeModifier.Operation.ADDITION)));
 		}
 	}
 
@@ -298,6 +319,7 @@ public class PlayerCapability implements ICapabilitySerializable<CompoundNBT>{
 	public void copyTo(PlayerCapability other){
 		other.setJudgementCooldown(getJudgementCooldown());
 		for(Sigil sigil : sigils.getSigils()) other.sigils.add(sigil, true);
+		other.setHeartCrystal(getHeartCrystal());
 	}
 
 	@Nullable private LazyOptional<PlayerCapability> self;

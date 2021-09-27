@@ -48,6 +48,7 @@ import ttmp.infernoreborn.client.screen.FoundryScreen;
 import ttmp.infernoreborn.client.screen.SigilEngravingTableScreen;
 import ttmp.infernoreborn.client.screen.SigilScrapperScreen;
 import ttmp.infernoreborn.client.screen.StigmaTableScreen;
+import ttmp.infernoreborn.config.ModCfg;
 import ttmp.infernoreborn.contents.Abilities;
 import ttmp.infernoreborn.contents.ModAttributes;
 import ttmp.infernoreborn.contents.ModBlocks;
@@ -99,6 +100,7 @@ public class InfernoReborn{
 		ModEntities.REGISTER.register(modEventBus);
 		Sigils.REGISTER.register(modEventBus);
 
+		ModCfg.init();
 		ModNet.init();
 	}
 

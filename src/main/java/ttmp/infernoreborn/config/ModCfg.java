@@ -6,8 +6,12 @@ import com.google.gson.JsonObject;
 import net.minecraft.item.Items;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.storage.FolderName;
+import net.minecraftforge.common.ForgeConfigSpec;
+import net.minecraftforge.common.ForgeConfigSpec.IntValue;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.config.ModConfig;
 import net.minecraftforge.fml.event.server.FMLServerAboutToStartEvent;
 import ttmp.infernoreborn.InfernoReborn;
 import ttmp.infernoreborn.contents.ModItems;
@@ -29,14 +33,26 @@ import static ttmp.infernoreborn.InfernoReborn.MODID;
 public final class ModCfg{
 	private ModCfg(){}
 
+	private static IntValue maxHeartCrystals;
+
 	private static final Gson GSON = new GsonBuilder()
 			.setPrettyPrinting()
 			.create();
 
 	private static SigilHolderConfig sigilHolderConfig;
 
+	public static int maxHeartCrystals(){
+		return maxHeartCrystals.get();
+	}
+
 	public static SigilHolderConfig sigilHolderConfig(){
 		return sigilHolderConfig;
+	}
+
+	public static void init(){
+		ForgeConfigSpec.Builder server = new ForgeConfigSpec.Builder();
+		maxHeartCrystals = server.comment("Maximum amount of Heart Crystal you can consume.").defineInRange("maxHeartCrystals", 10, 0, Integer.MAX_VALUE);
+		ModLoadingContext.get().registerConfig(ModConfig.Type.SERVER, server.build());
 	}
 
 	@SubscribeEvent
