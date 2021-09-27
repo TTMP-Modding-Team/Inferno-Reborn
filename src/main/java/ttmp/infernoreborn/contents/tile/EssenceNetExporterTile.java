@@ -74,7 +74,7 @@ public class EssenceNetExporterTile extends TileEntity implements ITickableTileE
 			size = template.size;
 		}else{
 			type = EssenceType.values()[RNG.nextInt(EssenceType.values().length)]; // TODO improve
-			size = EssenceSize.SHARD;
+			size = EssenceSize.ESSENCE;
 		}
 		int maxExtract = Math.min(64, essenceHolderCache.getEssence(type)/size.getCompressionRate());
 		if(maxExtract<=0) return;

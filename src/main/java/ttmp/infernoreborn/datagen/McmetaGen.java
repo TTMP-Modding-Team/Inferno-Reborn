@@ -40,9 +40,9 @@ public class McmetaGen implements IDataProvider{
 
 	protected void register(){
 		for(EssenceType type : EssenceType.values()){
-			add(new ResourceLocation(MODID, "item/essence/"+type.id+"_shard"), mcmeta(20, true));
-			add(new ResourceLocation(MODID, "item/essence/"+type.id+"_crystal"), mcmeta(20, true));
-			add(new ResourceLocation(MODID, "item/essence/greater_"+type.id+"_crystal"), mcmeta(20, true));
+			add(new ResourceLocation(MODID, "item/essence/"+type.id), mcmeta(20, true));
+			add(new ResourceLocation(MODID, "item/greater_essence/"+type.id), mcmeta(20, true));
+			add(new ResourceLocation(MODID, "item/exquisite_essence/"+type.id), mcmeta(20, true));
 		}
 		add(new ResourceLocation(MODID, "block/foundry/firebox_on"), mcmeta(10, true));
 		add(new ResourceLocation(MODID, "block/essence_holder/side"), mcmeta(10, true));

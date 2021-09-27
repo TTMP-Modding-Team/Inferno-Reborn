@@ -1,15 +1,15 @@
 {
   "replace": false,
   "values": [
-    "infernoreborn:blood_essence_crystal",
-    "infernoreborn:metal_essence_crystal",
-    "infernoreborn:magic_essence_crystal",
-    "infernoreborn:earth_essence_crystal",
-    "infernoreborn:fire_essence_crystal",
-    "infernoreborn:air_essence_crystal",
-    "infernoreborn:water_essence_crystal",
-    "infernoreborn:frost_essence_crystal",
-    "infernoreborn:death_essence_crystal",
-    "infernoreborn:dominance_essence_crystal"
+    "infernoreborn:greater_blood_essence",
+    "infernoreborn:greater_metal_essence",
+    "infernoreborn:greater_magic_essence",
+    "infernoreborn:greater_earth_essence",
+    "infernoreborn:greater_fire_essence",
+    "infernoreborn:greater_air_essence",
+    "infernoreborn:greater_water_essence",
+    "infernoreborn:greater_frost_essence",
+    "infernoreborn:greater_death_essence",
+    "infernoreborn:greater_dominance_essence"
   ]
 }

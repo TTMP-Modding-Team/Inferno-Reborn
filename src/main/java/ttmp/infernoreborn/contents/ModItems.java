@@ -137,45 +137,45 @@ public final class ModItems{
 	public static final RegistryObject<Item> NORMAL_RING = REGISTER.register("normal_ring", () -> new Item(artifacts().stacksTo(1)));
 	public static final RegistryObject<Item> SHIELD_RING_1 = REGISTER.register("shield_ring_1", () -> new ShieldProviderItem(artifacts().stacksTo(1), new SimpleShield(ShieldSkins.SHIELD_RING, 10, 0, 0, 0, .5, .25)));
 
-	public static final RegistryObject<Item> BLOOD_ESSENCE_SHARD = essence(EssenceType.BLOOD, EssenceSize.SHARD);
-	public static final RegistryObject<Item> BLOOD_ESSENCE_CRYSTAL = essence(EssenceType.BLOOD, EssenceSize.CRYSTAL);
-	public static final RegistryObject<Item> GREATER_BLOOD_ESSENCE_CRYSTAL = essence(EssenceType.BLOOD, EssenceSize.GREATER_CRYSTAL);
+	public static final RegistryObject<Item> BLOOD_ESSENCE_SHARD = essence(EssenceType.BLOOD, EssenceSize.ESSENCE);
+	public static final RegistryObject<Item> BLOOD_ESSENCE_CRYSTAL = essence(EssenceType.BLOOD, EssenceSize.GREATER_ESSENCE);
+	public static final RegistryObject<Item> GREATER_BLOOD_ESSENCE_CRYSTAL = essence(EssenceType.BLOOD, EssenceSize.EXQUISITE_ESSENCE);
 
-	public static final RegistryObject<Item> METAL_ESSENCE_SHARD = essence(EssenceType.METAL, EssenceSize.SHARD);
-	public static final RegistryObject<Item> METAL_ESSENCE_CRYSTAL = essence(EssenceType.METAL, EssenceSize.CRYSTAL);
-	public static final RegistryObject<Item> GREATER_METAL_ESSENCE_CRYSTAL = essence(EssenceType.METAL, EssenceSize.GREATER_CRYSTAL);
+	public static final RegistryObject<Item> METAL_ESSENCE_SHARD = essence(EssenceType.METAL, EssenceSize.ESSENCE);
+	public static final RegistryObject<Item> METAL_ESSENCE_CRYSTAL = essence(EssenceType.METAL, EssenceSize.GREATER_ESSENCE);
+	public static final RegistryObject<Item> GREATER_METAL_ESSENCE_CRYSTAL = essence(EssenceType.METAL, EssenceSize.EXQUISITE_ESSENCE);
 
-	public static final RegistryObject<Item> MAGIC_ESSENCE_SHARD = essence(EssenceType.MAGIC, EssenceSize.SHARD);
-	public static final RegistryObject<Item> MAGIC_ESSENCE_CRYSTAL = essence(EssenceType.MAGIC, EssenceSize.CRYSTAL);
-	public static final RegistryObject<Item> GREATER_MAGIC_ESSENCE_CRYSTAL = essence(EssenceType.MAGIC, EssenceSize.GREATER_CRYSTAL);
+	public static final RegistryObject<Item> MAGIC_ESSENCE_SHARD = essence(EssenceType.MAGIC, EssenceSize.ESSENCE);
+	public static final RegistryObject<Item> MAGIC_ESSENCE_CRYSTAL = essence(EssenceType.MAGIC, EssenceSize.GREATER_ESSENCE);
+	public static final RegistryObject<Item> GREATER_MAGIC_ESSENCE_CRYSTAL = essence(EssenceType.MAGIC, EssenceSize.EXQUISITE_ESSENCE);
 
-	public static final RegistryObject<Item> EARTH_ESSENCE_SHARD = essence(EssenceType.EARTH, EssenceSize.SHARD);
-	public static final RegistryObject<Item> EARTH_ESSENCE_CRYSTAL = essence(EssenceType.EARTH, EssenceSize.CRYSTAL);
-	public static final RegistryObject<Item> GREATER_EARTH_ESSENCE_CRYSTAL = essence(EssenceType.EARTH, EssenceSize.GREATER_CRYSTAL);
+	public static final RegistryObject<Item> EARTH_ESSENCE_SHARD = essence(EssenceType.EARTH, EssenceSize.ESSENCE);
+	public static final RegistryObject<Item> EARTH_ESSENCE_CRYSTAL = essence(EssenceType.EARTH, EssenceSize.GREATER_ESSENCE);
+	public static final RegistryObject<Item> GREATER_EARTH_ESSENCE_CRYSTAL = essence(EssenceType.EARTH, EssenceSize.EXQUISITE_ESSENCE);
 
-	public static final RegistryObject<Item> FIRE_ESSENCE_SHARD = essence(EssenceType.FIRE, EssenceSize.SHARD);
-	public static final RegistryObject<Item> FIRE_ESSENCE_CRYSTAL = essence(EssenceType.FIRE, EssenceSize.CRYSTAL);
-	public static final RegistryObject<Item> GREATER_FIRE_ESSENCE_CRYSTAL = essence(EssenceType.FIRE, EssenceSize.GREATER_CRYSTAL);
+	public static final RegistryObject<Item> FIRE_ESSENCE_SHARD = essence(EssenceType.FIRE, EssenceSize.ESSENCE);
+	public static final RegistryObject<Item> FIRE_ESSENCE_CRYSTAL = essence(EssenceType.FIRE, EssenceSize.GREATER_ESSENCE);
+	public static final RegistryObject<Item> GREATER_FIRE_ESSENCE_CRYSTAL = essence(EssenceType.FIRE, EssenceSize.EXQUISITE_ESSENCE);
 
-	public static final RegistryObject<Item> AIR_ESSENCE_SHARD = essence(EssenceType.AIR, EssenceSize.SHARD);
-	public static final RegistryObject<Item> AIR_ESSENCE_CRYSTAL = essence(EssenceType.AIR, EssenceSize.CRYSTAL);
-	public static final RegistryObject<Item> GREATER_AIR_ESSENCE_CRYSTAL = essence(EssenceType.AIR, EssenceSize.GREATER_CRYSTAL);
+	public static final RegistryObject<Item> AIR_ESSENCE_SHARD = essence(EssenceType.AIR, EssenceSize.ESSENCE);
+	public static final RegistryObject<Item> AIR_ESSENCE_CRYSTAL = essence(EssenceType.AIR, EssenceSize.GREATER_ESSENCE);
+	public static final RegistryObject<Item> GREATER_AIR_ESSENCE_CRYSTAL = essence(EssenceType.AIR, EssenceSize.EXQUISITE_ESSENCE);
 
-	public static final RegistryObject<Item> WATER_ESSENCE_SHARD = essence(EssenceType.WATER, EssenceSize.SHARD);
-	public static final RegistryObject<Item> WATER_ESSENCE_CRYSTAL = essence(EssenceType.WATER, EssenceSize.CRYSTAL);
-	public static final RegistryObject<Item> GREATER_WATER_ESSENCE_CRYSTAL = essence(EssenceType.WATER, EssenceSize.GREATER_CRYSTAL);
+	public static final RegistryObject<Item> WATER_ESSENCE_SHARD = essence(EssenceType.WATER, EssenceSize.ESSENCE);
+	public static final RegistryObject<Item> WATER_ESSENCE_CRYSTAL = essence(EssenceType.WATER, EssenceSize.GREATER_ESSENCE);
+	public static final RegistryObject<Item> GREATER_WATER_ESSENCE_CRYSTAL = essence(EssenceType.WATER, EssenceSize.EXQUISITE_ESSENCE);
 
-	public static final RegistryObject<Item> FROST_ESSENCE_SHARD = essence(EssenceType.FROST, EssenceSize.SHARD);
-	public static final RegistryObject<Item> FROST_ESSENCE_CRYSTAL = essence(EssenceType.FROST, EssenceSize.CRYSTAL);
-	public static final RegistryObject<Item> GREATER_FROST_ESSENCE_CRYSTAL = essence(EssenceType.FROST, EssenceSize.GREATER_CRYSTAL);
+	public static final RegistryObject<Item> FROST_ESSENCE_SHARD = essence(EssenceType.FROST, EssenceSize.ESSENCE);
+	public static final RegistryObject<Item> FROST_ESSENCE_CRYSTAL = essence(EssenceType.FROST, EssenceSize.GREATER_ESSENCE);
+	public static final RegistryObject<Item> GREATER_FROST_ESSENCE_CRYSTAL = essence(EssenceType.FROST, EssenceSize.EXQUISITE_ESSENCE);
 
-	public static final RegistryObject<Item> DEATH_ESSENCE_SHARD = essence(EssenceType.DEATH, EssenceSize.SHARD);
-	public static final RegistryObject<Item> DEATH_ESSENCE_CRYSTAL = essence(EssenceType.DEATH, EssenceSize.CRYSTAL);
-	public static final RegistryObject<Item> GREATER_DEATH_ESSENCE_CRYSTAL = essence(EssenceType.DEATH, EssenceSize.GREATER_CRYSTAL);
+	public static final RegistryObject<Item> DEATH_ESSENCE_SHARD = essence(EssenceType.DEATH, EssenceSize.ESSENCE);
+	public static final RegistryObject<Item> DEATH_ESSENCE_CRYSTAL = essence(EssenceType.DEATH, EssenceSize.GREATER_ESSENCE);
+	public static final RegistryObject<Item> GREATER_DEATH_ESSENCE_CRYSTAL = essence(EssenceType.DEATH, EssenceSize.EXQUISITE_ESSENCE);
 
-	public static final RegistryObject<Item> DOMINANCE_ESSENCE_SHARD = essence(EssenceType.DOMINANCE, EssenceSize.SHARD);
-	public static final RegistryObject<Item> DOMINANCE_ESSENCE_CRYSTAL = essence(EssenceType.DOMINANCE, EssenceSize.CRYSTAL);
-	public static final RegistryObject<Item> GREATER_DOMINANCE_ESSENCE_CRYSTAL = essence(EssenceType.DOMINANCE, EssenceSize.GREATER_CRYSTAL);
+	public static final RegistryObject<Item> DOMINANCE_ESSENCE_SHARD = essence(EssenceType.DOMINANCE, EssenceSize.ESSENCE);
+	public static final RegistryObject<Item> DOMINANCE_ESSENCE_CRYSTAL = essence(EssenceType.DOMINANCE, EssenceSize.GREATER_ESSENCE);
+	public static final RegistryObject<Item> GREATER_DOMINANCE_ESSENCE_CRYSTAL = essence(EssenceType.DOMINANCE, EssenceSize.EXQUISITE_ESSENCE);
 
 	public static final RegistryObject<BlockItem> RUNESTONE = REGISTER.register("runestone", () -> new BlockItem(ModBlocks.RUNESTONE.get(), materials()));
 	public static final RegistryObject<BlockItem> FOUNDRY_TILE = REGISTER.register("foundry_tile", () -> new BlockItem(ModBlocks.FOUNDRY_TILE.get(), materials()));
@@ -224,14 +224,14 @@ public final class ModItems{
 	private static RegistryObject<Item> essence(EssenceType type, EssenceSize size){
 		String id;
 		switch(size){
-			case SHARD:
-				id = type.id+"_essence_shard";
+			case ESSENCE:
+				id = type.id+"_essence";
 				break;
-			case CRYSTAL:
-				id = type.id+"_essence_crystal";
+			case GREATER_ESSENCE:
+				id = "greater_"+type.id+"_essence";
 				break;
-			case GREATER_CRYSTAL:
-				id = "greater_"+type.id+"_essence_crystal";
+			case EXQUISITE_ESSENCE:
+				id = "exquisite_"+type.id+"_essence";
 				break;
 			default:
 				throw new IllegalStateException("Unreachable");

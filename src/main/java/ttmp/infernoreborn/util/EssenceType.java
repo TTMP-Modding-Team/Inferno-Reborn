@@ -13,32 +13,32 @@ public enum EssenceType{
 
 	public final String id = name().toLowerCase(Locale.ROOT);
 
-	private Supplier<Item> shardItemSupplier;
-	private Supplier<Item> crystalItemSupplier;
-	private Supplier<Item> greaterCrystalItemSupplier;
+	private Supplier<Item> essenceItem;
+	private Supplier<Item> greaterEssenceItem;
+	private Supplier<Item> exquisiteEssenceItem;
 
 	public ITextComponent getName(){
 		return new TranslationTextComponent("infernoreborn.essence."+id);
 	}
 
-	public Item getShardItem(){
-		return shardItemSupplier.get();
+	public Item getEssenceItem(){
+		return essenceItem.get();
 	}
-	public Item getCrystalItem(){
-		return crystalItemSupplier.get();
+	public Item getGreaterEssenceItem(){
+		return greaterEssenceItem.get();
 	}
-	public Item getGreaterCrystalItem(){
-		return greaterCrystalItemSupplier.get();
+	public Item getExquisiteEssenceItem(){
+		return exquisiteEssenceItem.get();
 	}
 
 	public Item getItem(EssenceSize size){
 		switch(size){
-			case SHARD:
-				return shardItemSupplier.get();
-			case CRYSTAL:
-				return crystalItemSupplier.get();
-			case GREATER_CRYSTAL:
-				return greaterCrystalItemSupplier.get();
+			case ESSENCE:
+				return essenceItem.get();
+			case GREATER_ESSENCE:
+				return greaterEssenceItem.get();
+			case EXQUISITE_ESSENCE:
+				return exquisiteEssenceItem.get();
 			default:
 				throw new IllegalStateException("Unreachable");
 		}
@@ -49,17 +49,17 @@ public enum EssenceType{
 	 */
 	public void setItem(Supplier<Item> item, EssenceSize size){
 		switch(size){
-			case SHARD:
-				if(shardItemSupplier!=null) throw new IllegalStateException("Duplicated item set for "+size);
-				shardItemSupplier = item;
+			case ESSENCE:
+				if(essenceItem!=null) throw new IllegalStateException("Duplicated item set for "+size);
+				essenceItem = item;
 				break;
-			case CRYSTAL:
-				if(crystalItemSupplier!=null) throw new IllegalStateException("Duplicated item set for "+size);
-				crystalItemSupplier = item;
+			case GREATER_ESSENCE:
+				if(greaterEssenceItem!=null) throw new IllegalStateException("Duplicated item set for "+size);
+				greaterEssenceItem = item;
 				break;
-			case GREATER_CRYSTAL:
-				if(greaterCrystalItemSupplier!=null) throw new IllegalStateException("Duplicated item set for "+size);
-				greaterCrystalItemSupplier = item;
+			case EXQUISITE_ESSENCE:
+				if(exquisiteEssenceItem!=null) throw new IllegalStateException("Duplicated item set for "+size);
+				exquisiteEssenceItem = item;
 				break;
 			default:
 				throw new IllegalStateException("Unreachable");

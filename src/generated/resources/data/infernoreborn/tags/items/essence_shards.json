@@ -1,15 +1,15 @@
 {
   "replace": false,
   "values": [
-    "infernoreborn:blood_essence_shard",
-    "infernoreborn:metal_essence_shard",
-    "infernoreborn:magic_essence_shard",
-    "infernoreborn:earth_essence_shard",
-    "infernoreborn:fire_essence_shard",
-    "infernoreborn:air_essence_shard",
-    "infernoreborn:water_essence_shard",
-    "infernoreborn:frost_essence_shard",
-    "infernoreborn:death_essence_shard",
-    "infernoreborn:dominance_essence_shard"
+    "infernoreborn:blood_essence",
+    "infernoreborn:metal_essence",
+    "infernoreborn:magic_essence",
+    "infernoreborn:earth_essence",
+    "infernoreborn:fire_essence",
+    "infernoreborn:air_essence",
+    "infernoreborn:water_essence",
+    "infernoreborn:frost_essence",
+    "infernoreborn:death_essence",
+    "infernoreborn:dominance_essence"
   ]
 }

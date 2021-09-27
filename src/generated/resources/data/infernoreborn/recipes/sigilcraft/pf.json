@@ -9,16 +9,16 @@
   ],
   "key": {
     "1": {
-      "item": "infernoreborn:greater_dominance_essence_crystal"
+      "item": "infernoreborn:exquisite_dominance_essence"
     },
     "2": {
-      "item": "infernoreborn:greater_air_essence_crystal"
+      "item": "infernoreborn:exquisite_air_essence"
     },
     "3": {
-      "item": "infernoreborn:greater_water_essence_crystal"
+      "item": "infernoreborn:exquisite_water_essence"
     },
     "4": {
-      "item": "infernoreborn:greater_blood_essence_crystal"
+      "item": "infernoreborn:exquisite_blood_essence"
     },
     "X": {
       "item": "minecraft:cobblestone"

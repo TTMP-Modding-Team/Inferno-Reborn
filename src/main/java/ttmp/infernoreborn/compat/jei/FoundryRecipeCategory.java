@@ -49,7 +49,7 @@ public class FoundryRecipeCategory implements IRecipeCategory<FoundryRecipe>{
 		this.holder = guiHelper.createDrawableIngredient(new ItemStack(ModItems.ESSENCE_HOLDER.get()));
 
 		for(EssenceType type : EssenceType.values())
-			this.essenceIcons.put(type, guiHelper.createDrawableIngredient(new ItemStack(type.getShardItem())));
+			this.essenceIcons.put(type, guiHelper.createDrawableIngredient(new ItemStack(type.getEssenceItem())));
 
 		this.icon = guiHelper.createDrawableIngredient(new ItemStack(ModBlocks.FOUNDRY.get()));
 	}

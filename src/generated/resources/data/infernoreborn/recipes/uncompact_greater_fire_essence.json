@@ -1,0 +1,12 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    {
+      "item": "infernoreborn:greater_fire_essence"
+    }
+  ],
+  "result": {
+    "item": "infernoreborn:fire_essence",
+    "count": 9
+  }
+}

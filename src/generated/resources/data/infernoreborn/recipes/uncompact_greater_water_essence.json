@@ -1,0 +1,12 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    {
+      "item": "infernoreborn:greater_water_essence"
+    }
+  ],
+  "result": {
+    "item": "infernoreborn:water_essence",
+    "count": 9
+  }
+}

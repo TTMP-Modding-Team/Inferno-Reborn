@@ -1,0 +1,12 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    {
+      "item": "infernoreborn:exquisite_death_essence"
+    }
+  ],
+  "result": {
+    "item": "infernoreborn:greater_death_essence",
+    "count": 9
+  }
+}

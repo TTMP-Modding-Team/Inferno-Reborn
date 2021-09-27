@@ -7,10 +7,10 @@
   ],
   "key": {
     "1": {
-      "item": "infernoreborn:fire_essence_shard"
+      "item": "infernoreborn:fire_essence"
     },
     "2": {
-      "item": "infernoreborn:death_essence_shard"
+      "item": "infernoreborn:death_essence"
     }
   },
   "sigil": "infernoreborn:faint_affliction",

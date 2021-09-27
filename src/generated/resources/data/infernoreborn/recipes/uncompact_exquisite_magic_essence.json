@@ -1,0 +1,12 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    {
+      "item": "infernoreborn:exquisite_magic_essence"
+    }
+  ],
+  "result": {
+    "item": "infernoreborn:greater_magic_essence",
+    "count": 9
+  }
+}

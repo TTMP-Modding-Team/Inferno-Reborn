@@ -1,0 +1,12 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    {
+      "item": "infernoreborn:greater_dominance_essence"
+    }
+  ],
+  "result": {
+    "item": "infernoreborn:dominance_essence",
+    "count": 9
+  }
+}

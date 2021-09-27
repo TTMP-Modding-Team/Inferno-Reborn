@@ -1,6 +1,0 @@
-{
-  "parent": "minecraft:item/generated",
-  "textures": {
-    "layer0": "infernoreborn:item/essence/frost_shard"
-  }
-}

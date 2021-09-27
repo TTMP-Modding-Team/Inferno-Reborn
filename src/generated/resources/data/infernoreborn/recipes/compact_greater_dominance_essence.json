@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "111",
+    "111",
+    "111"
+  ],
+  "key": {
+    "1": {
+      "item": "infernoreborn:dominance_essence"
+    }
+  },
+  "result": {
+    "item": "infernoreborn:greater_dominance_essence"
+  }
+}

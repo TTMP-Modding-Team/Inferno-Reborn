@@ -30,9 +30,9 @@ public class ItemTagGen extends ItemTagsProvider{
 		Builder<Item> greaterCrystals = this.tag(ModTags.GREATER_ESSENCE_CRYSTALS);
 
 		for(EssenceType type : EssenceType.values()){
-			shards.add(type.getShardItem());
-			crystals.add(type.getCrystalItem());
-			greaterCrystals.add(type.getGreaterCrystalItem());
+			shards.add(type.getEssenceItem());
+			crystals.add(type.getGreaterEssenceItem());
+			greaterCrystals.add(type.getExquisiteEssenceItem());
 		}
 
 		this.tag(ModTags.GEMS_HEART_CRYSTAL).add(ModItems.HEART_CRYSTAL.get());

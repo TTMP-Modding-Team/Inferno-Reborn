@@ -1,17 +1,17 @@
 package ttmp.infernoreborn.util;
 
 public enum EssenceSize{
-	SHARD,
-	CRYSTAL,
-	GREATER_CRYSTAL;
+	ESSENCE,
+	GREATER_ESSENCE,
+	EXQUISITE_ESSENCE;
 
 	public int getCompressionRate(){
 		switch(this){
-			case SHARD:
+			case ESSENCE:
 				return 1;
-			case CRYSTAL:
+			case GREATER_ESSENCE:
 				return 9;
-			case GREATER_CRYSTAL:
+			case EXQUISITE_ESSENCE:
 				return 81;
 			default:
 				throw new IllegalStateException("Unreachable");

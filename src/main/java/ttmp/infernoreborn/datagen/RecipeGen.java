@@ -225,13 +225,13 @@ public class RecipeGen extends RecipeProvider{
 	}
 
 	private static Item shard(EssenceType type){
-		return type.getShardItem();
+		return type.getEssenceItem();
 	}
 	private static Item crystal(EssenceType type){
-		return type.getCrystalItem();
+		return type.getGreaterEssenceItem();
 	}
 	private static Item greaterCrystal(EssenceType type){
-		return type.getGreaterCrystalItem();
+		return type.getExquisiteEssenceItem();
 	}
 
 	private static void compactAndUncompact(IItemProvider ingot, IItemProvider nugget, Consumer<IFinishedRecipe> consumer){

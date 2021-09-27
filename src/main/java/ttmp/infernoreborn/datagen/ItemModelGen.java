@@ -22,12 +22,12 @@ public class ItemModelGen extends ItemModelProvider{
 
 	@Override protected void registerModels(){
 		for(EssenceType type : EssenceType.values()){
-			item(Objects.requireNonNull(type.getShardItem().getRegistryName()).getPath(),
-					new ResourceLocation(MODID, "item/essence/"+type.id+"_shard"));
-			item(Objects.requireNonNull(type.getCrystalItem().getRegistryName()).getPath(),
-					new ResourceLocation(MODID, "item/essence/"+type.id+"_crystal"));
-			item(Objects.requireNonNull(type.getGreaterCrystalItem().getRegistryName()).getPath(),
-					new ResourceLocation(MODID, "item/essence/greater_"+type.id+"_crystal"));
+			item(Objects.requireNonNull(type.getEssenceItem().getRegistryName()).getPath(),
+					new ResourceLocation(MODID, "item/essence/"+type.id));
+			item(Objects.requireNonNull(type.getGreaterEssenceItem().getRegistryName()).getPath(),
+					new ResourceLocation(MODID, "item/greater_essence/"+type.id));
+			item(Objects.requireNonNull(type.getExquisiteEssenceItem().getRegistryName()).getPath(),
+					new ResourceLocation(MODID, "item/exquisite_essence/"+type.id));
 		}
 		item(ModItems.ESSENCE_HOLDER.getId().getPath(),
 				new ResourceLocation(MODID, "item/essence_holder_0"),
