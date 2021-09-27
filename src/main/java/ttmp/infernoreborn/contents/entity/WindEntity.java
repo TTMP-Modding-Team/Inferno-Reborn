@@ -39,10 +39,14 @@ public class WindEntity extends BaseProjectileEntity{
 		super(ModEntities.WIND.get(), world);
 		setDamage(damage);
 	}
-	public WindEntity(World world, float damage, int fireSecondsOnHit, EffectInstance... effects){
+	public WindEntity(World world, float damage, int fireSecondsOnHit){
 		super(ModEntities.WIND.get(), world);
 		setDamage(damage);
 		setFireSecondsOnHit(fireSecondsOnHit);
+	}
+	public WindEntity(World world, float damage, EffectInstance... effects){
+		super(ModEntities.WIND.get(), world);
+		setDamage(damage);
 		for(EffectInstance effect : effects){
 			addEffect(effect);
 		}
