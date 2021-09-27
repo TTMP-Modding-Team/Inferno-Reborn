@@ -1,6 +1,61 @@
 Weight: 5
 
 Abilities: {
+    define CommonAbilities: (
+        <infernoreborn:bulletproof>,
+        <infernoreborn:blastproof>,
+        <infernoreborn:melee_veteran>,
+        <infernoreborn:ranged_veteran>,
+        <infernoreborn:magic_veteran>,
+        <infernoreborn:vampire>,
+        <infernoreborn:survival_expert>,
+        <infernoreborn:the_brain>,
+        <infernoreborn:toughness>,
+        <infernoreborn:swiftness>,
+        <infernoreborn:sentry>,
+        <infernoreborn:eviolite_chansey>,
+        <infernoreborn:poisoned_mind>,
+        <infernoreborn:slime_blood>,
+        <infernoreborn:touch_of_midas>
+    )
+
+    define RareAbilities: (
+        <infernoreborn:crowd_control>,
+        <infernoreborn:destiny_bond>,
+        <infernoreborn:focus>,
+        <infernoreborn:guts>,
+        <infernoreborn:health_kit>,
+        <infernoreborn:telekinesis>,
+        <infernoreborn:aether_walker>,
+        <infernoreborn:thunderbolt>,
+        <infernoreborn:the_red>,
+        <infernoreborn:dae_kae_mob>,
+        <infernoreborn:battle_momentum>,
+        <infernoreborn:evil_trick>,
+        <infernoreborn:conditional_reflex>,
+        <infernoreborn:magma_blood>,
+        <infernoreborn:diabolo>
+    )
+    define RareSkins: (
+        <infernoreborn:mud_skin>,
+        <infernoreborn:frozen_skin>,
+        <infernoreborn:woolly_skin>,
+        <infernoreborn:fuzzy_skin>,
+        <infernoreborn:thorn_skin>,
+        <infernoreborn:magma_skin>,
+        <infernoreborn:electric_skin>
+    )
+    define RareWinds: (
+        <infernoreborn:windblast>,
+        <infernoreborn:windblast2>,
+        <infernoreborn:windblast3>,
+        <infernoreborn:blinding_wind>,
+        <infernoreborn:fuzzy_wind>,
+        <infernoreborn:scalding_wind>,
+        <infernoreborn:freezing_wind>,
+        <infernoreborn:poisoning_wind>
+    )
+
     : Choose {
         : 4, <infernoreborn:heart2>
         : 8, <infernoreborn:heart3>
@@ -20,46 +75,29 @@ Abilities: {
 
     if(1~5==1){
          : Choose {
-             : <infernoreborn:mud_skin>
-             : <infernoreborn:frozen_skin>
-             : <infernoreborn:woolly_skin>
-             : <infernoreborn:fuzzy_skin>
-             : <infernoreborn:thorn_skin>
+             for(ability in RareSkins)
+                : ability
          }
     }
 
-    repeat(4~8){
-        : Choose {
-            : <infernoreborn:bulletproof>
-            : <infernoreborn:vampire>
-            : <infernoreborn:crowd_control>
-            : <infernoreborn:survival_expert>
-            : <infernoreborn:the_brain>
-            : <infernoreborn:toughness>
-            : <infernoreborn:swiftness>
-            : <infernoreborn:eviolite_chansey>
-            : Choose {
-                : <infernoreborn:mud_skin>
-                : <infernoreborn:frozen_skin>
-                : <infernoreborn:woolly_skin>
-                : <infernoreborn:fuzzy_skin>
-                : <infernoreborn:thorn_skin>
-            }
-        }
+    if(1~7==1){
+         : Choose {
+             for(ability in RareWinds)
+                : ability
+         }
     }
 
     repeat(1~3){
         : Choose {
-            : <infernoreborn:destiny_bond>
-            : <infernoreborn:focus>
-            : <infernoreborn:guts>
-            : <infernoreborn:magma_skin>
-            : <infernoreborn:health_kit>
-            : <infernoreborn:telekinesis>
-            : <infernoreborn:aether_walker>
-            : <infernoreborn:thunderbolt>
-            : <infernoreborn:the_red>
-            : <infernoreborn:emperors_aura>
+            for(ability in RareAbilities)
+                : ability
+        }
+    }
+
+    repeat(2~4){
+        : Choose {
+            for(ability in CommonAbilities)
+                : ability
         }
     }
 }

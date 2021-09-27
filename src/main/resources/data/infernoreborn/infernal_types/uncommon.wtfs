@@ -1,6 +1,74 @@
 Weight: 10
 
 Abilities: {
+    define CommonAbilities: (
+        <infernoreborn:bulletproof>,
+        <infernoreborn:blastproof>,
+        <infernoreborn:melee_veteran>,
+        <infernoreborn:ranged_veteran>,
+        <infernoreborn:magic_veteran>,
+        <infernoreborn:vampire>,
+        <infernoreborn:survival_expert>,
+        <infernoreborn:the_brain>,
+        <infernoreborn:toughness>,
+        <infernoreborn:swiftness>,
+        <infernoreborn:sentry>,
+        <infernoreborn:eviolite_chansey>,
+        <infernoreborn:poisoned_mind>,
+        <infernoreborn:slime_blood>,
+        <infernoreborn:touch_of_midas>
+    )
+    define CommonSkins: (
+        <infernoreborn:mud_skin>,
+        <infernoreborn:frozen_skin>,
+        <infernoreborn:woolly_skin>,
+        <infernoreborn:fuzzy_skin>,
+        <infernoreborn:thorn_skin>
+    )
+    define CommonWinds: (
+        <infernoreborn:windblast>,
+        <infernoreborn:windblast2>,
+        <infernoreborn:blinding_wind>,
+        <infernoreborn:fuzzy_wind>
+    )
+
+    define RareAbilities: (
+        <infernoreborn:crowd_control>,
+        <infernoreborn:destiny_bond>,
+        <infernoreborn:focus>,
+        <infernoreborn:guts>,
+        <infernoreborn:health_kit>,
+        <infernoreborn:telekinesis>,
+        <infernoreborn:aether_walker>,
+        <infernoreborn:thunderbolt>,
+        <infernoreborn:the_red>,
+        <infernoreborn:dae_kae_mob>,
+        <infernoreborn:battle_momentum>,
+        <infernoreborn:evil_trick>,
+        <infernoreborn:conditional_reflex>,
+        <infernoreborn:magma_blood>,
+        <infernoreborn:diabolo>
+    )
+    define RareSkins: (
+        <infernoreborn:mud_skin>,
+        <infernoreborn:frozen_skin>,
+        <infernoreborn:woolly_skin>,
+        <infernoreborn:fuzzy_skin>,
+        <infernoreborn:thorn_skin>,
+        <infernoreborn:magma_skin>,
+        <infernoreborn:electric_skin>
+    )
+    define RareWinds: (
+        <infernoreborn:windblast>,
+        <infernoreborn:windblast2>,
+        <infernoreborn:windblast3>,
+        <infernoreborn:blinding_wind>,
+        <infernoreborn:fuzzy_wind>,
+        <infernoreborn:scalding_wind>,
+        <infernoreborn:freezing_wind>,
+        <infernoreborn:poisoning_wind>
+    )
+
     : Choose {
         : 1, NoAbility
         : 2, <infernoreborn:heart>
@@ -19,39 +87,34 @@ Abilities: {
         : 1, <infernoreborn:diamond_skin>
     }
 
-    repeat(2~8){
-        : Choose {
-            : <infernoreborn:bulletproof>
-            : <infernoreborn:vampire>
-            : <infernoreborn:crowd_control>
-            : <infernoreborn:survival_expert>
-            : <infernoreborn:the_brain>
-            : <infernoreborn:toughness>
-            : <infernoreborn:swiftness>
-            : <infernoreborn:eviolite_chansey>
+    if(1~2==1){
+        repeat(1~2){
             : Choose {
-                : <infernoreborn:mud_skin>
-                : <infernoreborn:frozen_skin>
-                : <infernoreborn:woolly_skin>
-                : <infernoreborn:fuzzy_skin>
-                : <infernoreborn:thorn_skin>
+                for(ability in RareAbilities)
+                    : ability
+                : Choose {
+                    for(ability in RareSkins)
+                        : ability
+                }
+                : Choose {
+                    for(ability in RareWinds)
+                        : ability
+                }
             }
         }
     }
 
-    if(1~2==1){
-        repeat(1~2){
+    repeat(2~8){
+        : Choose {
+            for(ability in CommonAbilities)
+                : ability
             : Choose {
-                : <infernoreborn:destiny_bond>
-                : <infernoreborn:focus>
-                : <infernoreborn:guts>
-                : <infernoreborn:magma_skin>
-                : <infernoreborn:health_kit>
-                : <infernoreborn:telekinesis>
-                : <infernoreborn:aether_walker>
-                : <infernoreborn:thunderbolt>
-                : <infernoreborn:the_red>
-                : <infernoreborn:emperors_aura>
+                for(ability in CommonSkins)
+                    : ability
+            }
+            : Choose {
+                for(ability in CommonWinds)
+                    : ability
             }
         }
     }

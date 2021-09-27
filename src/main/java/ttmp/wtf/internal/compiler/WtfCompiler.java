@@ -234,7 +234,6 @@ public class WtfCompiler implements StatementVisitor, ExpressionVisitor{
 	@Override public void visitFor(Statement.For forStatement){
 		writeInst(forStatement.collection);
 		write(Inst.MAKE_ITERATOR);
-		addStack();
 		int p = getNextWritePoint();
 		write(Inst.JUMP_OR_NEXT);
 		int p2 = getNextWritePoint();

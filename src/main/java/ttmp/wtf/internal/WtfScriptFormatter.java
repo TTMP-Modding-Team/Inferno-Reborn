@@ -50,13 +50,13 @@ public class WtfScriptFormatter{
 	}
 
 	protected String identifier(){
-		return script.getIdentifier(script.getInst(ip-1));
+		return script.getIdentifier(Byte.toUnsignedInt(script.getInst(ip-1)));
 	}
 	protected String identifier(int prev){
-		return script.getIdentifier(script.getInst(ip-1-prev));
+		return script.getIdentifier(Byte.toUnsignedInt(script.getInst(ip-1-prev)));
 	}
 	protected Object obj(){
-		return script.getObject(script.getInst(ip-1));
+		return script.getObject(Byte.toUnsignedInt(script.getInst(ip-1)));
 	}
 
 	protected void formatBytecode(){
@@ -75,7 +75,7 @@ public class WtfScriptFormatter{
 			byte inst = nextByte();
 			switch(inst){
 				case Inst.PUSH:
-					writeLine("PUSH "+nextByte()+"   #"+obj());
+					writeLine("PUSH "+nextUByte()+"   #"+obj());
 					break;
 				case Inst.DISCARD:
 					writeLine("DISCARD");
@@ -189,7 +189,7 @@ public class WtfScriptFormatter{
 					writeLine("SET_PROPERTY_LAZY "+nextUByte()+' '+nextByte()+' '+nextShort()+"   #"+identifier(2));
 					break;
 				case Inst.APPLY:
-					writeLine("APPLY");
+					writeLine("APPLY "+nextUByte());
 					break;
 				case Inst.GET_VARIABLE:
 					writeLine("GET_VARIABLE "+nextUByte());
@@ -204,7 +204,7 @@ public class WtfScriptFormatter{
 					writeLine("RAND");
 					break;
 				case Inst.RANDN:
-					writeLine("RANDN "+nextInt()+' '+nextUByte());
+					writeLine("RANDN "+nextInt()+' '+nextInt());
 					break;
 				case Inst.NEW:
 					writeLine("NEW "+nextByte()+"   #"+identifier());
