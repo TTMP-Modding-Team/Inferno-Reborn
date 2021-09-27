@@ -29,7 +29,7 @@ public abstract class MixinItemRenderer{
 	})
 	public void renderGuiItemDecorationsCallback(FontRenderer font, ItemStack stack, int x, int y, @Nullable String text, CallbackInfo ci){
 		if(stack.isEmpty()) return;
-		if(stack.getItem()==ModItems.SIGIL.get()){
+		if(stack.getItem()==ModItems.SIGIL.get()||stack.getItem()==ModItems.BODY_SIGIL.get()){
 			Sigil sigil = SigilItem.getSigil(stack);
 			if(sigil!=null) renderSigilMark(sigil, x, y);
 		}else{

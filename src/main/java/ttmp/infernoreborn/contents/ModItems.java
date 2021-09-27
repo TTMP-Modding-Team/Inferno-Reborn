@@ -12,6 +12,7 @@ import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import ttmp.infernoreborn.client.render.FoundryISTER;
 import ttmp.infernoreborn.client.render.GoldenSkullISTER;
+import ttmp.infernoreborn.contents.item.BodySigilItem;
 import ttmp.infernoreborn.contents.item.EssenceHolderBookItem;
 import ttmp.infernoreborn.contents.item.EssenceHolderItem;
 import ttmp.infernoreborn.contents.item.EssenceNetAccessorItem;
@@ -218,6 +219,7 @@ public final class ModItems{
 	public static final RegistryObject<Item> ESSENCE_NET_EXPORTER = REGISTER.register("essence_net_exporter", () -> new EssenceNetBlockItem(ModBlocks.ESSENCE_NET_EXPORTER.get(), artifacts()));
 
 	public static final RegistryObject<Item> SIGIL = REGISTER.register("sigil", () -> new SigilItem(sigils()));
+	public static final RegistryObject<Item> BODY_SIGIL = REGISTER.register("body_sigil", () -> new BodySigilItem(sigils()));
 
 	private static RegistryObject<Item> essence(EssenceType type, EssenceSize size){
 		String id;
