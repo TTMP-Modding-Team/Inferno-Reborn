@@ -339,6 +339,7 @@ public class PlayerCapability implements ICapabilitySerializable<CompoundNBT>{
 		CompoundNBT nbt = new CompoundNBT();
 		if(judgementCooldown>0) nbt.putInt("judgement", judgementCooldown);
 		sigils.write(nbt);
+		if(heartCrystal>0) nbt.putInt("heartCrystal", heartCrystal);
 
 		if(bodyShield!=null) nbt.put("bodyShield", bodyShield.save());
 		if(defaultArmorShield!=null) nbt.put("defaultArmorShield", defaultArmorShield.save());
@@ -364,6 +365,7 @@ public class PlayerCapability implements ICapabilitySerializable<CompoundNBT>{
 	@Override public void deserializeNBT(CompoundNBT nbt){
 		judgementCooldown = nbt.getInt("judgement");
 		sigils.read(nbt);
+		heartCrystal = nbt.getInt("heartCrystal");
 
 		bodyShield = nbt.contains("bodyShield", TAG_COMPOUND) ?
 				new ActiveShield(ArmorShield.BODY_SHIELD, nbt.getCompound("bodyShield")) : null;
