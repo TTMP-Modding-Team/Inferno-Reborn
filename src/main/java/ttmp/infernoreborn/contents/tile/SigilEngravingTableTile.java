@@ -11,8 +11,8 @@ import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.IWorldPosCallable;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
-import ttmp.infernoreborn.contents.container.SigilEngravingTableContainer;
 import ttmp.infernoreborn.contents.ModTileEntities;
+import ttmp.infernoreborn.contents.container.SigilEngravingTableContainer;
 import ttmp.infernoreborn.inventory.SigilTableInventory;
 
 public abstract class SigilEngravingTableTile extends TileEntity implements INamedContainerProvider{

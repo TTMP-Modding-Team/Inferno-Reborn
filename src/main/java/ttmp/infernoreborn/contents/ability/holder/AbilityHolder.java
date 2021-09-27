@@ -2,8 +2,8 @@ package ttmp.infernoreborn.contents.ability.holder;
 
 import net.minecraft.entity.LivingEntity;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
-import ttmp.infernoreborn.contents.ability.Ability;
 import ttmp.infernoreborn.capability.Caps;
+import ttmp.infernoreborn.contents.ability.Ability;
 import ttmp.infernoreborn.contents.ability.cooldown.Cooldown;
 
 import javax.annotation.Nullable;

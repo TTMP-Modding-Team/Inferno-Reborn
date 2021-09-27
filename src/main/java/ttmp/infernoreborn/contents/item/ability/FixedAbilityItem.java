@@ -13,9 +13,9 @@ import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.Constants;
+import ttmp.infernoreborn.contents.Abilities;
 import ttmp.infernoreborn.contents.ability.Ability;
 import ttmp.infernoreborn.contents.ability.holder.AbilityHolder;
-import ttmp.infernoreborn.contents.Abilities;
 import ttmp.infernoreborn.util.StupidUtils;
 
 import javax.annotation.Nullable;

@@ -8,8 +8,6 @@ import net.minecraft.client.renderer.entity.EntityRendererManager;
 import net.minecraft.client.renderer.tileentity.SkullTileEntityRenderer;
 import net.minecraft.inventory.container.PlayerContainer;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 import ttmp.infernoreborn.contents.entity.projectile.CreeperMissileEntity;
 
 public class CreeperMissileEntityRenderer extends EntityRenderer<CreeperMissileEntity> {
