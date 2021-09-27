@@ -2,6 +2,7 @@ package ttmp.infernoreborn.util.damage;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.util.DamageSource;
+import ttmp.infernoreborn.contents.entity.WindEntity;
 
 import static ttmp.infernoreborn.InfernoReborn.MODID;
 
@@ -26,5 +27,8 @@ public final class Damages{
 	}
 	public static DamageSource engraving(){
 		return ENGRAVING;
+	}
+	public static DamageSource wind(WindEntity wind){
+		return new NotStupidDamageSource(MODID+".wind", wind, wind.getOwner()).setProjectile();
 	}
 }

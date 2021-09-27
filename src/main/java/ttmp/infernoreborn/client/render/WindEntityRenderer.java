@@ -12,11 +12,11 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.vector.Matrix3f;
 import net.minecraft.util.math.vector.Matrix4f;
 import net.minecraft.util.math.vector.Vector3f;
-import ttmp.infernoreborn.contents.entity.projectile.wind.AbstractWindEntity;
+import ttmp.infernoreborn.contents.entity.WindEntity;
 
 import static ttmp.infernoreborn.InfernoReborn.MODID;
 
-public class WindEntityRenderer extends EntityRenderer<AbstractWindEntity>{
+public class WindEntityRenderer extends EntityRenderer<WindEntity>{
 	private static final ResourceLocation TEXTURE_LOCATION = new ResourceLocation(MODID, "textures/entity/wind_entity.png");
 	private static final RenderType RENDER_TYPE = RenderType.entityCutoutNoCull(TEXTURE_LOCATION);
 
@@ -25,12 +25,12 @@ public class WindEntityRenderer extends EntityRenderer<AbstractWindEntity>{
 	}
 
 	@Override
-	protected int getBlockLightLevel(AbstractWindEntity e, BlockPos p){
+	protected int getBlockLightLevel(WindEntity e, BlockPos p){
 		return 15;
 	}
 
 	@Override
-	public void render(AbstractWindEntity entity, float entityYaw, float partialTicks, MatrixStack stack, IRenderTypeBuffer typeBuffer, int packedLight){
+	public void render(WindEntity entity, float entityYaw, float partialTicks, MatrixStack stack, IRenderTypeBuffer typeBuffer, int packedLight){
 		stack.pushPose();
 		stack.scale(2, 2, 2);
 		stack.mulPose(this.entityRenderDispatcher.cameraOrientation());
@@ -57,7 +57,7 @@ public class WindEntityRenderer extends EntityRenderer<AbstractWindEntity>{
 				.endVertex();
 	}
 
-	@Override public ResourceLocation getTextureLocation(AbstractWindEntity e){
+	@Override public ResourceLocation getTextureLocation(WindEntity e){
 		return TEXTURE_LOCATION;
 	}
 }

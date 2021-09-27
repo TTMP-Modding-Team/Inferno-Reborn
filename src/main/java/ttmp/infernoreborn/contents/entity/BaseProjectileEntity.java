@@ -1,4 +1,4 @@
-package ttmp.infernoreborn.contents.entity.projectile;
+package ttmp.infernoreborn.contents.entity;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;

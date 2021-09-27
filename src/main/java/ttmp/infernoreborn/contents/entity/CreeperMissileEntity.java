@@ -1,4 +1,4 @@
-package ttmp.infernoreborn.contents.entity.projectile;
+package ttmp.infernoreborn.contents.entity;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
@@ -6,9 +6,13 @@ import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.Explosion;
 import net.minecraft.world.World;
+import ttmp.infernoreborn.contents.ModEntities;
 import ttmp.infernoreborn.util.damage.LivingOnlyEntityDamageSource;
 
 public class CreeperMissileEntity extends BaseProjectileEntity {
+    public CreeperMissileEntity(World world){
+        super(ModEntities.CREEPER_MISSILE.get(), world);
+    }
     public CreeperMissileEntity(EntityType<? extends CreeperMissileEntity> type, World world){
         super(type, world);
     }

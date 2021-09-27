@@ -169,6 +169,7 @@ public class ServerAbilityHolder implements AbilityHolder, ICapabilitySerializab
 			syncAbilityToClient(entity);
 		}
 		cooldown.decreaseAll(1);
+		cooldown.setGlobalDelay(cooldown.getGlobalDelay()-1);
 		if(cooldown.getCastingSkill()!=null){
 			cooldown.setCastTime(cooldown.getCastTime()-1);
 			if(!cooldown.hasCastTime()){

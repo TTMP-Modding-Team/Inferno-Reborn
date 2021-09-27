@@ -38,16 +38,15 @@ import net.minecraftforge.fml.network.PacketDistributor;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistry;
 import net.minecraftforge.registries.RegistryBuilder;
+import ttmp.infernoreborn.InfernoReborn;
 import ttmp.infernoreborn.capability.TickingTaskHandler;
 import ttmp.infernoreborn.contents.ability.Ability;
 import ttmp.infernoreborn.contents.ability.AbilitySkill;
 import ttmp.infernoreborn.contents.ability.OnAbilityEvent;
 import ttmp.infernoreborn.contents.ability.cooldown.Cooldown;
 import ttmp.infernoreborn.contents.entity.AnvilEntity;
-import ttmp.infernoreborn.contents.entity.projectile.CreeperMissileEntity;
-import ttmp.infernoreborn.contents.entity.projectile.wind.AbstractWindEntity;
-import ttmp.infernoreborn.contents.entity.projectile.wind.DamagingWindEntity;
-import ttmp.infernoreborn.contents.entity.projectile.wind.EffectWindEntity;
+import ttmp.infernoreborn.contents.entity.CreeperMissileEntity;
+import ttmp.infernoreborn.contents.entity.WindEntity;
 import ttmp.infernoreborn.network.ModNet;
 import ttmp.infernoreborn.network.ParticleMsg;
 import ttmp.infernoreborn.util.EssenceType;
@@ -186,17 +185,17 @@ public final class Abilities{
 
 	public static final RegistryObject<Ability> WINDBLAST_1 = REGISTER.register("windblast_1", () ->
 			new Ability(new Ability.Properties(0xA1CEE3, 0xA1CEE3)
-					.addTargetedSkill(4, 120, wind((world) -> new DamagingWindEntity(world).setDamage(4), 1, 1))
+					.addTargetedSkill(20, 120, wind((world) -> new WindEntity(world, 4), 1, 0xFFFFFF))
 					.drops(EssenceType.AIR, 3)));
 
 	public static final RegistryObject<Ability> WINDBLAST_2 = REGISTER.register("windblast_2", () ->
 			new Ability(new Ability.Properties(0xA1CEE3, 0xA1CEE3)
-					.addTargetedSkill(8, 180, wind((world) -> new DamagingWindEntity(world).setDamage(6), 1, 1))
+					.addTargetedSkill(20, 140, wind((world) -> new WindEntity(world, 6), 1, 0xFFFFFF))
 					.drops(EssenceType.AIR, 6)));
 
 	public static final RegistryObject<Ability> WINDBLAST_3 = REGISTER.register("windblast_3", () ->
 			new Ability(new Ability.Properties(0xA1CEE3, 0xA1CEE3)
-					.addTargetedSkill(12, 240, wind((world) -> new DamagingWindEntity(world).setDamage(8), 1, 1))
+					.addTargetedSkill(20, 160, wind((world) -> new WindEntity(world, 8), 1, 0xFFFFFF))
 					.drops(EssenceType.AIR, 9)));
 
 	public static final RegistryObject<Ability> BULLETPROOF = REGISTER.register("bulletproof", () ->
@@ -448,15 +447,15 @@ public final class Abilities{
 
 	public static final RegistryObject<Ability> BLAZE_WAVE = REGISTER.register("blaze_wave", () ->
 			new Ability(new Ability.Properties(0xFF680C, 0xFF680C)
-					.addTargetedSkill(30, 180, wind((world) -> new DamagingWindEntity(world).doSetFire(true), 1, 1))));
+					.addTargetedSkill(30, 180, wind((world) -> new WindEntity(world, 4, 8), 1, 0xFFFFFF))));
 
 	public static final RegistryObject<Ability> FREEZE_WAVE = REGISTER.register("freeze_wave", () ->
 			new Ability(new Ability.Properties(0x92B9FA, 0x92B9FA)
-					.addTargetedSkill(30, 120, wind((world) -> new EffectWindEntity(world).addEffect(new EffectInstance(Effects.MOVEMENT_SLOWDOWN, 300)), 1, 1))));
+					.addTargetedSkill(30, 120, wind((world) -> new WindEntity(world, 4, 0, new EffectInstance(Effects.MOVEMENT_SLOWDOWN, 300)), 1, 0xFFFFFF))));
 
 	public static final RegistryObject<Ability> ENVENOM = REGISTER.register("envenom", () ->
 			new Ability(new Ability.Properties(0x4E9331, 0x4E9331)
-					.addTargetedSkill(30, 160, wind((world) -> new EffectWindEntity(world).addEffect(new EffectInstance(Effects.POISON, 100, 2)), 1, 1))));
+					.addTargetedSkill(30, 160, wind((world) -> new WindEntity(world, 4, 0, new EffectInstance(Effects.POISON, 100, 2)), 1, 0xFFFFFF))));
 
 	public static final RegistryObject<Ability> ASSASSINATE = REGISTER.register("assassinate", () ->
 			new Ability(new Ability.Properties(0x332B40, 0x332B40)
@@ -544,7 +543,7 @@ public final class Abilities{
 	public static final RegistryObject<Ability> GUNPOWDER_SWARM = REGISTER.register("gunpowder_swarm", () ->
 			new Ability(new Ability.Properties(0x00C800, 0x00C800)
 					.addTargetedSkill(10, 100, (entity, holder, target) -> {
-						CreeperMissileEntity missile = new CreeperMissileEntity(ModEntities.CREEPER_MISSILE_ENTITY.get(), entity.level);
+						CreeperMissileEntity missile = new CreeperMissileEntity(entity.level);
 						missile.setPos(entity.getX(), entity.getEyeY(), entity.getZ());
 						missile.shootEntityToTarget(entity, target, 1);
 						entity.level.addFreshEntity(missile);
@@ -634,9 +633,9 @@ public final class Abilities{
 			}
 		};
 	}
-	private static AbilitySkill.TargetedSkillAction wind(Function<World, AbstractWindEntity> constructor, float velocity, int color){
+	private static AbilitySkill.TargetedSkillAction wind(Function<World, WindEntity> constructor, float velocity, int color){
 		return (entity, holder, target) -> {
-			AbstractWindEntity wind = constructor.apply(entity.level);
+			WindEntity wind = constructor.apply(entity.level);
 			wind.setOwner(entity);
 			wind.setColor(color);
 			wind.shootEntityToTarget(entity, target, velocity);
