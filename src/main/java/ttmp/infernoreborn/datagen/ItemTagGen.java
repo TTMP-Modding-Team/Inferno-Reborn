@@ -22,7 +22,7 @@ public class ItemTagGen extends ItemTagsProvider{
 		this.copy(ModTags.Blocks.ORES_HEART_CRYSTAL, ModTags.ORES_HEART_CRYSTAL);
 		this.copy(ModTags.Blocks.ORES_PYRITE, ModTags.ORES_PYRITE);
 		this.copy(ModTags.Blocks.STORAGE_BLOCKS_PYRITE, ModTags.STORAGE_BLOCKS_PYRITE);
-		this.copy(ModTags.Blocks.STORAGE_BLOCKS_NETHER_STEEL, ModTags.NUGGETS_NETHER_STEEL);
+		this.copy(ModTags.Blocks.STORAGE_BLOCKS_NETHER_STEEL, ModTags.STORAGE_BLOCKS_NETHER_STEEL);
 		this.copy(ModTags.Blocks.STORAGE_BLOCKS_DAMASCUS_STEEL, ModTags.STORAGE_BLOCKS_DAMASCUS_STEEL);
 
 		Builder<Item> essences = this.tag(ModTags.ESSENCES);
