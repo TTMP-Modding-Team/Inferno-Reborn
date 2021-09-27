@@ -25,14 +25,14 @@ public class ItemTagGen extends ItemTagsProvider{
 		this.copy(ModTags.Blocks.STORAGE_BLOCKS_NETHER_STEEL, ModTags.NUGGETS_NETHER_STEEL);
 		this.copy(ModTags.Blocks.STORAGE_BLOCKS_DAMASCUS_STEEL, ModTags.STORAGE_BLOCKS_DAMASCUS_STEEL);
 
-		Builder<Item> shards = this.tag(ModTags.ESSENCE_SHARDS);
-		Builder<Item> crystals = this.tag(ModTags.ESSENCE_CRYSTALS);
-		Builder<Item> greaterCrystals = this.tag(ModTags.GREATER_ESSENCE_CRYSTALS);
+		Builder<Item> essences = this.tag(ModTags.ESSENCES);
+		Builder<Item> greaterEssences = this.tag(ModTags.GREATER_ESSENCES);
+		Builder<Item> exquisiteEssences = this.tag(ModTags.EXQUISITE_ESSENCES);
 
 		for(EssenceType type : EssenceType.values()){
-			shards.add(type.getEssenceItem());
-			crystals.add(type.getGreaterEssenceItem());
-			greaterCrystals.add(type.getExquisiteEssenceItem());
+			essences.add(type.getEssenceItem());
+			greaterEssences.add(type.getGreaterEssenceItem());
+			exquisiteEssences.add(type.getExquisiteEssenceItem());
 		}
 
 		this.tag(ModTags.GEMS_HEART_CRYSTAL).add(ModItems.HEART_CRYSTAL.get());

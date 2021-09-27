@@ -12,9 +12,9 @@ import static ttmp.infernoreborn.InfernoReborn.MODID;
 public final class ModTags{
 	private ModTags(){}
 
-	public static final Tags.IOptionalNamedTag<Item> ESSENCE_SHARDS = ItemTags.createOptional(new ResourceLocation(MODID, "essence_shards"));
-	public static final Tags.IOptionalNamedTag<Item> ESSENCE_CRYSTALS = ItemTags.createOptional(new ResourceLocation(MODID, "essence_crystals"));
-	public static final Tags.IOptionalNamedTag<Item> GREATER_ESSENCE_CRYSTALS = ItemTags.createOptional(new ResourceLocation(MODID, "greater_essence_crystals"));
+	public static final Tags.IOptionalNamedTag<Item> ESSENCES = ItemTags.createOptional(new ResourceLocation(MODID, "essence_shards"));
+	public static final Tags.IOptionalNamedTag<Item> GREATER_ESSENCES = ItemTags.createOptional(new ResourceLocation(MODID, "greater_essences"));
+	public static final Tags.IOptionalNamedTag<Item> EXQUISITE_ESSENCES = ItemTags.createOptional(new ResourceLocation(MODID, "exquisite_essences"));
 
 	public static final Tags.IOptionalNamedTag<Item> ORES_HEART_CRYSTAL = ItemTags.createOptional(new ResourceLocation("forge", "ores/heart_crystal"));
 	public static final Tags.IOptionalNamedTag<Item> GEMS_HEART_CRYSTAL = ItemTags.createOptional(new ResourceLocation("forge", "gems/heart_crystal"));
