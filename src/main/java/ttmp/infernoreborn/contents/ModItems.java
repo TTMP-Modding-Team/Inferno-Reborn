@@ -28,6 +28,7 @@ import ttmp.infernoreborn.contents.item.ability.GeneratorAbilityItem;
 import ttmp.infernoreborn.contents.item.ability.RandomAbilityItem;
 import ttmp.infernoreborn.contents.item.armor.BerserkerArmorItem;
 import ttmp.infernoreborn.contents.item.armor.CrimsonArmorItem;
+import ttmp.infernoreborn.contents.item.armor.TerrastoneArmorItem;
 import ttmp.infernoreborn.contents.item.armor.ThanatosHeavyArmorItem;
 import ttmp.infernoreborn.contents.item.armor.ThanatosLightArmorItem;
 import ttmp.infernoreborn.contents.item.curio.CloudScarfItem;
@@ -106,6 +107,11 @@ public final class ModItems{
 	public static final RegistryObject<Item> HEART_CRYSTAL = REGISTER.register("heart_crystal", () -> new HeartCrystalItem(artifacts(Rarity.RARE)));
 
 	public static final RegistryObject<Item> EXPLOSIVE_SWORD = REGISTER.register("explosive_sword", () -> new ExplosiveSwordItem(artifacts(Rarity.RARE)));
+
+	public static final RegistryObject<Item> TERRASTONE_HEADGEAR = REGISTER.register("terrastone_headgear", () -> new TerrastoneArmorItem(EquipmentSlotType.HEAD, artifacts(Rarity.UNCOMMON)));
+	public static final RegistryObject<Item> TERRASTONE_CHESTPLATE = REGISTER.register("terrastone_chestplate", () -> new TerrastoneArmorItem(EquipmentSlotType.CHEST, artifacts(Rarity.UNCOMMON)));
+	public static final RegistryObject<Item> TERRASTONE_LEGGINGS = REGISTER.register("terrastone_leggings", () -> new TerrastoneArmorItem(EquipmentSlotType.LEGS, artifacts(Rarity.UNCOMMON)));
+	public static final RegistryObject<Item> TERRASTONE_BOOTS = REGISTER.register("terrastone_boots", () -> new TerrastoneArmorItem(EquipmentSlotType.FEET, artifacts(Rarity.UNCOMMON)));
 
 	public static final RegistryObject<Item> CRIMSON_CLAYMORE = REGISTER.register("crimson_claymore", () -> new CrimsonClaymoreItem(artifacts(Rarity.RARE)));
 	public static final RegistryObject<Item> CRIMSON_CHESTPLATE = REGISTER.register("crimson_chestplate", () -> new CrimsonArmorItem(EquipmentSlotType.CHEST, artifacts(Rarity.RARE)));
@@ -197,6 +203,7 @@ public final class ModItems{
 	public static final RegistryObject<Item> DAMASCUS_STEEL_NUGGET = REGISTER.register("damascus_steel_nugget", () -> new Item(materials(Rarity.UNCOMMON)));
 	public static final RegistryObject<BlockItem> DAMASCUS_STEEL_BLOCK = REGISTER.register("damascus_steel_block", () -> new BlockItem(ModBlocks.DAMASCUS_STEEL_BLOCK.get(), materials(Rarity.UNCOMMON)));
 
+	public static final RegistryObject<Item> TERRASTONE = REGISTER.register("terrastone", () -> new Item(materials(Rarity.UNCOMMON)));
 	public static final RegistryObject<Item> DEATH_INFUSED_LEATHER = REGISTER.register("death_infused_leather", () -> new Item(materials(Rarity.RARE)));
 	public static final RegistryObject<Item> DEATH_INFUSED_INGOT = REGISTER.register("death_infused_ingot", () -> new Item(materials(Rarity.RARE)));
 
