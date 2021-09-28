@@ -5,6 +5,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.MobEntity;
+import net.minecraft.entity.SpawnReason;
 import net.minecraft.entity.ai.attributes.AttributeModifier.Operation;
 import net.minecraft.entity.ai.attributes.Attributes;
 import net.minecraft.entity.effect.LightningBoltEntity;
@@ -27,6 +28,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.Explosion;
+import net.minecraft.world.IServerWorld;
 import net.minecraft.world.World;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
@@ -38,14 +40,17 @@ import net.minecraftforge.fml.network.PacketDistributor;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistry;
 import net.minecraftforge.registries.RegistryBuilder;
+import ttmp.infernoreborn.InfernoReborn;
 import ttmp.infernoreborn.capability.TickingTaskHandler;
 import ttmp.infernoreborn.contents.ability.Ability;
 import ttmp.infernoreborn.contents.ability.AbilitySkill;
 import ttmp.infernoreborn.contents.ability.OnAbilityEvent;
 import ttmp.infernoreborn.contents.ability.cooldown.Cooldown;
+import ttmp.infernoreborn.contents.ability.holder.ServerAbilityHolder;
 import ttmp.infernoreborn.contents.entity.AnvilEntity;
 import ttmp.infernoreborn.contents.entity.CreeperMissileEntity;
 import ttmp.infernoreborn.contents.entity.WindEntity;
+import ttmp.infernoreborn.util.SlimeEntityAccessor;
 import ttmp.infernoreborn.network.ModNet;
 import ttmp.infernoreborn.network.ParticleMsg;
 import ttmp.infernoreborn.util.EssenceType;
@@ -379,9 +384,10 @@ public final class Abilities{
 	public static final RegistryObject<Ability> SLIME_BLOOD = REGISTER.register("slime_blood", () ->
 			new Ability(new Ability.Properties(0x7DCC6A, 0x7DCC6A)
 					.onAttacked((entity, holder, event) -> {
+						if(!canTriggerSlimeBlood(event.getSource())||entity.getRandom().nextInt(2)!=0) return;
 						SlimeEntity slime = new SlimeEntity(EntityType.SLIME, entity.level);
 						slime.setPos(entity.getX(), entity.getY(), entity.getZ());
-						entity.level.addFreshEntity(slime);
+						summonSlime(slime);
 					}).addAttribute(ModAttributes.FALLING_DAMAGE_RESISTANCE.get(), "6bab5413-70eb-4aa8-b709-dec6f1bc16b8", (double)1/3, Operation.MULTIPLY_BASE)
 					.drops(EssenceType.WATER, 5)
 					.drops(EssenceType.BLOOD, 5)));
@@ -569,11 +575,11 @@ public final class Abilities{
 	public static final RegistryObject<Ability> MAGMA_BLOOD = REGISTER.register("magma_blood", () ->
 			new Ability(new Ability.Properties(0x400000, 0x400000)
 					.onAttacked((entity, holder, event) -> {
-						World world = entity.level;
-						MagmaCubeEntity magmaCube = new MagmaCubeEntity(EntityType.MAGMA_CUBE, world);
+						if(!canTriggerSlimeBlood(event.getSource())||entity.getRandom().nextInt(2)!=0) return;
+						MagmaCubeEntity magmaCube = new MagmaCubeEntity(EntityType.MAGMA_CUBE, entity.level);
 						magmaCube.setPos(entity.getX(), entity.getY(), entity.getZ());
 						magmaCube.setTarget((LivingEntity)event.getSource().getEntity());
-						world.addFreshEntity(magmaCube);
+						summonSlime(magmaCube);
 					}).drops(EssenceType.BLOOD, 2*9)
 					.drops(EssenceType.FIRE, 2*9)));
 
@@ -730,6 +736,26 @@ public final class Abilities{
 			entity.level.addFreshEntity(wind);
 			return true;
 		};
+	}
+	private static boolean canTriggerSlimeBlood(DamageSource source){
+		return source.getDirectEntity()!=null&&
+				!source.isMagic()&&
+				!(source instanceof EntityDamageSource&&((EntityDamageSource)source).isThorns());
+	}
+	private static void summonSlime(SlimeEntity slime){
+		if(!(slime.level instanceof IServerWorld)){
+			InfernoReborn.LOGGER.warn("Summoning slime failed because the provided world is not a server");
+			return;
+		}
+		if(!(slime instanceof SlimeEntityAccessor)){
+			InfernoReborn.LOGGER.warn("Slime entity won't be summoned because mixin didn't apply correctly");
+			return;
+		}
+		slime.finalizeSpawn((IServerWorld)slime.level, slime.level.getCurrentDifficultyAt(slime.blockPosition()), SpawnReason.MOB_SUMMONED, null, null);
+		((SlimeEntityAccessor)slime).setSlimeSize(1, true);
+		ServerAbilityHolder of = ServerAbilityHolder.of(slime);
+		if(of!=null) of.markSpawned();
+		slime.level.addFreshEntity(slime);
 	}
 
 	@FunctionalInterface

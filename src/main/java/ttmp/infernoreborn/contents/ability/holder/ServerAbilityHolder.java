@@ -91,6 +91,7 @@ public class ServerAbilityHolder implements AbilityHolder, ICapabilitySerializab
 	@Nullable private InfernalType appliedInfernalType;
 
 	private boolean generateAbility = true;
+	private boolean disableDrop;
 
 	private final ServerCooldown cooldown = new ServerCooldown();
 
@@ -130,6 +131,18 @@ public class ServerAbilityHolder implements AbilityHolder, ICapabilitySerializab
 	}
 	public void setGenerateAbility(boolean generateAbility){
 		this.generateAbility = generateAbility;
+	}
+
+	public boolean disableDrop(){
+		return disableDrop;
+	}
+	public void setDisableDrop(boolean disableDrop){
+		this.disableDrop = disableDrop;
+	}
+
+	public void markSpawned(){
+		this.generateAbility = false;
+		this.disableDrop = true;
 	}
 
 	@Override

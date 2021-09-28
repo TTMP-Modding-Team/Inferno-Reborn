@@ -5,7 +5,8 @@
 	"package": "ttmp.infernoreborn.mixin",
 	"refmap": "infernoreborn.refmap.json",
 	"client": [
-		"MixinItemRenderer"
+		"MixinItemRenderer",
+		"MixinSlimeEntity"
 	],
 	"injectors": {
 		"defaultRequire": 1

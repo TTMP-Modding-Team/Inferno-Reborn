@@ -21,7 +21,9 @@ import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.living.LivingAttackEvent;
 import net.minecraftforge.event.entity.living.LivingDamageEvent;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
+import net.minecraftforge.event.entity.living.LivingDropsEvent;
 import net.minecraftforge.event.entity.living.LivingEvent.LivingUpdateEvent;
+import net.minecraftforge.event.entity.living.LivingExperienceDropEvent;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import net.minecraftforge.event.entity.player.AttackEntityEvent;
 import net.minecraftforge.event.entity.player.CriticalHitEvent;
@@ -295,5 +297,17 @@ public class CommonEventHandlers{
 		PlayerCapability c1 = PlayerCapability.of(original);
 		PlayerCapability c2 = PlayerCapability.of(entityLiving);
 		if(c1!=null&&c2!=null) c1.copyTo(c2);
+	}
+
+	@SubscribeEvent
+	public static void onLivingDrops(LivingDropsEvent event){
+		ServerAbilityHolder h = ServerAbilityHolder.of(event.getEntityLiving());
+		if(h!=null&&h.disableDrop()) event.setCanceled(true);
+	}
+
+	@SubscribeEvent
+	public static void onLivingExperienceDrop(LivingExperienceDropEvent event){
+		ServerAbilityHolder h = ServerAbilityHolder.of(event.getEntityLiving());
+		if(h!=null&&h.disableDrop()) event.setCanceled(true);
 	}
 }
