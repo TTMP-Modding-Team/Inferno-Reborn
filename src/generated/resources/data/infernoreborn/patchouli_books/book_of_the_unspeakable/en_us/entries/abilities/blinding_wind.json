@@ -1,0 +1,11 @@
+{
+  "name": "ability.infernoreborn.blinding_wind",
+  "category": "infernoreborn:abilities",
+  "icon": "infernoreborn:inferno_spark{Abilities:[\"infernoreborn:blinding_wind\"]}",
+  "pages": [
+    {
+      "type": "text",
+      "text": "text.infernoreborn.ability.blinding_wind.0"
+    }
+  ]
+}

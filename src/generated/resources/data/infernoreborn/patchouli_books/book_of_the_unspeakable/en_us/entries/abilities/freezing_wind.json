@@ -1,0 +1,11 @@
+{
+  "name": "ability.infernoreborn.freezing_wind",
+  "category": "infernoreborn:abilities",
+  "icon": "infernoreborn:inferno_spark{Abilities:[\"infernoreborn:freezing_wind\"]}",
+  "pages": [
+    {
+      "type": "text",
+      "text": "text.infernoreborn.ability.freezing_wind.0"
+    }
+  ]
+}

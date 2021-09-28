@@ -1,0 +1,11 @@
+{
+  "name": "ability.infernoreborn.windblast2",
+  "category": "infernoreborn:abilities",
+  "icon": "infernoreborn:inferno_spark{Abilities:[\"infernoreborn:windblast2\"]}",
+  "pages": [
+    {
+      "type": "text",
+      "text": "text.infernoreborn.ability.windblast2.0"
+    }
+  ]
+}

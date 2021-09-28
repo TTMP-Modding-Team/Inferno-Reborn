@@ -1,0 +1,11 @@
+{
+  "name": "ability.infernoreborn.fuzzy_wind",
+  "category": "infernoreborn:abilities",
+  "icon": "infernoreborn:inferno_spark{Abilities:[\"infernoreborn:fuzzy_wind\"]}",
+  "pages": [
+    {
+      "type": "text",
+      "text": "text.infernoreborn.ability.fuzzy_wind.0"
+    }
+  ]
+}

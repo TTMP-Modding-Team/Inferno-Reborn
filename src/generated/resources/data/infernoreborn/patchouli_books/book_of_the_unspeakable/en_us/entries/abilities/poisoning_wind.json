@@ -1,0 +1,11 @@
+{
+  "name": "ability.infernoreborn.poisoning_wind",
+  "category": "infernoreborn:abilities",
+  "icon": "infernoreborn:inferno_spark{Abilities:[\"infernoreborn:poisoning_wind\"]}",
+  "pages": [
+    {
+      "type": "text",
+      "text": "text.infernoreborn.ability.poisoning_wind.0"
+    }
+  ]
+}

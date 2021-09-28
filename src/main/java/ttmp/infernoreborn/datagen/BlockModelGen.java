@@ -23,6 +23,9 @@ public class BlockModelGen extends BlockStateProvider{
 	}
 
 	@Override protected void registerStatesAndModels(){
+		BlockModelBuilder runestoneModel = models().cubeAll("block/runestone", res("block/runestone"));
+		simpleBlock(ModBlocks.RUNESTONE.get(), runestoneModel);
+		simpleBlockItem(ModBlocks.RUNESTONE.get(), runestoneModel);
 		BlockModelBuilder foundryTileModel = models().cubeAll("block/foundry/tile", res("block/foundry/tile"));
 		simpleBlock(ModBlocks.FOUNDRY_TILE.get(), foundryTileModel);
 		simpleBlockItem(ModBlocks.FOUNDRY_TILE.get(), foundryTileModel);

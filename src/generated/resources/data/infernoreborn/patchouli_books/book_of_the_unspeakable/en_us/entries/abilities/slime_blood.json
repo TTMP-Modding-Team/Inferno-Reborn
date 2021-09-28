@@ -1,0 +1,15 @@
+{
+  "name": "ability.infernoreborn.slime_blood",
+  "category": "infernoreborn:abilities",
+  "icon": "infernoreborn:inferno_spark{Abilities:[\"infernoreborn:slime_blood\"]}",
+  "pages": [
+    {
+      "type": "text",
+      "text": "text.infernoreborn.ability.slime_blood.0"
+    },
+    {
+      "type": "infernoreborn:ability_attribute",
+      "ability": "infernoreborn:slime_blood"
+    }
+  ]
+}

@@ -1,0 +1,11 @@
+{
+  "name": "ability.infernoreborn.scalding_wind",
+  "category": "infernoreborn:abilities",
+  "icon": "infernoreborn:inferno_spark{Abilities:[\"infernoreborn:scalding_wind\"]}",
+  "pages": [
+    {
+      "type": "text",
+      "text": "text.infernoreborn.ability.scalding_wind.0"
+    }
+  ]
+}

@@ -1,0 +1,11 @@
+{
+  "name": "ability.infernoreborn.blastproof",
+  "category": "infernoreborn:abilities",
+  "icon": "infernoreborn:inferno_spark{Abilities:[\"infernoreborn:blastproof\"]}",
+  "pages": [
+    {
+      "type": "text",
+      "text": "text.infernoreborn.ability.blastproof.0"
+    }
+  ]
+}
