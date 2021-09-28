@@ -198,11 +198,11 @@ public final class ModItems{
 	public static final RegistryObject<Item> NETHER_STEEL_NUGGET = REGISTER.register("nether_steel_nugget", () -> new Item(materials(Rarity.UNCOMMON)));
 	public static final RegistryObject<BlockItem> NETHER_STEEL_BLOCK = REGISTER.register("nether_steel_block", () -> new BlockItem(ModBlocks.NETHER_STEEL_BLOCK.get(), materials(Rarity.UNCOMMON)));
 
-	public static final RegistryObject<Item> CRIMSON_METAL_SCRAP = REGISTER.register("crimson_metal_scrap", () -> new Item(materials(Rarity.RARE)));
 	public static final RegistryObject<Item> DAMASCUS_STEEL_INGOT = REGISTER.register("damascus_steel_ingot", () -> new Item(materials(Rarity.UNCOMMON)));
 	public static final RegistryObject<Item> DAMASCUS_STEEL_NUGGET = REGISTER.register("damascus_steel_nugget", () -> new Item(materials(Rarity.UNCOMMON)));
 	public static final RegistryObject<BlockItem> DAMASCUS_STEEL_BLOCK = REGISTER.register("damascus_steel_block", () -> new BlockItem(ModBlocks.DAMASCUS_STEEL_BLOCK.get(), materials(Rarity.UNCOMMON)));
 
+	public static final RegistryObject<Item> CRIMSON_METAL_SCRAP = REGISTER.register("crimson_metal_scrap", () -> new Item(materials(Rarity.RARE)));
 	public static final RegistryObject<Item> TERRASTONE = REGISTER.register("terrastone", () -> new Item(materials(Rarity.UNCOMMON)));
 	public static final RegistryObject<Item> DEATH_INFUSED_LEATHER = REGISTER.register("death_infused_leather", () -> new Item(materials(Rarity.RARE)));
 	public static final RegistryObject<Item> DEATH_INFUSED_INGOT = REGISTER.register("death_infused_ingot", () -> new Item(materials(Rarity.RARE)));

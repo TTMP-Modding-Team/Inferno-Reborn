@@ -21,21 +21,14 @@ public class ItemModelGen extends ItemModelProvider{
 	}
 
 	@Override protected void registerModels(){
-		for(EssenceType type : EssenceType.values()){
-			item(Objects.requireNonNull(type.getEssenceItem().getRegistryName()).getPath(),
-					new ResourceLocation(MODID, "item/essence/"+type.id));
-			item(Objects.requireNonNull(type.getGreaterEssenceItem().getRegistryName()).getPath(),
-					new ResourceLocation(MODID, "item/greater_essence/"+type.id));
-			item(Objects.requireNonNull(type.getExquisiteEssenceItem().getRegistryName()).getPath(),
-					new ResourceLocation(MODID, "item/exquisite_essence/"+type.id));
-		}
-		item(ModItems.ESSENCE_HOLDER.getId().getPath(),
-				new ResourceLocation(MODID, "item/essence_holder_0"),
-				new ResourceLocation(MODID, "item/essence_holder_1"));
 		item(ModItems.BOOK_OF_THE_UNSPEAKABLE.getId().getPath(), new ResourceLocation(MODID, "item/book_of_the_unspeakable"));
 		item(ModItems.BOOK_OF_THE_UNSPEAKABLE_COMBINED.getId().getPath(),
 				new ResourceLocation(MODID, "item/book_of_the_unspeakable_combined"),
 				new ResourceLocation(MODID, "item/book_of_the_unspeakable_combined_2"));
+		item(ModItems.ESSENCE_HOLDER.getId().getPath(),
+				new ResourceLocation(MODID, "item/essence_holder_0"),
+				new ResourceLocation(MODID, "item/essence_holder_1"));
+		simpleItem(ModItems.HEART_CRYSTAL.get());
 		held(ModItems.EXPLOSIVE_SWORD.getId().getPath(), new ResourceLocation(MODID, "item/explosive_sword"))
 				.override()
 				.predicate(new ResourceLocation("using"), 1)
@@ -57,7 +50,6 @@ public class ItemModelGen extends ItemModelProvider{
 		simpleItem(ModItems.CRIMSON_CHESTPLATE.get());
 		simpleItem(ModItems.CRIMSON_LEGGINGS.get());
 		simpleItem(ModItems.CRIMSON_BOOTS.get());
-		simpleItem(ModItems.CRIMSON_METAL_SCRAP.get());
 
 		simpleHeld(ModItems.DRAGON_SLAYER.get());
 		simpleItem(ModItems.BERSERKER_HELMET.get());
@@ -65,9 +57,7 @@ public class ItemModelGen extends ItemModelProvider{
 		simpleItem(ModItems.BERSERKER_LEGGINGS.get());
 		simpleItem(ModItems.BERSERKER_BOOTS.get());
 
-		simpleItem(ModItems.DAMASCUS_STEEL_INGOT.get());
-
-		simpleItem(ModItems.SIGIL.get());
+		simpleItem(ModItems.CLOUD_SCARF.get());
 
 		withExistingParent(ModItems.GOLDEN_SKULL.getId().getPath(), "item/template_skull");
 		item(ModItems.JUDGEMENT.getId().getPath(), new ResourceLocation(MODID, "item/judgement"))
@@ -75,7 +65,25 @@ public class ItemModelGen extends ItemModelProvider{
 				.predicate(new ResourceLocation("off"), 1)
 				.model(item("item/judgement_off", new ResourceLocation(MODID, "item/judgement_off")));
 
-		simpleItem(ModItems.CLOUD_SCARF.get());
+		for(EssenceType type : EssenceType.values()){
+			item(Objects.requireNonNull(type.getEssenceItem().getRegistryName()).getPath(),
+					new ResourceLocation(MODID, "item/essence/"+type.id));
+			item(Objects.requireNonNull(type.getGreaterEssenceItem().getRegistryName()).getPath(),
+					new ResourceLocation(MODID, "item/greater_essence/"+type.id));
+			item(Objects.requireNonNull(type.getExquisiteEssenceItem().getRegistryName()).getPath(),
+					new ResourceLocation(MODID, "item/exquisite_essence/"+type.id));
+		}
+
+		simpleItem(ModItems.PYRITE_INGOT.get());
+		simpleItem(ModItems.PYRITE_NUGGET.get());
+
+		simpleItem(ModItems.CRIMSON_METAL_SCRAP.get());
+
+		simpleItem(ModItems.DAMASCUS_STEEL_INGOT.get());
+
+		simpleItem(ModItems.TERRASTONE.get());
+
+		simpleItem(ModItems.SIGIL.get());
 	}
 
 	protected ItemModelBuilder simpleItem(Item item){

@@ -1,10 +1,12 @@
 package ttmp.infernoreborn.datagen;
 
+import net.minecraft.block.Block;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.model.generators.BlockModelBuilder;
 import net.minecraftforge.client.model.generators.BlockStateProvider;
 import net.minecraftforge.client.model.generators.ConfiguredModel;
+import net.minecraftforge.client.model.generators.ModelFile;
 import net.minecraftforge.client.model.generators.ModelFile.ExistingModelFile;
 import net.minecraftforge.common.data.ExistingFileHelper;
 import ttmp.infernoreborn.contents.ModBlocks;
@@ -23,12 +25,10 @@ public class BlockModelGen extends BlockStateProvider{
 	}
 
 	@Override protected void registerStatesAndModels(){
-		BlockModelBuilder runestoneModel = models().cubeAll("block/runestone", res("block/runestone"));
-		simpleBlock(ModBlocks.RUNESTONE.get(), runestoneModel);
-		simpleBlockItem(ModBlocks.RUNESTONE.get(), runestoneModel);
-		BlockModelBuilder foundryTileModel = models().cubeAll("block/foundry/tile", res("block/foundry/tile"));
-		simpleBlock(ModBlocks.FOUNDRY_TILE.get(), foundryTileModel);
-		simpleBlockItem(ModBlocks.FOUNDRY_TILE.get(), foundryTileModel);
+		simpleItemAndBlock(ModBlocks.HEART_CRYSTAL_ORE.get(), models().cubeAll("block/heart_crystal_ore", res("block/heart_crystal_ore")));
+
+		simpleItemAndBlock(ModBlocks.RUNESTONE.get(), models().cubeAll("block/runestone", res("block/runestone")));
+		simpleItemAndBlock(ModBlocks.FOUNDRY_TILE.get(), models().cubeAll("block/foundry/tile", res("block/foundry/tile")));
 
 		models().withExistingParent("block/foundry/foundry_tile_base", "cube")
 				.texture("down", "#tile")
@@ -85,5 +85,10 @@ public class BlockModelGen extends BlockStateProvider{
 
 	private static ResourceLocation res(String path){
 		return new ResourceLocation(MODID, path);
+	}
+
+	private void simpleItemAndBlock(Block block, ModelFile modelFile){
+		simpleBlock(block, modelFile);
+		simpleBlockItem(block, modelFile);
 	}
 }
