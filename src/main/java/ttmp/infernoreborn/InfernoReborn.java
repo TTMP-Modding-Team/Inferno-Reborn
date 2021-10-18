@@ -42,6 +42,7 @@ import ttmp.infernoreborn.client.color.SparkColor;
 import ttmp.infernoreborn.client.render.AnvilEntityRenderer;
 import ttmp.infernoreborn.client.render.CreeperMissileEntityRenderer;
 import ttmp.infernoreborn.client.render.GoldenSkullTileEntityRenderer;
+import ttmp.infernoreborn.client.render.PaperBulletRenderer;
 import ttmp.infernoreborn.client.render.WindEntityRenderer;
 import ttmp.infernoreborn.client.screen.EssenceHolderScreen;
 import ttmp.infernoreborn.client.screen.FoundryScreen;
@@ -64,6 +65,7 @@ import ttmp.infernoreborn.contents.ability.holder.AbilityHolder;
 import ttmp.infernoreborn.contents.block.GoldenSkullBlock;
 import ttmp.infernoreborn.contents.item.EssenceNetAccessorItem;
 import ttmp.infernoreborn.contents.item.JudgementItem;
+import ttmp.infernoreborn.contents.item.weapon.BookGunItem;
 import ttmp.infernoreborn.contents.sigil.holder.SigilHolder;
 import ttmp.infernoreborn.datagen.BlockModelGen;
 import ttmp.infernoreborn.datagen.BlockTagGen;
@@ -124,6 +126,7 @@ public class InfernoReborn{
 			registerDefaultCapability(EssenceNetProvider.class);
 			registerDefaultCapability(EssenceNetAccessorItem.Data.class);
 			registerDefaultCapability(ClientPlayerCapability.class);
+			registerDefaultCapability(BookGunItem.Data.class);
 		});
 	}
 
@@ -189,6 +192,7 @@ public class InfernoReborn{
 			RenderingRegistry.registerEntityRenderingHandler(ModEntities.WIND.get(), WindEntityRenderer::new);
 			RenderingRegistry.registerEntityRenderingHandler(ModEntities.ANVIL.get(), AnvilEntityRenderer::new);
 			RenderingRegistry.registerEntityRenderingHandler(ModEntities.CREEPER_MISSILE.get(), CreeperMissileEntityRenderer::new);
+			RenderingRegistry.registerEntityRenderingHandler(ModEntities.PAPER_BULLET.get(), PaperBulletRenderer::new);
 
 			ClientRegistry.bindTileEntityRenderer(ModTileEntities.GOLDEN_SKULL.get(), GoldenSkullTileEntityRenderer::new);
 		}

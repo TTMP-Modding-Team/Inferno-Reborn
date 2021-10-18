@@ -33,6 +33,7 @@ import ttmp.infernoreborn.contents.item.armor.ThanatosHeavyArmorItem;
 import ttmp.infernoreborn.contents.item.armor.ThanatosLightArmorItem;
 import ttmp.infernoreborn.contents.item.curio.BaseCurioItem;
 import ttmp.infernoreborn.contents.item.curio.CloudScarfItem;
+import ttmp.infernoreborn.contents.item.weapon.BookGunItem;
 import ttmp.infernoreborn.contents.item.weapon.CrimsonClaymoreItem;
 import ttmp.infernoreborn.contents.item.weapon.DragonSlayerItem;
 import ttmp.infernoreborn.contents.item.weapon.ExplosiveSwordItem;
@@ -108,6 +109,7 @@ public final class ModItems{
 	public static final RegistryObject<Item> HEART_CRYSTAL = REGISTER.register("heart_crystal", () -> new HeartCrystalItem(artifacts(Rarity.RARE)));
 
 	public static final RegistryObject<Item> EXPLOSIVE_SWORD = REGISTER.register("explosive_sword", () -> new ExplosiveSwordItem(artifacts(Rarity.RARE)));
+	public static final RegistryObject<Item> BOOK_GUN = REGISTER.register("book_gun", () -> new BookGunItem(artifacts(Rarity.RARE).durability(10000)));
 
 	public static final RegistryObject<Item> TERRASTONE_HEADGEAR = REGISTER.register("terrastone_headgear", () -> new TerrastoneArmorItem(EquipmentSlotType.HEAD, artifacts(Rarity.UNCOMMON)));
 	public static final RegistryObject<Item> TERRASTONE_CHESTPLATE = REGISTER.register("terrastone_chestplate", () -> new TerrastoneArmorItem(EquipmentSlotType.CHEST, artifacts(Rarity.UNCOMMON)));

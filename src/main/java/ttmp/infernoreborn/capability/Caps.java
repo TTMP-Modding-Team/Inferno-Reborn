@@ -4,6 +4,7 @@ import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityInject;
 import ttmp.infernoreborn.contents.ability.holder.AbilityHolder;
 import ttmp.infernoreborn.contents.item.EssenceNetAccessorItem;
+import ttmp.infernoreborn.contents.item.weapon.BookGunItem;
 import ttmp.infernoreborn.contents.sigil.holder.SigilHolder;
 import ttmp.infernoreborn.util.EssenceHolder;
 
@@ -28,4 +29,6 @@ public final class Caps{
 	public static Capability<EssenceNetAccessorItem.Data> essenceNetAccessorData;
 	@CapabilityInject(ClientPlayerCapability.class)
 	public static Capability<ClientPlayerCapability> clientPlayerShield;
+	@CapabilityInject(BookGunItem.Data.class)
+	public static Capability<BookGunItem.Data> bookGunData;
 }
