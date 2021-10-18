@@ -1,4 +1,4 @@
-package ttmp.infernoreborn.contents.item;
+package ttmp.infernoreborn.contents.item.curio;
 
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -15,7 +15,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.Objects;
 
-public class ShieldProviderItem extends Item{
+public class ShieldProviderItem extends BaseCurioItem{
 	private final Shield shield;
 
 	public ShieldProviderItem(Properties properties, Shield shield){

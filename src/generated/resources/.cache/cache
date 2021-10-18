@@ -111,6 +111,7 @@ a52fb80ee350e51e0948f68c81ee71da9f6456a6 assets/infernoreborn/models/item/sigil.
 0670246dc12309330585abca097cf300f435d828 assets/infernoreborn/textures/item/greater_essence/water.png.mcmeta
 013607f48035261a6348d73d59b5f2df9e5637a1 assets/infernoreborn/textures/item/judgement.png.mcmeta
 744f7b3310a97687fb90154ccf92f122307f4d54 data/curios/tags/items/belt.json
+24f855d77ce4ac4e5c4bb07a149a4b6e0ed04ae9 data/curios/tags/items/hands.json
 7df8cd67521d9a8e67f712a35ddf5a0eabbb5bc4 data/curios/tags/items/necklace.json
 6ee55f329d8b846c83e4125f7b384a188ee63bc6 data/curios/tags/items/ring.json
 dd6b1244c42e07f21c36a5ee83e09e8bbb4688b1 data/forge/loot_modifiers/global_loot_modifiers.json

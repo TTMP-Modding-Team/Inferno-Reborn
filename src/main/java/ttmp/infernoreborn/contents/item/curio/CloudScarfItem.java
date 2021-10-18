@@ -22,7 +22,7 @@ import java.util.UUID;
 import static net.minecraft.util.math.RayTraceContext.BlockMode.COLLIDER;
 import static net.minecraft.util.math.RayTraceContext.FluidMode.ANY;
 
-public class CloudScarfItem extends Item implements ICurioItem{
+public class CloudScarfItem extends BaseCurioItem{
 	private static final UUID ATTRIBUTE_ID = UUID.fromString("0eed5b47-e0c2-4653-9f36-128db5d39ffe");
 
 	public CloudScarfItem(Properties properties){
@@ -45,10 +45,6 @@ public class CloudScarfItem extends Item implements ICurioItem{
 		return slotContext.getIdentifier().equals("necklace") ?
 				ImmutableMultimap.of(ModAttributes.FALLING_DAMAGE_RESISTANCE.get(), new AttributeModifier(ATTRIBUTE_ID, "Cloud Scarf", 1, Operation.MULTIPLY_BASE)) :
 				ImmutableMultimap.of();
-	}
-
-	@Override public boolean canEquipFromUse(SlotContext slotContext, ItemStack stack){
-		return true;
 	}
 
 	/**

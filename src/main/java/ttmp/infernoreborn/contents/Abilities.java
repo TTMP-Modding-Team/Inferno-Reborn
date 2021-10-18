@@ -40,6 +40,7 @@ import net.minecraftforge.fml.network.PacketDistributor;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistry;
 import net.minecraftforge.registries.RegistryBuilder;
+import top.theillusivec4.curios.api.CuriosApi;
 import ttmp.infernoreborn.InfernoReborn;
 import ttmp.infernoreborn.capability.TickingTaskHandler;
 import ttmp.infernoreborn.contents.ability.Ability;
@@ -50,11 +51,11 @@ import ttmp.infernoreborn.contents.ability.holder.ServerAbilityHolder;
 import ttmp.infernoreborn.contents.entity.AnvilEntity;
 import ttmp.infernoreborn.contents.entity.CreeperMissileEntity;
 import ttmp.infernoreborn.contents.entity.WindEntity;
-import ttmp.infernoreborn.util.SlimeEntityAccessor;
 import ttmp.infernoreborn.network.ModNet;
 import ttmp.infernoreborn.network.ParticleMsg;
 import ttmp.infernoreborn.util.EssenceType;
 import ttmp.infernoreborn.util.LivingUtils;
+import ttmp.infernoreborn.util.SlimeEntityAccessor;
 import ttmp.infernoreborn.util.damage.Damages;
 import ttmp.infernoreborn.util.damage.LivingOnlyEntityDamageSource;
 
@@ -722,9 +723,11 @@ public final class Abilities{
 	private static OnAbilityEvent<LivingHurtEvent> skin(SkinEffect effect){
 		return (entity, holder, event) -> {
 			Entity hitEntity = event.getSource().getDirectEntity();
-			if(hitEntity instanceof LivingEntity&&hitEntity.isAlive()&&!event.getSource().isProjectile()){
+			if(hitEntity instanceof LivingEntity&&
+					hitEntity.isAlive()&&
+					!event.getSource().isProjectile()&&
+					!CuriosApi.getCuriosHelper().findEquippedCurio(ModItems.BATTLE_MITTS.get(), (LivingEntity)hitEntity).isPresent())
 				effect.apply(event, (LivingEntity)hitEntity);
-			}
 		};
 	}
 	private static AbilitySkill.TargetedSkillAction wind(Function<World, WindEntity> constructor, int color){
