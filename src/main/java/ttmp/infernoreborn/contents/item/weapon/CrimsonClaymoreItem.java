@@ -12,11 +12,11 @@ import net.minecraft.item.IItemTier;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.SwordItem;
 import net.minecraft.item.crafting.Ingredient;
-import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.potion.EffectInstance;
 import net.minecraft.world.World;
 import ttmp.infernoreborn.contents.ModEffects;
 import ttmp.infernoreborn.contents.ModItems;
+import ttmp.infernoreborn.util.StupidUtils;
 
 import javax.annotation.Nullable;
 import java.util.Map.Entry;
@@ -83,16 +83,9 @@ public class CrimsonClaymoreItem extends SwordItem{
 	}
 
 	public static float getDamageBonus(ItemStack stack){
-		CompoundNBT tag = stack.getTag();
-		return tag!=null ? tag.getFloat("DamageBonus") : 0;
+		return StupidUtils.getFloat(stack, "DamageBonus");
 	}
 	public static void setDamageBonus(ItemStack stack, float damageBonus){
-		if(damageBonus==0){
-			CompoundNBT tag = stack.getTag();
-			if(tag!=null) tag.remove("DamageBonus");
-		}else{
-			CompoundNBT nbt = stack.getOrCreateTag();
-			nbt.putFloat("DamageBonus", damageBonus);
-		}
+		StupidUtils.set(stack, "DamageBonus", damageBonus);
 	}
 }

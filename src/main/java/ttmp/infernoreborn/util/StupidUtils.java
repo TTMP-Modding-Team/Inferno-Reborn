@@ -1,5 +1,7 @@
 package ttmp.infernoreborn.util;
 
+import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.INBT;
 import net.minecraft.nbt.ListNBT;
 import net.minecraft.nbt.StringNBT;
@@ -82,5 +84,42 @@ public final class StupidUtils{
 				.map(registry::getValue)
 				.filter(Objects::nonNull)
 				.toArray(arrayGenerator);
+	}
+
+	public static int getInt(ItemStack stack, String name){
+		CompoundNBT tag = stack.getTag();
+		return tag!=null ? tag.getInt(name) : 0;
+	}
+	public static void set(ItemStack stack, String name, int i){
+		if(i==0){
+			CompoundNBT tag = stack.getTag();
+			if(tag!=null) tag.remove(name);
+		}else stack.getOrCreateTag().putInt(name, i);
+	}
+
+	public static float getFloat(ItemStack stack, String name){
+		CompoundNBT tag = stack.getTag();
+		return tag!=null ? tag.getFloat(name) : 0;
+	}
+	public static void set(ItemStack stack, String name, float f){
+		if(f==0){
+			CompoundNBT tag = stack.getTag();
+			if(tag!=null) tag.remove(name);
+		}else stack.getOrCreateTag().putFloat(name, f);
+	}
+
+	public static boolean getBool(ItemStack stack, String name){
+		CompoundNBT tag = stack.getTag();
+		return tag!=null&&tag.getBoolean(name);
+	}
+	public static void set(ItemStack stack, String name, boolean b){
+		CompoundNBT tag = stack.getTag();
+		if(b){
+			if(tag==null) stack.setTag(tag = new CompoundNBT());
+			tag.putBoolean(name, true);
+		}else if(tag!=null){
+			tag.remove(name);
+			if(tag.isEmpty()) stack.setTag(null);
+		}
 	}
 }
