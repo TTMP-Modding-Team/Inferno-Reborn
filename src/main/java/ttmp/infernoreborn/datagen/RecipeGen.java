@@ -62,6 +62,17 @@ public class RecipeGen extends RecipeProvider{
 		compactAndUncompact(ModItems.DAMASCUS_STEEL_INGOT.get(), ModItems.DAMASCUS_STEEL_NUGGET.get(), consumer);
 
 		new ShapedSigilTableCraftingRecipeBuilder(Items.PUFFERFISH)
+				.pattern("111")
+				.pattern("4X4")
+				.pattern("222")
+				.defineAsCenter('X', Ingredient.of(Items.COBBLESTONE))
+				.define('1', Ingredient.of(greaterCrystal(EssenceType.DOMINANCE)))
+				.define('2', Ingredient.of(greaterCrystal(EssenceType.AIR)))
+				.define('4', Ingredient.of(greaterCrystal(EssenceType.BLOOD)))
+				.unlockedBy("fuck", has(greaterCrystal(EssenceType.DOMINANCE)))
+				.save(consumer, new ResourceLocation(MODID, "sigilcraft/pfu"));
+
+		new ShapedSigilTableCraftingRecipeBuilder(Items.PUFFERFISH)
 				.pattern("  111  ")
 				.pattern("3144413")
 				.pattern("344X443")
