@@ -55,23 +55,30 @@ public abstract class BaseShapedSigilcraftRecipeBuilder{
 
 	protected abstract IFinishedRecipe createResult(ResourceLocation id, ResourceLocation advancementId);
 
-	private void ensureValid(ResourceLocation id){
+	protected void ensureValid(ResourceLocation id){
 		if(this.patterns.isEmpty()) throw new IllegalStateException("No pattern is defined for shaped recipe "+id+"!");
 
-		Set<Character> set = Sets.newHashSet(this.key.keySet());
-		set.remove(' ');
-		set.remove(centerIngredient);
+		Set<Character> leftover = Sets.newHashSet(this.key.keySet());
+		leftover.remove(' ');
+		leftover.remove(centerIngredient);
 
 		for(String s : this.patterns){
 			for(int i = 0; i<s.length(); ++i){
 				char c = s.charAt(i);
 				if(!this.key.containsKey(c)&&c!=' '&&(centerIngredient==null||c!=centerIngredient))
 					throw new IllegalStateException("Pattern in recipe "+id+" uses undefined symbol '"+c+"'");
-				set.remove(c);
+				leftover.remove(c);
 			}
 		}
 
-		if(!set.isEmpty()) throw new IllegalStateException("Ingredients are defined but not used in pattern for recipe "+id);
-		if(this.advancement.getCriteria().isEmpty()) throw new IllegalStateException("No way of obtaining recipe "+id);
+		if(!leftover.isEmpty()) throw new IllegalStateException("Ingredients are defined but not used in pattern for recipe "+id);
+		//if(this.advancement.getCriteria().isEmpty()) throw new IllegalStateException("No way of obtaining recipe "+id);
+
+		if(!allow1x1Recipe()&&this.patterns.size()==1&&this.patterns.get(0).length()==1)
+			throw new IllegalStateException("1x1 recipe is not allowed for recipe type "+id+" is using");
+	}
+
+	protected boolean allow1x1Recipe(){
+		return true;
 	}
 }

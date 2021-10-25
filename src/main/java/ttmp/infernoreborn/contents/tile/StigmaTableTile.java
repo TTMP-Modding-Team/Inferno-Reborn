@@ -3,19 +3,23 @@ package ttmp.infernoreborn.contents.tile;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.inventory.InventoryHelper;
 import net.minecraft.inventory.container.Container;
 import net.minecraft.inventory.container.INamedContainerProvider;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.IWorldPosCallable;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraft.world.World;
 import ttmp.infernoreborn.contents.ModTileEntities;
+import ttmp.infernoreborn.contents.block.NamedContainerBlock;
 import ttmp.infernoreborn.contents.container.StigmaTableContainer;
 import ttmp.infernoreborn.inventory.SigilTableInventory;
 
-public abstract class StigmaTableTile extends TileEntity implements INamedContainerProvider{
+public abstract class StigmaTableTile extends TileEntity implements INamedContainerProvider, NamedContainerBlock.OnRemoveListener{
 	public static StigmaTableTile new5x5(){
 		return new StigmaTableTile(ModTileEntities.STIGMA_TABLE_5X5.get(), 5){
 			@Override protected Container doCreateMenu(int id, PlayerInventory playerInventory, SigilTableInventory inventory, IWorldPosCallable pos){
@@ -54,6 +58,10 @@ public abstract class StigmaTableTile extends TileEntity implements INamedContai
 	}
 
 	protected abstract Container doCreateMenu(int id, PlayerInventory playerInventory, SigilTableInventory inventory, IWorldPosCallable pos);
+
+	@Override public void onRemove(BlockState state, World level, BlockPos pos, BlockState newState, boolean isMoving){
+		InventoryHelper.dropContents(level, pos, inventory);
+	}
 
 	@Override public void load(BlockState state, CompoundNBT nbt){
 		super.load(state, nbt);

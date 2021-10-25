@@ -69,29 +69,23 @@ public abstract class BaseSigilcraftRecipeCategory<T extends BaseSigilcraftRecip
 	public void setRecipe(IRecipeLayout layout, T recipe, IIngredients ingredients){
 		IGuiItemStackGroup stacks = layout.getItemStacks();
 
-		List<List<ItemStack>> inputs = ingredients.getInputs(VanillaTypes.ITEM);
-		List<ItemStack> outputs = ingredients.getOutputs(VanillaTypes.ITEM).get(0);
-
 		stacks.init(0, false, size.size*18+15, size.size/2*18);
-		stacks.set(0, outputs);
+		stacks.set(0, ingredients.getOutputs(VanillaTypes.ITEM).get(0));
 
 		for(int y = 0; y<size.size; y++){
 			for(int x = 0; x<size.size; x++){
-				int index = 1+x+(y*size.size);
-				stacks.init(index, true, x*18, y*18);
+				stacks.init(size.toIndex(x, y)+1, true, x*18, y*18);
 			}
 		}
-		int width = recipe.getRecipeWidth();
-		int height = recipe.getRecipeHeight();
+
+		List<List<ItemStack>> inputs = ingredients.getInputs(VanillaTypes.ITEM);
 		int xOrigin = size.size/2-recipe.getCenterX();
 		int yOrigin = size.size/2-recipe.getCenterY();
 
 		int stackIndex = 0;
-		for(int y = 0; y<height; y++){
-			for(int x = 0; x<width; x++){
-				int index = 1+x+xOrigin+(y+yOrigin)*size.size;
-				stacks.set(index, inputs.get(stackIndex));
-				stackIndex++;
+		for(int y = 0; y<recipe.getRecipeHeight(); y++){
+			for(int x = 0; x<recipe.getRecipeWidth(); x++, stackIndex++){
+				stacks.set(size.toIndex(x+xOrigin, y+yOrigin)+1, inputs.get(stackIndex));
 			}
 		}
 	}

@@ -13,6 +13,7 @@ import mezz.jei.api.registration.IRecipeTransferRegistration;
 import mezz.jei.api.registration.ISubtypeRegistration;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.world.ClientWorld;
+import net.minecraft.inventory.container.Container;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import ttmp.infernoreborn.client.screen.FoundryScreen;
@@ -20,10 +21,11 @@ import ttmp.infernoreborn.client.screen.SigilEngravingTableScreen;
 import ttmp.infernoreborn.compat.jei.sigil.RecipeSize;
 import ttmp.infernoreborn.compat.jei.sigil.ShapedSigilEngravingRecipeCategory;
 import ttmp.infernoreborn.compat.jei.sigil.ShapedSigilTableCraftingRecipeCategory;
-import ttmp.infernoreborn.compat.jei.sigil.SigilcraftRecipeTransferInfo;
+import ttmp.infernoreborn.compat.jei.sigil.SigilcraftRecipeTransferHandler;
 import ttmp.infernoreborn.contents.ModItems;
 import ttmp.infernoreborn.contents.ModRecipes;
 import ttmp.infernoreborn.contents.container.SigilEngravingTableContainer;
+import ttmp.infernoreborn.contents.container.StigmaTableContainer;
 import ttmp.infernoreborn.contents.item.SigilItem;
 import ttmp.infernoreborn.contents.item.ability.FixedAbilityItem;
 import ttmp.infernoreborn.contents.item.ability.GeneratorAbilityItem;
@@ -112,19 +114,22 @@ public class InfernoRebornJeiPlugin implements IModPlugin{
 	}
 
 	@Override public void registerRecipeTransferHandlers(IRecipeTransferRegistration registration){
-		registration.addRecipeTransferHandler(new SigilcraftRecipeTransferInfo<>(SigilEngravingTableContainer.X3.class, ShapedSigilTableCraftingRecipeCategory.getUidBySize(RecipeSize.X3), RecipeSize.X3));
-		registration.addRecipeTransferHandler(new SigilcraftRecipeTransferInfo<>(SigilEngravingTableContainer.X5.class, ShapedSigilTableCraftingRecipeCategory.getUidBySize(RecipeSize.X3), RecipeSize.X5));
-		registration.addRecipeTransferHandler(new SigilcraftRecipeTransferInfo<>(SigilEngravingTableContainer.X5.class, ShapedSigilTableCraftingRecipeCategory.getUidBySize(RecipeSize.X5), RecipeSize.X5));
-		registration.addRecipeTransferHandler(new SigilcraftRecipeTransferInfo<>(SigilEngravingTableContainer.X7.class, ShapedSigilTableCraftingRecipeCategory.getUidBySize(RecipeSize.X3), RecipeSize.X7));
-		registration.addRecipeTransferHandler(new SigilcraftRecipeTransferInfo<>(SigilEngravingTableContainer.X7.class, ShapedSigilTableCraftingRecipeCategory.getUidBySize(RecipeSize.X5), RecipeSize.X7));
-		registration.addRecipeTransferHandler(new SigilcraftRecipeTransferInfo<>(SigilEngravingTableContainer.X7.class, ShapedSigilTableCraftingRecipeCategory.getUidBySize(RecipeSize.X7), RecipeSize.X7));
+		registerSigilTableRecipeTransferHandler(registration, SigilEngravingTableContainer.X3.class, RecipeSize.X3, false);
+		registerSigilTableRecipeTransferHandler(registration, SigilEngravingTableContainer.X5.class, RecipeSize.X5, false);
+		registerSigilTableRecipeTransferHandler(registration, SigilEngravingTableContainer.X7.class, RecipeSize.X7, false);
+		registerSigilTableRecipeTransferHandler(registration, StigmaTableContainer.X5.class, RecipeSize.X5, true);
+		registerSigilTableRecipeTransferHandler(registration, StigmaTableContainer.X7.class, RecipeSize.X7, true);
+	}
 
-		registration.addRecipeTransferHandler(new SigilcraftRecipeTransferInfo<>(SigilEngravingTableContainer.X3.class, ShapedSigilEngravingRecipeCategory.getUidBySize(RecipeSize.X3), RecipeSize.X3));
-		registration.addRecipeTransferHandler(new SigilcraftRecipeTransferInfo<>(SigilEngravingTableContainer.X5.class, ShapedSigilEngravingRecipeCategory.getUidBySize(RecipeSize.X3), RecipeSize.X5));
-		registration.addRecipeTransferHandler(new SigilcraftRecipeTransferInfo<>(SigilEngravingTableContainer.X5.class, ShapedSigilEngravingRecipeCategory.getUidBySize(RecipeSize.X5), RecipeSize.X5));
-		registration.addRecipeTransferHandler(new SigilcraftRecipeTransferInfo<>(SigilEngravingTableContainer.X7.class, ShapedSigilEngravingRecipeCategory.getUidBySize(RecipeSize.X3), RecipeSize.X7));
-		registration.addRecipeTransferHandler(new SigilcraftRecipeTransferInfo<>(SigilEngravingTableContainer.X7.class, ShapedSigilEngravingRecipeCategory.getUidBySize(RecipeSize.X5), RecipeSize.X7));
-		registration.addRecipeTransferHandler(new SigilcraftRecipeTransferInfo<>(SigilEngravingTableContainer.X7.class, ShapedSigilEngravingRecipeCategory.getUidBySize(RecipeSize.X7), RecipeSize.X7));
+	private static <C extends Container> void registerSigilTableRecipeTransferHandler(IRecipeTransferRegistration registration, Class<C> containerClass, RecipeSize containerSize, boolean bodySigilStation){
+		for(RecipeSize recipeSize : RecipeSize.values()){
+			if(!bodySigilStation) registration.addRecipeTransferHandler(
+					new SigilcraftRecipeTransferHandler<>(containerClass, containerSize, recipeSize, false, false, registration.getTransferHelper(), registration.getJeiHelpers().getStackHelper()),
+					ShapedSigilTableCraftingRecipeCategory.getUidBySize(recipeSize));
+			registration.addRecipeTransferHandler(
+					new SigilcraftRecipeTransferHandler<>(containerClass, containerSize, recipeSize, true, bodySigilStation, registration.getTransferHelper(), registration.getJeiHelpers().getStackHelper()),
+					ShapedSigilEngravingRecipeCategory.getUidBySize(recipeSize));
+		}
 	}
 
 	@Nullable private RecipeSize getRecipeSize(BaseSigilcraftRecipe recipe){
@@ -142,6 +147,4 @@ public class InfernoRebornJeiPlugin implements IModPlugin{
 				return null;
 		}
 	}
-
-
 }

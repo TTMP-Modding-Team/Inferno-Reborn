@@ -41,10 +41,10 @@ public abstract class BaseSigilcraftRecipe implements SigilcraftRecipe, IShapedR
 	}
 
 	public int getCenterX(){
-		return indexToX(getCenterIngredient(), getRecipeWidth());
+		return indexToX(getCenterIngredient());
 	}
 	public int getCenterY(){
-		return indexToY(getCenterIngredient(), getRecipeWidth());
+		return indexToY(getCenterIngredient());
 	}
 
 	public boolean isMirror(){
@@ -68,7 +68,7 @@ public abstract class BaseSigilcraftRecipe implements SigilcraftRecipe, IShapedR
 				int ingX = x-recipeOriginX;
 				int ingY = y-recipeOriginY;
 				Ingredient ingredient = ingX>=0&&ingY>=0&&ingX<getRecipeWidth()&&ingY<getRecipeHeight() ?
-						getIngredients().get(toIndex(mirror ? getRecipeWidth()-ingX-1 : ingX, ingY, getRecipeWidth())) :
+						getIngredients().get(toIndex(mirror ? getRecipeWidth()-ingX-1 : ingX, ingY)) :
 						Ingredient.EMPTY;
 
 				if(!ingredient.test(inv.getItem(x, y))) return false;
@@ -82,8 +82,8 @@ public abstract class BaseSigilcraftRecipe implements SigilcraftRecipe, IShapedR
 	}
 
 	@Override public boolean canCraftInDimensions(int width, int height){
-		int cx = indexToX(centerIngredient, getRecipeWidth());
-		int cy = indexToY(centerIngredient, getRecipeWidth());
+		int cx = indexToX(centerIngredient);
+		int cy = indexToY(centerIngredient);
 
 		int minIngredientX = width/2-getRecipeWidth()+cx+1;
 		int maxIngredientX = width/2+getRecipeWidth()-cx-1;
@@ -116,14 +116,23 @@ public abstract class BaseSigilcraftRecipe implements SigilcraftRecipe, IShapedR
 		return height;
 	}
 
-	protected static int indexToX(int pos, int width){
-		return pos%width;
+	public final int indexToX(int pos){
+		return indexToX(pos, getRecipeWidth());
 	}
-	protected static int indexToY(int pos, int width){
-		return pos/width;
+	public final int indexToY(int pos){
+		return indexToY(pos, getRecipeWidth());
+	}
+	public final int toIndex(int x, int y){
+		return toIndex(x, y, getRecipeWidth());
 	}
 
-	protected static int toIndex(int x, int y, int width){
+	public static int indexToX(int pos, int width){
+		return pos%width;
+	}
+	public static int indexToY(int pos, int width){
+		return pos/width;
+	}
+	public static int toIndex(int x, int y, int width){
 		return x+y*width;
 	}
 }

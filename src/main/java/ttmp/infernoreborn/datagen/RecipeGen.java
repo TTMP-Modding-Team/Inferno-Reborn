@@ -25,6 +25,8 @@ import ttmp.infernoreborn.datagen.builder.ShapedSigilTableCraftingRecipeBuilder;
 import ttmp.infernoreborn.util.EssenceSize;
 import ttmp.infernoreborn.util.EssenceType;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 import java.util.function.Consumer;
 
@@ -60,17 +62,6 @@ public class RecipeGen extends RecipeProvider{
 		compactAndUncompact(ModItems.NETHER_STEEL_INGOT.get(), ModItems.NETHER_STEEL_NUGGET.get(), consumer);
 		compactAndUncompact(ModItems.DAMASCUS_STEEL_BLOCK.get(), ModItems.DAMASCUS_STEEL_INGOT.get(), consumer);
 		compactAndUncompact(ModItems.DAMASCUS_STEEL_INGOT.get(), ModItems.DAMASCUS_STEEL_NUGGET.get(), consumer);
-
-		new ShapedSigilTableCraftingRecipeBuilder(Items.PUFFERFISH)
-				.pattern("111")
-				.pattern("4X4")
-				.pattern("222")
-				.defineAsCenter('X', Ingredient.of(Items.COBBLESTONE))
-				.define('1', Ingredient.of(greaterCrystal(EssenceType.DOMINANCE)))
-				.define('2', Ingredient.of(greaterCrystal(EssenceType.AIR)))
-				.define('4', Ingredient.of(greaterCrystal(EssenceType.BLOOD)))
-				.unlockedBy("fuck", has(greaterCrystal(EssenceType.DOMINANCE)))
-				.save(consumer, new ResourceLocation(MODID, "sigilcraft/pfu"));
 
 		new ShapedSigilTableCraftingRecipeBuilder(Items.PUFFERFISH)
 				.pattern("  111  ")
@@ -233,6 +224,45 @@ public class RecipeGen extends RecipeProvider{
 				.essence(EssenceType.METAL, 9)
 				.unlockedBy("iron", has(Tags.Items.INGOTS_IRON))
 				.save(consumer, new ResourceLocation(MODID, "foundry/damascus_steel_ingot"));
+
+		// buildTestSigilcraftRecipe(consumer);
+	}
+
+	private static void buildTestSigilcraftRecipe(Consumer<IFinishedRecipe> consumer){
+		for(int x = 1; x<=7; x++){
+			for(int y = 1; y<=7; y++){
+				for(int xc = Math.max(1, x-3), xe = Math.min(x, 4); xc<=xe; xc++){
+					for(int yc = Math.max(1, y-3), ye = Math.min(y, 4); yc<=ye; yc++){
+						List<String> strs = new ArrayList<>();
+						for(int i = 1; i<=y; i++){
+							StringBuilder stb = new StringBuilder();
+							for(int j = 1; j<=x; j++){
+								if(xc==j&&yc==i){
+									stb.append('X');
+								}else stb.append('1');
+							}
+							strs.add(stb.toString());
+						}
+
+						ShapedSigilTableCraftingRecipeBuilder b = new ShapedSigilTableCraftingRecipeBuilder(Items.PUFFERFISH);
+						for(String s : strs) b.pattern(s);
+
+						b.defineAsCenter('X', Ingredient.of(Items.BEDROCK));
+						if(x*y>1) b.define('1', Ingredient.of(Items.GOLD_INGOT));
+						b.save(consumer, new ResourceLocation(MODID, "sigilcraft/test/"+x+y+"_"+xc+yc));
+
+						if(x*y>1){
+							ShapedSigilEngravingRecipeBuilder b2 = new ShapedSigilEngravingRecipeBuilder(Sigils.GOAT_EYES.get());
+							for(String s : strs) b2.pattern(s);
+
+							b2.defineAsCenter('X');
+							b2.define('1', Ingredient.of(Items.BEDROCK));
+							b2.save(consumer, new ResourceLocation(MODID, "sigil_engraving/test/"+x+y+"_"+xc+yc));
+						}
+					}
+				}
+			}
+		}
 	}
 
 	private static Item shard(EssenceType type){

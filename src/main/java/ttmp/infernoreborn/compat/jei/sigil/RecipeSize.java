@@ -2,6 +2,7 @@ package ttmp.infernoreborn.compat.jei.sigil;
 
 import net.minecraft.item.ItemStack;
 import ttmp.infernoreborn.contents.ModItems;
+import ttmp.infernoreborn.contents.recipe.sigilcraft.BaseSigilcraftRecipe;
 
 public enum RecipeSize{
 	X3(3, 0, 0, 92, 54),
@@ -35,5 +36,19 @@ public enum RecipeSize{
 			default: // case X7:
 				return new ItemStack(ModItems.SIGIL_ENGRAVING_TABLE_7X7.get());
 		}
+	}
+
+	public int indexToX(int pos){
+		return BaseSigilcraftRecipe.indexToX(pos, size);
+	}
+	public int indexToY(int pos){
+		return BaseSigilcraftRecipe.indexToY(pos, size);
+	}
+	public int toIndex(int x, int y){
+		return BaseSigilcraftRecipe.toIndex(x, y, size);
+	}
+
+	public int centerIndex(){
+		return toIndex(size/2, size/2);
 	}
 }

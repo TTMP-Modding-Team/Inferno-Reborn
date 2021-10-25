@@ -26,6 +26,10 @@ public class ShapedSigilEngravingRecipeBuilder{
 		@Override protected IFinishedRecipe createResult(ResourceLocation id, ResourceLocation advancementId){
 			return new Result(id, sigil, group!=null ? group : "", patterns, key, advancement, advancementId, Objects.requireNonNull(centerIngredient));
 		}
+
+		@Override protected boolean allow1x1Recipe(){
+			return false;
+		}
 	};
 
 	private final Sigil sigil;
