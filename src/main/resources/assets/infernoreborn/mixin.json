@@ -1,14 +1,12 @@
 {
 	"required": true,
 	"minVersion": "0.8",
-	"compatibilityLevel": "JAVA_8",
 	"package": "ttmp.infernoreborn.mixin",
 	"refmap": "infernoreborn.refmap.json",
-	"client": [
-		"MixinItemRenderer",
+	"mixins": [
 		"MixinSlimeEntity"
 	],
-	"injectors": {
-		"defaultRequire": 1
-	}
+	"client": [
+		"MixinItemRenderer"
+	]
 }

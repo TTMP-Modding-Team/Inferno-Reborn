@@ -12,8 +12,6 @@ import ttmp.infernoreborn.contents.ModBlocks;
 import ttmp.infernoreborn.contents.block.FoundryBlock;
 
 public class FoundryISTER extends ItemStackTileEntityRenderer{
-	public static final FoundryISTER INSTANCE = new FoundryISTER();
-
 	@Override public void renderByItem(ItemStack stack,
 	                                   ItemCameraTransforms.TransformType transformType,
 	                                   MatrixStack matrixStack,
