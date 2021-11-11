@@ -14,6 +14,7 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.ColorHandlerEvent;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityManager;
+import net.minecraftforge.event.entity.EntityAttributeCreationEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.InterModComms;
@@ -41,7 +42,9 @@ import ttmp.infernoreborn.client.color.PrimalInfernoSparkColor;
 import ttmp.infernoreborn.client.color.SparkColor;
 import ttmp.infernoreborn.client.render.AnvilEntityRenderer;
 import ttmp.infernoreborn.client.render.CreeperMissileEntityRenderer;
+import ttmp.infernoreborn.client.render.SummonedSkeletonRenderer;
 import ttmp.infernoreborn.client.render.GoldenSkullTileEntityRenderer;
+import ttmp.infernoreborn.client.render.SummonedZombieRenderer;
 import ttmp.infernoreborn.client.render.WindEntityRenderer;
 import ttmp.infernoreborn.client.screen.EssenceHolderScreen;
 import ttmp.infernoreborn.client.screen.FoundryScreen;
@@ -62,6 +65,8 @@ import ttmp.infernoreborn.contents.ModTileEntities;
 import ttmp.infernoreborn.contents.Sigils;
 import ttmp.infernoreborn.contents.ability.holder.AbilityHolder;
 import ttmp.infernoreborn.contents.block.GoldenSkullBlock;
+import ttmp.infernoreborn.contents.entity.SummonedSkeletonEntity;
+import ttmp.infernoreborn.contents.entity.SummonedZombieEntity;
 import ttmp.infernoreborn.contents.item.EssenceNetAccessorItem;
 import ttmp.infernoreborn.contents.item.JudgementItem;
 import ttmp.infernoreborn.contents.sigil.holder.SigilHolder;
@@ -158,6 +163,12 @@ public class InfernoReborn{
 		}
 	}
 
+	@SubscribeEvent
+	public static void registerAttributes(final EntityAttributeCreationEvent event){
+		event.put(ModEntities.SUMMONED_ZOMBIE.get(), SummonedZombieEntity.registerAttributes().build());
+		event.put(ModEntities.SUMMONED_SKELETON.get(), SummonedSkeletonEntity.registerAttributes().build());
+	}
+
 	@Mod.EventBusSubscriber(modid = MODID, bus = Bus.MOD, value = Dist.CLIENT)
 	private static final class Client{
 		private Client(){}
@@ -189,6 +200,8 @@ public class InfernoReborn{
 			RenderingRegistry.registerEntityRenderingHandler(ModEntities.WIND.get(), WindEntityRenderer::new);
 			RenderingRegistry.registerEntityRenderingHandler(ModEntities.ANVIL.get(), AnvilEntityRenderer::new);
 			RenderingRegistry.registerEntityRenderingHandler(ModEntities.CREEPER_MISSILE.get(), CreeperMissileEntityRenderer::new);
+			RenderingRegistry.registerEntityRenderingHandler(ModEntities.SUMMONED_ZOMBIE.get(), SummonedZombieRenderer::new);
+			RenderingRegistry.registerEntityRenderingHandler(ModEntities.SUMMONED_SKELETON.get(), SummonedSkeletonRenderer::new);
 
 			ClientRegistry.bindTileEntityRenderer(ModTileEntities.GOLDEN_SKULL.get(), GoldenSkullTileEntityRenderer::new);
 		}

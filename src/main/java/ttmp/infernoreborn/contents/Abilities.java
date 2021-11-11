@@ -1,5 +1,6 @@
 package ttmp.infernoreborn.contents;
 
+import net.minecraft.block.Blocks;
 import net.minecraft.enchantment.ThornsEnchantment;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
@@ -25,6 +26,7 @@ import net.minecraft.potion.Potions;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.EntityDamageSource;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.Explosion;
@@ -50,6 +52,8 @@ import ttmp.infernoreborn.contents.ability.cooldown.Cooldown;
 import ttmp.infernoreborn.contents.ability.holder.ServerAbilityHolder;
 import ttmp.infernoreborn.contents.entity.AnvilEntity;
 import ttmp.infernoreborn.contents.entity.CreeperMissileEntity;
+import ttmp.infernoreborn.contents.entity.SummonedSkeletonEntity;
+import ttmp.infernoreborn.contents.entity.SummonedZombieEntity;
 import ttmp.infernoreborn.contents.entity.WindEntity;
 import ttmp.infernoreborn.network.ModNet;
 import ttmp.infernoreborn.network.ParticleMsg;
@@ -702,9 +706,33 @@ public final class Abilities{
 	public static final RegistryObject<Ability> SLYNESS = REGISTER.register("slyness", () ->
 			new Ability(new Ability.Properties(0x252525, 0x252525)));
 	public static final RegistryObject<Ability> ZOMBIE_NECROMANCY = REGISTER.register("zombie_necromancy", () ->
-			new Ability(new Ability.Properties(0x466D36, 0x466D36)));
+			new Ability(new Ability.Properties(0x466D36, 0x466D36)
+					.addTargetedSkill(10, 600, (entity, holder, target) -> {
+						World world = entity.level;
+						SummonedZombieEntity minion = new SummonedZombieEntity(world);
+						double x = entity.getRandomX(4);
+						double y = entity.getY();
+						double z = entity.getRandomZ(4);
+						while(!world.getBlockState(new BlockPos(x, y, z)).isAir()){
+							y++;
+						}
+						minion.setPos(x, y, z);
+						return world.addFreshEntity(minion);
+					})));
 	public static final RegistryObject<Ability> SKELETON_NECROMANCY = REGISTER.register("skeleton_necromancy", () ->
-			new Ability(new Ability.Properties(0x787878, 0x787878)));
+			new Ability(new Ability.Properties(0x787878, 0x787878)
+					.addTargetedSkill(10, 600, (entity, holder, target) -> {
+						World world = entity.level;
+						SummonedSkeletonEntity minion = new SummonedSkeletonEntity(world);
+						double x = entity.getRandomX(4);
+						double y = entity.getY();
+						double z = entity.getRandomZ(4);
+						while(!world.getBlockState(new BlockPos(x, y, z)).isAir()){
+							y++;
+						}
+						minion.setPos(x, y, z);
+						return world.addFreshEntity(minion);
+					})));
 	public static final RegistryObject<Ability> ARROW_STORM = REGISTER.register("arrow_storm", () ->
 			new Ability(new Ability.Properties(0x7A00D0, 0x7A00D0)));
 	public static final RegistryObject<Ability> ARROW_RUSH = REGISTER.register("arrow_rush", () ->
