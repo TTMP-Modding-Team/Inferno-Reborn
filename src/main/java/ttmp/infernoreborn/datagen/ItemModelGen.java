@@ -46,6 +46,12 @@ public class ItemModelGen extends ItemModelProvider{
 				.translation(-9, 13, 2.25f)
 				.scale(.68f)
 				.end();
+
+		simpleItem(ModItems.TERRASTONE_HEADGEAR.get());
+		simpleItem(ModItems.TERRASTONE_CHESTPLATE.get());
+		simpleItem(ModItems.TERRASTONE_LEGGINGS.get());
+		simpleItem(ModItems.TERRASTONE_BOOTS.get());
+
 		simpleHeld(ModItems.CRIMSON_CLAYMORE.get());
 		simpleItem(ModItems.CRIMSON_CHESTPLATE.get());
 		simpleItem(ModItems.CRIMSON_LEGGINGS.get());
@@ -57,6 +63,7 @@ public class ItemModelGen extends ItemModelProvider{
 		simpleItem(ModItems.BERSERKER_LEGGINGS.get());
 		simpleItem(ModItems.BERSERKER_BOOTS.get());
 
+		simpleItem(ModItems.THANATOS_BELT.get());
 		simpleItem(ModItems.CLOUD_SCARF.get());
 
 		withExistingParent(ModItems.GOLDEN_SKULL.getId().getPath(), "item/template_skull");
@@ -64,6 +71,10 @@ public class ItemModelGen extends ItemModelProvider{
 				.override()
 				.predicate(new ResourceLocation("off"), 1)
 				.model(item("item/judgement_off", new ResourceLocation(MODID, "item/judgement_off")));
+
+		simpleItem(ModItems.NORMAL_RING.get());
+		simpleItem(ModItems.SHIELD_RING_1.get());
+		simpleItem(ModItems.BATTLE_MITTS.get());
 
 		for(EssenceType type : EssenceType.values()){
 			item(Objects.requireNonNull(type.getEssenceItem().getRegistryName()).getPath(),
