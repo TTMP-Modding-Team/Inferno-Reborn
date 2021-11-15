@@ -12,6 +12,8 @@ import net.minecraftforge.common.data.ExistingFileHelper;
 import ttmp.infernoreborn.contents.ModBlocks;
 import ttmp.infernoreborn.contents.ModItems;
 
+import java.util.Arrays;
+
 import static net.minecraft.state.properties.BlockStateProperties.HORIZONTAL_FACING;
 import static net.minecraft.state.properties.BlockStateProperties.LIT;
 import static ttmp.infernoreborn.InfernoReborn.MODID;
@@ -26,6 +28,14 @@ public class BlockModelGen extends BlockStateProvider{
 
 	@Override protected void registerStatesAndModels(){
 		simpleItemAndBlock(ModBlocks.HEART_CRYSTAL_ORE.get(), models().cubeAll("block/heart_crystal_ore", res("block/heart_crystal_ore")));
+		ModelFile[] pyriteOres = new ModelFile[]{
+				models().cubeAll("block/pyrite_ore/1", res("block/pyrite_ore/1")),
+				models().cubeAll("block/pyrite_ore/2", res("block/pyrite_ore/2")),
+				models().cubeAll("block/pyrite_ore/3", res("block/pyrite_ore/3")),
+				models().cubeAll("block/pyrite_ore/4", res("block/pyrite_ore/4"))
+		};
+		simpleBlock(ModBlocks.PYRITE_ORE.get(), Arrays.stream(pyriteOres).map(ConfiguredModel::new).toArray(ConfiguredModel[]::new));
+		simpleBlockItem(ModBlocks.PYRITE_ORE.get(), pyriteOres[0]);
 
 		simpleItemAndBlock(ModBlocks.RUNESTONE.get(), models().cubeAll("block/runestone", res("block/runestone")));
 		simpleItemAndBlock(ModBlocks.FOUNDRY_TILE.get(), models().cubeAll("block/foundry/tile", res("block/foundry/tile")));

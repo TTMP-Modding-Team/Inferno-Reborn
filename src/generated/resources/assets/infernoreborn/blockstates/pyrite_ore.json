@@ -1,0 +1,18 @@
+{
+  "variants": {
+    "": [
+      {
+        "model": "infernoreborn:block/pyrite_ore/1"
+      },
+      {
+        "model": "infernoreborn:block/pyrite_ore/2"
+      },
+      {
+        "model": "infernoreborn:block/pyrite_ore/3"
+      },
+      {
+        "model": "infernoreborn:block/pyrite_ore/4"
+      }
+    ]
+  }
+}

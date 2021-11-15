@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:block/cube_all",
+  "textures": {
+    "all": "infernoreborn:block/pyrite_ore/2"
+  }
+}
