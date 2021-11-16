@@ -1,0 +1,212 @@
+{
+  "variants": {
+    "accelerated=false,facing=down,has_filter=false,no_network=false": {
+      "model": "infernoreborn:block/essence_net_exporter/essence_net_exporter",
+      "x": 180
+    },
+    "accelerated=true,facing=down,has_filter=false,no_network=false": {
+      "model": "infernoreborn:block/essence_net_exporter/essence_net_exporter_accelerated",
+      "x": 180
+    },
+    "accelerated=false,facing=up,has_filter=false,no_network=false": {
+      "model": "infernoreborn:block/essence_net_exporter/essence_net_exporter"
+    },
+    "accelerated=true,facing=up,has_filter=false,no_network=false": {
+      "model": "infernoreborn:block/essence_net_exporter/essence_net_exporter_accelerated"
+    },
+    "accelerated=false,facing=north,has_filter=false,no_network=false": {
+      "model": "infernoreborn:block/essence_net_exporter/essence_net_exporter",
+      "x": 90
+    },
+    "accelerated=true,facing=north,has_filter=false,no_network=false": {
+      "model": "infernoreborn:block/essence_net_exporter/essence_net_exporter_accelerated",
+      "x": 90
+    },
+    "accelerated=false,facing=south,has_filter=false,no_network=false": {
+      "model": "infernoreborn:block/essence_net_exporter/essence_net_exporter",
+      "x": 90,
+      "y": 180
+    },
+    "accelerated=true,facing=south,has_filter=false,no_network=false": {
+      "model": "infernoreborn:block/essence_net_exporter/essence_net_exporter_accelerated",
+      "x": 90,
+      "y": 180
+    },
+    "accelerated=false,facing=west,has_filter=false,no_network=false": {
+      "model": "infernoreborn:block/essence_net_exporter/essence_net_exporter",
+      "x": 90,
+      "y": 270
+    },
+    "accelerated=true,facing=west,has_filter=false,no_network=false": {
+      "model": "infernoreborn:block/essence_net_exporter/essence_net_exporter_accelerated",
+      "x": 90,
+      "y": 270
+    },
+    "accelerated=false,facing=east,has_filter=false,no_network=false": {
+      "model": "infernoreborn:block/essence_net_exporter/essence_net_exporter",
+      "x": 90,
+      "y": 90
+    },
+    "accelerated=true,facing=east,has_filter=false,no_network=false": {
+      "model": "infernoreborn:block/essence_net_exporter/essence_net_exporter_accelerated",
+      "x": 90,
+      "y": 90
+    },
+    "accelerated=false,facing=down,has_filter=true,no_network=false": {
+      "model": "infernoreborn:block/essence_net_exporter/essence_net_exporter_filtered",
+      "x": 180
+    },
+    "accelerated=true,facing=down,has_filter=true,no_network=false": {
+      "model": "infernoreborn:block/essence_net_exporter/essence_net_exporter_accelerated_filtered",
+      "x": 180
+    },
+    "accelerated=false,facing=up,has_filter=true,no_network=false": {
+      "model": "infernoreborn:block/essence_net_exporter/essence_net_exporter_filtered"
+    },
+    "accelerated=true,facing=up,has_filter=true,no_network=false": {
+      "model": "infernoreborn:block/essence_net_exporter/essence_net_exporter_accelerated_filtered"
+    },
+    "accelerated=false,facing=north,has_filter=true,no_network=false": {
+      "model": "infernoreborn:block/essence_net_exporter/essence_net_exporter_filtered",
+      "x": 90
+    },
+    "accelerated=true,facing=north,has_filter=true,no_network=false": {
+      "model": "infernoreborn:block/essence_net_exporter/essence_net_exporter_accelerated_filtered",
+      "x": 90
+    },
+    "accelerated=false,facing=south,has_filter=true,no_network=false": {
+      "model": "infernoreborn:block/essence_net_exporter/essence_net_exporter_filtered",
+      "x": 90,
+      "y": 180
+    },
+    "accelerated=true,facing=south,has_filter=true,no_network=false": {
+      "model": "infernoreborn:block/essence_net_exporter/essence_net_exporter_accelerated_filtered",
+      "x": 90,
+      "y": 180
+    },
+    "accelerated=false,facing=west,has_filter=true,no_network=false": {
+      "model": "infernoreborn:block/essence_net_exporter/essence_net_exporter_filtered",
+      "x": 90,
+      "y": 270
+    },
+    "accelerated=true,facing=west,has_filter=true,no_network=false": {
+      "model": "infernoreborn:block/essence_net_exporter/essence_net_exporter_accelerated_filtered",
+      "x": 90,
+      "y": 270
+    },
+    "accelerated=false,facing=east,has_filter=true,no_network=false": {
+      "model": "infernoreborn:block/essence_net_exporter/essence_net_exporter_filtered",
+      "x": 90,
+      "y": 90
+    },
+    "accelerated=true,facing=east,has_filter=true,no_network=false": {
+      "model": "infernoreborn:block/essence_net_exporter/essence_net_exporter_accelerated_filtered",
+      "x": 90,
+      "y": 90
+    },
+    "accelerated=false,facing=down,has_filter=false,no_network=true": {
+      "model": "infernoreborn:block/essence_net_exporter/essence_net_exporter_no_network",
+      "x": 180
+    },
+    "accelerated=true,facing=down,has_filter=false,no_network=true": {
+      "model": "infernoreborn:block/essence_net_exporter/essence_net_exporter_no_network_accelerated",
+      "x": 180
+    },
+    "accelerated=false,facing=up,has_filter=false,no_network=true": {
+      "model": "infernoreborn:block/essence_net_exporter/essence_net_exporter_no_network"
+    },
+    "accelerated=true,facing=up,has_filter=false,no_network=true": {
+      "model": "infernoreborn:block/essence_net_exporter/essence_net_exporter_no_network_accelerated"
+    },
+    "accelerated=false,facing=north,has_filter=false,no_network=true": {
+      "model": "infernoreborn:block/essence_net_exporter/essence_net_exporter_no_network",
+      "x": 90
+    },
+    "accelerated=true,facing=north,has_filter=false,no_network=true": {
+      "model": "infernoreborn:block/essence_net_exporter/essence_net_exporter_no_network_accelerated",
+      "x": 90
+    },
+    "accelerated=false,facing=south,has_filter=false,no_network=true": {
+      "model": "infernoreborn:block/essence_net_exporter/essence_net_exporter_no_network",
+      "x": 90,
+      "y": 180
+    },
+    "accelerated=true,facing=south,has_filter=false,no_network=true": {
+      "model": "infernoreborn:block/essence_net_exporter/essence_net_exporter_no_network_accelerated",
+      "x": 90,
+      "y": 180
+    },
+    "accelerated=false,facing=west,has_filter=false,no_network=true": {
+      "model": "infernoreborn:block/essence_net_exporter/essence_net_exporter_no_network",
+      "x": 90,
+      "y": 270
+    },
+    "accelerated=true,facing=west,has_filter=false,no_network=true": {
+      "model": "infernoreborn:block/essence_net_exporter/essence_net_exporter_no_network_accelerated",
+      "x": 90,
+      "y": 270
+    },
+    "accelerated=false,facing=east,has_filter=false,no_network=true": {
+      "model": "infernoreborn:block/essence_net_exporter/essence_net_exporter_no_network",
+      "x": 90,
+      "y": 90
+    },
+    "accelerated=true,facing=east,has_filter=false,no_network=true": {
+      "model": "infernoreborn:block/essence_net_exporter/essence_net_exporter_no_network_accelerated",
+      "x": 90,
+      "y": 90
+    },
+    "accelerated=false,facing=down,has_filter=true,no_network=true": {
+      "model": "infernoreborn:block/essence_net_exporter/essence_net_exporter_no_network_filtered",
+      "x": 180
+    },
+    "accelerated=true,facing=down,has_filter=true,no_network=true": {
+      "model": "infernoreborn:block/essence_net_exporter/essence_net_exporter_no_network_accelerated_filtered",
+      "x": 180
+    },
+    "accelerated=false,facing=up,has_filter=true,no_network=true": {
+      "model": "infernoreborn:block/essence_net_exporter/essence_net_exporter_no_network_filtered"
+    },
+    "accelerated=true,facing=up,has_filter=true,no_network=true": {
+      "model": "infernoreborn:block/essence_net_exporter/essence_net_exporter_no_network_accelerated_filtered"
+    },
+    "accelerated=false,facing=north,has_filter=true,no_network=true": {
+      "model": "infernoreborn:block/essence_net_exporter/essence_net_exporter_no_network_filtered",
+      "x": 90
+    },
+    "accelerated=true,facing=north,has_filter=true,no_network=true": {
+      "model": "infernoreborn:block/essence_net_exporter/essence_net_exporter_no_network_accelerated_filtered",
+      "x": 90
+    },
+    "accelerated=false,facing=south,has_filter=true,no_network=true": {
+      "model": "infernoreborn:block/essence_net_exporter/essence_net_exporter_no_network_filtered",
+      "x": 90,
+      "y": 180
+    },
+    "accelerated=true,facing=south,has_filter=true,no_network=true": {
+      "model": "infernoreborn:block/essence_net_exporter/essence_net_exporter_no_network_accelerated_filtered",
+      "x": 90,
+      "y": 180
+    },
+    "accelerated=false,facing=west,has_filter=true,no_network=true": {
+      "model": "infernoreborn:block/essence_net_exporter/essence_net_exporter_no_network_filtered",
+      "x": 90,
+      "y": 270
+    },
+    "accelerated=true,facing=west,has_filter=true,no_network=true": {
+      "model": "infernoreborn:block/essence_net_exporter/essence_net_exporter_no_network_accelerated_filtered",
+      "x": 90,
+      "y": 270
+    },
+    "accelerated=false,facing=east,has_filter=true,no_network=true": {
+      "model": "infernoreborn:block/essence_net_exporter/essence_net_exporter_no_network_filtered",
+      "x": 90,
+      "y": 90
+    },
+    "accelerated=true,facing=east,has_filter=true,no_network=true": {
+      "model": "infernoreborn:block/essence_net_exporter/essence_net_exporter_no_network_accelerated_filtered",
+      "x": 90,
+      "y": 90
+    }
+  }
+}

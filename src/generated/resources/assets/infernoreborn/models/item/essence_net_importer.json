@@ -1,0 +1,11 @@
+{
+  "parent": "infernoreborn:block/essence_net_importer/essence_net_importer",
+  "overrides": [
+    {
+      "predicate": {
+        "minecraft:no_network": 1.0
+      },
+      "model": "infernoreborn:item/essence_net_importer_no_network"
+    }
+  ]
+}

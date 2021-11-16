@@ -11,6 +11,7 @@ import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import ttmp.infernoreborn.capability.EssenceNetProvider;
 import ttmp.infernoreborn.contents.ModTileEntities;
+import ttmp.infernoreborn.contents.block.ModProperties;
 import ttmp.infernoreborn.contents.item.EssenceNetBlockItem;
 import ttmp.infernoreborn.inventory.EssenceHolderItemHandler;
 import ttmp.infernoreborn.util.EssenceHolder;
@@ -31,11 +32,20 @@ public class EssenceNetImporterTile extends TileEntity{
 	public void setNetworkId(int networkId){
 		if(this.networkId!=networkId){
 			this.networkId = networkId;
+			updateBlock();
 			if(itemHandlerCache!=null){
 				this.itemHandlerCache.invalidate();
 				this.itemHandlerCache = null;
 			}
 		}
+	}
+
+	public void updateBlock(){
+		if(level==null||level.isClientSide()) return;
+		BlockState state = this.level.getBlockState(getBlockPos());
+		boolean noNetwork = state.getValue(ModProperties.NO_NETWORK);
+		if(noNetwork!=(this.networkId==0))
+			level.setBlock(getBlockPos(), state.setValue(ModProperties.NO_NETWORK, !noNetwork), 3);
 	}
 
 	@Nullable private LazyOptional<IItemHandler> itemHandlerCache;

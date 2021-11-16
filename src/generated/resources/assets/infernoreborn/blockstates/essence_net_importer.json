@@ -1,0 +1,10 @@
+{
+  "variants": {
+    "no_network=false": {
+      "model": "infernoreborn:block/essence_net_importer/essence_net_importer_no_network"
+    },
+    "no_network=true": {
+      "model": "infernoreborn:block/essence_net_importer/essence_net_importer"
+    }
+  }
+}

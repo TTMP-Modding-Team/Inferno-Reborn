@@ -14,11 +14,14 @@ import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
+import net.minecraft.util.math.shapes.ISelectionContext;
+import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
+import ttmp.infernoreborn.contents.block.EssenceHolderBlock;
 import ttmp.infernoreborn.contents.item.EssenceNetBlockItem;
 import ttmp.infernoreborn.contents.tile.EssenceNetCoreTile;
 
@@ -36,11 +39,11 @@ public class EssenceNetCoreBlock extends Block{
 		ItemStack s = pPlayer.getItemInHand(pHand);
 		if(!s.isEmpty()){
 			Item i = s.getItem();
-			if(i instanceof EssenceNetAcceptable){
+			if(i instanceof HasEssenceNet){
 				if(pLevel.isClientSide) return ActionResultType.SUCCESS;
 				TileEntity blockEntity = pLevel.getBlockEntity(pPos);
 				if(blockEntity instanceof EssenceNetCoreTile){
-					((EssenceNetAcceptable)i).setNetwork(s, ((EssenceNetCoreTile)blockEntity).getOrAssignNetworkId());
+					((HasEssenceNet)i).setNetwork(s, ((EssenceNetCoreTile)blockEntity).getOrAssignNetworkId());
 					pLevel.playSound(null, pPos, SoundEvents.EXPERIENCE_ORB_PICKUP, SoundCategory.BLOCKS, .1f, .9f);
 				}
 				return ActionResultType.CONSUME;
@@ -64,7 +67,25 @@ public class EssenceNetCoreBlock extends Block{
 		return new EssenceNetCoreTile();
 	}
 
-	public interface EssenceNetAcceptable{
+	@SuppressWarnings("deprecation")
+	public VoxelShape getShape(BlockState state, IBlockReader level, BlockPos pos, ISelectionContext context){
+		return EssenceHolderBlock.SHAPE;
+	}
+
+	public interface HasEssenceNet{
+		/**
+		 * @param stack The item
+		 * @return Network ID, 0 if item doesn't have any network attached
+		 */
+		int getNetwork(ItemStack stack);
 		void setNetwork(ItemStack stack, int network);
+
+		default void appendNetworkStatusText(ItemStack stack, List<ITextComponent> text){
+			int networkId = getNetwork(stack);
+			if(networkId==0) text.add(new TranslationTextComponent("tooltip.infernoreborn.essence_network.no_network")
+					.withStyle(TextFormatting.DARK_RED));
+			else text.add(new TranslationTextComponent("tooltip.infernoreborn.essence_network", networkId)
+					.withStyle(TextFormatting.GOLD));
+		}
 	}
 }

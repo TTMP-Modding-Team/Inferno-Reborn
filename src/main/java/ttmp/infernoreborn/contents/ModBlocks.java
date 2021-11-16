@@ -60,12 +60,12 @@ public final class ModBlocks{
 		}
 	});
 
-	public static final RegistryObject<Block> STIGMA_TABLE_5X5 = REGISTER.register("stigma_engraving_table_5x5", () -> new NamedContainerBlock(Properties.of(Material.WOOD)){
+	public static final RegistryObject<Block> STIGMA_TABLE_5X5 = REGISTER.register("stigma_table_5x5", () -> new NamedContainerBlock(Properties.of(Material.WOOD)){
 		@Override public TileEntity createTileEntity(BlockState state, IBlockReader world){
 			return StigmaTableTile.new5x5();
 		}
 	});
-	public static final RegistryObject<Block> STIGMA_TABLE_7X7 = REGISTER.register("stigma_engraving_table_7x7", () -> new NamedContainerBlock(Properties.of(Material.WOOD)){
+	public static final RegistryObject<Block> STIGMA_TABLE_7X7 = REGISTER.register("stigma_table_7x7", () -> new NamedContainerBlock(Properties.of(Material.WOOD)){
 		@Override public TileEntity createTileEntity(BlockState state, IBlockReader world){
 			return StigmaTableTile.new7x7();
 		}
@@ -89,7 +89,7 @@ public final class ModBlocks{
 	public static final RegistryObject<FoundryBlock.ProxyBlock> FOUNDRY_MOLD_2 = REGISTER.register("foundry_mold_2", () -> new FoundryBlock.MoldProxyBlock2(1, 0, 1,
 			Properties.of(Material.STONE).requiresCorrectToolForDrops().strength(3.5f).noDrops().dynamicShape()));
 
-	public static final RegistryObject<Block> ESSENCE_HOLDER = REGISTER.register("essence_holder", () -> new EssenceHolderBlock(
+	public static final RegistryObject<Block> ESSENCE_HOLDER_BLOCK = REGISTER.register("essence_holder_block", () -> new EssenceHolderBlock(
 			Properties.of(Material.GLASS).strength(1.5f).dynamicShape().lightLevel(value -> 15)));
 	public static final RegistryObject<Block> ESSENCE_NET_CORE = REGISTER.register("essence_net_core", () -> new EssenceNetCoreBlock(
 			Properties.of(Material.GLASS).strength(1.5f, 3600000).dynamicShape()));

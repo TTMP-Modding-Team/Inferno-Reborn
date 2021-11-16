@@ -11,6 +11,7 @@ import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.items.CapabilityItemHandler;
 import ttmp.infernoreborn.capability.EssenceNetProvider;
 import ttmp.infernoreborn.contents.ModTileEntities;
+import ttmp.infernoreborn.contents.block.ModProperties;
 import ttmp.infernoreborn.contents.item.EssenceNetBlockItem;
 import ttmp.infernoreborn.util.EssenceHolder;
 import ttmp.infernoreborn.util.EssenceSize;
@@ -45,6 +46,7 @@ public class EssenceNetExporterTile extends TileEntity implements ITickableTileE
 		if(this.networkId!=networkId){
 			this.networkId = networkId;
 			this.essenceHolderCache = null;
+			updateBlock();
 		}
 	}
 	@Nullable public Template getTemplate(){
@@ -52,12 +54,14 @@ public class EssenceNetExporterTile extends TileEntity implements ITickableTileE
 	}
 	public void setTemplate(@Nullable Template template){
 		this.template = template;
+		updateBlock();
 	}
 	public boolean isAccelerated(){
 		return accelerated;
 	}
 	public void setAccelerated(boolean accelerated){
 		this.accelerated = accelerated;
+		updateBlock();
 	}
 
 	@Override public void tick(){
@@ -89,6 +93,25 @@ public class EssenceNetExporterTile extends TileEntity implements ITickableTileE
 			int extracted = maxExtract-s.getCount();
 			if(extracted>0) essenceHolderCache.extractEssence(type, extracted*size.getCompressionRate(), false);
 		});
+	}
+
+	public void updateBlock(){
+		if(level==null||level.isClientSide()) return;
+		BlockState state = this.level.getBlockState(getBlockPos());
+		boolean stateUpdated = false;
+		if(state.getValue(ModProperties.NO_NETWORK)!=(this.networkId==0)){
+			state = state.setValue(ModProperties.NO_NETWORK, this.networkId==0);
+			stateUpdated = true;
+		}
+		if(state.getValue(ModProperties.HAS_FILTER)!=(this.template!=null)){
+			state = state.setValue(ModProperties.NO_NETWORK, this.template!=null);
+			stateUpdated = true;
+		}
+		if(state.getValue(ModProperties.ACCELERATED)!=(this.accelerated)){
+			state = state.setValue(ModProperties.NO_NETWORK, this.accelerated);
+			stateUpdated = true;
+		}
+		if(stateUpdated) level.setBlock(getBlockPos(), state, 3);
 	}
 
 	@Override public void load(BlockState state, CompoundNBT nbt){

@@ -61,7 +61,7 @@ public class LootTableGen extends LootTableProvider{
 			dropSelf(ModBlocks.FOUNDRY_TILE.get());
 			add(ModBlocks.FOUNDRY.get(), b -> createNameableBlockEntityTable(ModBlocks.FOUNDRY.get()));
 
-			addNbtCopiedDrop(ModBlocks.ESSENCE_HOLDER.get(), "Essence");
+			addNbtCopiedDrop(ModBlocks.ESSENCE_HOLDER_BLOCK.get(), "Essence");
 
 			addEssenceNetworkBlockDrop(ModBlocks.ESSENCE_NET_CORE.get());
 			addEssenceNetworkBlockDrop(ModBlocks.ESSENCE_NET_IMPORTER.get());

@@ -44,7 +44,7 @@ public final class ModTileEntities{
 			TileEntityType.Builder.of(FoundryProxyTile::moldProxy, ModBlocks.FOUNDRY_MOLD_1.get(), ModBlocks.FOUNDRY_MOLD_2.get()).build(null));
 
 	public static final RegistryObject<TileEntityType<EssenceHolderTile>> ESSENCE_HOLDER = REGISTER.register("essence_holder", () ->
-			TileEntityType.Builder.of(EssenceHolderTile::new, ModBlocks.ESSENCE_HOLDER.get()).build(null));
+			TileEntityType.Builder.of(EssenceHolderTile::new, ModBlocks.ESSENCE_HOLDER_BLOCK.get()).build(null));
 	public static final RegistryObject<TileEntityType<EssenceNetCoreTile>> ESSENCE_NET_CORE = REGISTER.register("essence_net_core", () ->
 			TileEntityType.Builder.of(EssenceNetCoreTile::new, ModBlocks.ESSENCE_NET_CORE.get()).build(null));
 	public static final RegistryObject<TileEntityType<EssenceNetImporterTile>> ESSENCE_NET_IMPORTER = REGISTER.register("essence_net_importer", () ->

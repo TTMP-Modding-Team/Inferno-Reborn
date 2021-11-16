@@ -1,0 +1,8 @@
+{
+  "parent": "minecraft:block/cube_bottom_top",
+  "textures": {
+    "side": "infernoreborn:block/stigma_table_7x7/side",
+    "bottom": "infernoreborn:block/stigma_table_7x7/bottom",
+    "top": "infernoreborn:block/stigma_table_7x7/top"
+  }
+}

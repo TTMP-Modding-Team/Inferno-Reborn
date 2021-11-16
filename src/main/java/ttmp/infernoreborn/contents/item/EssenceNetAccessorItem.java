@@ -10,8 +10,6 @@ import net.minecraft.util.ActionResult;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
 import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TextFormatting;
-import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
@@ -28,7 +26,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.List;
 
-public class EssenceNetAccessorItem extends Item implements EssenceNetCoreBlock.EssenceNetAcceptable{
+public class EssenceNetAccessorItem extends Item implements EssenceNetCoreBlock.HasEssenceNet{
 	public EssenceNetAccessorItem(Properties properties){
 		super(properties);
 	}
@@ -37,6 +35,10 @@ public class EssenceNetAccessorItem extends Item implements EssenceNetCoreBlock.
 		return new Data();
 	}
 
+	@Override public int getNetwork(ItemStack stack){
+		Data data = data(stack);
+		return data!=null ? data.networkId : 0;
+	}
 	@Override public void setNetwork(ItemStack stack, int network){
 		stack.getCapability(Caps.essenceNetAccessorData).ifPresent(data -> data.setNetworkId(network));
 	}
@@ -49,18 +51,12 @@ public class EssenceNetAccessorItem extends Item implements EssenceNetCoreBlock.
 	}
 
 	@Override public void appendHoverText(ItemStack stack, @Nullable World level, List<ITextComponent> text, ITooltipFlag flag){
-		@SuppressWarnings("ConstantConditions") Data data = stack.getCapability(Caps.essenceNetAccessorData).orElse(null);
-		//noinspection ConstantConditions
-		if(data==null||data.networkId==0) text.add(new TranslationTextComponent("tooltip.infernoreborn.essence_network.no_network")
-				.withStyle(TextFormatting.DARK_RED));
-		else text.add(new TranslationTextComponent("tooltip.infernoreborn.essence_network", data.networkId)
-				.withStyle(TextFormatting.GOLD));
+		appendNetworkStatusText(stack, text);
 	}
 
 	@Nullable @Override public CompoundNBT getShareTag(ItemStack stack){
 		CompoundNBT tag = stack.getTag();
-		@SuppressWarnings("ConstantConditions") Data data = stack.getCapability(Caps.essenceNetAccessorData).orElse(null);
-		//noinspection ConstantConditions
+		Data data = data(stack);
 		if(data!=null&&data.networkId!=0){
 			if(tag==null) tag = new CompoundNBT();
 			tag.putInt("EssenceNetworkID", data.networkId);
@@ -72,6 +68,10 @@ public class EssenceNetAccessorItem extends Item implements EssenceNetCoreBlock.
 		if(nbt!=null&&nbt.contains("EssenceNetworkID", Constants.NBT.TAG_INT)){
 			stack.getCapability(Caps.essenceNetAccessorData).ifPresent(data -> data.setNetworkId(nbt.getInt("EssenceNetworkID")));
 		}
+	}
+
+	@SuppressWarnings("ConstantConditions") @Nullable private static Data data(ItemStack stack){
+		return stack.getCapability(Caps.essenceNetAccessorData).orElse(null);
 	}
 
 	public static final class Data implements ICapabilitySerializable<IntNBT>{

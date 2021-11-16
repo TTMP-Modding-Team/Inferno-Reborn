@@ -10,7 +10,7 @@ import net.minecraftforge.client.model.generators.ModelFile;
 import net.minecraftforge.client.model.generators.ModelFile.ExistingModelFile;
 import net.minecraftforge.common.data.ExistingFileHelper;
 import ttmp.infernoreborn.contents.ModBlocks;
-import ttmp.infernoreborn.contents.ModItems;
+import ttmp.infernoreborn.contents.block.ModProperties;
 
 import java.util.Arrays;
 
@@ -38,6 +38,14 @@ public class BlockModelGen extends BlockStateProvider{
 		simpleBlockItem(ModBlocks.PYRITE_ORE.get(), pyriteOres[0]);
 
 		simpleItemAndBlock(ModBlocks.RUNESTONE.get(), models().cubeAll("block/runestone", res("block/runestone")));
+
+		simpleItemAndBlock(ModBlocks.SIGIL_ENGRAVING_TABLE_3X3.get(), simpleBottomTop(ModBlocks.SIGIL_ENGRAVING_TABLE_3X3.getId().getPath(), "block/sigil_engraving_table_3x3/"));
+		simpleItemAndBlock(ModBlocks.SIGIL_ENGRAVING_TABLE_5X5.get(), simpleBottomTop(ModBlocks.SIGIL_ENGRAVING_TABLE_5X5.getId().getPath(), "block/sigil_engraving_table_5x5/"));
+		simpleItemAndBlock(ModBlocks.SIGIL_ENGRAVING_TABLE_7X7.get(), simpleBottomTop(ModBlocks.SIGIL_ENGRAVING_TABLE_7X7.getId().getPath(), "block/sigil_engraving_table_7x7/"));
+		simpleItemAndBlock(ModBlocks.STIGMA_TABLE_5X5.get(), simpleBottomTop(ModBlocks.STIGMA_TABLE_5X5.getId().getPath(), "block/stigma_table_5x5/"));
+		simpleItemAndBlock(ModBlocks.STIGMA_TABLE_7X7.get(), simpleBottomTop(ModBlocks.STIGMA_TABLE_7X7.getId().getPath(), "block/stigma_table_7x7/"));
+		simpleItemAndBlock(ModBlocks.SIGIL_SCRAPPER.get(), simpleBottomTop(ModBlocks.SIGIL_SCRAPPER.getId().getPath(), "block/sigil_scrapper/"));
+
 		simpleItemAndBlock(ModBlocks.FOUNDRY_TILE.get(), models().cubeAll("block/foundry/tile", res("block/foundry/tile")));
 
 		models().withExistingParent("block/foundry/foundry_tile_base", "cube")
@@ -85,9 +93,33 @@ public class BlockModelGen extends BlockStateProvider{
 				ConfiguredModel.builder().modelFile(new ExistingModelFile(res("block/foundry/mold_2"), existingFileHelper))
 						.rotationY(state.getValue(HORIZONTAL_FACING).get2DDataValue()*90+90).build());
 
-		ExistingModelFile essenceHolderModel = new ExistingModelFile(res("block/essence_holder"), existingFileHelper);
-		simpleBlock(ModBlocks.ESSENCE_HOLDER.get(), essenceHolderModel);
-		itemModels().getBuilder(ModItems.ESSENCE_HOLDER_BLOCK.getId().getPath()).parent(essenceHolderModel);
+		simpleItemAndBlock(ModBlocks.ESSENCE_HOLDER_BLOCK.get(), new ExistingModelFile(res("block/essence_holder"), existingFileHelper));
+		simpleItemAndBlock(ModBlocks.ESSENCE_NET_CORE.get(), new ExistingModelFile(res("block/essence_net_core"), existingFileHelper));
+		getVariantBuilder(ModBlocks.ESSENCE_NET_IMPORTER.get()).forAllStates(state -> ConfiguredModel.builder()
+				.modelFile(state.getValue(ModProperties.NO_NETWORK) ?
+						models().cubeAll("block/essence_net_importer/essence_net_importer_no_network", res("block/essence_net_importer/essence_net_importer_no_network")) :
+						models().cubeAll("block/essence_net_importer/essence_net_importer", res("block/essence_net_importer/essence_net_importer")))
+				.build());
+		directionalBlock(ModBlocks.ESSENCE_NET_EXPORTER.get(), state -> {
+			boolean noNetwork = state.getValue(ModProperties.NO_NETWORK);
+			boolean accelerated = state.getValue(ModProperties.ACCELERATED);
+			boolean hasFilter = state.getValue(ModProperties.HAS_FILTER);
+			String top = noNetwork ?
+					accelerated ?
+							"block/essence_net_exporter/essence_net_exporter_accelerated_no_network" :
+							"block/essence_net_exporter/essence_net_exporter_no_network" :
+					accelerated ?
+							"block/essence_net_exporter/essence_net_exporter_accelerated" :
+							"block/essence_net_exporter/essence_net_exporter";
+			String side = hasFilter ?
+					"block/essence_net_exporter/essence_net_exporter_side_filter" :
+					"block/essence_net_exporter/essence_net_exporter_side";
+			String name = "block/essence_net_exporter/essence_net_exporter";
+			if(noNetwork) name += "_no_network";
+			if(accelerated) name += "_accelerated";
+			if(hasFilter) name += "_filtered";
+			return models().cubeBottomTop(name, res(side), res("block/essence_net_exporter/essence_net_exporter_side"), res(top));
+		});
 
 		simpleBlock(ModBlocks.GOLDEN_SKULL.get(), new ExistingModelFile(new ResourceLocation("block/skull"), existingFileHelper));
 		simpleBlock(ModBlocks.GOLDEN_WALL_SKULL.get(), new ExistingModelFile(new ResourceLocation("block/skull"), existingFileHelper));
@@ -100,5 +132,9 @@ public class BlockModelGen extends BlockStateProvider{
 	private void simpleItemAndBlock(Block block, ModelFile modelFile){
 		simpleBlock(block, modelFile);
 		simpleBlockItem(block, modelFile);
+	}
+
+	private ModelFile simpleBottomTop(String modelName, String textureBaseName){
+		return models().cubeBottomTop(modelName, res(textureBaseName+"side"), res(textureBaseName+"bottom"), res(textureBaseName+"top"));
 	}
 }

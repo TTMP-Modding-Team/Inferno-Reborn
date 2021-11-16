@@ -1,0 +1,8 @@
+{
+  "parent": "minecraft:block/cube_bottom_top",
+  "textures": {
+    "side": "infernoreborn:block/essence_net_exporter/essence_net_exporter_side",
+    "bottom": "infernoreborn:block/essence_net_exporter/essence_net_exporter_side",
+    "top": "infernoreborn:block/essence_net_exporter/essence_net_exporter_accelerated"
+  }
+}

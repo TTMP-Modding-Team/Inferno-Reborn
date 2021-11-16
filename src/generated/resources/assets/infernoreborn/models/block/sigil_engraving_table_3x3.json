@@ -1,0 +1,8 @@
+{
+  "parent": "minecraft:block/cube_bottom_top",
+  "textures": {
+    "side": "infernoreborn:block/sigil_engraving_table_3x3/side",
+    "bottom": "infernoreborn:block/sigil_engraving_table_3x3/bottom",
+    "top": "infernoreborn:block/sigil_engraving_table_3x3/top"
+  }
+}

@@ -63,6 +63,16 @@ public class ItemModelGen extends ItemModelProvider{
 		simpleItem(ModItems.BERSERKER_LEGGINGS.get());
 		simpleItem(ModItems.BERSERKER_BOOTS.get());
 
+		simpleItem(ModItems.THANATOS_LIGHT_HELMET.get());
+		simpleItem(ModItems.THANATOS_LIGHT_CHESTPLATE.get());
+		simpleItem(ModItems.THANATOS_LIGHT_LEGGINGS.get());
+		simpleItem(ModItems.THANATOS_LIGHT_BOOTS.get());
+
+		simpleItem(ModItems.THANATOS_HEAVY_HELMET.get());
+		simpleItem(ModItems.THANATOS_HEAVY_CHESTPLATE.get());
+		simpleItem(ModItems.THANATOS_HEAVY_LEGGINGS.get());
+		simpleItem(ModItems.THANATOS_HEAVY_BOOTS.get());
+
 		simpleItem(ModItems.THANATOS_BELT.get());
 		simpleItem(ModItems.CLOUD_SCARF.get());
 
@@ -94,7 +104,18 @@ public class ItemModelGen extends ItemModelProvider{
 
 		simpleItem(ModItems.TERRASTONE.get());
 
+		simpleItem(ModItems.ESSENCE_NET_ACCESSOR.get())
+				.override().predicate(new ResourceLocation("no_network"), 1)
+				.model(item("item/essence_net_accessor_no_network", new ResourceLocation(MODID, "item/essence_net_accessor_no_network")));
+		getBuilder(ModItems.ESSENCE_NET_IMPORTER.getId().getPath()).parent(new ModelFile.UncheckedModelFile(new ResourceLocation(MODID, "block/essence_net_importer/essence_net_importer")))
+				.override().predicate(new ResourceLocation("no_network"), 1)
+				.model(getBuilder("essence_net_importer_no_network").parent(new ModelFile.UncheckedModelFile(new ResourceLocation(MODID, "block/essence_net_importer/essence_net_importer_no_network"))));
+		getBuilder(ModItems.ESSENCE_NET_EXPORTER.getId().getPath()).parent(new ModelFile.UncheckedModelFile(new ResourceLocation(MODID, "block/essence_net_exporter/essence_net_exporter")))
+				.override().predicate(new ResourceLocation("no_network"), 1)
+				.model(getBuilder("essence_net_exporter_no_network").parent(new ModelFile.UncheckedModelFile(new ResourceLocation(MODID, "block/essence_net_exporter/essence_net_exporter_no_network"))));
+
 		simpleItem(ModItems.SIGIL.get());
+		simpleItem(ModItems.BODY_SIGIL.get());
 	}
 
 	protected ItemModelBuilder simpleItem(Item item){

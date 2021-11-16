@@ -1,0 +1,11 @@
+{
+	"parent": "infernoreborn:block/essence_holder",
+	"textures": {
+		"1": "infernoreborn:block/essence_net_core/side",
+		"2": "infernoreborn:block/essence_net_core/top",
+		"3": "infernoreborn:block/essence_net_core/stand_bottom",
+		"4": "infernoreborn:block/essence_net_core/stand_side",
+		"5": "infernoreborn:block/essence_net_core/stand_top",
+		"particle": "infernoreborn:block/essence_net_core/stand_top"
+	}
+}

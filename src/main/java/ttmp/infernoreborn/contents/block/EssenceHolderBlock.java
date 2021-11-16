@@ -17,7 +17,7 @@ import net.minecraft.world.World;
 import ttmp.infernoreborn.contents.tile.EssenceHolderTile;
 
 public class EssenceHolderBlock extends Block{
-	private static final VoxelShape SHAPE = VoxelShapes.or(box(4, 2, 4, 12, 14, 12),
+	public static final VoxelShape SHAPE = VoxelShapes.or(box(4, 2, 4, 12, 14, 12),
 			box(3, 0, 3, 13, 2, 13),
 			box(3, 2, 3, 6, 3, 6),
 			box(10, 2, 3, 13, 3, 6),
@@ -48,7 +48,7 @@ public class EssenceHolderBlock extends Block{
 	}
 
 	@SuppressWarnings("deprecation")
-	@Override public VoxelShape getShape(BlockState p_220053_1_, IBlockReader p_220053_2_, BlockPos p_220053_3_, ISelectionContext p_220053_4_){
+	public VoxelShape getShape(BlockState state, IBlockReader level, BlockPos pos, ISelectionContext context) {
 		return SHAPE;
 	}
 }

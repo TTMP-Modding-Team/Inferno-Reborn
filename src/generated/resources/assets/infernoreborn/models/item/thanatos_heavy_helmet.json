@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:item/generated",
+  "textures": {
+    "layer0": "infernoreborn:item/thanatos_heavy_helmet"
+  }
+}

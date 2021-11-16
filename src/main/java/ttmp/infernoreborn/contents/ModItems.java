@@ -215,14 +215,15 @@ public final class ModItems{
 	public static final RegistryObject<BlockItem> SIGIL_ENGRAVING_TABLE_3X3 = REGISTER.register("sigil_engraving_table_3x3", () -> new BlockItem(ModBlocks.SIGIL_ENGRAVING_TABLE_3X3.get(), artifacts()));
 	public static final RegistryObject<BlockItem> SIGIL_ENGRAVING_TABLE_5X5 = REGISTER.register("sigil_engraving_table_5x5", () -> new BlockItem(ModBlocks.SIGIL_ENGRAVING_TABLE_5X5.get(), artifacts()));
 	public static final RegistryObject<BlockItem> SIGIL_ENGRAVING_TABLE_7X7 = REGISTER.register("sigil_engraving_table_7x7", () -> new BlockItem(ModBlocks.SIGIL_ENGRAVING_TABLE_7X7.get(), artifacts()));
-	public static final RegistryObject<BlockItem> SIGIL_SCRAPPER = REGISTER.register("sigil_scrapper", () -> new BlockItem(ModBlocks.SIGIL_SCRAPPER.get(), artifacts()));
 
 	public static final RegistryObject<BlockItem> STIGMA_TABLE_5X5 = REGISTER.register("stigma_table_5x5", () -> new BlockItem(ModBlocks.STIGMA_TABLE_5X5.get(), artifacts()));
 	public static final RegistryObject<BlockItem> STIGMA_TABLE_7X7 = REGISTER.register("stigma_table_7x7", () -> new BlockItem(ModBlocks.STIGMA_TABLE_7X7.get(), artifacts()));
 
+	public static final RegistryObject<BlockItem> SIGIL_SCRAPPER = REGISTER.register("sigil_scrapper", () -> new BlockItem(ModBlocks.SIGIL_SCRAPPER.get(), artifacts()));
+
 	public static final RegistryObject<Item> FOUNDRY = REGISTER.register("foundry", () -> new FoundryBlockItem(ModBlocks.FOUNDRY.get(), artifacts().setISTER(() -> FoundryISTER::new)));
 
-	public static final RegistryObject<Item> ESSENCE_HOLDER_BLOCK = REGISTER.register("essence_holder_block", () -> new BlockItem(ModBlocks.ESSENCE_HOLDER.get(), artifacts()));
+	public static final RegistryObject<Item> ESSENCE_HOLDER_BLOCK = REGISTER.register("essence_holder_block", () -> new BlockItem(ModBlocks.ESSENCE_HOLDER_BLOCK.get(), artifacts()));
 	public static final RegistryObject<Item> ESSENCE_NET_CORE = REGISTER.register("essence_net_core", () -> new BlockItem(ModBlocks.ESSENCE_NET_CORE.get(), artifacts().stacksTo(1)));
 	public static final RegistryObject<Item> ESSENCE_NET_ACCESSOR = REGISTER.register("essence_net_accessor", () -> new EssenceNetAccessorItem(artifacts().stacksTo(1)));
 	public static final RegistryObject<Item> ESSENCE_NET_IMPORTER = REGISTER.register("essence_net_importer", () -> new EssenceNetBlockItem(ModBlocks.ESSENCE_NET_IMPORTER.get(), artifacts()));

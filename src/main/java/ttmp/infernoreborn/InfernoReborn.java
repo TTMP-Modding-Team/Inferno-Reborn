@@ -6,6 +6,7 @@ import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.RenderTypeLookup;
 import net.minecraft.client.renderer.tileentity.SkullTileEntityRenderer;
 import net.minecraft.data.DataGenerator;
+import net.minecraft.item.IItemPropertyGetter;
 import net.minecraft.item.ItemModelsProperties;
 import net.minecraft.nbt.INBT;
 import net.minecraft.util.Direction;
@@ -42,8 +43,8 @@ import ttmp.infernoreborn.client.color.PrimalInfernoSparkColor;
 import ttmp.infernoreborn.client.color.SparkColor;
 import ttmp.infernoreborn.client.render.AnvilEntityRenderer;
 import ttmp.infernoreborn.client.render.CreeperMissileEntityRenderer;
-import ttmp.infernoreborn.client.render.SummonedSkeletonRenderer;
 import ttmp.infernoreborn.client.render.GoldenSkullTileEntityRenderer;
+import ttmp.infernoreborn.client.render.SummonedSkeletonRenderer;
 import ttmp.infernoreborn.client.render.SummonedZombieRenderer;
 import ttmp.infernoreborn.client.render.WindEntityRenderer;
 import ttmp.infernoreborn.client.screen.EssenceHolderScreen;
@@ -65,6 +66,7 @@ import ttmp.infernoreborn.contents.ModTileEntities;
 import ttmp.infernoreborn.contents.Sigils;
 import ttmp.infernoreborn.contents.ability.holder.AbilityHolder;
 import ttmp.infernoreborn.contents.block.GoldenSkullBlock;
+import ttmp.infernoreborn.contents.block.essencenet.EssenceNetCoreBlock;
 import ttmp.infernoreborn.contents.entity.SummonedSkeletonEntity;
 import ttmp.infernoreborn.contents.entity.SummonedZombieEntity;
 import ttmp.infernoreborn.contents.item.EssenceNetAccessorItem;
@@ -190,9 +192,17 @@ public class InfernoReborn{
 				ItemModelsProperties.register(ModItems.JUDGEMENT.get(), new ResourceLocation("off"),
 						(stack, world, entity) -> entity==null||JudgementItem.isOff(stack) ? 1 : 0);
 
+				ResourceLocation noNetworkId = new ResourceLocation("no_network");
+				IItemPropertyGetter noNetwork = (stack, world, entity) ->
+						(stack.getItem() instanceof EssenceNetCoreBlock.HasEssenceNet)&&((EssenceNetCoreBlock.HasEssenceNet)stack.getItem()).getNetwork(stack)!=0 ? 0 : 1;
+				ItemModelsProperties.register(ModItems.ESSENCE_NET_ACCESSOR.get(), noNetworkId, noNetwork);
+				ItemModelsProperties.register(ModItems.ESSENCE_NET_IMPORTER.get(), noNetworkId, noNetwork);
+				ItemModelsProperties.register(ModItems.ESSENCE_NET_EXPORTER.get(), noNetworkId, noNetwork);
+
 				RenderTypeLookup.setRenderLayer(ModBlocks.FOUNDRY_MOLD_1.get(), RenderType.cutout());
 				RenderTypeLookup.setRenderLayer(ModBlocks.FOUNDRY_MOLD_2.get(), RenderType.cutout());
-				RenderTypeLookup.setRenderLayer(ModBlocks.ESSENCE_HOLDER.get(), RenderType.translucent());
+				RenderTypeLookup.setRenderLayer(ModBlocks.ESSENCE_HOLDER_BLOCK.get(), RenderType.translucent());
+				RenderTypeLookup.setRenderLayer(ModBlocks.ESSENCE_NET_CORE.get(), RenderType.translucent());
 
 				SkullTileEntityRenderer.MODEL_BY_TYPE.put(GoldenSkullBlock.TYPE, SkullTileEntityRenderer.MODEL_BY_TYPE.get(SkullBlock.Types.SKELETON));
 				SkullTileEntityRenderer.SKIN_BY_TYPE.put(GoldenSkullBlock.TYPE, new ResourceLocation(MODID, "textures/entity/golden_skull.png"));
