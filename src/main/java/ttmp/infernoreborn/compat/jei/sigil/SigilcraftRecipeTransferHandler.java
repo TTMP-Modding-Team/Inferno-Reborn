@@ -27,8 +27,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import static ttmp.infernoreborn.InfernoReborn.LOGGER;
-
 public class SigilcraftRecipeTransferHandler<C extends Container> implements IRecipeTransferHandler<C>{
 	private final Class<C> containerClass;
 	private final RecipeSize containerSize;
@@ -83,7 +81,7 @@ public class SigilcraftRecipeTransferHandler<C extends Container> implements IRe
 		}
 
 		if(inputCount>craftingSlots.size()){
-			LOGGER.error("Recipe Transfer helper {} does not work for container {}. "+
+			InfernoReborn.LOGGER.error("Recipe Transfer helper {} does not work for container {}. "+
 							"{} ingredients are marked as inputs in IRecipeCategory#setRecipe, but there are only {} crafting slots defined for the recipe transfer helper.",
 					getContainerClass(), container.getClass(), inputCount, craftingSlots.size());
 			return helper.createInternalError();
@@ -95,7 +93,7 @@ public class SigilcraftRecipeTransferHandler<C extends Container> implements IRe
 			ItemStack stack = slot.getItem();
 			if(!stack.isEmpty()){
 				if(!slot.mayPickup(player)){
-					LOGGER.error("Recipe Transfer helper {} does not work for container {}. Player can't move item out of Crafting Slot number {}", getContainerClass(), container.getClass(), slot.index);
+					InfernoReborn.LOGGER.error("Recipe Transfer helper {} does not work for container {}. Player can't move item out of Crafting Slot number {}", getContainerClass(), container.getClass(), slot.index);
 					return helper.createInternalError();
 				}
 				availableItemStacks.put(slot.index, stack.copy());
@@ -123,7 +121,7 @@ public class SigilcraftRecipeTransferHandler<C extends Container> implements IRe
 			int craftNumber = entry.getKey();
 			int slotNumber = craftingSlotIndexes.get(craftNumber);
 			if(slotNumber<0||slotNumber>=container.slots.size()){
-				LOGGER.error("Recipes Transfer Helper {} references slot {} outside of the inventory's size {}", getContainerClass(), slotNumber, container.slots.size());
+				InfernoReborn.LOGGER.error("Recipes Transfer Helper {} references slot {} outside of the inventory's size {}", getContainerClass(), slotNumber, container.slots.size());
 				return helper.createInternalError();
 			}
 		}
@@ -139,14 +137,14 @@ public class SigilcraftRecipeTransferHandler<C extends Container> implements IRe
 	}
 
 	private int mapSlot(int index){
-		boolean afterCenter = index >= recipeSize.size * recipeSize.size/2;
-		if(afterCenter) index = index + 1;
+		boolean afterCenterSlot = index >= recipeSize.centerIndex();
+		if(engraving && afterCenterSlot) index = index + 1;
 		int xOffset = containerSize.size/2-recipeSize.size/2;
 		int yOffset = containerSize.size/2-recipeSize.size/2;
 		int x = index%recipeSize.size;
 		int y = index/recipeSize.size;
 		int ind = containerSize.toIndex(x+xOffset, y+yOffset);
-		return afterCenter ? ind-1 : ind;
+		return (engraving && afterCenterSlot) ? ind -1 : ind;
 	}
 
 	protected Map<Integer, Slot> getCraftingSlots(C container){
