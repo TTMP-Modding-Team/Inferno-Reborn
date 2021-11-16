@@ -10,6 +10,7 @@ public final class Wtf{
 
 	/**
 	 * Equality check used in WtfScript.
+	 *
 	 * @return If both object is {@link Number}, comparison between two double values. Otherwise, result of {@code equals()} call.
 	 */
 	public static boolean equals(Object o1, Object o2){
@@ -20,6 +21,7 @@ public final class Wtf{
 
 	/**
 	 * Addition method used in WtfScript.
+	 *
 	 * @return {@code a+b}. The result is {@link Integer} if both {@code a} and {@code b} are {@link Integer}.
 	 */
 	public static Number add(Number a, Number b){
@@ -29,6 +31,7 @@ public final class Wtf{
 
 	/**
 	 * Subtraction method used in WtfScript.
+	 *
 	 * @return {@code a-b}. The result is {@link Integer} if both {@code a} and {@code b} are {@link Integer}.
 	 */
 	public static Number subtract(Number a, Number b){
@@ -38,6 +41,7 @@ public final class Wtf{
 
 	/**
 	 * Multiplication method used in WtfScript.
+	 *
 	 * @return {@code a*b}. The result is {@link Integer} if both {@code a} and {@code b} are {@link Integer}.
 	 */
 	public static Number multiply(Number a, Number b){
@@ -47,6 +51,7 @@ public final class Wtf{
 
 	/**
 	 * Division method used in WtfScript.
+	 *
 	 * @return {@code a/b}. The result is {@link Integer} if both {@code a} and {@code b} are {@link Integer}.
 	 * @throws ArithmeticException If {@code a} and {@code b} is both {@link Integer} and {@code b} is 0
 	 */
@@ -57,6 +62,7 @@ public final class Wtf{
 
 	/**
 	 * Negation method used in WtfScript.
+	 *
 	 * @return {@code -n}. The result is {@link Integer} if {@code n} is {@link Integer}.
 	 */
 	public static Number negate(Number n){
@@ -71,5 +77,11 @@ public final class Wtf{
 		if(a==b) return a;
 		int min = Math.min(a, b), max = Math.max(a, b);
 		return random.nextInt(max-min+1)+min;
+	}
+
+	public static boolean isIn(Object o, Iterable<?> iterable){
+		for(Object o2 : iterable)
+			if(equals(o2, o)) return true;
+		return false;
 	}
 }

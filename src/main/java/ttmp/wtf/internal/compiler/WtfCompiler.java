@@ -437,6 +437,12 @@ public class WtfCompiler implements StatementVisitor, ExpressionVisitor{
 		if(divide.e2.isConstant()&&divide.e2.expectConstantNumber()==1) writeInst(divide.e1);
 		else writeSimpleBinary(divide, Inst.DIVIDE);
 	}
+	@Override public void visitIn(Expression.In in){
+		writeInst(in.e1);
+		writeInst(in.e2);
+		write(Inst.IN);
+		removeStack();
+	}
 	@Override public void visitOr(Expression.Or or){
 		writeInst(or.e1);
 		write(Inst.JUMPIF);

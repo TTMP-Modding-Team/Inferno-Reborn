@@ -215,6 +215,9 @@ public class WtfScriptFormatter{
 				case Inst.MAKE_ITERATOR:
 					writeLine("MAKE_ITERATOR");
 					break;
+				case Inst.IN:
+					writeLine("IN");
+					break;
 				case Inst.JUMP:
 					writeLine("JUMP "+nextShort());
 					break;

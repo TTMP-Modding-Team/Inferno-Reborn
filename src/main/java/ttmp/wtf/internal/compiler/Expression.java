@@ -339,6 +339,20 @@ public abstract class Expression{
 		}
 	}
 
+	public static class In extends Binary{
+		public In(int position, Expression e1, Expression e2){
+			super(position, e1, e2);
+		}
+
+		@Override public void visit(ExpressionVisitor visitor){
+			visitor.visitIn(this);
+		}
+		@Override public void checkType(@Nullable Class<?> expectedType){
+			expectType(Boolean.class, expectedType);
+			this.e2.checkType(Iterable.class);
+		}
+	}
+
 	public static class Or extends LogicalOperator{
 		public Or(int position, Expression e1, Expression e2){
 			super(position, e1, e2);

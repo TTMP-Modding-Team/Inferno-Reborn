@@ -182,6 +182,10 @@ public interface Inst{
 	 * Pop 1 object, expect {@link Iterable}, make iterator and push it
 	 */
 	byte MAKE_ITERATOR = 0x52;
+	/**
+	 * Pop 2 objects (A, B) and pushes a boolean value indicating whether A is inside collection B
+	 */
+	byte IN = 0x53;
 
 	// 0x60~0x7F Control Statements
 	/**

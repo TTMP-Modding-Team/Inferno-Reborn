@@ -6,6 +6,7 @@ import ttmp.wtf.CompileContext;
 import ttmp.wtf.Wtf;
 import ttmp.wtf.exceptions.WtfCompileException;
 import ttmp.wtf.exceptions.WtfException;
+import ttmp.wtf.obj.Address;
 import ttmp.wtf.obj.Bundle;
 import ttmp.wtf.obj.RGB;
 import ttmp.wtf.obj.Range;
@@ -71,7 +72,7 @@ public class WtfParser{
 	private Statement defineStmt(){
 		int start = lexer.current().start;
 		lexer.expectNext(TokenType.IDENTIFIER, "Invalid define statement, expected an identifier");
-		String property = complexIdentifier();
+		String property = identifier();
 		lexer.expectNext(TokenType.COLON, "Incomplete define statement, missing ':'");
 		if(lexer.next().is(TokenType.L_BRACE))
 			throw new WtfCompileException(lexer.next().start, "Defined properties cannot have constructors without type specified.");
@@ -109,7 +110,7 @@ public class WtfParser{
 			}else elseThen = Collections.emptyList();
 		}
 		if(condition.isConstant())
-			return new Statement.StatementList(start, condition.expectConstantObject(Boolean.class) ? then : elseThen);
+			return new Statement.StatementList(start, condition.expectConstantBool() ? then : elseThen);
 		return new Statement.If(start, condition, then, Objects.requireNonNull(elseThen));
 	}
 
@@ -240,7 +241,7 @@ public class WtfParser{
 	}
 
 	private Expression ternary(){
-		Expression e = or();
+		Expression e = in();
 		if(!lexer.guessNext(TokenType.QUESTION)) return e;
 		lexer.next();
 		Expression ifThen = ternary();
@@ -249,6 +250,18 @@ public class WtfParser{
 		Expression elseThen = ternary();
 		if(e.isConstant()) return e.expectConstantBool() ? ifThen : elseThen;
 		return new Expression.Ternary(e.position, e, ifThen, elseThen);
+	}
+
+	private Expression in(){
+		Expression e = or();
+		while(lexer.guessNext(TokenType.IN)){
+			lexer.next();
+			Expression e2 = or();
+			e = e.isConstant()&&e2.isConstant() ?
+					new Expression.Bool(e.position, Wtf.isIn(e.expectConstantObject(), e2.expectConstantObject(Iterable.class))) :
+					new Expression.In(e.position, e, e2);
+		}
+		return e;
 	}
 
 	private Expression or(){
@@ -439,8 +452,12 @@ public class WtfParser{
 			case STRING:
 				return new Expression.Constant(current.start, stringLiteral(current));
 			case IDENTIFIER:{
-				String literal = complexIdentifier();
-				if(lexer.guessNext(TokenType.L_BRACE)) return new Expression.Construct(current.start, literal, block());
+				Address literal = complexIdentifier();
+				if(lexer.guessNext(TokenType.L_BRACE)){
+					if(literal.size()!=1)
+						throw new WtfCompileException(current.start, "Types cannot be addressed using dot(.)");
+					return new Expression.Construct(current.start, literal.get(0), block());
+				}
 				Definition definition = getDefinition(literal);
 				if(definition!=null) return definition.constantExpression!=null&&definition.constantExpression.isConstant() ?
 						new Expression.Constant(current.start, Objects.requireNonNull(definition.constantExpression.getConstantObject())) :
@@ -456,16 +473,21 @@ public class WtfParser{
 		}
 	}
 
-	private String complexIdentifier(){
+	private String identifier(){
 		Token current = lexer.current();
 		if(!current.is(TokenType.IDENTIFIER))
-			throw new WtfCompileException(current.start, "Invalid identifier, expected literal");
-		StringBuilder b = new StringBuilder(literalValue(current));
+			throw new WtfCompileException(current.start, "Invalid expression, expected identifier");
+		return literalValue(current);
+	}
+
+	private Address complexIdentifier(){
+		List<String> identifiers = new ArrayList<>();
+		identifiers.add(identifier());
 		while(lexer.guessNext(TokenType.DOT)){
-			lexer.expectNext(TokenType.IDENTIFIER, "Invalid identifier, expected literal");
-			b.append('.').append(literalValue(lexer.current()));
+			lexer.next();
+			identifiers.add(identifier());
 		}
-		return b.toString();
+		return new Address(identifiers.toArray(new String[0]));
 	}
 
 	private String literalValue(Token token){

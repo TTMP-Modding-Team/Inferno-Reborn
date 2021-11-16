@@ -16,6 +16,7 @@ public interface ExpressionVisitor{
 	void visitSubtract(Expression.Subtract subtract);
 	void visitMultiply(Expression.Multiply multiply);
 	void visitDivide(Expression.Divide divide);
+	void visitIn(Expression.In in);
 	void visitOr(Expression.Or or);
 	void visitAnd(Expression.And and);
 	void visitRange(Expression.RangeOperator rangeOperator);

@@ -1,0 +1,98 @@
+wtf: BR* object EOF
+
+object: (stmt BR+)*
+
+stmt: assignPropertyValueStmt
+	| defineStmt
+	| applyStmt
+	| ifStmt
+	| forStmt
+	| repeatStmt
+	| debugStmt
+
+assignPropertyValueStmt
+	: complexIdentifier BR* ":" BR* (expr|block)
+
+defineStmt
+	: "define" BR* IDENTIFIER BR* ":" BR* expr
+
+applyStmt: ":" BR* expr
+
+ifStmt
+	: "if" BR* "(" BR* expr BR* ")" BR*
+	( body | body? BR* "else" BR* body)
+
+forStmt
+	: "for" BR* "(" BR* IDENTIFIER BR* "in" BR* expr BR* ")" BR* body
+
+repeatStmt
+	: "repeat" BR* "(" BR* expr BR* ")" BR* body
+
+debugStmt: "debug" BR* expr
+
+body
+	: stmt
+	| block
+
+block: "{" BR* object "}"
+
+
+expr: commaOperator
+
+commaOperator: stringConjunction (BR* "," BR* stringConjunction)*
+
+stringConjunction: ternary (BR* "|" BR* ternary)*
+
+ternary: in (BR* "?" BR* ternary ":" ternary)?
+
+in: or (BR* "in" BR* or)*
+
+or: and (BR* "||" BR* and)*
+and: eq (BR* "&&" BR* eq)*
+eq: comp (BR* ("=="|"!=") BR* comp)*
+comp: range (BR* (">"|"<"|">="|"<=") BR* range)*
+
+range: random (BR* ".." BR* random)*
+random: term (BR* "~" BR* term)*
+
+term: factor (BR* ("+"|"-") BR* factor)*
+factor: unary (BR* ("*"|"/") BR* unary)*
+
+unary: (("!"|"-"|"debug") BR*)* primaryExpr
+
+primaryExpr
+	: "(" BR* expr BR* ")"
+	| "true"
+	| "false"
+	| NUMBER
+	| NAMESPACE
+	| COLOR
+	| STRING
+	| IDENTIFIER (BR* block)?
+	| complexIdentifier
+
+complexIdentifier : IDENTIFIER (BR* "." BR* IDENTIFIER)*
+
+# stupid lexical grammars, here you go
+
+NUMBER: DIGIT+ ("." DIGIT+)?
+NAMESPACE
+	: "<" ("a"..."z" | "0"..."9" | "_" | "-" | ".")+
+	( ":" ("a"..."z" | "0"..."9" | "_" | "-" | "." | "/")+)? ">"
+COLOR: "#" HEX[6]
+STRING
+	: "\"" STRING_CONTENT "\""
+	| "'" STRING_CONTENT "'"
+
+STRING_CONTENT
+	: "\\" ( "t" | "n" | "\\" | "\"" | "'" | "u" HEX{4} )
+	| ^"\\\r\n\""
+
+IDENTIFIER: ALPHABET (ALPHABET|DIGIT)*
+
+DIGIT: "0"..."9"
+
+ALPHABET: "a"..."z" | "A"..."Z" | "_"
+HEX: DIGIT|"A"..."F"|"a"..."f"
+
+BR: "\r"|"\n"

@@ -271,6 +271,9 @@ public class WtfExecutor{
 					case Inst.MAKE_ITERATOR:
 						push(expectIterable(pop()).iterator());
 						break;
+					case Inst.IN:
+						setAndDiscard(1, Wtf.isIn(peek(1), expectIterable(peek())));
+						break;
 					case Inst.JUMP:
 						ip += next2();
 						break;

@@ -4,6 +4,7 @@ import com.google.common.collect.ImmutableMap;
 import ttmp.wtf.internal.DynamicConstantInfo;
 import ttmp.wtf.internal.Lines;
 import ttmp.wtf.internal.WtfScriptFormatter;
+import ttmp.wtf.obj.Address;
 
 import java.util.Map;
 import java.util.regex.Pattern;
@@ -14,7 +15,7 @@ public final class WtfScript{
 	private final byte[] inst;
 	private final Object[] objects;
 	private final String[] identifiers;
-	private final Map<String, DynamicConstantInfo> dynamicConstants;
+	private final Map<Address, DynamicConstantInfo> dynamicConstants;
 
 	private final int variables;
 	private final int maxStack;
@@ -24,7 +25,7 @@ public final class WtfScript{
 	public WtfScript(byte[] inst,
 	                 Object[] objects,
 	                 String[] identifiers,
-	                 Map<String, DynamicConstantInfo> dynamicConstants,
+	                 Map<Address, DynamicConstantInfo> dynamicConstants,
 	                 int variables,
 	                 int maxStack,
 	                 Lines lines){
@@ -57,7 +58,7 @@ public final class WtfScript{
 		return identifiers[at];
 	}
 
-	public Map<String, DynamicConstantInfo> getDynamicConstants(){
+	public Map<Address, DynamicConstantInfo> getDynamicConstants(){
 		return dynamicConstants;
 	}
 
