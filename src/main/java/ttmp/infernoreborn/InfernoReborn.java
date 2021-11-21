@@ -43,6 +43,7 @@ import ttmp.infernoreborn.client.color.PrimalInfernoSparkColor;
 import ttmp.infernoreborn.client.color.SparkColor;
 import ttmp.infernoreborn.client.render.AnvilEntityRenderer;
 import ttmp.infernoreborn.client.render.CreeperMissileEntityRenderer;
+import ttmp.infernoreborn.client.render.GhostEntityRenderer;
 import ttmp.infernoreborn.client.render.GoldenSkullTileEntityRenderer;
 import ttmp.infernoreborn.client.render.SummonedSkeletonRenderer;
 import ttmp.infernoreborn.client.render.SummonedZombieRenderer;
@@ -67,6 +68,7 @@ import ttmp.infernoreborn.contents.Sigils;
 import ttmp.infernoreborn.contents.ability.holder.AbilityHolder;
 import ttmp.infernoreborn.contents.block.GoldenSkullBlock;
 import ttmp.infernoreborn.contents.block.essencenet.EssenceNetCoreBlock;
+import ttmp.infernoreborn.contents.entity.GhostEntity;
 import ttmp.infernoreborn.contents.entity.SummonedSkeletonEntity;
 import ttmp.infernoreborn.contents.entity.SummonedZombieEntity;
 import ttmp.infernoreborn.contents.item.EssenceNetAccessorItem;
@@ -169,6 +171,7 @@ public class InfernoReborn{
 	public static void registerAttributes(final EntityAttributeCreationEvent event){
 		event.put(ModEntities.SUMMONED_ZOMBIE.get(), SummonedZombieEntity.registerAttributes().build());
 		event.put(ModEntities.SUMMONED_SKELETON.get(), SummonedSkeletonEntity.registerAttributes().build());
+		event.put(ModEntities.GHOST.get(), GhostEntity.registerAttributes().build());
 	}
 
 	@Mod.EventBusSubscriber(modid = MODID, bus = Bus.MOD, value = Dist.CLIENT)
@@ -212,6 +215,7 @@ public class InfernoReborn{
 			RenderingRegistry.registerEntityRenderingHandler(ModEntities.CREEPER_MISSILE.get(), CreeperMissileEntityRenderer::new);
 			RenderingRegistry.registerEntityRenderingHandler(ModEntities.SUMMONED_ZOMBIE.get(), SummonedZombieRenderer::new);
 			RenderingRegistry.registerEntityRenderingHandler(ModEntities.SUMMONED_SKELETON.get(), SummonedSkeletonRenderer::new);
+			RenderingRegistry.registerEntityRenderingHandler(ModEntities.GHOST.get(), GhostEntityRenderer::new);
 
 			ClientRegistry.bindTileEntityRenderer(ModTileEntities.GOLDEN_SKULL.get(), GoldenSkullTileEntityRenderer::new);
 		}

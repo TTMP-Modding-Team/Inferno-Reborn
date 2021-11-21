@@ -7,6 +7,7 @@ import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import ttmp.infernoreborn.contents.entity.AnvilEntity;
 import ttmp.infernoreborn.contents.entity.CreeperMissileEntity;
+import ttmp.infernoreborn.contents.entity.GhostEntity;
 import ttmp.infernoreborn.contents.entity.SummonedSkeletonEntity;
 import ttmp.infernoreborn.contents.entity.SummonedZombieEntity;
 import ttmp.infernoreborn.contents.entity.WindEntity;
@@ -38,4 +39,8 @@ public final class ModEntities{
 			EntityType.Builder.<SummonedSkeletonEntity>of(SummonedSkeletonEntity::new, EntityClassification.MISC)
 					.sized(0.6f, 1.95f).clientTrackingRange(64).updateInterval(1)
 					.build("summoned_skeleton"));
+	public static final RegistryObject<EntityType<GhostEntity>> GHOST = REGISTER.register("ghost", () ->
+			EntityType.Builder.<GhostEntity>of(GhostEntity::new, EntityClassification.MISC)
+					.sized(0.6f, 1.95f).clientTrackingRange(64).updateInterval(1)
+					.build("ghost"));
 }
