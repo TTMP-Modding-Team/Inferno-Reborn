@@ -187,6 +187,7 @@ public final class ModItems{
 	public static final RegistryObject<Item> GREATER_DOMINANCE_ESSENCE_CRYSTAL = essence(EssenceType.DOMINANCE, EssenceSize.EXQUISITE_ESSENCE);
 
 	public static final RegistryObject<BlockItem> RUNESTONE = REGISTER.register("runestone", () -> new BlockItem(ModBlocks.RUNESTONE.get(), materials()));
+	public static final RegistryObject<BlockItem> BLAZSCAGE = REGISTER.register("blazecage", () -> new BlockItem(ModBlocks.BLAZECAGE.get(), materials()));
 	public static final RegistryObject<BlockItem> FOUNDRY_TILE = REGISTER.register("foundry_tile", () -> new BlockItem(ModBlocks.FOUNDRY_TILE.get(), materials()));
 
 	public static final RegistryObject<BlockItem> HEART_CRYSTAL_ORE = REGISTER.register("heart_crystal_ore", () -> new BlockItem(

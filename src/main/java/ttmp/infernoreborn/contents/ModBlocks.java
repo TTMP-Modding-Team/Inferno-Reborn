@@ -10,6 +10,7 @@ import net.minecraft.world.IBlockReader;
 import net.minecraftforge.fml.RegistryObject;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
+import ttmp.infernoreborn.contents.block.BlazeCageBlock;
 import ttmp.infernoreborn.contents.block.EssenceHolderBlock;
 import ttmp.infernoreborn.contents.block.FoundryBlock;
 import ttmp.infernoreborn.contents.block.GoldenSkullBlock;
@@ -43,6 +44,9 @@ public final class ModBlocks{
 
 	public static final RegistryObject<Block> RUNESTONE = REGISTER.register("runestone", () -> new Block(
 			Properties.of(Material.STONE)));
+
+	public static final RegistryObject<Block> BLAZECAGE = REGISTER.register("blazecage", () -> new BlazeCageBlock(
+			Properties.of(Material.METAL)));
 
 	public static final RegistryObject<Block> SIGIL_ENGRAVING_TABLE_3X3 = REGISTER.register("sigil_engraving_table_3x3", () -> new NamedContainerBlock(Properties.of(Material.WOOD)){
 		@Override public TileEntity createTileEntity(BlockState state, IBlockReader world){
