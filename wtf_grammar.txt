@@ -11,7 +11,7 @@ stmt: assignPropertyValueStmt
 	| debugStmt
 
 assignPropertyValueStmt
-	: complexIdentifier BR* ":" BR* (expr|block)
+	: IDENTIFIER (BR* "." BR* IDENTIFIER)* BR* ":" BR* (expr|block)
 
 defineStmt
 	: "define" BR* IDENTIFIER BR* ":" BR* expr
@@ -56,7 +56,9 @@ range: random (BR* ".." BR* random)*
 random: term (BR* "~" BR* term)*
 
 term: factor (BR* ("+"|"-") BR* factor)*
-factor: unary (BR* ("*"|"/") BR* unary)*
+factor: access (BR* ("*"|"/") BR* access)*
+
+access: unary (BR* "." BR* unary)*
 
 unary: (("!"|"-"|"debug") BR*)* primaryExpr
 
@@ -66,12 +68,11 @@ primaryExpr
 	| "false"
 	| NUMBER
 	| NAMESPACE
-	| COLOR
 	| STRING
-	| IDENTIFIER (BR* block)?
-	| complexIdentifier
+	| constructor
+	| IDENTIFIER
 
-complexIdentifier : IDENTIFIER (BR* "." BR* IDENTIFIER)*
+constructor: IDENTIFIER BR* block
 
 # stupid lexical grammars, here you go
 
@@ -79,7 +80,6 @@ NUMBER: DIGIT+ ("." DIGIT+)?
 NAMESPACE
 	: "<" ("a"..."z" | "0"..."9" | "_" | "-" | ".")+
 	( ":" ("a"..."z" | "0"..."9" | "_" | "-" | "." | "/")+)? ">"
-COLOR: "#" HEX[6]
 STRING
 	: "\"" STRING_CONTENT "\""
 	| "'" STRING_CONTENT "'"

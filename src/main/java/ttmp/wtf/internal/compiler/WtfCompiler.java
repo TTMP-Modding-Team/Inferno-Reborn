@@ -3,11 +3,9 @@ package ttmp.wtf.internal.compiler;
 import it.unimi.dsi.fastutil.bytes.ByteArrayList;
 import it.unimi.dsi.fastutil.bytes.ByteList;
 import it.unimi.dsi.fastutil.objects.Object2ByteMap;
-import it.unimi.dsi.fastutil.objects.Object2ByteOpenHashMap;
 import ttmp.wtf.CompileContext;
 import ttmp.wtf.WtfScript;
 import ttmp.wtf.exceptions.WtfCompileException;
-import ttmp.wtf.internal.DynamicConstantInfo;
 import ttmp.wtf.internal.Inst;
 import ttmp.wtf.internal.Lines;
 
@@ -23,9 +21,6 @@ public class WtfCompiler implements StatementVisitor, ExpressionVisitor{
 	private final CompileContext context;
 
 	public final ByteList inst = new ByteArrayList();
-	public final Object2ByteMap<Object> objs = new Object2ByteOpenHashMap<>();
-	public final Object2ByteMap<String> identifiers = new Object2ByteOpenHashMap<>();
-	public final Map<String, DynamicConstantInfo> dynamicConstants = new HashMap<>();
 
 	private final List<Block> blocks = new ArrayList<>();
 
@@ -43,16 +38,7 @@ public class WtfCompiler implements StatementVisitor, ExpressionVisitor{
 	public WtfCompiler(String script, CompileContext context){
 		this.script = script;
 		this.context = context;
-		this.identifiers.defaultReturnValue((byte)-1);
 		this.pushBlock(true);
-		if(!context.getDynamicConstants().isEmpty()){
-			for(Map.Entry<String, Class<?>> e : context.getDynamicConstants().entrySet()){
-				byte varId = newVariableId();
-				setDefinition(e.getKey(), Definition.variable(varId));
-				dynamicConstants.put(e.getKey(), new DynamicConstantInfo(varId, e.getValue()));
-			}
-			this.pushBlock();
-		}
 	}
 
 	public WtfScript parseAndCompile(){
@@ -69,12 +55,8 @@ public class WtfCompiler implements StatementVisitor, ExpressionVisitor{
 			finished = true;
 			write(Inst.END);
 		}
-		return new WtfScript(inst.toByteArray(),
-				populate(objs, new Object[objs.size()]),
-				populate(identifiers, new String[identifiers.size()]),
-				dynamicConstants,
-				variables,
-				maxStack,
+		return new WtfScript(context.getEngine(),
+				inst.toByteArray(),
 				lines.build(script, inst.size()));
 	}
 
@@ -489,10 +471,10 @@ public class WtfCompiler implements StatementVisitor, ExpressionVisitor{
 			removeStack();
 		}
 	}
-	@Override public void visitPropertyAccess(Expression.PropertyAccess propertyAccess){
+	@Override public void visitDynamicAccess(Expression.DynamicAccess dynamicAccess){
 		write(Inst.GET_PROPERTY);
 		write(getStackPoint(getBlock().initializerStackPosition));
-		write(identifier(propertyAccess.property));
+		write(identifier(dynamicAccess.property));
 		addStack();
 	}
 	@Override public void visitConstantAccess(Expression.ConstantAccess constantAccess){
@@ -541,14 +523,6 @@ public class WtfCompiler implements StatementVisitor, ExpressionVisitor{
 		}
 		addStack();
 	}
-	@Override public void visitDynamicConstant(Expression.DynamicConstant dynamicConstant){
-		Definition definition = getDefinition(dynamicConstant.name);
-		if(definition==null) error("No constant defined with name '"+dynamicConstant.name+"'");
-		if(definition.constant) error("Expected dynamic constant");
-		write(Inst.GET_VARIABLE);
-		write(definition.varId);
-		addStack();
-	}
 	@Override public void visitConstruct(Expression.Construct construct){
 		write(Inst.NEW);
 		write(identifier(construct.identifier));
@@ -568,19 +542,11 @@ public class WtfCompiler implements StatementVisitor, ExpressionVisitor{
 	}
 
 	private byte obj(Object o){
-		int size = objs.size();
-		byte prevIndex = objs.putIfAbsent(o, (byte)size);
-		if(objs.size()==size) return prevIndex;
-		if(size>255) error("Too many objects");
-		return (byte)size;
+		return context.getEngine().getConstantPool().mapObject(o);
 	}
 
 	private byte identifier(String identifier){
-		int size = identifiers.size();
-		byte prevIndex = identifiers.putIfAbsent(identifier, (byte)size);
-		if(identifiers.size()==size) return prevIndex;
-		if(size>255) error("Too many identifiers");
-		return (byte)size;
+		return context.getEngine().getConstantPool().mapIdentifier(identifier);
 	}
 
 	private void error(String message){

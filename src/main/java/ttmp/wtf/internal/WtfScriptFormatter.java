@@ -19,9 +19,6 @@ public class WtfScriptFormatter{
 	}
 
 	protected void format(){
-		writeLine("Variables: "+script.getVariables());
-		writeLine("Maximum Stack Size: "+script.getMaxStack());
-		writeLine();
 		formatBytecode();
 		writeLine();
 		formatRawBytecode();
@@ -50,13 +47,13 @@ public class WtfScriptFormatter{
 	}
 
 	protected String identifier(){
-		return script.getIdentifier(Byte.toUnsignedInt(script.getInst(ip-1)));
+		return script.getEngine().getConstantPool().getIdentifier(Byte.toUnsignedInt(script.getInst(ip-1)));
 	}
 	protected String identifier(int prev){
-		return script.getIdentifier(Byte.toUnsignedInt(script.getInst(ip-1-prev)));
+		return script.getEngine().getConstantPool().getIdentifier(Byte.toUnsignedInt(script.getInst(ip-1-prev)));
 	}
 	protected Object obj(){
-		return script.getObject(Byte.toUnsignedInt(script.getInst(ip-1)));
+		return script.getEngine().getConstantPool().getObject(Byte.toUnsignedInt(script.getInst(ip-1)));
 	}
 
 	protected void formatBytecode(){
@@ -262,15 +259,17 @@ public class WtfScriptFormatter{
 	}
 
 	protected void formatObjects(){
-		writeLine("Objects: "+script.getObjectSize()+" entries");
-		for(int i = 0; i<script.getObjectSize(); i++)
-			writeLine(String.format(" %3d| %s", i, script.getObject(i)));
+		WtfConstantPool pool = script.getEngine().getConstantPool();
+		writeLine("Objects: "+pool.getObjectSize()+" entries");
+		for(int i = 0; i<pool.getObjectSize(); i++)
+			writeLine(String.format(" %3d| %s", i, pool.getObject(i)));
 	}
 
 	protected void formatIdentifiers(){
-		writeLine("Identifiers: "+script.getIdentifierSize()+" entries");
-		for(int i = 0; i<script.getIdentifierSize(); i++)
-			writeLine(String.format(" %3d| %s", i, script.getIdentifier(i)));
+		WtfConstantPool pool = script.getEngine().getConstantPool();
+		writeLine("Identifiers: "+pool.getIdentifierSize()+" entries");
+		for(int i = 0; i<pool.getIdentifierSize(); i++)
+			writeLine(String.format(" %3d| %s", i, pool.getIdentifier(i)));
 	}
 
 	protected void write(Object o){

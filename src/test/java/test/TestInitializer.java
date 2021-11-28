@@ -34,12 +34,12 @@ public class TestInitializer implements Initializer<Boolean>{
 	@Override public void apply(WtfExecutor executor, Object o){
 		int size = provided.size();
 		if(expectedValues.length>size) provided.add(o);
-		else executor.error("Too many values provided: "+size);
+		else executor.error(script, "Too many values provided: "+size);
 	}
 
 	@Override public Boolean finish(WtfExecutor executor){
 		if(provided.size()!=expectedValues.length)
-			executor.error("Too few of values provided: "+provided.size());
+			executor.error(script, "Too few of values provided: "+provided.size());
 		IntList wrongMatchIndices = new IntArrayList();
 		for(int i = 0; i<provided.size(); i++){
 			if(!Wtf.equals(provided.get(i), expectedValues[i]))

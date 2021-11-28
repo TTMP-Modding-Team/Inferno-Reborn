@@ -47,7 +47,7 @@ public abstract class Expression{
 	 * @throws WtfCompileException if the expression doesn't produce constant, or the type of constant is not {@code T}
 	 */
 	public <T> T expectConstantObject(Class<T> classOf){
-		Object o = expectConstantObject();
+		Object o = expectConstantObject(); // TODO all of type checks are fucked after adding wtfObjects
 		if(!classOf.isInstance(o)) error("Invalid expression, expected "+classOf.getSimpleName());
 		// noinspection unchecked
 		return (T)o;
@@ -436,20 +436,20 @@ public abstract class Expression{
 		}
 	}
 
-	public static class PropertyAccess extends Expression{
+	public static class DynamicAccess extends Expression{
 		public final String property;
 
-		public PropertyAccess(int position, String property){
+		public DynamicAccess(int position, String property){
 			super(position);
 			this.property = property;
 		}
 
 		@Override public void visit(ExpressionVisitor visitor){
-			visitor.visitPropertyAccess(this);
+			visitor.visitDynamicAccess(this);
 		}
 		@Override public void checkType(@Nullable Class<?> expectedType){}
 		@Override public String toString(){
-			return position+":PropertyAccess{"+property+'}';
+			return position+":DynamicAccess{"+property+'}';
 		}
 	}
 
@@ -502,29 +502,6 @@ public abstract class Expression{
 		}
 		@Override public String toString(){
 			return position+":Constant{"+constant+'}';
-		}
-	}
-
-	public static class DynamicConstant extends Expression{
-		public final String name;
-		public final Class<?> constantType;
-
-		public DynamicConstant(int position, String name, Class<?> constantType){
-			super(position);
-			this.name = name;
-			this.constantType = constantType;
-		}
-
-		@Override public void visit(ExpressionVisitor visitor){
-			visitor.visitDynamicConstant(this);
-		}
-		@Override public void checkType(@Nullable Class<?> expectedType){
-			if(expectedType==null) return;
-			if(!constantType.isAssignableFrom(expectedType)&&!expectedType.isAssignableFrom(constantType))
-				error("Expected type '"+expectedType+"' and constant type '"+constantType+"' is mutually exclusive");
-		}
-		@Override public String toString(){
-			return position+":DynamicConstant{"+name+'}';
 		}
 	}
 

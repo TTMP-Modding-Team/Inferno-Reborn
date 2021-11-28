@@ -147,14 +147,6 @@ public interface Inst{
 	 * Apply 1 popped object to {@link ttmp.wtf.definitions.initializer.Initializer Initializer} {1} below from top of stack.
 	 */
 	byte APPLY = 0x43;
-	/**
-	 * Get variable with id {1}
-	 */
-	byte GET_VARIABLE = 0x44;
-	/**
-	 * Set property with id {1} to 1 popped obj
-	 */
-	byte SET_VARIABLE = 0x45;
 
 	/**
 	 * Create range instance using two popped numbers

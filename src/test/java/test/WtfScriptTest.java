@@ -54,8 +54,6 @@ public class WtfScriptTest{
 				operationTest(engine, "operation_test/constants",
 						new ResourceLocation("test:test"),
 						new ResourceLocation("spiders:spiders"),
-						new RGB(0x123456),
-						new RGB(0xC8C8C8),
 						123456576890.0,
 						3.141592,
 						true,
@@ -89,25 +87,13 @@ public class WtfScriptTest{
 									.addStaticConstant("S2", "Hello World")
 									.addStaticConstant("S3", new ResourceLocation("grass"))
 									.addStaticConstant("S4", o1)
-									.addDynamicConstant("C1", Double.class)
-									.addDynamicConstant("C2", String.class)
-									.addDynamicConstant("C3", ResourceLocation.class)
-									.addDynamicConstant("C4", Object.class)
+									.build(engine),
+							EvalContext.builder()
+									.dynamicConstant("C1", 3.0)
+									.dynamicConstant("C2", "ASDF")
+									.dynamicConstant("C3", new ResourceLocation("zinfernoreborn", "abilities"))
+									.dynamicConstant("C4", o2)
 									.build(),
-							s -> {
-								switch(s){
-									case "C1":
-										return 3.0;
-									case "C2":
-										return "ASDF";
-									case "C3":
-										return new ResourceLocation("zinfernoreborn", "abilities");
-									case "C4":
-										return o2;
-									default:
-										return null;
-								}
-							},
 							1,
 							"Hello World",
 							new ResourceLocation("grass"),
@@ -130,20 +116,11 @@ public class WtfScriptTest{
 		tests.add(DynamicTest.dynamicTest("Compile Error Test: Parse - Wrong Type #2", compileErrorTest(engine, "compile_error_test/parse_wrong_type_2")));
 		tests.add(DynamicTest.dynamicTest("Compile Error Test: Parse - Wrong Type #3", compileErrorTest(engine, "compile_error_test/parse_wrong_type_3")));
 		{
-			CompileContext intTestCompileContext = CompileContext.builder()
-					.addDynamicConstant("I5", Number.class)
-					.addDynamicConstant("D5", Number.class)
+			CompileContext intTestCompileContext = CompileContext.createDefault(engine);
+			EvalContext intTestEvalContext = EvalContext.builder()
+					.dynamicConstant("I5", 5)
+					.dynamicConstant("D5", 5.0)
 					.build();
-			EvalContext intTestEvalContext = s -> {
-				switch(s){
-					case "I5":
-						return 5;
-					case "D5":
-						return 5.0;
-					default:
-						return null;
-				}
-			};
 			tests.add(DynamicTest.dynamicTest("Error Test: Int #1", errorTest(engine,
 					"error_test/int_1",
 					intTestCompileContext,
@@ -173,10 +150,10 @@ public class WtfScriptTest{
 	}
 
 	private Executable runTest(WtfScriptEngine engine, String filename){
-		return runTest(engine, filename, CompileContext.DEFAULT, EvalContext.DEFAULT);
+		return runTest(engine, filename, CompileContext.createDefault(engine), EvalContext.getDefault());
 	}
 	private Executable runTest(WtfScriptEngine engine, String filename, @Nullable Supplier<Initializer<?>> initializer){
-		return runTest(engine, filename, CompileContext.DEFAULT, EvalContext.DEFAULT, initializer);
+		return runTest(engine, filename, CompileContext.createDefault(engine), EvalContext.DEFAULT, initializer);
 	}
 	private Executable runTest(WtfScriptEngine engine, String filename, CompileContext compileContext, EvalContext evalContext){
 		return runTest(engine, filename, compileContext, evalContext, null);
@@ -218,7 +195,7 @@ public class WtfScriptTest{
 	}
 
 	private Executable errorTest(WtfScriptEngine engine, String filename, int expectedErrorLine){
-		return errorTest(engine, filename, CompileContext.DEFAULT, EvalContext.DEFAULT, null, expectedErrorLine);
+		return errorTest(engine, filename, CompileContext.createDefault(engine), EvalContext.DEFAULT, null, expectedErrorLine);
 	}
 	private Executable errorTest(WtfScriptEngine engine, String filename, CompileContext compileContext, EvalContext evalContext, @Nullable Supplier<Initializer<?>> initializer, int expectedErrorLine){
 		return () -> {

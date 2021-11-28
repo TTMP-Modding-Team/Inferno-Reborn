@@ -6,9 +6,7 @@ import ttmp.wtf.CompileContext;
 import ttmp.wtf.Wtf;
 import ttmp.wtf.exceptions.WtfCompileException;
 import ttmp.wtf.exceptions.WtfException;
-import ttmp.wtf.obj.Address;
 import ttmp.wtf.obj.Bundle;
-import ttmp.wtf.obj.RGB;
 import ttmp.wtf.obj.Range;
 
 import javax.annotation.Nullable;
@@ -62,7 +60,7 @@ public class WtfParser{
 
 	private Statement assignPropertyValueStmt(){
 		int start = lexer.current().start;
-		String property = complexIdentifier();
+		String property = identifier();
 		lexer.expectNext(TokenType.COLON, "Incomplete property assign statement, missing ':'");
 		return lexer.next().is(TokenType.L_BRACE) ?
 				new Statement.AssignLazy(start, property, block()) :
@@ -295,7 +293,7 @@ public class WtfParser{
 	private Expression eq(){
 		Expression e = comp();
 		while(true){
-			int guess = lexer.guessNext2(TokenType.EQ_EQ, TokenType.BANG_EQ);
+			int guess = lexer.guessNext2(TokenType.EQ, TokenType.BANG_EQ);
 			if(guess==0) return e;
 			lexer.next();
 			Expression e2 = comp();
@@ -447,26 +445,20 @@ public class WtfParser{
 					throw new WtfException("Invalid namespace '"+substring+"'", ex);
 				}
 			}
-			case COLOR:
-				return new Expression.Constant(current.start, new RGB(hex(current.start+1, 6)));
 			case STRING:
 				return new Expression.Constant(current.start, stringLiteral(current));
 			case IDENTIFIER:{
-				Address literal = complexIdentifier();
-				if(lexer.guessNext(TokenType.L_BRACE)){
-					if(literal.size()!=1)
-						throw new WtfCompileException(current.start, "Types cannot be addressed using dot(.)");
-					return new Expression.Construct(current.start, literal.get(0), block());
-				}
+				String literal = identifier();
+				if(lexer.guessNext(TokenType.L_BRACE))
+					return new Expression.Construct(current.start, literal, block());
 				Definition definition = getDefinition(literal);
 				if(definition!=null) return definition.constantExpression!=null&&definition.constantExpression.isConstant() ?
 						new Expression.Constant(current.start, Objects.requireNonNull(definition.constantExpression.getConstantObject())) :
 						new Expression.ConstantAccess(current.start, literal, definition.constantExpression);
 				Object staticConstant = context.getStaticConstant(literal);
-				if(staticConstant!=null) return new Expression.Constant(current.start, staticConstant);
-				Class<?> dynamicConstant = context.getDynamicConstant(literal);
-				if(dynamicConstant!=null) return new Expression.DynamicConstant(current.start, literal, dynamicConstant);
-				return new Expression.PropertyAccess(current.start, literal);
+				return staticConstant!=null ?
+						new Expression.Constant(current.start, staticConstant) :
+						new Expression.DynamicAccess(current.start, literal);
 			}
 			default:
 				throw new WtfCompileException(current.start, "Invalid expression, expected literal");
@@ -478,16 +470,6 @@ public class WtfParser{
 		if(!current.is(TokenType.IDENTIFIER))
 			throw new WtfCompileException(current.start, "Invalid expression, expected identifier");
 		return literalValue(current);
-	}
-
-	private Address complexIdentifier(){
-		List<String> identifiers = new ArrayList<>();
-		identifiers.add(identifier());
-		while(lexer.guessNext(TokenType.DOT)){
-			lexer.next();
-			identifiers.add(identifier());
-		}
-		return new Address(identifiers.toArray(new String[0]));
 	}
 
 	private String literalValue(Token token){

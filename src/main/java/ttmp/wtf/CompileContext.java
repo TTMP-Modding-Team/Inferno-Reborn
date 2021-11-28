@@ -10,57 +10,46 @@ import java.util.Objects;
 import static ttmp.wtf.WtfScript.NAME_PATTERN;
 
 public final class CompileContext{
-	public static final CompileContext DEFAULT = builder().build();
-
+	private final WtfScriptEngine engine;
 	private final Map<String, Object> staticConstants;
-	private final Map<String, Class<?>> dynamicConstants;
 
-	public CompileContext(Map<String, Object> staticConstants, Map<String, Class<?>> dynamicConstants){
+	public CompileContext(WtfScriptEngine engine, Map<String, Object> staticConstants){
+		this.engine = engine;
 		this.staticConstants = ImmutableMap.copyOf(staticConstants);
-		this.dynamicConstants = ImmutableMap.copyOf(dynamicConstants);
+	}
+
+	public WtfScriptEngine getEngine(){
+		return engine;
 	}
 
 	public Map<String, Object> getStaticConstants(){
 		return staticConstants;
 	}
-	public Map<String, Class<?>> getDynamicConstants(){
-		return dynamicConstants;
-	}
 	@Nullable public Object getStaticConstant(String literal){
 		return staticConstants.get(literal);
-	}
-	@Nullable public Class<?> getDynamicConstant(String literal){
-		return dynamicConstants.get(literal);
 	}
 
 	public static Builder builder(){
 		return new Builder();
 	}
+	public static CompileContext createDefault(WtfScriptEngine engine){
+		return builder().build(engine);
+	}
 
 	public static final class Builder{
 		private final Map<String, Object> staticConstants = new HashMap<>();
-		private final Map<String, Class<?>> dynamicConstants = new HashMap<>();
 
 		public Builder addStaticConstant(String id, Object object){
 			Objects.requireNonNull(object);
 			if(!NAME_PATTERN.matcher(id).matches())
 				throw new IllegalArgumentException("Invalid constant ID '"+id+"'");
-			if(dynamicConstants.containsKey(id)||staticConstants.put(id, object)!=null)
+			if(staticConstants.put(id, object)!=null)
 				throw new IllegalStateException("Duplicated registration of constant with ID '"+id+"'");
 			return this;
 		}
 
-		public Builder addDynamicConstant(String id, Class<?> type){
-			Objects.requireNonNull(type);
-			if(!NAME_PATTERN.matcher(id).matches())
-				throw new IllegalArgumentException("Invalid constant ID '"+id+"'");
-			if(staticConstants.containsKey(id)||dynamicConstants.put(id, type)!=null)
-				throw new IllegalStateException("Duplicated registration of constant with ID '"+id+"'");
-			return this;
-		}
-
-		public CompileContext build(){
-			return new CompileContext(staticConstants, dynamicConstants);
+		public CompileContext build(WtfScriptEngine engine){
+			return new CompileContext(engine, staticConstants);
 		}
 	}
 }

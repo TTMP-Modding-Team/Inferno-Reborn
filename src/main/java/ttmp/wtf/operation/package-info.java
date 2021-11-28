@@ -1,6 +1,6 @@
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-package ttmp.wtf.definitions;
+package ttmp.wtf.operation;
 
 import mcp.MethodsReturnNonnullByDefault;
 

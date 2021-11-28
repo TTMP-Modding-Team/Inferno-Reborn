@@ -2,13 +2,10 @@ package ttmp.wtf.internal.compiler;
 
 import ttmp.wtf.exceptions.WtfCompileException;
 
-import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 public class WtfLexer{
 	private static final Map<String, TokenType> RESERVED_WORDS = new HashMap<>();
@@ -23,9 +20,8 @@ public class WtfLexer{
 		RESERVED_WORDS.put("for", TokenType.FOR);
 		RESERVED_WORDS.put("repeat", TokenType.REPEAT);
 		RESERVED_WORDS.put("in", TokenType.IN);
+		RESERVED_WORDS.put("return", TokenType.RETURN);
 	}
-
-	private static final Pattern COLOR_PATTERN = Pattern.compile("[0-9a-fA-F]{6}");
 
 	private final String script;
 	private int charIndex;
@@ -150,7 +146,7 @@ public class WtfLexer{
 				case '!':
 					return doubleToken('=', tokenStart, TokenType.BANG_EQ, TokenType.BANG);
 				case '=':
-					return doubleToken('=', tokenStart, TokenType.EQ_EQ, TokenType.EQ);
+					return new Token(TokenType.EQ, tokenStart, 1);
 				case '<':{
 					String namespaceLiteral = grabNamespaceLiteral(charIndex-1);
 					if(!namespaceLiteral.isEmpty()){
@@ -193,16 +189,9 @@ public class WtfLexer{
 						}
 					}else return new Token(TokenType.SLASH, tokenStart, 1);
 				case ':':
-					return new Token(TokenType.COLON, tokenStart, 1);
+					return doubleToken('=', tokenStart, TokenType.COLON_EQ, TokenType.COLON);
 				case ';':
 					return new Token(TokenType.SEMICOLON, tokenStart, 1);
-				case '#':{
-					String literal = grabIdentifierLiteral(charIndex);
-					if(!checkMatch(COLOR_PATTERN, literal))
-						throw new WtfCompileException(charIndex-1, "Invalid color '"+literal+"'");
-					charIndex += literal.length();
-					return new Token(TokenType.COLOR, tokenStart, 1+literal.length());
-				}
 				case '"':
 				case '\'':{
 					String literal = grabStringLiteral(--charIndex);
@@ -308,18 +297,5 @@ public class WtfLexer{
 			}
 		}
 		throw new WtfCompileException(script.length(), "Unterminated string literal");
-	}
-
-	@Nullable private Matcher matcher;
-
-	private boolean checkMatch(Pattern pattern, String text){
-		if(matcher==null){
-			matcher = pattern.matcher(text);
-		}else{
-			if(matcher.pattern()!=pattern)
-				matcher.usePattern(pattern);
-			matcher.reset(text);
-		}
-		return matcher.matches();
 	}
 }

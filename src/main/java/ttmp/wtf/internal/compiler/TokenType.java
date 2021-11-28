@@ -11,8 +11,8 @@ public enum TokenType{
 	L_BRACE, R_BRACE,
 	// ! !=
 	BANG, BANG_EQ,
-	// = ==
-	EQ, EQ_EQ,
+	// =
+	EQ,
 	// < <=
 	LT, LT_EQ,
 	// > >=
@@ -29,10 +29,10 @@ public enum TokenType{
 	TILDE,
 	// + - * /
 	PLUS, MINUS, STAR, SLASH,
-	// : ;
-	COLON, SEMICOLON,
+	// : ; :=
+	COLON, SEMICOLON, COLON_EQ,
 	// RESERVED SHITS
-	DEFINE, TRUE, FALSE, IF, ELSE, DEBUG, FOR, REPEAT, IN,
+	DEFINE, TRUE, FALSE, IF, ELSE, DEBUG, FOR, REPEAT, IN, RETURN,
 	// SHITS
-	NUMBER, INT, NAMESPACE, COLOR, IDENTIFIER, STRING
+	NUMBER, INT, NAMESPACE, IDENTIFIER, STRING
 }

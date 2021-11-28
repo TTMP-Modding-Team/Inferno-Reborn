@@ -64,6 +64,7 @@ public final class InfernalTypes{
 	private static final WtfScriptEngine ENGINE = new WtfScriptEngine()
 			.addType("Choose", ChooseAbilityInitializer::new);
 	private static final CompileContext COMPILE_CONTEXT = CompileContext.builder()
+			.addConstructor("Choose",)
 			.addStaticConstant("NoAbility", SomeAbility.NONE)
 			.addDynamicConstant("EntityType", ResourceLocation.class)
 			.build();
@@ -102,7 +103,7 @@ public final class InfernalTypes{
 		List<InfernalTypeStuff> list = new ArrayList<>();
 		int wgtSum = 0;
 		for(Map.Entry<ResourceLocation, WtfScript> e : generators.entrySet()){
-			WtfExecutor executor = new WtfExecutor(ENGINE, e.getValue(), context);
+			WtfExecutor executor = new WtfExecutor(e.getValue(), context);
 			try{
 				DeferredAbilityGeneratorInitializer deferredAbilityGeneratorInitializer = executor.execute(new DeferredAbilityGeneratorInitializer());
 				if(deferredAbilityGeneratorInitializer.getWeight()>0){

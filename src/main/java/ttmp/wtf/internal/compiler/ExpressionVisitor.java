@@ -21,10 +21,9 @@ public interface ExpressionVisitor{
 	void visitAnd(Expression.And and);
 	void visitRange(Expression.RangeOperator rangeOperator);
 	void visitRandomInt(Expression.RandomInt randomInt);
-	void visitPropertyAccess(Expression.PropertyAccess propertyAccess);
+	void visitDynamicAccess(Expression.DynamicAccess dynamicAccess);
 	void visitConstantAccess(Expression.ConstantAccess constantAccess);
 	void visitConstant(Expression.Constant constant);
-	void visitDynamicConstant(Expression.DynamicConstant dynamicConstant);
 	void visitConstruct(Expression.Construct construct);
 	void visitBool(Expression.Bool bool);
 	void visitDebug(Expression.Debug debug);
