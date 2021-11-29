@@ -1,24 +1,26 @@
 wtf: BR* object EOF
 
-object: (stmt BR+)*
+object: stmt*
 
 stmt:
-	( setPropertyStmt
+	( assignPropertyStmt
 	| defineStmt
 	| applyStmt
 	| ifStmt
 	| forStmt
 	| repeatStmt
 	| debugStmt
-	| expr ) ";"?
+	| expr )? (BR+ | ";")
 
-setPropertyStmt
-	: ( expr BR* "." BR* )? IDENTIFIER ":" BR* expr
-	| ( expr BR* "." BR* )? IDENTIFIER "(" param ")" ":" BR* stmt
+assignPropertyStmt
+	: ( expr BR* "." BR* )? IDENTIFIER definitionBody
 
 defineStmt
-	: "define" BR* IDENTIFIER BR* ":" BR* body
-	| "define" BR* IDENTIFIER BR* "(" param ")" BR* ":" BR* expr
+	: "define" BR* IDENTIFIER BR* definitionBody
+
+definitionBody
+	: ":" BR* expr
+	| "(" param ")" ":" BR* body
 
 applyStmt: ":" BR* expr
 
@@ -62,10 +64,9 @@ random: term (BR* "~" BR* term)*
 term: factor (BR* ("+"|"-") BR* factor)*
 factor: unaryPrefix (BR* ("*"|"/") BR* unaryPrefix)*
 
-unaryPrefix: (("!"|"-"|"debug") BR*)* unaryPostfix
-unaryPostfix: access ("(" BR* expr BR* ")")*
+unaryPrefix: (("!"|"-"|"debug") BR*)* call
 
-access: primaryExpr ( BR* "." BR* IDENTIFIER )*
+call: primaryExpr ( BR* "." BR* IDENTIFIER | "(" BR* expr BR* ")" )*
 
 primaryExpr
 	: "(" BR* expr BR* ")"

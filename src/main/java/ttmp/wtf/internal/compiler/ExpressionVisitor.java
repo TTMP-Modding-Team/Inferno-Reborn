@@ -24,6 +24,7 @@ public interface ExpressionVisitor{
 	void visitDynamicAccess(Expression.DynamicAccess dynamicAccess);
 	void visitConstantAccess(Expression.ConstantAccess constantAccess);
 	void visitConstant(Expression.Constant constant);
+	void visitFunction(Expression.Function function);
 	void visitConstruct(Expression.Construct construct);
 	void visitBool(Expression.Bool bool);
 	void visitDebug(Expression.Debug debug);

@@ -38,47 +38,70 @@ public class WtfParser{
 
 	private Statement stmt(){
 		Token current = lexer.current();
+		Statement stmt;
 		switch(current.type){
-			case IDENTIFIER:
-				return assignPropertyValueStmt();
 			case DEFINE:
-				return defineStmt();
+				stmt = defineStmt();
+				break;
 			case COLON:
-				return applyStmt();
+				stmt = applyStmt();
+				break;
 			case IF:
-				return ifStmt();
+				stmt = ifStmt();
+				break;
 			case FOR:
-				return forStmt();
+				stmt = forStmt();
+				break;
 			case REPEAT:
-				return repeatStmt();
+				stmt = repeatStmt();
+				break;
 			case DEBUG:
-				return debugStmt();
+				stmt = debugStmt();
+				break;
 			default:
-				throw new WtfCompileException(current.start, "Invalid statement");
+				stmt = exprStatement();
 		}
-	}
-
-	private Statement assignPropertyValueStmt(){
-		int start = lexer.current().start;
-		String property = identifier();
-		lexer.expectNext(TokenType.COLON, "Incomplete property assign statement, missing ':'");
-		return lexer.next().is(TokenType.L_BRACE) ?
-				new Statement.AssignLazy(start, property, block()) :
-				new Statement.Assign(start, property, expr(null));
+		if(lexer.guessNext(TokenType.SEMICOLON)) lexer.next();
+		return stmt;
 	}
 
 	private Statement defineStmt(){
 		int start = lexer.current().start;
 		lexer.expectNext(TokenType.IDENTIFIER, "Invalid define statement, expected an identifier");
 		String property = identifier();
-		lexer.expectNext(TokenType.COLON, "Incomplete define statement, missing ':'");
-		if(lexer.next().is(TokenType.L_BRACE))
-			throw new WtfCompileException(lexer.next().start, "Defined properties cannot have constructors without type specified.");
-		Expression expr = expr(null);
-		setDefinition(property, expr, start);
-		return expr.isConstant() ?
+		lexer.next();
+		Expression definitionBody = definitionBody();
+		setDefinition(property, definitionBody, start);
+		return definitionBody.isConstant() ?
 				new Statement.StatementList(start, Collections.emptyList()) :
-				new Statement.Define(start, property, expr);
+				new Statement.Define(start, property, definitionBody);
+	}
+
+	private Expression definitionBody(){
+		Token current = lexer.current();
+		switch(current.type){
+			case COLON:
+				return expr(null);
+			case L_PAREN:{
+				List<String> parameter = parameter();
+				lexer.expectNext(TokenType.R_PAREN, "Incomplete function declaration, missing ')'");
+				lexer.expectNext(TokenType.COLON, "Incomplete function declaration, missing ':'", false);
+
+				return new Expression.Function(current.start, parameter, );
+			}
+			default:
+				throw new WtfCompileException(current.start, "Invalid definition body");
+		}
+	}
+
+	private List<String> parameter(){
+		List<String> params = new ArrayList<>();
+		while(true){
+			if(!lexer.guessNext(TokenType.IDENTIFIER)) break;
+			params.add(stringLiteral(lexer.current()));
+			if(!lexer.guessNext(TokenType.COMMA)) break;
+		}
+		return params.isEmpty() ? Collections.emptyList() : params;
 	}
 
 	private Statement.Apply applyStmt(){
@@ -142,6 +165,10 @@ public class WtfParser{
 		int start = lexer.current().start;
 		lexer.next();
 		return new Statement.Debug(start, expr(null));
+	}
+
+	private Statement.Expr exprStatement(){
+		return new Statement.Expr(lexer.current().start, expr(null));
 	}
 
 	private List<Statement> body(){

@@ -12,11 +12,13 @@ public abstract class Statement{
 	public abstract void visit(StatementVisitor visitor);
 
 	public static final class Assign extends Statement{
+		public final Expression object;
 		public final String property;
 		public final Expression value;
 
-		public Assign(int position, String property, Expression value){
+		public Assign(int position, Expression object, String property, Expression value){
 			super(position);
+			this.object = object;
 			this.property = property;
 			this.value = value;
 		}
@@ -27,30 +29,9 @@ public abstract class Statement{
 
 		@Override public String toString(){
 			return position+":Assign{"+
+					"object="+object+
 					"property='"+property+'\''+
 					", value="+value+
-					'}';
-		}
-	}
-
-	public static final class AssignLazy extends Statement{
-		public final String property;
-		public final List<Statement> statements;
-
-		public AssignLazy(int position, String property, List<Statement> statements){
-			super(position);
-			this.property = property;
-			this.statements = statements;
-		}
-
-		@Override public void visit(StatementVisitor visitor){
-			visitor.visitAssignLazy(this);
-		}
-
-		@Override public String toString(){
-			return position+":AssignLazy{"+
-					"property='"+property+'\''+
-					", statements="+statements+
 					'}';
 		}
 	}
@@ -202,6 +183,25 @@ public abstract class Statement{
 		@Override public String toString(){
 			return position+":Debug{"+
 					"value="+value+
+					'}';
+		}
+	}
+
+	public static class Expr extends Statement{
+		public final Expression expr;
+
+		public Expr(int position, Expression expr){
+			super( position);
+			this.expr = expr;
+		}
+
+		@Override public void visit(StatementVisitor visitor){
+			visitor.visitExpr(this);
+		}
+
+		@Override public String toString(){
+			return position+":Expr{"+
+					"expr="+expr+
 					'}';
 		}
 	}

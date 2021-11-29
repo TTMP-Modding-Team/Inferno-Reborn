@@ -80,10 +80,17 @@ public class WtfLexer{
 	 * @param token1 First token to match
 	 * @param token2 Second token to match
 	 * @return 1 if first token matches, 2 if second token matches, 0 if nothing matches
+	 * @see WtfLexer#guessNext2(TokenType, TokenType, boolean)
 	 */
 	public int guessNext2(TokenType token1, TokenType token2){
 		return guessNext2(token1, token2, true);
 	}
+
+	/**
+	 * @param token1 First token to match
+	 * @param token2 Second token to match
+	 * @return 1 if first token matches, 2 if second token matches, 0 if nothing matches
+	 */
 	public int guessNext2(TokenType token1, TokenType token2, boolean skipNewline){
 		int index = tokenIndex;
 		Token t = skipNewline ? next() : next0();
@@ -99,10 +106,19 @@ public class WtfLexer{
 	 * @param token3 Third token to match
 	 * @param token4 Fourth token to match
 	 * @return 1 if first token matches, 2 if second token matches, 3 if third token matches, 4 if fourth token matches, 0 if nothing matches
+	 * @see WtfLexer#guessNext4(TokenType, TokenType, TokenType, TokenType, boolean)
 	 */
 	public int guessNext4(TokenType token1, TokenType token2, TokenType token3, TokenType token4){
 		return guessNext4(token1, token2, token3, token4, true);
 	}
+
+	/**
+	 * @param token1 First token to match
+	 * @param token2 Second token to match
+	 * @param token3 Third token to match
+	 * @param token4 Fourth token to match
+	 * @return 1 if first token matches, 2 if second token matches, 3 if third token matches, 4 if fourth token matches, 0 if nothing matches
+	 */
 	public int guessNext4(TokenType token1, TokenType token2, TokenType token3, TokenType token4, boolean skipNewline){
 		int index = tokenIndex;
 		Token t = skipNewline ? next() : next0();

@@ -3,6 +3,7 @@ package ttmp.wtf.internal.compiler;
 import ttmp.wtf.exceptions.WtfCompileException;
 import ttmp.wtf.obj.Bundle;
 import ttmp.wtf.obj.Range;
+import ttmp.wtf.obj.WtfExecutable;
 
 import javax.annotation.Nullable;
 import java.util.List;
@@ -502,6 +503,30 @@ public abstract class Expression{
 		}
 		@Override public String toString(){
 			return position+":Constant{"+constant+'}';
+		}
+	}
+
+	public static class Function extends Expression{
+		public final List<String> parameters;
+		public final List<Statement> statements;
+
+		public Function(int position, List<String> parameters, List<Statement> statements){
+			super(position);
+			this.parameters = parameters;
+			this.statements = statements;
+		}
+
+		@Override public void visit(ExpressionVisitor visitor){
+			visitor.visitFunction(this);
+		}
+		@Override public void checkType(@Nullable Class<?> expectedType){
+			expectType(WtfExecutable.class, expectedType);
+		}
+		@Override public String toString(){
+			return position+":Function{"+
+					"parameters="+parameters+
+					", statements="+statements+
+					'}';
 		}
 	}
 
