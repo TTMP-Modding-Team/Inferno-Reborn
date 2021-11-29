@@ -1,5 +1,7 @@
 package ttmp.wtf;
 
+import javax.annotation.Nullable;
+import java.util.Objects;
 import java.util.Random;
 
 /**
@@ -13,8 +15,9 @@ public final class Wtf{
 	 *
 	 * @return If both object is {@link Number}, comparison between two double values. Otherwise, result of {@code equals()} call.
 	 */
-	public static boolean equals(Object o1, Object o2){
-		if(!(o1 instanceof Number)) return o1.equals(o2);
+	public static boolean equals(@Nullable Object o1, @Nullable Object o2){
+		if(o1==o2) return true;
+		if(!(o1 instanceof Number)) return Objects.equals(o1, o2);
 		if(!(o2 instanceof Number)) return false;
 		return Double.compare(((Number)o1).doubleValue(), ((Number)o2).doubleValue())==0;
 	}
@@ -79,7 +82,7 @@ public final class Wtf{
 		return random.nextInt(max-min+1)+min;
 	}
 
-	public static boolean isIn(Object o, Iterable<?> iterable){
+	public static boolean isIn(@Nullable Object o, Iterable<?> iterable){
 		for(Object o2 : iterable)
 			if(equals(o2, o)) return true;
 		return false;

@@ -1,9 +1,9 @@
 package ttmp.wtf.internal;
 
+import com.google.common.collect.ImmutableList;
 import com.google.common.primitives.Ints;
 import com.google.common.primitives.Longs;
 import com.google.common.primitives.Shorts;
-import com.sun.org.omg.CORBA.Initializer;
 import ttmp.wtf.EvalContext;
 import ttmp.wtf.Wtf;
 import ttmp.wtf.WtfScript;
@@ -11,10 +11,21 @@ import ttmp.wtf.exceptions.WtfEvalException;
 import ttmp.wtf.exceptions.WtfException;
 import ttmp.wtf.obj.Bundle;
 import ttmp.wtf.obj.Range;
+import ttmp.wtf.obj.WtfExecutable;
+import ttmp.wtf.obj.WtfPropertyHolder;
+import ttmp.wtf.operation.WtfPropertyGet;
+import ttmp.wtf.operation.WtfPropertySet;
 
 import javax.annotation.Nullable;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
 
 public class WtfExecutor{
 	public final EvalContext context;
@@ -22,7 +33,7 @@ public class WtfExecutor{
 	private final Object[] stack;
 	private int stackIndex;
 
-	private int ip;
+	private final Map<Class<?>, List<Class<?>>> relevantTypes = new HashMap<>();
 
 	public WtfExecutor(EvalContext context){
 		this.stack = new Object[64];
@@ -38,22 +49,59 @@ public class WtfExecutor{
 		this.stackIndex = 0;
 	}
 
-	public void execute(WtfScript script, int start, Object[] args){
-		new Unit(script).execute(start, args);
+	public void execute(WtfScript script, int start, @Nullable Object thisObject){
+		new Unit(script, start, thisObject, new Object[0]).execute();
+	}
+	public void execute(WtfScript script, int start, @Nullable Object thisObject, Object[] args){
+		new Unit(script, start, thisObject, args).execute();
+	}
+
+	private List<Class<?>> getRelevantTypes(Object o){
+		return relevantTypes.computeIfAbsent(o.getClass(), t -> {
+			Set<Class<?>> classes = new HashSet<>();
+			Set<Class<?>> interfaces = new HashSet<>();
+			for(Class<?> t2 = t; t2!=null; t2 = t2.getSuperclass()){
+				if(t2==Object.class) break;
+				if(context.isTypeReferenced(t2))
+					classes.add(t2);
+				for(Class<?> i : t2.getInterfaces()){
+					if(context.isTypeReferenced(i))
+						interfaces.add(i);
+				}
+			}
+			return classes.isEmpty()&&interfaces.isEmpty() ?
+					Collections.emptyList() :
+					ImmutableList.<Class<?>>builder()
+							.addAll(classes)
+							.addAll(interfaces)
+							.build();
+		});
 	}
 
 	public final class Unit{
 		private final WtfScript script;
+		private final int start;
+		@Nullable private final Object thisObject;
+		private final Object[] args;
 
-		public Unit(WtfScript script){
-			this.script = script;
+		private int ip;
+
+		public Unit(WtfScript script, int start, @Nullable Object thisObject, Object[] args){
+			this.script = Objects.requireNonNull(script);
+			this.start = start;
+			this.thisObject = thisObject;
+			this.args = Objects.requireNonNull(args);
+		}
+
+		public WtfExecutor executor(){
+			return WtfExecutor.this;
 		}
 
 		/**
 		 * @throws WtfEvalException      on evaluation error
 		 * @throws IllegalStateException if executor is not initialized yet
 		 */
-		public void execute(int start, Object[] args){
+		public void execute(){
 			try{
 				ip = start;
 				int startingStack = stackIndex;
@@ -70,6 +118,9 @@ public class WtfExecutor{
 							break;
 						case Inst.DUP:
 							push(peek());
+							break;
+						case Inst.THIS:
+							push(thisObject);
 							break;
 						case Inst.TRUE:
 							push(true);
@@ -120,10 +171,10 @@ public class WtfExecutor{
 							push(!expectBoolean(pop()));
 							break;
 						case Inst.EQ:
-							push(pop().equals(pop()));
+							push(Wtf.equals(pop(), pop()));
 							break;
 						case Inst.NEQ:
-							push(!pop().equals(pop()));
+							push(!Wtf.equals(pop(), pop()));
 							break;
 						case Inst.LT:
 							setAndDiscard(1, expectNumber(peek(1))<expectNumber(peek()));
@@ -184,29 +235,12 @@ public class WtfExecutor{
 							push(stb.toString());
 							break;
 						}
-						case Inst.GET_PROPERTY:
-							push(expectInitializer(peek(nextUnsigned())).getPropertyValue(this, identifier()));
+						case Inst.GET:
+							push(getProperty(pop(), identifier()));
 							break;
-						case Inst.SET_PROPERTY:
-							expectInitializer(peek(nextUnsigned())).setPropertyValue(this, identifier(), pop());
-							break;
-						case Inst.SET_PROPERTY_LAZY:{
-							Initializer<?> i2 = expectInitializer(peek(nextUnsigned()))
-									.setPropertyValueLazy(this, identifier(), ip+2);
-							if(i2!=null){
-								ip += 2;
-								push(i2);
-							}else ip += next2();
-							break;
-						}
-						case Inst.APPLY:
-							expectInitializer(peek(nextUnsigned())).apply(this, pop());
-							break;
-						case Inst.GET_VARIABLE:
-							push(variable[nextUnsigned()]);
-							break;
-						case Inst.SET_VARIABLE:
-							variable[nextUnsigned()] = pop();
+						case Inst.SET:
+							setProperty(peek(1), peek(0), identifier());
+							discard(2);
 							break;
 						case Inst.RANGE:
 							setAndDiscard(1, new Range(expectInt(peek(1)), expectInt(peek())));
@@ -217,15 +251,16 @@ public class WtfExecutor{
 						case Inst.RANDN:
 							push(Wtf.randomInt(script.getEngine().getRandom(), next4(), next4()));
 							break;
-						case Inst.NEW:{
-							String identifier = identifier();
-							InitDefinition<?> def = script.getEngine().getType(identifier);
-							if(def==null) error("Unknown type '"+identifier+"'");
-							push(def.createInitializer(this.context));
-							break;
+						case Inst.EXECUTE:{
+							WtfExecutable executable = (WtfExecutable)peek();
+							int args = nextUnsigned();
+							Object[] argv = new Object[args];
+							for(int i = args-1; i>=0; i--)
+								argv[i] = pop();
+							push(executable.execute(executor(), argv));
 						}
-						case Inst.MAKE:
-							push(expectInitializer(pop()).finish(this));
+						case Inst.CONSTRUCT:
+							error("TODO"); // TODO
 							break;
 						case Inst.MAKE_ITERATOR:
 							push(expectIterable(pop()).iterator());
@@ -258,11 +293,6 @@ public class WtfExecutor{
 						}
 						case Inst.DEBUG:
 							script.getEngine().debug(peek());
-							break;
-						case Inst.FINISH_PROPERTY_INIT:
-							if(stackIndex==startingStack+1) break LOOP;
-							expectInitializer(peek(nextUnsigned()))
-									.setPropertyValue(this, identifier(), expectInitializer(pop()).finish(this));
 							break;
 						case Inst.END:
 							break LOOP;
@@ -302,17 +332,17 @@ public class WtfExecutor{
 			return Longs.fromBytes(next(), next(), next(), next(), next(), next(), next(), next());
 		}
 
-		private void push(Object o){
+		private void push(@Nullable Object o){
 			if(stackIndex==stack.length) error("Stack overflow");
 			stack[stackIndex++] = o;
 		}
 
-		private Object pop(){
+		@Nullable private Object pop(){
 			if(stackIndex==0) error("Stack underflow");
 			return stack[--stackIndex];
 		}
 
-		private Object peek(){
+		@Nullable private Object peek(){
 			if(stackIndex==0) error("Stack underflow");
 			return stack[stackIndex-1];
 		}
@@ -320,7 +350,7 @@ public class WtfExecutor{
 		/**
 		 * Peek stack {@code i} below top; {@code peek(0)} is equivalent to {@code peek()}.
 		 */
-		private Object peek(int i){
+		@Nullable private Object peek(int i){
 			if(i>=stackIndex) error("Kinda hard to get object "+i+" below top... when the stack size is "+stackIndex);
 			return stack[stackIndex-1-i];
 		}
@@ -328,7 +358,7 @@ public class WtfExecutor{
 		/**
 		 * Set object to stack at {@code i} below top. Does not modify stack size.
 		 */
-		private void set(int i, Object o){
+		private void set(int i, @Nullable Object o){
 			if(i>=stackIndex) error("Kinda hard to set object "+i+" below top... when the stack size is "+stackIndex);
 			stack[stackIndex-1-i] = o;
 		}
@@ -336,7 +366,7 @@ public class WtfExecutor{
 		/**
 		 * Set object to stack at {@code i}, and discard everything on top of it.
 		 */
-		private void setAndDiscard(int i, Object o){
+		private void setAndDiscard(int i, @Nullable Object o){
 			if(i>=stackIndex) error("Kinda hard to set object "+i+" below top... when the stack size is "+stackIndex);
 			stack[(stackIndex -= i)-1] = o;
 		}
@@ -346,13 +376,13 @@ public class WtfExecutor{
 			stackIndex -= amount;
 		}
 
-		private Iterable<?> expectIterable(Object o){
-			if(!(o instanceof Iterable<?>)) error("Expected Iterable but provided "+o.getClass().getSimpleName());
+		private Iterable<?> expectIterable(@Nullable Object o){
+			if(!(o instanceof Iterable<?>)) error("Expected Iterable but provided "+typeOf(o));
 			return (Iterable<?>)o;
 		}
 
-		private Iterator<?> expectIterator(Object o){
-			if(!(o instanceof Iterator<?>)) error("Expected Iterator but provided "+o.getClass().getSimpleName());
+		private Iterator<?> expectIterator(@Nullable Object o){
+			if(!(o instanceof Iterator<?>)) error("Expected Iterator but provided "+typeOf(o));
 			return (Iterator<?>)o;
 		}
 
@@ -360,29 +390,57 @@ public class WtfExecutor{
 			return script.getEngine().getConstantPool().getIdentifier(nextUnsigned());
 		}
 
-		public void error(String message){
+		public void error(String message){ // TODO additional information would be neat
 			throw new WtfEvalException(getCurrentLine(), message);
 		}
 
-		public double expectNumber(Object o){
-			if(!(o instanceof Number)) error("Expected number but provided "+o.getClass().getSimpleName());
+		public double expectNumber(@Nullable Object o){
+			if(!(o instanceof Number)) error("Expected number but provided "+typeOf(o));
 			return (double)o;
 		}
-		public int expectInt(Object o){
-			if(!(o instanceof Integer)) error("Expected integer but provided "+o.getClass().getSimpleName());
+		public int expectInt(@Nullable Object o){
+			if(!(o instanceof Integer)) error("Expected integer but provided "+typeOf(o));
 			return (int)o;
 		}
-		public Number expectNumberObject(Object o){
-			if(!(o instanceof Number)) error("Expected number but provided "+o.getClass().getSimpleName());
+		public Number expectNumberObject(@Nullable Object o){
+			if(!(o instanceof Number)) error("Expected number but provided "+typeOf(o));
 			return (Number)o;
 		}
-		public boolean expectBoolean(Object o){
-			if(!(o instanceof Boolean)) error("Expected boolean but provided "+o.getClass().getSimpleName());
+		public boolean expectBoolean(@Nullable Object o){
+			if(!(o instanceof Boolean)) error("Expected boolean but provided "+typeOf(o));
 			return (boolean)o;
 		}
-		public <T> T expectType(Class<T> expectedType, Object o){
-			if(!expectedType.isInstance(o)) error("Expected "+expectedType.getSimpleName()+" but provided "+o.getClass().getSimpleName());
+		public <T> T expectType(Class<T> expectedType, @Nullable Object o){
+			if(!expectedType.isInstance(o)) error("Expected "+expectedType.getSimpleName()+" but provided "+typeOf(o));
 			return expectedType.cast(o);
 		}
+
+		@Nullable private Object getProperty(@Nullable Object o, String name){
+			if(o==null) error("Trying to access property of a null object");
+			else if(o instanceof WtfPropertyHolder){
+				WtfPropertyHolder propertyHolder = (WtfPropertyHolder)o;
+				Object property = propertyHolder.getProperty(name);
+				if(property!=null) return property;
+			}
+			WtfPropertyGet propertyGet = context.getProperty(getRelevantTypes(o), name);
+			if(propertyGet!=null) return propertyGet.get(o);
+			else return null;
+		}
+
+		private void setProperty(@Nullable Object o, @Nullable Object v, String name){
+			if(o==null) error("Trying to assign property of a null object");
+			else if(o instanceof WtfPropertyHolder){
+				WtfPropertyHolder propertyHolder = (WtfPropertyHolder)o;
+				if(propertyHolder.setProperty(name, v)) return;
+			}
+			WtfPropertySet propertySet = context.setProperty(getRelevantTypes(o), name);
+			if(propertySet!=null) propertySet.set(o, v);
+			else error("Property with name \"name\" doesn't exist");
+		}
+	}
+
+	private static String typeOf(@Nullable Object o){
+		if(o==null) return "null";
+		else return o.getClass().getSimpleName();
 	}
 }

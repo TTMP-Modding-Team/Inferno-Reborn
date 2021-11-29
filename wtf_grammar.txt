@@ -2,19 +2,23 @@ wtf: BR* object EOF
 
 object: (stmt BR+)*
 
-stmt: assignPropertyValueStmt
+stmt:
+	( setPropertyStmt
 	| defineStmt
 	| applyStmt
 	| ifStmt
 	| forStmt
 	| repeatStmt
 	| debugStmt
+	| expr ) ";"?
 
-assignPropertyValueStmt
-	: IDENTIFIER (BR* "." BR* IDENTIFIER)* BR* ":" BR* (expr|block)
+setPropertyStmt
+	: ( expr BR* "." BR* )? IDENTIFIER ":" BR* expr
+	| ( expr BR* "." BR* )? IDENTIFIER "(" param ")" ":" BR* stmt
 
 defineStmt
-	: "define" BR* IDENTIFIER BR* ":" BR* expr
+	: "define" BR* IDENTIFIER BR* ":" BR* body
+	| "define" BR* IDENTIFIER BR* "(" param ")" BR* ":" BR* expr
 
 applyStmt: ":" BR* expr
 
@@ -56,23 +60,29 @@ range: random (BR* ".." BR* random)*
 random: term (BR* "~" BR* term)*
 
 term: factor (BR* ("+"|"-") BR* factor)*
-factor: access (BR* ("*"|"/") BR* access)*
+factor: unaryPrefix (BR* ("*"|"/") BR* unaryPrefix)*
 
-access: unary (BR* "." BR* unary)*
+unaryPrefix: (("!"|"-"|"debug") BR*)* unaryPostfix
+unaryPostfix: access ("(" BR* expr BR* ")")*
 
-unary: (("!"|"-"|"debug") BR*)* primaryExpr
+access: primaryExpr ( BR* "." BR* IDENTIFIER )*
 
 primaryExpr
 	: "(" BR* expr BR* ")"
-	| "true"
+	| IDENTIFIER (BR* block)?
+	| ( "(" param ")" | param ) "->" ( block | expr )
+	| block
+	| literal
+
+literal
+	: "true"
 	| "false"
 	| NUMBER
 	| NAMESPACE
 	| STRING
-	| constructor
-	| IDENTIFIER
 
-constructor: IDENTIFIER BR* block
+
+param: (BR* IDENTIFIER BR* ",")* BR*
 
 # stupid lexical grammars, here you go
 

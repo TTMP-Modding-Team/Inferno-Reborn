@@ -134,7 +134,7 @@ public class WtfCompiler implements StatementVisitor, ExpressionVisitor{
 
 	@Override public void visitAssign(Statement.Assign assign){
 		writeInst(assign.value);
-		write(Inst.SET_PROPERTY);
+		write(Inst.SET);
 		write(getStackPoint(getBlock().initializerStackPosition));
 		write(identifier(assign.property));
 		removeStack();
@@ -472,7 +472,7 @@ public class WtfCompiler implements StatementVisitor, ExpressionVisitor{
 		}
 	}
 	@Override public void visitDynamicAccess(Expression.DynamicAccess dynamicAccess){
-		write(Inst.GET_PROPERTY);
+		write(Inst.GET);
 		write(getStackPoint(getBlock().initializerStackPosition));
 		write(identifier(dynamicAccess.property));
 		addStack();

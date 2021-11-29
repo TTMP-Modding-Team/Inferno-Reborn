@@ -39,7 +39,7 @@ public final class CompileContext{
 	public static final class Builder{
 		private final Map<String, Object> staticConstants = new HashMap<>();
 
-		public Builder addStaticConstant(String id, Object object){
+		public Builder staticConstant(String id, Object object){
 			Objects.requireNonNull(object);
 			if(!NAME_PATTERN.matcher(id).matches())
 				throw new IllegalArgumentException("Invalid constant ID '"+id+"'");

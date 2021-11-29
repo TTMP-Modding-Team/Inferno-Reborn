@@ -83,10 +83,10 @@ public class WtfScriptTest{
 			Object o1 = new Object(), o2 = new Object();
 			tests.add(DynamicTest.dynamicTest("Operation Test: Constants 2: Electric Boogaloo",
 					operationTest(engine, "operation_test/constants_2", CompileContext.builder()
-									.addStaticConstant("S1", 1.0)
-									.addStaticConstant("S2", "Hello World")
-									.addStaticConstant("S3", new ResourceLocation("grass"))
-									.addStaticConstant("S4", o1)
+									.staticConstant("S1", 1.0)
+									.staticConstant("S2", "Hello World")
+									.staticConstant("S3", new ResourceLocation("grass"))
+									.staticConstant("S4", o1)
 									.build(engine),
 							EvalContext.builder()
 									.dynamicConstant("C1", 3.0)

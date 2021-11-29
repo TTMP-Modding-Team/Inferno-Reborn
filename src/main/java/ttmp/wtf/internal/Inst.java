@@ -14,8 +14,18 @@ public interface Inst{
 	 * Duplicate top of stack
 	 */
 	byte DUP = 0x2;
+	/**
+	 * Duplicate {@code this}
+	 */
+	byte THIS = 0x3;
 
+	/**
+	 * Push a boolean constant 'true'.
+	 */
 	byte TRUE = 0x10;
+	/**
+	 * Push a boolean constant 'false'.
+	 */
 	byte FALSE = 0x11;
 
 	/**
@@ -130,52 +140,46 @@ public interface Inst{
 
 	// 0x40~0x5F Advanced Operators
 	/**
-	 * Get property from {@link ttmp.wtf.definitions.initializer.Initializer Initializer} {1} below from top of stack, named with identifier {1}. Pushes 1.
+	 * Pop an object and get property named with identifier {1}. Pushes 1.
 	 */
-	byte GET_PROPERTY = 0x40;
+	byte GET = 0x40;
 	/**
-	 * Set property to {@link ttmp.wtf.definitions.initializer.Initializer Initializer} {1} below from top of stack, named with identifier {1}. Pops 1.
+	 * Pop two objects - A and B -, and set A's property named with identifier {1} to B.
 	 */
-	byte SET_PROPERTY = 0x41;
-	/**
-	 * Set lazy property to {@link ttmp.wtf.definitions.initializer.Initializer Initializer} {1} below from top of stack, named with identifier {1}.<br>
-	 * Property gets evaluated right away if the initializer doesn't accept lazy property initialization. In that case, new initializer is put into stack.
-	 * Otherwise, jump to {2}.
-	 */
-	byte SET_PROPERTY_LAZY = 0x42;
-	/**
-	 * Apply 1 popped object to {@link ttmp.wtf.definitions.initializer.Initializer Initializer} {1} below from top of stack.
-	 */
-	byte APPLY = 0x43;
+	byte SET = 0x41;
 
 	/**
 	 * Create range instance using two popped numbers
 	 */
-	byte RANGE = 0x46;
+	byte RANGE = 0x42;
 
 	/**
 	 * Return random int between int #2 ~ #1 from stack, inclusive
 	 */
-	byte RAND = 0x47;
+	byte RAND = 0x43;
 	/**
 	 * Return random int between {4} ~ {4}, inclusive
 	 */
-	byte RANDN = 0x48;
+	byte RANDN = 0x44;
 
 	/**
-	 * Create new {@link ttmp.wtf.definitions.initializer.Initializer Initializer} based on identifier {1} and pushes it
+	 * Pop an instance of executables and perform its action. Pops {1}
+	 * objects from stack as arguments. Pushes the returned object.
 	 */
-	byte NEW = 0x50;
+	byte EXECUTE = 0x50;
 	/**
-	 * Pop 1 object (expects {@link ttmp.wtf.definitions.initializer.Initializer Initializer}) and pushes finalized object
+	 * Create new instance using constructor named with identifier {1}.
+	 * The program will jump to entry point {2} and continue its execution
+	 * until returning to original point. Pushes the new object.<br>
 	 */
-	byte MAKE = 0x51;
+	byte CONSTRUCT = 0x51;
 	/**
 	 * Pop 1 object, expect {@link Iterable}, make iterator and push it
 	 */
 	byte MAKE_ITERATOR = 0x52;
 	/**
-	 * Pop 2 objects (A, B) and pushes a boolean value indicating whether A is inside collection B
+	 * Pop 2 objects (A, B) and pushes a boolean value indicating
+	 * whether A is inside collection B
 	 */
 	byte IN = 0x53;
 
@@ -207,12 +211,6 @@ public interface Inst{
 	 */
 	byte DEBUG = 0x70;
 
-	/**
-	 * Pop an {@link ttmp.wtf.definitions.initializer.Initializer Initializer} from
-	 * stack and call {@link ttmp.wtf.definitions.initializer.Initializer#finish(WtfExecutor) finish()}.
-	 * The product is set to another {@link ttmp.wtf.definitions.initializer.Initializer Initializer} {1} below from top of stack, as property with identifier {1}.
-	 */
-	byte FINISH_PROPERTY_INIT = 0x7E;
 	/**
 	 * End the fucking program
 	 */

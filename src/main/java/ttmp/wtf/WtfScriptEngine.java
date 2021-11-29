@@ -62,7 +62,7 @@ public class WtfScriptEngine{
 	/**
 	 * Debug print
 	 */
-	public void debug(Object object){
+	public void debug(@Nullable Object object){
 		if(printer!=null) printer.accept(object);
 		else System.out.println(object);
 	}

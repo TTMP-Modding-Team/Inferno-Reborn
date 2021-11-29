@@ -61,13 +61,10 @@ import static ttmp.infernoreborn.InfernoReborn.MODID;
 public final class InfernalTypes{
 	private InfernalTypes(){}
 
-	private static final WtfScriptEngine ENGINE = new WtfScriptEngine()
-			.addType("Choose", ChooseAbilityInitializer::new);
+	private static final WtfScriptEngine ENGINE = new WtfScriptEngine();
 	private static final CompileContext COMPILE_CONTEXT = CompileContext.builder()
-			.addConstructor("Choose",)
-			.addStaticConstant("NoAbility", SomeAbility.NONE)
-			.addDynamicConstant("EntityType", ResourceLocation.class)
-			.build();
+			.staticConstant("NoAbility", SomeAbility.NONE)
+			.build(ENGINE);
 
 	private static Map<ResourceLocation, InfernalType> infernalTypes = Collections.emptyMap();
 	private static Map<ResourceLocation, WtfScript> generators = Collections.emptyMap();

@@ -80,6 +80,9 @@ public class WtfScriptFormatter{
 				case Inst.DUP:
 					writeLine("DUP");
 					break;
+				case Inst.THIS:
+					writeLine("THIS");
+					break;
 				case Inst.TRUE:
 					writeLine("TRUE");
 					break;
@@ -176,23 +179,11 @@ public class WtfScriptFormatter{
 				case Inst.APPENDN:
 					writeLine("APPENDN "+nextUByte());
 					break;
-				case Inst.GET_PROPERTY:
-					writeLine("GET_PROPERTY "+nextUByte()+' '+nextByte()+"   #"+identifier());
+				case Inst.GET:
+					writeLine("GET "+nextUByte()+' '+nextByte()+"   #"+identifier());
 					break;
-				case Inst.SET_PROPERTY:
-					writeLine("SET_PROPERTY "+nextUByte()+' '+nextByte()+"   #"+identifier());
-					break;
-				case Inst.SET_PROPERTY_LAZY:
-					writeLine("SET_PROPERTY_LAZY "+nextUByte()+' '+nextByte()+' '+nextShort()+"   #"+identifier(2));
-					break;
-				case Inst.APPLY:
-					writeLine("APPLY "+nextUByte());
-					break;
-				case Inst.GET_VARIABLE:
-					writeLine("GET_VARIABLE "+nextUByte());
-					break;
-				case Inst.SET_VARIABLE:
-					writeLine("SET_VARIABLE "+nextUByte());
+				case Inst.SET:
+					writeLine("SET "+nextUByte()+' '+nextByte()+"   #"+identifier());
 					break;
 				case Inst.RANGE:
 					writeLine("RANGE");
@@ -203,11 +194,11 @@ public class WtfScriptFormatter{
 				case Inst.RANDN:
 					writeLine("RANDN "+nextInt()+' '+nextInt());
 					break;
-				case Inst.NEW:
-					writeLine("NEW "+nextByte()+"   #"+identifier());
+				case Inst.EXECUTE:
+					writeLine("EXECUTE");
 					break;
-				case Inst.MAKE:
-					writeLine("MAKE");
+				case Inst.CONSTRUCT:
+					writeLine("CONSTRUCT");
 					break;
 				case Inst.MAKE_ITERATOR:
 					writeLine("MAKE_ITERATOR");
@@ -232,9 +223,6 @@ public class WtfScriptFormatter{
 					break;
 				case Inst.DEBUG:
 					writeLine("DEBUG");
-					break;
-				case Inst.FINISH_PROPERTY_INIT:
-					writeLine("FINISH_PROPERTY_INIT "+nextUByte()+' '+nextByte()+"   #"+identifier());
 					break;
 				case Inst.END:
 					writeLine("END");

@@ -4,20 +4,24 @@ import ttmp.wtf.operation.WtfApply;
 import ttmp.wtf.operation.WtfConstructor;
 import ttmp.wtf.operation.WtfPropertyGet;
 import ttmp.wtf.operation.WtfPropertySet;
+import ttmp.wtf.operation.impl.ObjectConstructor;
 import ttmp.wtf.operation.impl.SetConstructor;
 
 import javax.annotation.Nullable;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Objects;
+import java.util.Set;
 
 import static ttmp.wtf.WtfScript.NAME_PATTERN;
 
 public class EvalContext{
 	private static final EvalContext DEFAULT = new Builder()
 			.constructor("Set", new SetConstructor())
+			.constructor("Object", new ObjectConstructor())
 			.build();
 
 	private final Map<String, WtfConstructor> constructor = new HashMap<>();
@@ -26,51 +30,64 @@ public class EvalContext{
 	private final Map<Class<?>, WtfApply> apply = new HashMap<>();
 	private final Map<String, Object> dynamicConstant = new HashMap<>();
 
+	private final Set<Class<?>> allClasses = new HashSet<>();
+
 	private EvalContext(Map<String, WtfConstructor> constructor,
-	                   Map<Class<?>, Map<String, WtfPropertyGet>> propertyGet,
-	                   Map<Class<?>, Map<String, WtfPropertySet>> propertySet,
-	                   Map<Class<?>, WtfApply> apply,
-	                   Map<String, Object> dynamicConstant){
+	                    Map<Class<?>, Map<String, WtfPropertyGet>> propertyGet,
+	                    Map<Class<?>, Map<String, WtfPropertySet>> propertySet,
+	                    Map<Class<?>, WtfApply> apply,
+	                    Map<String, Object> dynamicConstant){
 		this.constructor.putAll(constructor);
 		this.propertyGet.putAll(propertyGet);
 		this.propertySet.putAll(propertySet);
 		this.apply.putAll(apply);
 		this.dynamicConstant.putAll(dynamicConstant);
+
+		this.allClasses.addAll(propertyGet.keySet());
+		this.allClasses.addAll(propertySet.keySet());
+		this.allClasses.addAll(apply.keySet());
+		this.allClasses.remove(Object.class);
 	}
 
-	@Nullable WtfConstructor getConstructor(String name){
+	public boolean isTypeReferenced(Class<?> type){
+		return allClasses.contains(type);
+	}
+
+	@Nullable public WtfConstructor getConstructor(String name){
 		return constructor.get(name);
 	}
 
-	@Nullable WtfPropertyGet getProperty(List<Class<?>> containingTypes, String name){
+	@Nullable private static <T> T get(Class<?> type, String name, Map<Class<?>, Map<String, T>> map){
+		Map<String, T> m = map.get(type);
+		return m==null ? null : m.get(name);
+	}
+
+	@Nullable public WtfPropertyGet getProperty(List<Class<?>> containingTypes, String name){
 		for(Class<?> t : containingTypes){
-			Map<String, WtfPropertyGet> m = propertyGet.get(t);
-			if(m==null) continue;
-			WtfPropertyGet get = m.get(name);
+			WtfPropertyGet get = get(t, name, propertyGet);
 			if(get!=null) return get;
 		}
-		return null;
+		return get(Object.class, name, propertyGet);
 	}
 
-	@Nullable WtfPropertySet setProperty(List<Class<?>> containingTypes, String name){
+
+	@Nullable public WtfPropertySet setProperty(List<Class<?>> containingTypes, String name){
 		for(Class<?> t : containingTypes){
-			Map<String, WtfPropertySet> m = propertySet.get(t);
-			if(m==null) continue;
-			WtfPropertySet set = m.get(name);
+			WtfPropertySet set = get(t, name, propertySet);
 			if(set!=null) return set;
 		}
-		return null;
+		return get(Object.class, name, propertySet);
 	}
 
-	@Nullable WtfApply getApply(List<Class<?>> containingTypes){
+	@Nullable public WtfApply getApply(List<Class<?>> containingTypes){
 		for(Class<?> t : containingTypes){
 			WtfApply m = apply.get(t);
 			if(m!=null) return m;
 		}
-		return null;
+		return apply.get(Object.class);
 	}
 
-	@Nullable Object getDynamicConstant(String name){
+	public @Nullable Object getDynamicConstant(String name){
 		return dynamicConstant.get(name);
 	}
 
@@ -175,7 +192,7 @@ public class EvalContext{
 		}
 
 		public EvalContext build(){
-			if(parent!=null) {
+			if(parent!=null){
 				for(Entry<String, WtfConstructor> e : parent.constructor.entrySet())
 					this.constructor.putIfAbsent(e.getKey(), e.getValue());
 				for(Entry<Class<?>, Map<String, WtfPropertyGet>> e : parent.propertyGet.entrySet())
