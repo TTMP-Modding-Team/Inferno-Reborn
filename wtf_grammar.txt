@@ -1,26 +1,26 @@
 wtf: BR* object EOF
 
-object: stmt*
+object: ( stmt stmtTerminator )*
 
-stmt:
-	( assignPropertyStmt
-	| defineStmt
+stmt: assignPropertyStmt
+	| localStmt
+	| fnStmt
 	| applyStmt
 	| ifStmt
 	| forStmt
 	| repeatStmt
+	| returnStmt
 	| debugStmt
-	| expr )? (BR+ | ";")
+	| expr
 
 assignPropertyStmt
-	: ( expr BR* "." BR* )? IDENTIFIER definitionBody
+	: ( expr BR* "." BR* )? IDENTIFIER ":" BR* expr
 
-defineStmt
-	: "define" BR* IDENTIFIER BR* definitionBody
+localStmt
+	: "local" BR* IDENTIFIER BR* ":" BR* expr
 
-definitionBody
-	: ":" BR* expr
-	| "(" param ")" ":" BR* body
+fnStmt
+	: "fn" BR* IDENTIFIER BR* "(" param? BR* ")" BR* fnBody
 
 applyStmt: ":" BR* expr
 
@@ -33,6 +33,9 @@ forStmt
 
 repeatStmt
 	: "repeat" BR* "(" BR* expr BR* ")" BR* body
+
+returnStmt
+	: "return" expr?
 
 debugStmt: "debug" BR* expr
 
@@ -62,32 +65,41 @@ range: random (BR* ".." BR* random)*
 random: term (BR* "~" BR* term)*
 
 term: factor (BR* ("+"|"-") BR* factor)*
-factor: unaryPrefix (BR* ("*"|"/") BR* unaryPrefix)*
+factor: unary (BR* ("*"|"/") BR* unary)*
 
-unaryPrefix: (("!"|"-"|"debug") BR*)* call
+unary: (("!"|"-"|"debug") BR*)* call
 
-call: primaryExpr ( BR* "." BR* IDENTIFIER | "(" BR* expr BR* ")" )*
+call: primary ( BR* "." BR* IDENTIFIER | "(" BR* expr BR* ")" )*
 
-primaryExpr
+primary
 	: "(" BR* expr BR* ")"
 	| IDENTIFIER (BR* block)?
-	| ( "(" param ")" | param ) "->" ( block | expr )
+	| lambda
 	| block
 	| literal
+
+lambda: "fn" BR* ( "(" param BR* ")" | param ) BR* fnBody
 
 literal
 	: "true"
 	| "false"
+	| "this"
+	| "null"
 	| NUMBER
+	| INT
 	| NAMESPACE
 	| STRING
 
 
-param: (BR* IDENTIFIER BR* ",")* BR*
+stmtTerminator: ( BR | ";" )+
+
+param: (BR* IDENTIFIER BR* ",")*
+fnBody: block | ":" BR* stmt
 
 # stupid lexical grammars, here you go
 
-NUMBER: DIGIT+ ("." DIGIT+)?
+NUMBER: DIGIT+ "." DIGIT+
+INT: DIGIT+
 NAMESPACE
 	: "<" ("a"..."z" | "0"..."9" | "_" | "-" | ".")+
 	( ":" ("a"..."z" | "0"..."9" | "_" | "-" | "." | "/")+)? ">"

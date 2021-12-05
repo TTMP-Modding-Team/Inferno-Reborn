@@ -11,7 +11,6 @@ public class WtfLexer{
 	private static final Map<String, TokenType> RESERVED_WORDS = new HashMap<>();
 
 	static{
-		RESERVED_WORDS.put("define", TokenType.DEFINE);
 		RESERVED_WORDS.put("true", TokenType.TRUE);
 		RESERVED_WORDS.put("false", TokenType.FALSE);
 		RESERVED_WORDS.put("if", TokenType.IF);
@@ -21,6 +20,10 @@ public class WtfLexer{
 		RESERVED_WORDS.put("repeat", TokenType.REPEAT);
 		RESERVED_WORDS.put("in", TokenType.IN);
 		RESERVED_WORDS.put("return", TokenType.RETURN);
+		RESERVED_WORDS.put("this", TokenType.THIS);
+		RESERVED_WORDS.put("null", TokenType.NULL);
+		RESERVED_WORDS.put("local", TokenType.LOCAL);
+		RESERVED_WORDS.put("fn", TokenType.FN);
 	}
 
 	private final String script;

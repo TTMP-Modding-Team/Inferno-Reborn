@@ -1,5 +1,6 @@
 package ttmp.wtf.internal.compiler;
 
+import javax.annotation.Nullable;
 import java.util.List;
 
 public abstract class Statement{
@@ -10,6 +11,10 @@ public abstract class Statement{
 	}
 
 	public abstract void visit(StatementVisitor visitor);
+
+	public boolean isDecl(){
+		return false;
+	}
 
 	public static final class Assign extends Statement{
 		public final Expression object;
@@ -36,24 +41,59 @@ public abstract class Statement{
 		}
 	}
 
-	public static final class Define extends Statement{
-		public final String property;
+	public static final class LocalDecl extends Statement{
+		public final String name;
 		public final Expression value;
 
-		public Define(int position, String property, Expression value){
+		public LocalDecl(int position, String name, Expression value){
 			super(position);
-			this.property = property;
+			this.name = name;
 			this.value = value;
 		}
 
 		@Override public void visit(StatementVisitor visitor){
-			visitor.visitDefine(this);
+			visitor.visitLocalDecl(this);
+		}
+
+		@Override public boolean isDecl(){
+			return true;
 		}
 
 		@Override public String toString(){
-			return position+":Define{"+
-					"property='"+property+'\''+
+			return position+":LocalDecl{"+
+					"name='"+name+'\''+
 					", value="+value+
+					'}';
+		}
+	}
+
+	public static class FnDecl extends Statement{
+		public final String name;
+		public final List<String> parameter;
+		public final List<Statement> statements;
+		public final Scope scope;
+
+		public FnDecl(int position, String name, List<String> parameter, List<Statement> statements, Scope scope){
+			super(position);
+			this.name = name;
+			this.parameter = parameter;
+			this.statements = statements;
+			this.scope = scope;
+		}
+
+		@Override public void visit(StatementVisitor visitor){
+			visitor.visitFnDecl(this);
+		}
+
+		@Override public boolean isDecl(){
+			return true;
+		}
+
+		@Override public String toString(){
+			return position+":FnDecl{"+
+					"name='"+name+'\''+
+					", parameter="+parameter+
+					", statements="+statements+
 					'}';
 		}
 	}
@@ -191,7 +231,7 @@ public abstract class Statement{
 		public final Expression expr;
 
 		public Expr(int position, Expression expr){
-			super( position);
+			super(position);
 			this.expr = expr;
 		}
 
@@ -202,6 +242,25 @@ public abstract class Statement{
 		@Override public String toString(){
 			return position+":Expr{"+
 					"expr="+expr+
+					'}';
+		}
+	}
+
+	public static class Return extends Statement{
+		@Nullable public final Expression value;
+
+		public Return(int position, @Nullable Expression value){
+			super(position);
+			this.value = value;
+		}
+
+		@Override public void visit(StatementVisitor visitor){
+			visitor.visitReturn(this);
+		}
+
+		@Override public String toString(){
+			return position+":Return{"+
+					"value="+value+
 					'}';
 		}
 	}

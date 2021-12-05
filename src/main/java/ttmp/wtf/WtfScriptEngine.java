@@ -56,7 +56,7 @@ public class WtfScriptEngine{
 	 * @throws WtfCompileException on compile error
 	 */
 	public WtfScript compile(String script, CompileContext context){
-		return new WtfCompiler(script, context).parseAndCompile();
+		return new WtfCompiler(context).parseAndCompile(script);
 	}
 
 	/**

@@ -6,7 +6,9 @@ import ttmp.wtf.obj.Range;
 import ttmp.wtf.obj.WtfExecutable;
 
 import javax.annotation.Nullable;
+import java.util.AbstractMap.SimpleEntry;
 import java.util.List;
+import java.util.Map.Entry;
 
 public abstract class Expression{
 	public final int position;
@@ -18,9 +20,9 @@ public abstract class Expression{
 	public abstract void visit(ExpressionVisitor visitor);
 
 	/**
-	 * @return Whether or not this expression produces known compile time constant.
-	 * {@code true} implies {@code getConstantObject() != null}, {@code false} implies {@code getConstantObject() == null}.
-	 */
+	 * @return Whether or not this expression produces known compile time constant.<br>
+	 * Note that return value of {@code false} implies {@code getConstantObject() == null}, but return value of {@code true} doesn't imply {@code getConstantObject() != null}.
+	 */ // TODO I fucking hate nullables
 	public boolean isConstant(){
 		return false;
 	}
@@ -48,7 +50,7 @@ public abstract class Expression{
 	 * @throws WtfCompileException if the expression doesn't produce constant, or the type of constant is not {@code T}
 	 */
 	public <T> T expectConstantObject(Class<T> classOf){
-		Object o = expectConstantObject(); // TODO all of type checks are fucked after adding wtfObjects
+		Object o = expectConstantObject();
 		if(!classOf.isInstance(o)) error("Invalid expression, expected "+classOf.getSimpleName());
 		// noinspection unchecked
 		return (T)o;
@@ -95,6 +97,10 @@ public abstract class Expression{
 
 	protected final void error(String message){
 		throw new WtfCompileException(position, message);
+	}
+
+	@Nullable public Entry<Expression, String> toAssignTarget(){
+		return null;
 	}
 
 	public static class Comma extends Expression{
@@ -437,12 +443,43 @@ public abstract class Expression{
 		}
 	}
 
+	public static class Access extends Expression{
+		public final Expression object;
+		public final String property;
+
+		public Access(int position, Expression object, String property){
+			super(position);
+			this.object = object;
+			this.property = property;
+		}
+
+		@Nullable @Override public Entry<Expression, String> toAssignTarget(){
+			return new SimpleEntry<>(object, property);
+		}
+
+		@Override public void visit(ExpressionVisitor visitor){
+			visitor.visitAccess(this);
+		}
+		@Override public void checkType(@Nullable Class<?> expectedType){}
+
+		@Override public String toString(){
+			return position+":Access{"+
+					"object="+object+
+					", property='"+property+'\''+
+					'}';
+		}
+	}
+
 	public static class DynamicAccess extends Expression{
 		public final String property;
 
 		public DynamicAccess(int position, String property){
 			super(position);
 			this.property = property;
+		}
+
+		@Override public Entry<Expression, String> toAssignTarget(){
+			return new SimpleEntry<>(new This(position), property);
 		}
 
 		@Override public void visit(ExpressionVisitor visitor){
@@ -454,37 +491,64 @@ public abstract class Expression{
 		}
 	}
 
-	public static class ConstantAccess extends Expression{
+	public static class LocalAccess extends Expression{
 		public final String name;
-		@Nullable public final Expression constantExpression;
+		@Nullable public final Expression definition;
 
-		public ConstantAccess(int position, String name, @Nullable Expression constantExpression){
+		public LocalAccess(int position, String name, @Nullable Expression definition){
 			super(position);
 			this.name = name;
-			this.constantExpression = constantExpression;
+			this.definition = definition;
+		}
+
+		@Nullable @Override public Entry<Expression, String> toAssignTarget(){
+			return new SimpleEntry<>(new This(position), name);
 		}
 
 		@Override public void visit(ExpressionVisitor visitor){
-			visitor.visitConstantAccess(this);
+			visitor.visitLocalAccess(this);
 		}
 		@Override public boolean isConstant(){
-			return constantExpression!=null&&constantExpression.isConstant();
+			return definition!=null&&definition.isConstant();
 		}
 		@Nullable @Override public Object getConstantObject(){
-			return constantExpression!=null ? constantExpression.getConstantObject() : null;
+			return definition!=null ? definition.getConstantObject() : null;
 		}
 		@Override public void checkType(@Nullable Class<?> expectedType){
-			if(constantExpression!=null) constantExpression.checkType(expectedType);
+			if(definition!=null) definition.checkType(expectedType);
 		}
 		@Override public String toString(){
-			return position+":ConstantAccess{"+name+'}';
+			return position+":LocalAccess{"+name+'}';
+		}
+	}
+
+	public static class Execute extends Expression{
+		public final Expression object;
+		public final Expression parameter;
+
+		public Execute(int position, Expression object, Expression parameter){
+			super(position);
+			this.object = object;
+			this.parameter = parameter;
+		}
+
+		@Override public void visit(ExpressionVisitor visitor){
+			visitor.visitExecute(this);
+		}
+		@Override public void checkType(@Nullable Class<?> expectedType){}
+
+		@Override public String toString(){
+			return "Execute{"+
+					"object="+object+
+					", parameter="+parameter+
+					'}';
 		}
 	}
 
 	public static class Constant extends Expression{
-		public final Object constant;
+		@Nullable public final Object constant;
 
-		public Constant(int position, Object constant){
+		public Constant(int position, @Nullable Object constant){
 			super(position);
 			this.constant = constant;
 		}
@@ -499,7 +563,7 @@ public abstract class Expression{
 			return constant;
 		}
 		@Override public void checkType(@Nullable Class<?> expectedType){
-			expectType(constant.getClass(), expectedType);
+			if(constant!=null) expectType(constant.getClass(), expectedType);
 		}
 		@Override public String toString(){
 			return position+":Constant{"+constant+'}';
@@ -507,13 +571,15 @@ public abstract class Expression{
 	}
 
 	public static class Function extends Expression{
-		public final List<String> parameters;
+		public final List<String> parameter;
 		public final List<Statement> statements;
+		public final Scope scope;
 
-		public Function(int position, List<String> parameters, List<Statement> statements){
+		public Function(int position, List<String> parameter, List<Statement> statements, Scope scope){
 			super(position);
-			this.parameters = parameters;
+			this.parameter = parameter;
 			this.statements = statements;
+			this.scope = scope;
 		}
 
 		@Override public void visit(ExpressionVisitor visitor){
@@ -524,7 +590,7 @@ public abstract class Expression{
 		}
 		@Override public String toString(){
 			return position+":Function{"+
-					"parameters="+parameters+
+					"parameter="+parameter+
 					", statements="+statements+
 					'}';
 		}
@@ -533,11 +599,13 @@ public abstract class Expression{
 	public static class Construct extends Expression{
 		public final String identifier;
 		public final List<Statement> statements;
+		public final Scope scope;
 
-		public Construct(int position, String identifier, List<Statement> statements){
+		public Construct(int position, String identifier, List<Statement> statements, Scope scope){
 			super(position);
 			this.identifier = identifier;
 			this.statements = statements;
+			this.scope = scope;
 		}
 
 		@Override public void visit(ExpressionVisitor visitor){
@@ -595,6 +663,39 @@ public abstract class Expression{
 
 		@Override public String toString(){
 			return position+(value ? ":true" : ":false");
+		}
+	}
+
+	public static class This extends Expression {
+		public This(int position){
+			super(position);
+		}
+
+		@Override public void visit(ExpressionVisitor visitor){
+			visitor.visitThis(this);
+		}
+		@Override public void checkType(@Nullable Class<?> expectedType){}
+
+		@Override public String toString(){
+			return position+":this";
+		}
+	}
+
+	public static class Null extends Expression {
+		public Null(int position){
+			super(position);
+		}
+
+		@Override public void visit(ExpressionVisitor visitor){
+			visitor.visitNull(this);
+		}
+		@Override public boolean isConstant(){
+			return true;
+		}
+		@Override public void checkType(@Nullable Class<?> expectedType){}
+
+		@Override public String toString(){
+			return position+":null";
 		}
 	}
 }

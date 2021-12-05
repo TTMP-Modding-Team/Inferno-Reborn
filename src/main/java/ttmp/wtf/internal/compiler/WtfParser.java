@@ -12,9 +12,8 @@ import ttmp.wtf.obj.Range;
 import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Objects;
 
 public class WtfParser{
@@ -22,86 +21,73 @@ public class WtfParser{
 	private final CompileContext context;
 	private final WtfLexer lexer;
 
-	private final List<Map<String, Definition>> definitions = new ArrayList<>();
+	private final List<Scope> scope = new ArrayList<>();
 
 	public WtfParser(String script, CompileContext context){
 		this.script = script;
 		this.context = context;
 		this.lexer = new WtfLexer(script);
-		pushBlock();
+		this.scope.add(new Scope());
 	}
 
 	@Nullable public Statement parse(){
 		if(lexer.next().is(TokenType.EOF)) return null;
-		else return stmt();
+		Statement stmt = stmt();
+		while(lexer.guessNext(TokenType.SEMICOLON)) lexer.next();
+		return stmt;
 	}
 
 	private Statement stmt(){
 		Token current = lexer.current();
-		Statement stmt;
 		switch(current.type){
-			case DEFINE:
-				stmt = defineStmt();
-				break;
+			case LOCAL:
+				return localStmt();
+			case FN:
+				return fnStmt();
 			case COLON:
-				stmt = applyStmt();
-				break;
+				return applyStmt();
 			case IF:
-				stmt = ifStmt();
-				break;
+				return ifStmt();
 			case FOR:
-				stmt = forStmt();
-				break;
+				return forStmt();
 			case REPEAT:
-				stmt = repeatStmt();
-				break;
+				return repeatStmt();
+			case RETURN:
+				return returnStmt();
 			case DEBUG:
-				stmt = debugStmt();
-				break;
+				return debugStmt();
+			case SEMICOLON:
+				return new Statement.StatementList(current.start, Collections.emptyList());
 			default:
-				stmt = exprStatement();
+				return assignOrExprStmt();
 		}
-		if(lexer.guessNext(TokenType.SEMICOLON)) lexer.next();
-		return stmt;
 	}
 
-	private Statement defineStmt(){
+	private Statement localStmt(){
 		int start = lexer.current().start;
-		lexer.expectNext(TokenType.IDENTIFIER, "Invalid define statement, expected an identifier");
-		String property = identifier();
+		lexer.expectNext(TokenType.IDENTIFIER, "Incomplete local declaration, expected an identifier");
+		String name = identifier();
 		lexer.next();
-		Expression definitionBody = definitionBody();
-		setDefinition(property, definitionBody, start);
-		return definitionBody.isConstant() ?
-				new Statement.StatementList(start, Collections.emptyList()) :
-				new Statement.Define(start, property, definitionBody);
+		Expression value = expr(null);
+		if(!currentScope().addLocal(name, value))
+			throw new WtfCompileException(start, "Local name '"+name+"' is already occupied by other local in the same block");
+		return new Statement.LocalDecl(start, name, value);
 	}
 
-	private Expression definitionBody(){
-		Token current = lexer.current();
-		switch(current.type){
-			case COLON:
-				return expr(null);
-			case L_PAREN:{
-				List<String> parameter = parameter();
-				lexer.expectNext(TokenType.R_PAREN, "Incomplete function declaration, missing ')'");
-				lexer.expectNext(TokenType.COLON, "Incomplete function declaration, missing ':'", false);
-
-				return new Expression.Function(current.start, parameter, );
-			}
-			default:
-				throw new WtfCompileException(current.start, "Invalid definition body");
-		}
-	}
-
-	private List<String> parameter(){
-		List<String> params = new ArrayList<>();
-		while(true){
-			if(!lexer.guessNext(TokenType.IDENTIFIER)) break;
-			params.add(stringLiteral(lexer.current()));
-			if(!lexer.guessNext(TokenType.COMMA)) break;
-		}
-		return params.isEmpty() ? Collections.emptyList() : params;
+	private Statement.FnDecl fnStmt(){
+		int start = lexer.current().start;
+		lexer.expectNext(TokenType.IDENTIFIER, "Incomplete function declaration, expected an identifier");
+		String name = identifier();
+		lexer.next();
+		lexer.expectNext(TokenType.L_PAREN, "Incomplete function declaration, missing '('");
+		List<String> parameter = parameter();
+		lexer.expectNext(TokenType.R_PAREN, "Incomplete function declaration, missing ')'");
+		pushScope();
+		List<Statement> stmt = fnBody("Invalid function body");
+		Scope scope = popScope();
+		if(!currentScope().addLocal(name, null))
+			throw new WtfCompileException(start, "Local name '"+name+"' is already occupied by other local in the same block");
+		return new Statement.FnDecl(start, name, parameter, stmt, scope);
 	}
 
 	private Statement.Apply applyStmt(){
@@ -140,13 +126,12 @@ public class WtfParser{
 		lexer.expectNext(TokenType.L_PAREN, "Invalid for statement, expected '('");
 		lexer.expectNext(TokenType.IDENTIFIER, "Invalid for statement, expected identifier");
 		String property = literalValue(lexer.current());
-		int propertyPosition = lexer.current().start;
 		lexer.expectNext(TokenType.IN, "Invalid for statement, expected 'in'");
 		lexer.next();
 		Expression expr = expr(Iterable.class);
 		lexer.expectNext(TokenType.R_PAREN, "Invalid if statement, expected ')'");
 		lexer.next();
-		List<Statement> body = body(property, propertyPosition);
+		List<Statement> body = body(property);
 		return new Statement.For(start, property, expr, body);
 	}
 
@@ -161,32 +146,51 @@ public class WtfParser{
 		return new Statement.Repeat(start, times, body);
 	}
 
+	private Statement.Return returnStmt(){
+		return new Statement.Return(lexer.current().start,
+				lexer.guessNext2(TokenType.BR, TokenType.SEMICOLON, false)==0 ?
+						expr(null) : null);
+	}
+
 	private Statement.Debug debugStmt(){
 		int start = lexer.current().start;
 		lexer.next();
 		return new Statement.Debug(start, expr(null));
 	}
 
-	private Statement.Expr exprStatement(){
-		return new Statement.Expr(lexer.current().start, expr(null));
+	private Statement assignOrExprStmt(){
+		int start = lexer.current().start;
+		Expression expr = expr(null);
+		Token propertyNameToken = lexer.current();
+		boolean endsWithIdentifier = propertyNameToken.is(TokenType.IDENTIFIER);
+		if(!lexer.guessNext(TokenType.COLON, false))
+			return new Statement.Expr(start, expr);
+		if(endsWithIdentifier){
+			Entry<Expression, String> assignTarget = expr.toAssignTarget();
+			if(assignTarget!=null){
+				lexer.next();
+				return new Statement.Assign(start, assignTarget.getKey(), assignTarget.getValue(), expr(null));
+			}
+		}
+		throw new WtfCompileException(lexer.current().start, "Invalid assign statement, invalid target");
 	}
 
 	private List<Statement> body(){
-		return body(null, 0);
+		return body(null);
 	}
 
-	private List<Statement> body(@Nullable String variable, int variablePosition){
-		pushBlock();
-		if(variable!=null) setDefinition(variable, null, variablePosition);
+	private List<Statement> body(@Nullable String variable){
+		currentScope().pushBlock();
+		if(variable!=null&&currentScope().addLocal(variable, null))
+			throw new IllegalStateException("Unexpected");
 		List<Statement> statements;
 		if(lexer.current().is(TokenType.L_BRACE)) statements = block(false);
 		else{
 			Statement stmt = stmt();
-			if(stmt instanceof Statement.Define)
-				throw new WtfCompileException(stmt.position, "Only declaration inside block");
+			if(stmt.isDecl()) throw new WtfCompileException(stmt.position, "Only declaration inside block");
 			statements = Collections.singletonList(stmt);
 		}
-		popBlock();
+		currentScope().popBlock();
 		return statements;
 	}
 
@@ -195,14 +199,14 @@ public class WtfParser{
 	}
 
 	private List<Statement> block(boolean push){
-		if(push) pushBlock();
+		if(push) currentScope().pushBlock();
 		List<Statement> statements = new ArrayList<>();
 		while(true){
 			switch(lexer.next().type){
 				case EOF:
 					throw new WtfCompileException(script.length(), "Unterminated code block");
 				case R_BRACE:
-					if(push) popBlock();
+					if(push) currentScope().popBlock();
 					return statements;
 				default:
 					statements.add(stmt());
@@ -442,7 +446,19 @@ public class WtfParser{
 				lexer.next();
 				return new Expression.Debug(current.start, unary());
 			default:
-				return primary();
+				return call();
+		}
+	}
+
+	private Expression call(){
+		Expression e = primary();
+		while(true){
+			if(lexer.guessNext(TokenType.L_PAREN, false)){
+				e = new Expression.Execute(e.position, e, expr(null)); // TODO should args be always bundle?
+			}else if(lexer.guessNext(TokenType.DOT)){
+				lexer.expectNext(TokenType.IDENTIFIER, "Invalid property access expression, expected identifier");
+				e = new Expression.Access(e.position, e, stringLiteral(lexer.current()));
+			}else return e;
 		}
 	}
 
@@ -455,10 +471,38 @@ public class WtfParser{
 				lexer.expectNext(TokenType.R_PAREN, "Invalid expression, expected ')'");
 				return expr;
 			}
+			case IDENTIFIER:{
+				String literal = identifier();
+				if(lexer.guessNext(TokenType.L_BRACE)){
+					pushScope();
+					return new Expression.Construct(current.start, literal, block(), popScope());
+				}
+				Scope.LocalDefinition localDefinition = resolveLocal(literal);
+				if(localDefinition!=null) return new Expression.LocalAccess(current.start, literal, localDefinition.definition);
+				Object staticConstant = context.getStaticConstant(literal);
+				return staticConstant!=null ?
+						new Expression.Constant(current.start, staticConstant) :
+						new Expression.DynamicAccess(current.start, literal);
+			}
+			case FN:{ // lambda
+				boolean paren = lexer.guessNext(TokenType.L_PAREN);
+				List<String> par = parameter();
+				if(paren) lexer.expectNext(TokenType.R_PAREN, "Incomplete lambda expression, missing ')'");
+				pushScope();
+				return new Expression.Function(current.start, par, fnBody("Invalid lambda expression body"), scope.remove(scope.size()-1));
+			}
+			case L_BRACE:
+				pushScope();
+				return new Expression.Construct(current.start, "Object", block(), popScope());
+			// literals
 			case TRUE:
 				return new Expression.Bool(current.start, true);
 			case FALSE:
 				return new Expression.Bool(current.start, false);
+			case THIS:
+				return new Expression.This(current.start);
+			case NULL:
+				return new Expression.Null(current.start);
 			case NUMBER:
 				return new Expression.Constant(current.start, Double.parseDouble(literalValue(current)));
 			case INT:
@@ -474,19 +518,6 @@ public class WtfParser{
 			}
 			case STRING:
 				return new Expression.Constant(current.start, stringLiteral(current));
-			case IDENTIFIER:{
-				String literal = identifier();
-				if(lexer.guessNext(TokenType.L_BRACE))
-					return new Expression.Construct(current.start, literal, block());
-				Definition definition = getDefinition(literal);
-				if(definition!=null) return definition.constantExpression!=null&&definition.constantExpression.isConstant() ?
-						new Expression.Constant(current.start, Objects.requireNonNull(definition.constantExpression.getConstantObject())) :
-						new Expression.ConstantAccess(current.start, literal, definition.constantExpression);
-				Object staticConstant = context.getStaticConstant(literal);
-				return staticConstant!=null ?
-						new Expression.Constant(current.start, staticConstant) :
-						new Expression.DynamicAccess(current.start, literal);
-			}
 			default:
 				throw new WtfCompileException(current.start, "Invalid expression, expected literal");
 		}
@@ -497,6 +528,30 @@ public class WtfParser{
 		if(!current.is(TokenType.IDENTIFIER))
 			throw new WtfCompileException(current.start, "Invalid expression, expected identifier");
 		return literalValue(current);
+	}
+
+	private List<String> parameter(){
+		List<String> params = new ArrayList<>();
+		while(true){
+			if(!lexer.guessNext(TokenType.IDENTIFIER)) break;
+			params.add(stringLiteral(lexer.current()));
+			if(!lexer.guessNext(TokenType.COMMA)) break;
+		}
+		return params.isEmpty() ? Collections.emptyList() : params;
+	}
+
+	private List<Statement> fnBody(String invalidBodyErrorMessage){
+		switch(lexer.current().type){
+			case L_BRACE:
+				return block();
+			case COLON:
+				lexer.next();
+				Statement stmt = stmt();
+				if(stmt.isDecl()) throw new WtfCompileException(stmt.position, "Only declaration inside block");
+				return Collections.singletonList(stmt);
+			default:
+				throw new WtfCompileException(lexer.current().start, invalidBodyErrorMessage);
+		}
 	}
 
 	private String literalValue(Token token){
@@ -545,32 +600,30 @@ public class WtfParser{
 		}
 	}
 
-	private void setDefinition(String name, @Nullable Expression constantValue, int position){
-		Map<String, Definition> m = definitions.get(definitions.size()-1);
-		if(m.put(name, new Definition(constantValue))!=null) throw new WtfCompileException(position, "");
+	private Scope currentScope(){
+		return scope.get(scope.size()-1);
 	}
 
-	@Nullable private Definition getDefinition(String name){
-		for(int i = definitions.size()-1; i>=0; i--){
-			Definition d = definitions.get(i).get(name);
-			if(d!=null) return d;
+	private void pushScope(){
+		scope.add(new Scope());
+	}
+	private Scope popScope(){
+		if(scope.size()<=1) throw new IllegalStateException("Trying to remove root scope");
+		return scope.remove(scope.size()-1);
+	}
+
+	@Nullable private Scope.LocalDefinition resolveLocal(String name){
+		for(int i = scope.size()-1; i>=0; i--){
+			Scope scope = this.scope.get(i);
+			Scope.LocalDefinition localDefinition = scope.resolveLocal(name);
+			if(localDefinition!=null){
+				localDefinition.referenced = true;
+				for(i++; i<this.scope.size(); i++){
+					this.scope.get(i).outerLocals.add(name);
+				}
+				return localDefinition;
+			}
 		}
 		return null;
-	}
-
-	private void pushBlock(){
-		definitions.add(new HashMap<>());
-	}
-
-	private void popBlock(){
-		definitions.remove(definitions.size()-1);
-	}
-
-	public static final class Definition{
-		@Nullable public final Expression constantExpression;
-
-		public Definition(@Nullable Expression constantExpression){
-			this.constantExpression = constantExpression;
-		}
 	}
 }

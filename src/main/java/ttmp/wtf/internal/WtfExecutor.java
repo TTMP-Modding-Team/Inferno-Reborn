@@ -1,14 +1,12 @@
 package ttmp.wtf.internal;
 
 import com.google.common.collect.ImmutableList;
-import com.google.common.primitives.Ints;
-import com.google.common.primitives.Longs;
-import com.google.common.primitives.Shorts;
 import ttmp.wtf.EvalContext;
 import ttmp.wtf.Wtf;
 import ttmp.wtf.WtfScript;
 import ttmp.wtf.exceptions.WtfEvalException;
 import ttmp.wtf.exceptions.WtfException;
+import ttmp.wtf.internal.compiler.InstReader;
 import ttmp.wtf.obj.Bundle;
 import ttmp.wtf.obj.Range;
 import ttmp.wtf.obj.WtfExecutable;
@@ -78,16 +76,15 @@ public class WtfExecutor{
 		});
 	}
 
-	public final class Unit{
-		private final WtfScript script;
+	public final class Unit extends InstReader{
 		private final int start;
 		@Nullable private final Object thisObject;
 		private final Object[] args;
 
-		private int ip;
+		private int bottomStack;
 
 		public Unit(WtfScript script, int start, @Nullable Object thisObject, Object[] args){
-			this.script = Objects.requireNonNull(script);
+			super(script);
 			this.start = start;
 			this.thisObject = thisObject;
 			this.args = Objects.requireNonNull(args);
@@ -104,170 +101,20 @@ public class WtfExecutor{
 		public void execute(){
 			try{
 				ip = start;
-				int startingStack = stackIndex;
+				bottomStack = stackIndex;
 				for(Object arg : args)
 					push(arg);
 				LOOP:
 				while(true){
 					switch(next()){
-						case Inst.PUSH:
-							push(script.getEngine().getConstantPool().getObject(nextUnsigned()));
-							break;
 						case Inst.DISCARD:
 							pop();
 							break;
 						case Inst.DUP:
 							push(peek());
 							break;
-						case Inst.THIS:
-							push(thisObject);
-							break;
-						case Inst.TRUE:
-							push(true);
-							break;
-						case Inst.FALSE:
-							push(false);
-							break;
-						case Inst.I:
-							push(next4());
-							break;
-						case Inst.I0:
-							push(0);
-							break;
-						case Inst.I1:
-							push(1);
-							break;
-						case Inst.IM1:
-							push(-1);
-							break;
-						case Inst.D:
-							push(Double.longBitsToDouble(next8()));
-							break;
-						case Inst.D0:
-							push(0.0);
-							break;
-						case Inst.D1:
-							push(1.0);
-							break;
-						case Inst.DM1:
-							push(-1.0);
-							break;
-						case Inst.ADD:
-							setAndDiscard(1, Wtf.add(expectNumberObject(peek(1)), expectNumberObject(peek())));
-							break;
-						case Inst.SUBTRACT:
-							setAndDiscard(1, Wtf.subtract(expectNumberObject(peek(1)), expectNumberObject(peek())));
-							break;
-						case Inst.MULTIPLY:
-							setAndDiscard(1, Wtf.multiply(expectNumberObject(peek(1)), expectNumberObject(peek())));
-							break;
-						case Inst.DIVIDE:
-							setAndDiscard(1, Wtf.divide(expectNumberObject(peek(1)), expectNumberObject(peek())));
-							break;
-						case Inst.NEGATE:
-							push(Wtf.negate(expectNumberObject(pop())));
-							break;
-						case Inst.NOT:
-							push(!expectBoolean(pop()));
-							break;
-						case Inst.EQ:
-							push(Wtf.equals(pop(), pop()));
-							break;
-						case Inst.NEQ:
-							push(!Wtf.equals(pop(), pop()));
-							break;
-						case Inst.LT:
-							setAndDiscard(1, expectNumber(peek(1))<expectNumber(peek()));
-							break;
-						case Inst.GT:
-							setAndDiscard(1, expectNumber(peek(1))>expectNumber(peek()));
-							break;
-						case Inst.LTEQ:
-							setAndDiscard(1, expectNumber(peek(1))<=expectNumber(peek()));
-							break;
-						case Inst.GTEQ:
-							setAndDiscard(1, expectNumber(peek(1))>=expectNumber(peek()));
-							break;
-						case Inst.ADD1:{
-							Number n = expectNumberObject(pop());
-							if(n instanceof Integer) push(n.intValue()+1);
-							else push(n.doubleValue()+1);
-							break;
-						}
-						case Inst.SUB1:{
-							Number n = expectNumberObject(pop());
-							if(n instanceof Integer) push(n.intValue()-1);
-							else push(n.doubleValue()-1);
-							break;
-						}
-						case Inst.BUNDLE2:
-							setAndDiscard(1, new Bundle(peek(1), peek()));
-							break;
-						case Inst.BUNDLE3:
-							setAndDiscard(2, new Bundle(peek(2), peek(1), peek()));
-							break;
-						case Inst.BUNDLE4:
-							setAndDiscard(3, new Bundle(peek(3), peek(2), peek(1), peek()));
-							break;
-						case Inst.BUNDLEN:{
-							int size = nextUnsigned();
-							Object[] bundle = new Object[size];
-							for(int i = size-1; i>=0; i--)
-								bundle[i] = pop();
-							push(new Bundle(bundle));
-							break;
-						}
-						case Inst.APPEND2:
-							setAndDiscard(1, String.valueOf(peek(1))+peek());
-							break;
-						case Inst.APPEND3:
-							setAndDiscard(2, String.valueOf(peek(2))+peek(1)+peek());
-							break;
-						case Inst.APPEND4:
-							setAndDiscard(3, String.valueOf(peek(3))+peek(2)+peek(1)+peek());
-							break;
-						case Inst.APPENDN:{
-							int size = nextUnsigned();
-							StringBuilder stb = new StringBuilder();
-							for(int i = size-1; i>=0; i--)
-								stb.append(peek(i));
-							discard(size);
-							push(stb.toString());
-							break;
-						}
-						case Inst.GET:
-							push(getProperty(pop(), identifier()));
-							break;
-						case Inst.SET:
-							setProperty(peek(1), peek(0), identifier());
-							discard(2);
-							break;
-						case Inst.RANGE:
-							setAndDiscard(1, new Range(expectInt(peek(1)), expectInt(peek())));
-							break;
-						case Inst.RAND:
-							setAndDiscard(1, Wtf.randomInt(script.getEngine().getRandom(), expectInt(peek(1)), expectInt(peek())));
-							break;
-						case Inst.RANDN:
-							push(Wtf.randomInt(script.getEngine().getRandom(), next4(), next4()));
-							break;
-						case Inst.EXECUTE:{
-							WtfExecutable executable = (WtfExecutable)peek();
-							int args = nextUnsigned();
-							Object[] argv = new Object[args];
-							for(int i = args-1; i>=0; i--)
-								argv[i] = pop();
-							push(executable.execute(executor(), argv));
-						}
-						case Inst.CONSTRUCT:
-							error("TODO"); // TODO
-							break;
-						case Inst.MAKE_ITERATOR:
-							push(expectIterable(pop()).iterator());
-							break;
-						case Inst.IN:
-							setAndDiscard(1, Wtf.isIn(peek(1), expectIterable(peek())));
-							break;
+						case Inst.DUP_AT:
+							push(peekFromBottom(nextU()));
 						case Inst.JUMP:
 							ip += next2();
 							break;
@@ -291,17 +138,185 @@ public class WtfExecutor{
 							}
 							break;
 						}
+						case Inst.RETURN:
+							// TODO return??????????????
+						case Inst.END:
+							break LOOP;
+						case Inst.TRUE:
+							push(true);
+							break;
+						case Inst.FALSE:
+							push(false);
+							break;
+						case Inst.THIS:
+							push(thisObject);
+							break;
+						case Inst.NULL:
+							push(null);
+							break;
+						case Inst.I:
+							push(next4());
+							break;
+						case Inst.I0:
+							push(0);
+							break;
+						case Inst.I1:
+							push(1);
+							break;
+						case Inst.IM1:
+							push(-1);
+							break;
+						case Inst.D:
+							push(nextDouble());
+							break;
+						case Inst.D0:
+							push(0.0);
+							break;
+						case Inst.D1:
+							push(1.0);
+							break;
+						case Inst.DM1:
+							push(-1.0);
+							break;
+						case Inst.ADD:
+							setAndDiscard(1, Wtf.add(expectNumberObject(peekFromTop(1)), expectNumberObject(peek())));
+							break;
+						case Inst.SUBTRACT:
+							setAndDiscard(1, Wtf.subtract(expectNumberObject(peekFromTop(1)), expectNumberObject(peek())));
+							break;
+						case Inst.MULTIPLY:
+							setAndDiscard(1, Wtf.multiply(expectNumberObject(peekFromTop(1)), expectNumberObject(peek())));
+							break;
+						case Inst.DIVIDE:
+							setAndDiscard(1, Wtf.divide(expectNumberObject(peekFromTop(1)), expectNumberObject(peek())));
+							break;
+						case Inst.NEGATE:
+							push(Wtf.negate(expectNumberObject(pop())));
+							break;
+						case Inst.NOT:
+							push(!expectBoolean(pop()));
+							break;
+						case Inst.EQ:
+							push(Wtf.equals(pop(), pop()));
+							break;
+						case Inst.NEQ:
+							push(!Wtf.equals(pop(), pop()));
+							break;
+						case Inst.LT:
+							setAndDiscard(1, expectNumber(peekFromTop(1))<expectNumber(peek()));
+							break;
+						case Inst.GT:
+							setAndDiscard(1, expectNumber(peekFromTop(1))>expectNumber(peek()));
+							break;
+						case Inst.LTEQ:
+							setAndDiscard(1, expectNumber(peekFromTop(1))<=expectNumber(peek()));
+							break;
+						case Inst.GTEQ:
+							setAndDiscard(1, expectNumber(peekFromTop(1))>=expectNumber(peek()));
+							break;
+						case Inst.ADD1:{
+							Number n = expectNumberObject(pop());
+							if(n instanceof Integer) push(n.intValue()+1);
+							else push(n.doubleValue()+1);
+							break;
+						}
+						case Inst.SUB1:{
+							Number n = expectNumberObject(pop());
+							if(n instanceof Integer) push(n.intValue()-1);
+							else push(n.doubleValue()-1);
+							break;
+						}
+						case Inst.BUNDLE2:
+							setAndDiscard(1, new Bundle(peekFromTop(1), peek()));
+							break;
+						case Inst.BUNDLE3:
+							setAndDiscard(2, new Bundle(peekFromTop(2), peekFromTop(1), peek()));
+							break;
+						case Inst.BUNDLE4:
+							setAndDiscard(3, new Bundle(peekFromTop(3), peekFromTop(2), peekFromTop(1), peek()));
+							break;
+						case Inst.BUNDLEN:{
+							int size = nextU();
+							Object[] bundle = new Object[size];
+							for(int i = size-1; i>=0; i--)
+								bundle[i] = pop();
+							push(new Bundle(bundle));
+							break;
+						}
+						case Inst.APPEND2:
+							setAndDiscard(1, String.valueOf(peekFromTop(1))+peek());
+							break;
+						case Inst.APPEND3:
+							setAndDiscard(2, String.valueOf(peekFromTop(2))+peekFromTop(1)+peek());
+							break;
+						case Inst.APPEND4:
+							setAndDiscard(3, String.valueOf(peekFromTop(3))+peekFromTop(2)+peekFromTop(1)+peek());
+							break;
+						case Inst.APPENDN:{
+							int size = nextU();
+							StringBuilder stb = new StringBuilder();
+							for(int i = size-1; i>=0; i--)
+								stb.append(peekFromTop(i));
+							discard(size);
+							push(stb.toString());
+							break;
+						}
+						case Inst.RANGE:
+							setAndDiscard(1, new Range(expectInt(peekFromTop(1)), expectInt(peek())));
+							break;
+						case Inst.RAND:
+							setAndDiscard(1, Wtf.randomInt(script.getEngine().getRandom(), expectInt(peekFromTop(1)), expectInt(peek())));
+							break;
+						case Inst.RANDN:
+							push(Wtf.randomInt(script.getEngine().getRandom(), next4(), next4()));
+							break;
+						case Inst.CONST:
+							push(script.getEngine().getConstantPool().getObject(nextU()));
+							break;
+						case Inst.ARG:
+							push(args[nextU()]);
+							break;
+						case Inst.INTERNAL_CONST:
+							break;
+						case Inst.GET_PROPERTY:
+							push(getProperty(pop(), nextIdentifier()));
+							break;
+						case Inst.SET_PROPERTY:
+							setProperty(peekFromTop(1), peek(), nextIdentifier());
+							discard(2);
+							break;
+						case Inst.DYNAMIC_GET:
+							// TODO
+							break;
+						case Inst.APPLY:
+							// TODO
+							break;
 						case Inst.DEBUG:
 							script.getEngine().debug(peek());
 							break;
-						case Inst.END:
-							break LOOP;
+						case Inst.EXECUTE:{
+							WtfExecutable executable = (WtfExecutable)peek();
+							int args = nextU();
+							Object[] argv = new Object[args];
+							for(int i = args-1; i>=0; i--)
+								argv[i] = pop();
+							push(executable.execute(executor(), argv));
+						}
+						case Inst.CONSTRUCT:
+							error("TODO"); // TODO
+							break;
+						case Inst.MAKE_ITERATOR:
+							push(expectIterable(pop()).iterator());
+							break;
+						case Inst.IN:
+							setAndDiscard(1, Wtf.isIn(peekFromTop(1), expectIterable(peek())));
+							break;
 						default:
 							error("Unknown bytecode '"+script.getInst(ip-1)+"'");
 					}
 				}
 				discard(args.length);
-				if(stackIndex!=startingStack) error("Stack size doesn't match ");
+				if(stackIndex!=bottomStack) error("Stack size doesn't match ");
 			}catch(WtfException ex){
 				throw ex;
 			}catch(Exception ex){
@@ -309,70 +324,58 @@ public class WtfExecutor{
 			}
 		}
 
-		public int getCurrentLine(){
-			return script.getLines().getLine(ip-1);
-		}
-
-		private byte next(){
-			return script.getInst(ip++);
-		}
-		private int nextUnsigned(){
-			return Byte.toUnsignedInt(next());
-		}
-		private short next2(){
-			return Shorts.fromBytes(next(), next());
-		}
-		private int nextUnsigned2(){
-			return Short.toUnsignedInt(next2());
-		}
-		private int next4(){
-			return Ints.fromBytes(next(), next(), next(), next());
-		}
-		private long next8(){
-			return Longs.fromBytes(next(), next(), next(), next(), next(), next(), next(), next());
-		}
-
 		private void push(@Nullable Object o){
 			if(stackIndex==stack.length) error("Stack overflow");
 			stack[stackIndex++] = o;
 		}
 
+		/**
+		 * Remove top of the stack.
+		 *
+		 * @return Removed object
+		 */
 		@Nullable private Object pop(){
-			if(stackIndex==0) error("Stack underflow");
+			if(stackIndex<=bottomStack) error("Stack underflow");
 			return stack[--stackIndex];
 		}
 
+		/**
+		 * @return Top of the stack
+		 */
 		@Nullable private Object peek(){
-			if(stackIndex==0) error("Stack underflow");
+			if(stackIndex<=bottomStack) error("Stack underflow");
 			return stack[stackIndex-1];
 		}
 
 		/**
 		 * Peek stack {@code i} below top; {@code peek(0)} is equivalent to {@code peek()}.
 		 */
-		@Nullable private Object peek(int i){
-			if(i>=stackIndex) error("Kinda hard to get object "+i+" below top... when the stack size is "+stackIndex);
+		@Nullable private Object peekFromTop(int i){
+			int currentStack = stackIndex-bottomStack;
+			if(i>=currentStack) error("Cannot peek object at #"+(currentStack-i)+" because current stack size is "+currentStack);
 			return stack[stackIndex-1-i];
 		}
 
 		/**
-		 * Set object to stack at {@code i} below top. Does not modify stack size.
+		 * Peek stack {@code i} above bottom.
 		 */
-		private void set(int i, @Nullable Object o){
-			if(i>=stackIndex) error("Kinda hard to set object "+i+" below top... when the stack size is "+stackIndex);
-			stack[stackIndex-1-i] = o;
+		@Nullable private Object peekFromBottom(int i){
+			int stackSize = stackIndex-bottomStack;
+			if(i>=stackSize) error("Cannot peek object at #"+i+" because current stack size is "+stackSize);
+			return stack[bottomStack+i];
 		}
 
 		/**
 		 * Set object to stack at {@code i}, and discard everything on top of it.
 		 */
 		private void setAndDiscard(int i, @Nullable Object o){
-			if(i>=stackIndex) error("Kinda hard to set object "+i+" below top... when the stack size is "+stackIndex);
+			int currentStack = stackIndex-bottomStack;
+			if(i>=currentStack) error("Cannot set object at #"+(currentStack-i)+" because current stack size is "+currentStack);
 			stack[(stackIndex -= i)-1] = o;
 		}
 
 		private void discard(int amount){
-			if(amount>stackIndex) error("Stack underflow");
+			if(amount>(stackIndex-bottomStack)) error("Stack underflow");
 			stackIndex -= amount;
 		}
 
@@ -384,10 +387,6 @@ public class WtfExecutor{
 		private Iterator<?> expectIterator(@Nullable Object o){
 			if(!(o instanceof Iterator<?>)) error("Expected Iterator but provided "+typeOf(o));
 			return (Iterator<?>)o;
-		}
-
-		private String identifier(){
-			return script.getEngine().getConstantPool().getIdentifier(nextUnsigned());
 		}
 
 		public void error(String message){ // TODO additional information would be neat

@@ -1,104 +1,56 @@
 package ttmp.wtf.internal.compiler;
 
-import it.unimi.dsi.fastutil.bytes.ByteArrayList;
-import it.unimi.dsi.fastutil.bytes.ByteList;
-import it.unimi.dsi.fastutil.objects.Object2ByteMap;
 import ttmp.wtf.CompileContext;
 import ttmp.wtf.WtfScript;
 import ttmp.wtf.exceptions.WtfCompileException;
 import ttmp.wtf.internal.Inst;
 import ttmp.wtf.internal.Lines;
+import ttmp.wtf.obj.WtfExecutable;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
+import java.util.Map.Entry;
 
-public class WtfCompiler implements StatementVisitor, ExpressionVisitor{
-	private final String script;
+public class WtfCompiler extends InstWriter implements StatementVisitor, ExpressionVisitor{
 	private final CompileContext context;
-
-	public final ByteList inst = new ByteArrayList();
 
 	private final List<Block> blocks = new ArrayList<>();
 
-	private final Lines.Builder lines = new Lines.Builder();
+	private Lines.Builder lines;
 
-	public int variables;
-
-	private int currentStack = 1; // Root initializer is always in stack
-	private int maxStack = 1;
+	private int currentStack;
+	private int maxStack;
 
 	private int currentSourcePosition;
 
-	private boolean finished;
-
-	public WtfCompiler(String script, CompileContext context){
-		this.script = script;
+	public WtfCompiler(CompileContext context){
 		this.context = context;
-		this.pushBlock(true);
 	}
 
-	public WtfScript parseAndCompile(){
-		if(!finished){
-			WtfParser parser = new WtfParser(script, context);
-			for(Statement s; (s = parser.parse())!=null; )
-				writeInst(s);
+	public WtfScript parseAndCompile(String script){
+		this.inst.clear();
+		this.blocks.clear();
+		this.lines = new Lines.Builder();
+		this.currentStack = 0;
+		this.maxStack = 0;
+		this.currentSourcePosition = 0;
+		pushBlock();
+		WtfParser parser = new WtfParser(script, context);
+		while(true){
+			Statement s = parser.parse();
+			if(s==null) break;
+			writeInst(s);
 		}
-		return finish();
-	}
+		popBlock();
+		write(Inst.END);
 
-	public WtfScript finish(){
-		if(!finished){
-			finished = true;
-			write(Inst.END);
-		}
+		Lines lines = this.lines.build(script, inst.size());
 		return new WtfScript(context.getEngine(),
-				inst.toByteArray(),
-				lines.build(script, inst.size()));
-	}
-
-	private void write(byte inst){
-		this.inst.add(inst);
-	}
-	private void write2(short inst){
-		this.inst.add((byte)(inst >> 8));
-		this.inst.add((byte)inst);
-	}
-	private void write4(int inst){
-		this.inst.add((byte)(inst >> 24));
-		this.inst.add((byte)(inst >> 16));
-		this.inst.add((byte)(inst >> 8));
-		this.inst.add((byte)inst);
-	}
-	private void write8(long inst){
-		this.inst.add((byte)(inst >> 56));
-		this.inst.add((byte)(inst >> 48));
-		this.inst.add((byte)(inst >> 40));
-		this.inst.add((byte)(inst >> 32));
-		this.inst.add((byte)(inst >> 24));
-		this.inst.add((byte)(inst >> 16));
-		this.inst.add((byte)(inst >> 8));
-		this.inst.add((byte)inst);
-	}
-
-	private int getNextWritePoint(){
-		return this.inst.size();
-	}
-	private void writeAt(int writePoint, byte inst){
-		this.inst.set(writePoint, inst);
-	}
-	private void write2At(int writePoint, short inst){
-		this.inst.set(writePoint, (byte)(inst >> 8));
-		this.inst.set(writePoint+1, (byte)inst);
-	}
-	private void write4At(int writePoint, int inst){
-		this.inst.set(writePoint, (byte)(inst >> 24));
-		this.inst.set(writePoint+1, (byte)(inst >> 16));
-		this.inst.set(writePoint+2, (byte)(inst >> 8));
-		this.inst.set(writePoint+3, (byte)inst);
+				getInstructions(),
+				lines);
 	}
 
 	private short getJumpCoord(int from){
@@ -108,12 +60,6 @@ public class WtfCompiler implements StatementVisitor, ExpressionVisitor{
 		int incr = to-from;
 		if(incr!=(short)incr) error("Jump out of range");
 		return (short)incr;
-	}
-
-	private byte getStackPoint(int dest){
-		int i = currentStack-dest;
-		if(i>255) error("Stack point out of range");
-		return (byte)i;
 	}
 
 	public void writeInst(Statement stmt){
@@ -133,32 +79,29 @@ public class WtfCompiler implements StatementVisitor, ExpressionVisitor{
 	}
 
 	@Override public void visitAssign(Statement.Assign assign){
+		writeInst(assign.object);
 		writeInst(assign.value);
-		write(Inst.SET);
-		write(getStackPoint(getBlock().initializerStackPosition));
+		write(Inst.SET_PROPERTY);
 		write(identifier(assign.property));
-		removeStack();
+		removeStack(2);
 	}
-	@Override public void visitDefine(Statement.Define define){
-		Expression e = define.value;
-		if(e.isConstant()){
-			setDefinition(define.property,
-					Definition.constant(obj(Objects.requireNonNull(
-							e.getConstantObject()))));
-		}else{
-			Definition definition = Definition.variable(newVariableId());
-			setDefinition(define.property, definition);
+	@Override public void visitLocalDecl(Statement.LocalDecl localDecl){
+		Expression e = localDecl.value;
+		if(e.isConstant()) newConstantLocal(localDecl.name, e.getConstantObject());
+		else{
 			writeInst(e);
-			write(Inst.SET_VARIABLE);
-			write(definition.varId);
-			removeStack();
+			newLocal(localDecl.name);
 		}
 	}
+	@Override public void visitFnDecl(Statement.FnDecl fnDecl){
+
+	}
 	@Override public void visitApply(Statement.Apply apply){
+		write(Inst.THIS);
+		addStack();
 		writeInst(apply.value);
 		write(Inst.APPLY);
-		write(getStackPoint(getBlock().initializerStackPosition));
-		removeStack();
+		removeStack(2);
 	}
 	@Override public void visitIf(Statement.If apply){
 		writeInst(apply.condition);
@@ -204,11 +147,7 @@ public class WtfCompiler implements StatementVisitor, ExpressionVisitor{
 		addStack();
 
 		pushBlock();
-		Definition definition = Definition.variable(newVariableId());
-		setDefinition(forStatement.variable, definition);
-		write(Inst.SET_VARIABLE);
-		write(definition.varId);
-		removeStack();
+		newLocal(forStatement.variable);
 
 		for(Statement s : forStatement.statements) writeInst(s);
 		popBlock();
@@ -252,11 +191,18 @@ public class WtfCompiler implements StatementVisitor, ExpressionVisitor{
 		write(Inst.DISCARD);
 		removeStack();
 	}
+	@Override public void visitReturn(Statement.Return aReturn){
+
+	}
 	@Override public void visitDebug(Statement.Debug debug){
 		writeInst(debug.value);
 		write(Inst.DEBUG);
 		write(Inst.DISCARD);
 		removeStack();
+	}
+	@Override public void visitExpr(Statement.Expr expr){
+		writeInst(expr.expr);
+		write(Inst.DISCARD);
 	}
 
 	@Override public void visitComma(Expression.Comma comma){
@@ -452,69 +398,49 @@ public class WtfCompiler implements StatementVisitor, ExpressionVisitor{
 			removeStack();
 		}
 	}
+	@Override public void visitAccess(Expression.Access access){
+		write(Inst.GET_PROPERTY);
+		write(identifier(access.property));
+	}
 	@Override public void visitDynamicAccess(Expression.DynamicAccess dynamicAccess){
-		write(Inst.GET);
-		write(getStackPoint(getBlock().initializerStackPosition));
+		write(Inst.DYNAMIC_GET);
 		write(identifier(dynamicAccess.property));
 		addStack();
 	}
-	@Override public void visitConstantAccess(Expression.ConstantAccess constantAccess){
-		Definition definition = getDefinition(constantAccess.name);
-		if(definition==null) error("No constant defined with name '"+constantAccess.name+"'");
-		if(definition.constant){
-			write(Inst.PUSH);
-			write(definition.constantId);
-		}else{
-			write(Inst.GET_VARIABLE);
-			write(definition.varId);
-		}
+	@Override public void visitLocalAccess(Expression.LocalAccess localAccess){
+		Local local = getDefinition(localAccess.name);
+		if(local!=null) local.write(this);
+		else if(localAccess.isConstant()) writeConstant(localAccess.getConstantObject());
+		else error("No constant defined with name '"+localAccess.name+"'");
 		addStack();
+	}
+	@Override public void visitExecute(Expression.Execute execute){
+		writeInst(execute.object);
+		writeInst(execute.parameter);
+		write(Inst.EXECUTE);
+		removeStack();
 	}
 	@Override public void visitConstant(Expression.Constant constant){
-		if(constant.constant instanceof Integer){
-			int i = (int)constant.constant;
-			switch(i){
-				case 0:
-					write(Inst.I0);
-					break;
-				case 1:
-					write(Inst.I1);
-					break;
-				case -1:
-					write(Inst.IM1);
-					break;
-				default:
-					write(Inst.I);
-					write4(i);
-			}
-		}else if(constant.constant instanceof Double){
-			double d = (double)constant.constant;
-			if(d==0.0) write(Inst.D0);
-			else if(d==1.0) write(Inst.D1);
-			else if(d==-1.0) write(Inst.DM1);
-			else{
-				write(Inst.D);
-				write8(Double.doubleToRawLongBits(d));
-			}
-		}else if(constant.constant instanceof Boolean){
-			write((boolean)constant.constant ? Inst.TRUE : Inst.FALSE);
-		}else{
-			write(Inst.PUSH);
-			write(obj(constant.constant));
-		}
+		writeConstant(constant.constant);
 		addStack();
 	}
+	@Override public void visitFunction(Expression.Function function){
+		WtfExecutable exec = writeInnerScope(function.parameter, function.statements, function.scope);
+		// TODo lel
+	}
 	@Override public void visitConstruct(Expression.Construct construct){
-		write(Inst.NEW);
-		write(identifier(construct.identifier));
-		addStack();
-		pushBlock(true);
-		for(Statement s : construct.statements) writeInst(s);
-		popBlock();
-		write(Inst.MAKE);
+		// TODO suck my dick
 	}
 	@Override public void visitBool(Expression.Bool bool){
 		write(bool.value ? Inst.TRUE : Inst.FALSE);
+		addStack();
+	}
+	@Override public void visitThis(Expression.This thisExpr){
+		write(Inst.THIS);
+		addStack();
+	}
+	@Override public void visitNull(Expression.Null nullExpr){
+		write(Inst.NULL);
 		addStack();
 	}
 	@Override public void visitDebug(Expression.Debug debug){
@@ -522,8 +448,49 @@ public class WtfCompiler implements StatementVisitor, ExpressionVisitor{
 		write(Inst.DEBUG);
 	}
 
-	private byte obj(Object o){
-		return context.getEngine().getConstantPool().mapObject(o);
+	private void writeConstant(@Nullable Object object){
+		writeConstant(this, this.context, object);
+	}
+
+	private static void writeConstant(InstWriter inst, CompileContext context, @Nullable Object object){
+		if(object==null) inst.write(Inst.NULL);
+		else if(object instanceof Integer){
+			int i = (int)object;
+			switch(i){
+				case 0:
+					inst.write(Inst.I0);
+					break;
+				case 1:
+					inst.write(Inst.I1);
+					break;
+				case -1:
+					inst.write(Inst.IM1);
+					break;
+				default:
+					inst.write(Inst.I);
+					inst.write4(i);
+			}
+		}else if(object instanceof Double){
+			double d = (double)object;
+			if(d==0.0) inst.write(Inst.D0);
+			else if(d==1.0) inst.write(Inst.D1);
+			else if(d==-1.0) inst.write(Inst.DM1);
+			else{
+				inst.write(Inst.D);
+				inst.write8(Double.doubleToRawLongBits(d));
+			}
+		}else if(object instanceof Boolean){
+			inst.write((boolean)object ? Inst.TRUE : Inst.FALSE);
+		}else{
+			inst.write(Inst.CONST);
+			inst.write(context.getEngine().getConstantPool().mapObject(object));
+		}
+	}
+
+	private WtfExecutable writeInnerScope(List<String> parameter, List<Statement> statements, Scope scope){
+		pushBlock();
+		// TODO bingus
+		popBlock();
 	}
 
 	private byte identifier(String identifier){
@@ -534,38 +501,29 @@ public class WtfCompiler implements StatementVisitor, ExpressionVisitor{
 		throw new WtfCompileException(this.currentSourcePosition, message);
 	}
 
-	private byte newVariableId(){
-		if(variables==256) error("Too many variables");
-		return (byte)variables++;
-	}
-
 	private void pushBlock(){
-		pushBlock(false);
-	}
-	private void pushBlock(boolean newInitializerPosition){
-		blocks.add(new Block(newInitializerPosition ?
-				currentStack :
-				blocks.get(blocks.size()-1).initializerStackPosition));
+		blocks.add(new Block(currentStack));
 	}
 	private void popBlock(){
 		if(blocks.isEmpty()) error("Internal definition error");
-		blocks.remove(blocks.size()-1);
+		Block block = blocks.remove(blocks.size()-1);
+		int locals = block.calculateLocalsInStack();
+		if(currentStack-locals!=block.startingStack)
+			error("Stack does not match between start and end of the block");
+		for(int i = 0; i<locals; i++)
+			write(Inst.DISCARD);
 	}
 
-	private Block getBlock(){
-		return blocks.get(blocks.size()-1);
-	}
-
-	private void setDefinition(String name, Definition definition){
-		if(blocks.get(blocks.size()-1).definitions.putIfAbsent(name, definition)!=null)
+	private void setDefinition(String name, Local local){
+		if(blocks.get(blocks.size()-1).locals.putIfAbsent(name, local)!=null)
 			error("Property with name '"+name+"' is already defined");
 	}
 
-	@Nullable private Definition getDefinition(String name){
+	@Nullable private Local getDefinition(String name){
 		for(int i = blocks.size()-1; i>=0; i--){
 			Block m = blocks.get(i);
-			Definition definition = m.definitions.get(name);
-			if(definition!=null) return definition;
+			Local local = m.locals.get(name);
+			if(local!=null) return local;
 		}
 		return null;
 	}
@@ -586,37 +544,84 @@ public class WtfCompiler implements StatementVisitor, ExpressionVisitor{
 		if(currentStack<0) error("Internal stack count error");
 	}
 
-	private static <T> T[] populate(Object2ByteMap<T> map, T[] array){
-		for(Object2ByteMap.Entry<T> e : map.object2ByteEntrySet())
-			array[Byte.toUnsignedInt(e.getByteValue())] = e.getKey();
-		return array;
+	private void newConstantLocal(String name, @Nullable Object constant){
+		InstWriter inst = new InstWriter();
+		writeConstant(inst, this.context, constant);
+		setDefinition(name, new Local.Constant(inst.getInstructions()));
+	}
+	private void newLocal(String name){
+		setDefinition(name, new Local.StackLocal((byte)currentStack));
 	}
 
-	protected static final class Block{
-		public final int initializerStackPosition;
-		public final Map<String, Definition> definitions = new HashMap<>();
+	private static final class Block{
+		public final Map<String, Local> locals = new HashMap<>();
+		public final int startingStack;
 
-		public Block(int initializerStackPosition){
-			this.initializerStackPosition = initializerStackPosition;
+		private Block(int startingStack){
+			this.startingStack = startingStack;
+		}
+
+		public int calculateLocalsInStack(){
+			int localsInStack = 0;
+			for(Entry<String, Local> e : locals.entrySet())
+				if(e.getValue() instanceof Local.StackLocal)
+					localsInStack++;
+			return localsInStack;
 		}
 	}
 
-	public static final class Definition{
-		public final boolean constant;
-		public final byte constantId;
-		public final byte varId;
+	private static abstract class Local{
+		protected abstract void write(InstWriter writer);
 
-		private Definition(boolean constant, byte constantId, byte varId){
-			this.constant = constant;
-			this.constantId = constantId;
-			this.varId = varId;
+		private static final class Constant extends Local{
+			public final byte[] constantInst;
+
+			private Constant(byte[] constantInst){
+				this.constantInst = constantInst;
+			}
+
+			@Override protected void write(InstWriter writer){
+				writer.writeAll(constantInst);
+			}
 		}
 
-		public static Definition constant(byte constantId){
-			return new Definition(true, constantId, (byte)0);
+		private static final class StackLocal extends Local{
+			public final byte stackIndex;
+
+			private StackLocal(byte stackIndex){
+				this.stackIndex = stackIndex;
+			}
+
+			@Override protected void write(InstWriter writer){
+				writer.write(Inst.DUP_AT);
+				writer.write(stackIndex);
+			}
 		}
-		public static Definition variable(byte varId){
-			return new Definition(false, (byte)0, varId);
+
+		private static final class InternalConstantLocal extends Local{
+			public final byte internalConstantIndex;
+
+			private InternalConstantLocal(byte internalConstantIndex){
+				this.internalConstantIndex = internalConstantIndex;
+			}
+
+			@Override protected void write(InstWriter writer){
+				writer.write(Inst.INTERNAL_CONST);
+				writer.write(internalConstantIndex);
+			}
+		}
+
+		private static final class ArgLocal extends Local{
+			public final byte argIndex;
+
+			private ArgLocal(byte argIndex){
+				this.argIndex = argIndex;
+			}
+
+			@Override protected void write(InstWriter writer){
+				writer.write(Inst.ARG);
+				writer.write(argIndex);
+			}
 		}
 	}
 }

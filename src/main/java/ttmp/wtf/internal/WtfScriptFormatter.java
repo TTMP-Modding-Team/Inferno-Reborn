@@ -1,20 +1,15 @@
 package ttmp.wtf.internal;
 
-import com.google.common.primitives.Ints;
-import com.google.common.primitives.Longs;
-import com.google.common.primitives.Shorts;
 import ttmp.wtf.WtfScript;
+import ttmp.wtf.internal.compiler.InstReader;
 
 import java.util.Locale;
-import java.util.Objects;
 
-public class WtfScriptFormatter{
-	protected final WtfScript script;
+public class WtfScriptFormatter extends InstReader{
 	protected final StringBuilder stb = new StringBuilder();
 
 	public WtfScriptFormatter(WtfScript script){
-		this.script = Objects.requireNonNull(script);
-
+		super(script);
 		format();
 	}
 
@@ -26,34 +21,6 @@ public class WtfScriptFormatter{
 		formatObjects();
 		writeLine();
 		formatIdentifiers();
-	}
-
-	protected int ip = 0;
-
-	protected byte nextByte(){
-		return script.getInst(ip++);
-	}
-	protected int nextUByte(){
-		return Byte.toUnsignedInt(nextByte());
-	}
-	protected short nextShort(){
-		return Shorts.fromBytes(nextByte(), nextByte());
-	}
-	protected int nextInt(){
-		return Ints.fromBytes(nextByte(), nextByte(), nextByte(), nextByte());
-	}
-	protected double nextDouble(){ // haha funny
-		return Double.longBitsToDouble(Longs.fromBytes(nextByte(), nextByte(), nextByte(), nextByte(), nextByte(), nextByte(), nextByte(), nextByte()));
-	}
-
-	protected String identifier(){
-		return script.getEngine().getConstantPool().getIdentifier(Byte.toUnsignedInt(script.getInst(ip-1)));
-	}
-	protected String identifier(int prev){
-		return script.getEngine().getConstantPool().getIdentifier(Byte.toUnsignedInt(script.getInst(ip-1-prev)));
-	}
-	protected Object obj(){
-		return script.getEngine().getConstantPool().getObject(Byte.toUnsignedInt(script.getInst(ip-1)));
 	}
 
 	protected void formatBytecode(){
@@ -69,19 +36,37 @@ public class WtfScriptFormatter{
 			}
 			write(String.format(" %3d| ", ip));
 
-			byte inst = nextByte();
+			byte inst = next();
 			switch(inst){
-				case Inst.PUSH:
-					writeLine("PUSH "+nextUByte()+"   #"+obj());
-					break;
 				case Inst.DISCARD:
 					writeLine("DISCARD");
 					break;
 				case Inst.DUP:
 					writeLine("DUP");
 					break;
-				case Inst.THIS:
-					writeLine("THIS");
+				case Inst.DUP_AT:
+					writeLine("DUP_AT "+nextU());
+					break;
+				case Inst.JUMP:
+					writeLine("JUMP "+next2());
+					break;
+				case Inst.JUMPIF:
+					writeLine("JUMPIF "+next2());
+					break;
+				case Inst.JUMPELSE:
+					writeLine("JUMPELSE "+next2());
+					break;
+				case Inst.JUMP_IF_LT1:
+					writeLine("JUMP_IF_LT1 "+next2());
+					break;
+				case Inst.JUMP_OR_NEXT:
+					writeLine("JUMP_OR_NEXT "+next2());
+					break;
+				case Inst.RETURN:
+					writeLine("RETURN");
+					break;
+				case Inst.END:
+					writeLine("END");
 					break;
 				case Inst.TRUE:
 					writeLine("TRUE");
@@ -89,8 +74,14 @@ public class WtfScriptFormatter{
 				case Inst.FALSE:
 					writeLine("FALSE");
 					break;
+				case Inst.THIS:
+					writeLine("THIS");
+					break;
+				case Inst.NULL:
+					writeLine("NULL");
+					break;
 				case Inst.I:
-					writeLine("I "+nextInt());
+					writeLine("I "+next4());
 					break;
 				case Inst.I0:
 					writeLine("I0");
@@ -165,7 +156,7 @@ public class WtfScriptFormatter{
 					writeLine("BUNDLE4");
 					break;
 				case Inst.BUNDLEN:
-					writeLine("BUNDLEN "+nextUByte());
+					writeLine("BUNDLEN "+nextU());
 					break;
 				case Inst.APPEND2:
 					writeLine("APPEND2");
@@ -177,13 +168,7 @@ public class WtfScriptFormatter{
 					writeLine("APPEND4");
 					break;
 				case Inst.APPENDN:
-					writeLine("APPENDN "+nextUByte());
-					break;
-				case Inst.GET:
-					writeLine("GET "+nextUByte()+' '+nextByte()+"   #"+identifier());
-					break;
-				case Inst.SET:
-					writeLine("SET "+nextUByte()+' '+nextByte()+"   #"+identifier());
+					writeLine("APPENDN "+nextU());
 					break;
 				case Inst.RANGE:
 					writeLine("RANGE");
@@ -192,7 +177,31 @@ public class WtfScriptFormatter{
 					writeLine("RAND");
 					break;
 				case Inst.RANDN:
-					writeLine("RANDN "+nextInt()+' '+nextInt());
+					writeLine("RANDN "+next4()+' '+next4());
+					break;
+				case Inst.CONST:
+					writeLine("CONST "+nextU()+"   #"+objAt());
+					break;
+				case Inst.ARG:
+					writeLine("ARG "+nextU());
+					break;
+				case Inst.INTERNAL_CONST:
+					writeLine("INTERNAL_CONST "+nextU());
+					break;
+				case Inst.GET_PROPERTY:
+					writeLine("GET_PROPERTY #"+identifierAt());
+					break;
+				case Inst.SET_PROPERTY:
+					writeLine("SET_PROPERTY #"+identifierAt());
+					break;
+				case Inst.DYNAMIC_GET:
+					writeLine("DYNAMIC_GET #"+identifierAt());
+					break;
+				case Inst.APPLY:
+					writeLine("APPLY");
+					break;
+				case Inst.DEBUG:
+					writeLine("DEBUG");
 					break;
 				case Inst.EXECUTE:
 					writeLine("EXECUTE");
@@ -205,27 +214,6 @@ public class WtfScriptFormatter{
 					break;
 				case Inst.IN:
 					writeLine("IN");
-					break;
-				case Inst.JUMP:
-					writeLine("JUMP "+nextShort());
-					break;
-				case Inst.JUMPIF:
-					writeLine("JUMPIF "+nextShort());
-					break;
-				case Inst.JUMPELSE:
-					writeLine("JUMPELSE "+nextShort());
-					break;
-				case Inst.JUMP_IF_LT1:
-					writeLine("JUMP_IF_LT1 "+nextShort());
-					break;
-				case Inst.JUMP_OR_NEXT:
-					writeLine("JUMP_OR_NEXT "+nextShort());
-					break;
-				case Inst.DEBUG:
-					writeLine("DEBUG");
-					break;
-				case Inst.END:
-					writeLine("END");
 					break;
 				default:
 					writeLine("??? ("+Integer.toHexString(inst).toUpperCase(Locale.ROOT)+")");
@@ -240,7 +228,7 @@ public class WtfScriptFormatter{
 			for(int j = 0; ip<script.getInstSize()&&j<8; j++){
 				if(j==0) stb.append(String.format(" %3d| ", ip));
 				else stb.append(' ');
-				stb.append(String.format("%02X", nextByte()));
+				stb.append(String.format("%02X", next()));
 			}
 		}
 		writeLine();

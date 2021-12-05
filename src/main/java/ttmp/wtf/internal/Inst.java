@@ -1,11 +1,7 @@
 package ttmp.wtf.internal;
 
 public interface Inst{
-	// 0x00~0x1F Stack shits & Constants
-	/**
-	 * Put obj {1} to the stack
-	 */
-	byte PUSH = 0x0;
+	// 0x01~0x0F Stack Operation & Flow Control
 	/**
 	 * Discard one from stack
 	 */
@@ -15,9 +11,41 @@ public interface Inst{
 	 */
 	byte DUP = 0x2;
 	/**
-	 * Duplicate {@code this}
+	 * Duplicate object from {1}th stack (from bottom)
 	 */
-	byte THIS = 0x3;
+	byte DUP_AT = 0x3;
+	/**
+	 * Increase ip by {2}
+	 */
+	byte JUMP = 0x4;
+	/**
+	 * Increase ip by {2} if top stack evaluates to true
+	 */
+	byte JUMPIF = 0x5;
+	/**
+	 * Increase ip by {2} if top stack evaluates to false
+	 */
+	byte JUMPELSE = 0x6;
+
+	/**
+	 * Peek number at top stack. Jump {2} if it's less than 1.
+	 */
+	byte JUMP_IF_LT1 = 0x7;
+	/**
+	 * Peek top stack as iterator. Push next if hasNext. Else pop and jump {2}
+	 */
+	byte JUMP_OR_NEXT = 0x8;
+
+	/**
+	 * End the execution with top of the stack as return value
+	 */
+	byte RETURN = 0xE;
+	/**
+	 * End the fucking program
+	 */
+	byte END = 0xF;
+
+	// 0x10~0x1F Constants
 
 	/**
 	 * Push a boolean constant 'true'.
@@ -27,40 +55,48 @@ public interface Inst{
 	 * Push a boolean constant 'false'.
 	 */
 	byte FALSE = 0x11;
+	/**
+	 * Push {@code this} object
+	 */
+	byte THIS = 0x12;
+	/**
+	 * Push {@code null}
+	 */
+	byte NULL = 0x13;
 
 	/**
 	 * Push int {4}
 	 */
-	byte I = 0x12;
+	byte I = 0x14;
 	/**
 	 * Push int 0
 	 */
-	byte I0 = 0x13;
+	byte I0 = 0x15;
 	/**
 	 * Push int 1
 	 */
-	byte I1 = 0x14;
+	byte I1 = 0x16;
 	/**
 	 * Push int -1
 	 */
-	byte IM1 = 0x15;
+	byte IM1 = 0x17;
 
 	/**
 	 * Push number {8}
 	 */
-	byte D = 0x16;
+	byte D = 0x18;
 	/**
 	 * Push number 0.0
 	 */
-	byte D0 = 0x17;
+	byte D0 = 0x19;
 	/**
 	 * Push number 1.0
 	 */
-	byte D1 = 0x18;
+	byte D1 = 0x1A;
 	/**
 	 * Push number -1.0
 	 */
-	byte DM1 = 0x19;
+	byte DM1 = 0x1B;
 
 	// 0x20~0x3F Primitive Operations
 	/**
@@ -124,95 +160,89 @@ public interface Inst{
 	/**
 	 * Consume 2 stack, append it, push 1
 	 */
-	byte APPEND2 = 0x38;
+	byte APPEND2 = 0x34;
 	/**
 	 * Consume 3 stack, append it, push 1
 	 */
-	byte APPEND3 = 0x39;
+	byte APPEND3 = 0x35;
 	/**
 	 * Consume 4 stack, append it, push 1
 	 */
-	byte APPEND4 = 0x3A;
+	byte APPEND4 = 0x36;
 	/**
 	 * Consume {1} stack, append it, push 1
 	 */
-	byte APPENDN = 0x3B;
-
-	// 0x40~0x5F Advanced Operators
-	/**
-	 * Pop an object and get property named with identifier {1}. Pushes 1.
-	 */
-	byte GET = 0x40;
-	/**
-	 * Pop two objects - A and B -, and set A's property named with identifier {1} to B.
-	 */
-	byte SET = 0x41;
+	byte APPENDN = 0x37;
 
 	/**
 	 * Create range instance using two popped numbers
 	 */
-	byte RANGE = 0x42;
+	byte RANGE = 0x38;
 
 	/**
 	 * Return random int between int #2 ~ #1 from stack, inclusive
 	 */
-	byte RAND = 0x43;
+	byte RAND = 0x39;
 	/**
 	 * Return random int between {4} ~ {4}, inclusive
 	 */
-	byte RANDN = 0x44;
+	byte RANDN = 0x3A;
+
+	// 0x40~ Advanced Operators
+	/**
+	 * Put constant with ID of {1} to the stack
+	 */
+	byte CONST = 0x40;
+	/**
+	 * Put {1}th argument for this scope
+	 */
+	byte ARG = 0x41;
+	/**
+	 * Put internal obj with ID of {1} to the stack. TODO is there better way to store executables?
+	 */
+	byte INTERNAL_CONST = 0x42;
+	/**
+	 * Pop an object and get property named with identifier {1}. Pushes 1.
+	 */
+	byte GET_PROPERTY = 0x43;
+	/**
+	 * Set object #2's property named with identifier {1} to #1.
+	 */
+	byte SET_PROPERTY = 0x44;
+
+	/**
+	 * Tries to get property of {@code this} named with identifier {1}.
+	 * If it fails, tries to resolve dynamic constant named with the same identifier.
+	 */
+	byte DYNAMIC_GET = 0x45;
+
+	/**
+	 * Apply #1 to #2
+	 */
+	byte APPLY = 0x46;
+
+	/**
+	 * Peek top of stack and print it
+	 */
+	byte DEBUG = 0x47;
 
 	/**
 	 * Pop an instance of executables and perform its action. Pops {1}
 	 * objects from stack as arguments. Pushes the returned object.
 	 */
-	byte EXECUTE = 0x50;
+	byte EXECUTE = 0x48;
 	/**
 	 * Create new instance using constructor named with identifier {1}.
-	 * The program will jump to entry point {2} and continue its execution
-	 * until returning to original point. Pushes the new object.<br>
+	 * Then the internal executable {2} will be executed.
+	 * Pushes the new object afterwards.<br>
 	 */
-	byte CONSTRUCT = 0x51;
+	byte CONSTRUCT = 0x49;
 	/**
 	 * Pop 1 object, expect {@link Iterable}, make iterator and push it
 	 */
-	byte MAKE_ITERATOR = 0x52;
+	byte MAKE_ITERATOR = 0x4A;
 	/**
-	 * Pop 2 objects (A, B) and pushes a boolean value indicating
-	 * whether A is inside collection B
+	 * Pops two objects, Pushes a boolean value indicating whether #2 is inside collection #1
 	 */
-	byte IN = 0x53;
-
-	// 0x60~0x7F Control Statements
-	/**
-	 * Increase ip by {2}
-	 */
-	byte JUMP = 0x60;
-	/**
-	 * Increase ip by {2} if top stack evaluates to true
-	 */
-	byte JUMPIF = 0x61;
-	/**
-	 * Increase ip by {2} if top stack evaluates to false
-	 */
-	byte JUMPELSE = 0x62;
-
-	/**
-	 * Peek number at top stack. Jump {2} if it's less than 1.
-	 */
-	byte JUMP_IF_LT1 = 0x63;
-	/**
-	 * Peek top stack as iterator. Push next if hasNext. Else pop and jump {2}
-	 */
-	byte JUMP_OR_NEXT = 0x64;
-
-	/**
-	 * Peek top of stack and print it
-	 */
-	byte DEBUG = 0x70;
-
-	/**
-	 * End the fucking program
-	 */
-	byte END = 0x7F;
+	byte IN = 0x4B;
 }

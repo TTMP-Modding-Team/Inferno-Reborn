@@ -21,11 +21,15 @@ public interface ExpressionVisitor{
 	void visitAnd(Expression.And and);
 	void visitRange(Expression.RangeOperator rangeOperator);
 	void visitRandomInt(Expression.RandomInt randomInt);
+	void visitAccess(Expression.Access access);
 	void visitDynamicAccess(Expression.DynamicAccess dynamicAccess);
-	void visitConstantAccess(Expression.ConstantAccess constantAccess);
+	void visitLocalAccess(Expression.LocalAccess localAccess);
+	void visitExecute(Expression.Execute execute);
 	void visitConstant(Expression.Constant constant);
 	void visitFunction(Expression.Function function);
 	void visitConstruct(Expression.Construct construct);
-	void visitBool(Expression.Bool bool);
 	void visitDebug(Expression.Debug debug);
+	void visitBool(Expression.Bool bool);
+	void visitThis(Expression.This thisExpr);
+	void visitNull(Expression.Null nullExpr);
 }
