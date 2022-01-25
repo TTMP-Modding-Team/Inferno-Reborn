@@ -20,8 +20,8 @@ public class GhostEntity extends Entity{
 
 	private UUID targetUUID;
 	private int targetNetworkId;
-	private boolean leftTarget;
 	private boolean isAngry;
+	private long livingTime = 0;
 
 	public GhostEntity(World world){
 		this(ModEntities.GHOST.get(), world);
@@ -39,7 +39,6 @@ public class GhostEntity extends Entity{
 			this.targetUUID = target.getUUID();
 			this.targetNetworkId = target.getId();
 		}
-
 	}
 
 	@Nullable
@@ -54,8 +53,8 @@ public class GhostEntity extends Entity{
 	@Override
 	protected void addAdditionalSaveData(CompoundNBT nbt){
 		if(this.targetUUID!=null) nbt.putUUID("Target", this.targetUUID);
-		if(this.leftTarget) nbt.putBoolean("LeftTarget", true);
-		if(this.isAngry) nbt.putBoolean("Angry", this.isAngry);
+		nbt.putBoolean("Angry", this.isAngry);
+		nbt.putLong("LivingTime", this.livingTime);
 
 	}
 	@Override public IPacket<?> getAddEntityPacket(){
@@ -64,25 +63,24 @@ public class GhostEntity extends Entity{
 
 	@Override
 	protected void readAdditionalSaveData(CompoundNBT nbt){
-		if(nbt.hasUUID("Target")){
-			this.targetUUID = nbt.getUUID("Target");
-		}
-
-		this.leftTarget = nbt.getBoolean("LeftTarget");
+		if(nbt.hasUUID("Target")) this.targetUUID = nbt.getUUID("Target");
 		this.isAngry = nbt.getBoolean("Angry");
+		this.livingTime = nbt.getLong("LivingTime");
 	}
 
 	@Override
 	public void tick(){
-		if(!this.leftTarget){
-			this.leftTarget = this.checkLeftTarget();
-		}
 		super.tick();
+		livingTime++;
+		if(livingTime>200){
+			this.remove();
+			return;
+		}
 		Entity target = this.getTarget();
-//		if(this.getTarget() == null) {
-//			target = this.level.getNearestPlayer(this, 10);
-//			setTarget(target);
-//		}
+		if(target==null){
+			isAngry = false;
+			return;
+		}
 		if(target instanceof PlayerEntity){
 			if(!isAngry) isAngry = this.distanceToSqr(target)>100;
 			else{
@@ -97,21 +95,6 @@ public class GhostEntity extends Entity{
 				}
 			}
 		}
+
 	}
-
-	private boolean checkLeftTarget(){
-		Entity target = this.getTarget();
-		if(target!=null){
-			for(Entity entity : this.level.getEntities(this,
-					this.getBoundingBox().expandTowards(this.getDeltaMovement()).inflate(1.0D),
-					(e) -> !e.isSpectator()&&e.isPickable())){
-				if(entity.getRootVehicle()==target.getRootVehicle()){
-					return false;
-				}
-			}
-		}
-
-		return true;
-	}
-
 }
