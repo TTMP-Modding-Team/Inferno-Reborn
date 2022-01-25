@@ -1,58 +1,117 @@
 package ttmp.infernoreborn.contents.entity;
 
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.MobEntity;
-import net.minecraft.entity.ai.attributes.AttributeModifierMap;
-import net.minecraft.entity.monster.SkeletonEntity;
-import net.minecraft.entity.monster.ZombieEntity;
-import net.minecraft.inventory.EquipmentSlotType;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.HandSide;
-import net.minecraft.util.NonNullList;
+import net.minecraft.entity.MoverType;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.network.IPacket;
+import net.minecraft.util.DamageSource;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.World;
+import net.minecraft.world.server.ServerWorld;
+import net.minecraftforge.fml.network.NetworkHooks;
 import ttmp.infernoreborn.contents.ModEntities;
 
-public class GhostEntity extends MobEntity{
+import javax.annotation.Nullable;
+import java.util.UUID;
 
-	private final NonNullList<ItemStack> armorItems = NonNullList.withSize(4, ItemStack.EMPTY);
-	private final NonNullList<ItemStack> handItems = NonNullList.withSize(2, ItemStack.EMPTY);
+public class GhostEntity extends Entity{
+
+	private UUID targetUUID;
+	private int targetNetworkId;
+	private boolean leftTarget;
+	private boolean isAngry;
 
 	public GhostEntity(World world){
 		this(ModEntities.GHOST.get(), world);
 	}
-	public GhostEntity(EntityType<? extends MobEntity> p_i48577_1_, World p_i48577_2_){
-		super(p_i48577_1_, p_i48577_2_);
-	}
-	@Override public Iterable<ItemStack> getArmorSlots(){
-		return this.armorItems;
-	}
-	@Override public ItemStack getItemBySlot(EquipmentSlotType pSlot){
-		switch(pSlot.getType()){
-			case HAND:
-				return this.handItems.get(pSlot.getIndex());
-			case ARMOR:
-				return this.armorItems.get(pSlot.getIndex());
-			default:
-				return ItemStack.EMPTY;
-		}
-	}
-	@Override public void setItemSlot(EquipmentSlotType pSlot, ItemStack pStack){
-		switch(pSlot.getType()){
-			case HAND:
-				this.handItems.set(pSlot.getIndex(), pStack);
-				break;
-			case ARMOR:
-				if(pSlot.getIndex()==0) return;
-				this.armorItems.set(pSlot.getIndex(), pStack);
-		}
-	}
-	@Override public HandSide getMainArm(){
-		return HandSide.RIGHT;
+	public GhostEntity(EntityType<? extends Entity> entityType, World world){
+		super(entityType, world);
+		isAngry = false;
 	}
 
-	public static AttributeModifierMap.MutableAttribute registerAttributes(){
-		return ZombieEntity.createAttributes();
+
+	@Override protected void defineSynchedData(){}
+
+	public void setTarget(@Nullable Entity target){
+		if(target!=null){
+			this.targetUUID = target.getUUID();
+			this.targetNetworkId = target.getId();
+		}
+
+	}
+
+	@Nullable
+	public Entity getTarget(){
+		if(this.targetUUID!=null&&this.level instanceof ServerWorld){
+			return ((ServerWorld)this.level).getEntity(this.targetUUID);
+		}else{
+			return this.targetNetworkId!=0 ? this.level.getEntity(this.targetNetworkId) : null;
+		}
+	}
+
+	@Override
+	protected void addAdditionalSaveData(CompoundNBT nbt){
+		if(this.targetUUID!=null) nbt.putUUID("Target", this.targetUUID);
+		if(this.leftTarget) nbt.putBoolean("LeftTarget", true);
+		if(this.isAngry) nbt.putBoolean("Angry", this.isAngry);
+
+	}
+	@Override public IPacket<?> getAddEntityPacket(){
+		return NetworkHooks.getEntitySpawningPacket(this);
+	}
+
+	@Override
+	protected void readAdditionalSaveData(CompoundNBT nbt){
+		if(nbt.hasUUID("Target")){
+			this.targetUUID = nbt.getUUID("Target");
+		}
+
+		this.leftTarget = nbt.getBoolean("LeftTarget");
+		this.isAngry = nbt.getBoolean("Angry");
+	}
+
+	@Override
+	public void tick(){
+		if(!this.leftTarget){
+			this.leftTarget = this.checkLeftTarget();
+		}
+		super.tick();
+		Entity target = this.getTarget();
+//		if(this.getTarget() == null) {
+//			target = this.level.getNearestPlayer(this, 10);
+//			setTarget(target);
+//		}
+		if(target instanceof PlayerEntity){
+			if(!isAngry) isAngry = this.distanceToSqr(target)>100;
+			else{
+				double xDistance = target.getX()-this.getX();
+				double yDistance = target.getY()-this.getY();
+				double zDistance = target.getZ()-this.getZ();
+				this.setDeltaMovement(new Vector3d(xDistance, yDistance, zDistance).normalize().scale(0.05D));
+				this.move(MoverType.SELF, this.getDeltaMovement());
+				if(this.getBoundingBox().intersects(target.getBoundingBox())){
+					target.hurt(DamageSource.MAGIC, 10);
+					this.remove();
+				}
+			}
+		}
+	}
+
+	private boolean checkLeftTarget(){
+		Entity target = this.getTarget();
+		if(target!=null){
+			for(Entity entity : this.level.getEntities(this,
+					this.getBoundingBox().expandTowards(this.getDeltaMovement()).inflate(1.0D),
+					(e) -> !e.isSpectator()&&e.isPickable())){
+				if(entity.getRootVehicle()==target.getRootVehicle()){
+					return false;
+				}
+			}
+		}
+
+		return true;
 	}
 
 }

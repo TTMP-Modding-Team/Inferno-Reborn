@@ -171,7 +171,6 @@ public class InfernoReborn{
 	public static void registerAttributes(final EntityAttributeCreationEvent event){
 		event.put(ModEntities.SUMMONED_ZOMBIE.get(), SummonedZombieEntity.registerAttributes().build());
 		event.put(ModEntities.SUMMONED_SKELETON.get(), SummonedSkeletonEntity.registerAttributes().build());
-		event.put(ModEntities.GHOST.get(), GhostEntity.registerAttributes().build());
 	}
 
 	@Mod.EventBusSubscriber(modid = MODID, bus = Bus.MOD, value = Dist.CLIENT)
