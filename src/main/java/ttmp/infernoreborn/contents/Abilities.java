@@ -42,6 +42,7 @@ import ttmp.infernoreborn.contents.ability.VeteranAbility;
 import ttmp.infernoreborn.contents.ability.WindAbility;
 import ttmp.infernoreborn.contents.entity.AnvilEntity;
 import ttmp.infernoreborn.contents.entity.CreeperMissileEntity;
+import ttmp.infernoreborn.contents.entity.GhostEntity;
 import ttmp.infernoreborn.network.ModNet;
 import ttmp.infernoreborn.network.ParticleMsg;
 import ttmp.infernoreborn.util.EssenceType;
@@ -261,8 +262,12 @@ public final class Abilities{
 			new Ability(new Ability.Properties(0x0000, 0x0000)
 					.onDeath((entity, holder, event) -> {
 						Entity target = event.getSource().getEntity();
-						if(!(target instanceof LivingEntity)) return;
-						target.hurt(DamageSource.MAGIC, (float)Math.pow(entity.position().distanceTo(target.position()), 1.5));
+						if(!(target instanceof PlayerEntity)) return;
+						if(!(event.getSource().getEntity()==event.getSource().getDirectEntity())) return;
+						GhostEntity ghost = new GhostEntity(target.level);
+						ghost.setTarget(target);
+						ghost.setPos(entity.getX(), entity.getY(), entity.getZ());
+						target.level.addFreshEntity(ghost);
 					}).drops(EssenceType.MAGIC, 12)
 					.drops(EssenceType.DEATH, 12)));
 
