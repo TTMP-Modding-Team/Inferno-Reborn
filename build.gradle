@@ -115,16 +115,6 @@ dependencies {
     if(System.getProperty("idea.sync.active")!="true") {
         annotationProcessor 'org.spongepowered:mixin:0.8.2:processor'
     }
-
-    testImplementation(platform('org.junit:junit-bom:5.7.2'))
-    testImplementation('org.junit.jupiter:junit-jupiter')
-}
-
-test {
-    useJUnitPlatform()
-    testLogging {
-        events "passed", "skipped", "failed"
-    }
 }
 
 // Example for how to get properties into the manifest for reading by the runtime..
@@ -155,6 +145,7 @@ repositories {
     maven {
         url = "https://maven.theillusivec4.top/"
     }
+    mavenCentral()
 }
 
 dependencies {
@@ -163,6 +154,8 @@ dependencies {
     implementation fg.deobf("mezz.jei:jei-1.16.5:7.7.1.110")
     runtimeOnly fg.deobf("top.theillusivec4.curios:curios-forge:1.16.5-4.0.5.2")
     compileOnly fg.deobf("top.theillusivec4.curios:curios-forge:1.16.5-4.0.5.2:api")
+
+    implementation 'io.github.amonglang:among:0.4.1'
 }
 
 minecraft {

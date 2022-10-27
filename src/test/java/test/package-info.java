@@ -1,7 +1,0 @@
-@ParametersAreNonnullByDefault
-@MethodsReturnNonnullByDefault
-package test;
-
-import mcp.MethodsReturnNonnullByDefault;
-
-import javax.annotation.ParametersAreNonnullByDefault;
