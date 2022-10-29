@@ -39,7 +39,7 @@ import static ttmp.infernoreborn.InfernoReborn.MODID;
 public final class InfernalTypes{
 	private InfernalTypes(){}
 
-	private static final String ABILITY_GENERATOR_FILENAME = "infernal_generators";
+	private static final String INFERNAL_TYPES_FILENAME = "infernal_types";
 	private static final String ABILITIES_FILENAME = "abilities";
 
 	private static final Random random = new Random();
@@ -97,7 +97,7 @@ public final class InfernalTypes{
 
 	private static List<InfernalType> loadFromConfig(LogHandler logHandler){
 		try{
-			ReadResult rad = engine.readFrom(ABILITY_GENERATOR_FILENAME, InfernoReborn.LOGGER::warn);
+			ReadResult rad = engine.readFrom(INFERNAL_TYPES_FILENAME, InfernoReborn.LOGGER::warn);
 			engine.clearInstances();
 			if(rad.isSuccess()){
 				List<InfernalType> infernalTypes = new ArrayList<>();
@@ -181,7 +181,7 @@ public final class InfernalTypes{
 			addSourceProvider(path -> {
 				Path p = FMLPaths.CONFIGDIR.get().resolve(MODID+"/"+path+".among");
 				if(!Files.exists(p)) switch(path){
-					case ABILITY_GENERATOR_FILENAME: copyResource("config/default_infernal_generators.among", p); break;
+					case INFERNAL_TYPES_FILENAME: copyResource("config/default_infernal_types.among", p); break;
 					case ABILITIES_FILENAME: copyResource("config/default_abilities.among", p); break;
 					default: return null;
 				}
@@ -204,7 +204,7 @@ public final class InfernalTypes{
 
 		@Nullable private RootAndDefinition abilityGenerator;
 		@Override @Nullable protected RootAndDefinition createDefaultDefinition(String path){
-			if(!path.equals(ABILITY_GENERATOR_FILENAME)) return null;
+			if(!path.equals(INFERNAL_TYPES_FILENAME)) return null;
 			if(abilityGenerator==null){
 				abilityGenerator = new RootAndDefinition(DefaultInstanceProvider.defaultOperators());
 				AmongDefinition def = abilityGenerator.definition();
