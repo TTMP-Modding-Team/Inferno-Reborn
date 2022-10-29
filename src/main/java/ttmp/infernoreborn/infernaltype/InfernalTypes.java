@@ -5,7 +5,6 @@ import among.AmongEngine;
 import among.CompileResult;
 import among.ReadResult;
 import among.Report;
-import among.ReportType;
 import among.RootAndDefinition;
 import among.Source;
 import among.internals.library.DefaultInstanceProvider;
@@ -16,7 +15,6 @@ import among.operator.OperatorType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.loading.FMLPaths;
-import org.apache.logging.log4j.Level;
 import ttmp.infernoreborn.InfernoReborn;
 import ttmp.infernoreborn.contents.ability.Ability;
 import ttmp.infernoreborn.contents.ability.holder.ServerAbilityHolder;
@@ -45,54 +43,11 @@ public final class InfernalTypes{
 	private static final String ABILITIES_FILENAME = "abilities";
 
 	private static final Random random = new Random();
-	private static final AmongEngine engine = new AmongEngine(){
-		{
-			addSourceProvider(path -> {
-				Path p = FMLPaths.CONFIGDIR.get().resolve(MODID+"/"+path+".among");
-				if(!Files.exists(p)) switch(path){
-					case ABILITY_GENERATOR_FILENAME: copyResource("config/default_infernal_generators.among", p); break;
-					case ABILITIES_FILENAME: copyResource("config/default_abilities.among", p); break;
-					default: return null;
-				}
-				return Files.exists(p) ? Source.read(Files.newBufferedReader(p, StandardCharsets.UTF_8)) : null;
-			});
-		}
-
-		@Override protected void handleSourceResolveException(String path, Exception ex){
-			InfernoReborn.LOGGER.warn("An error occurred while resolving '"+path+"': ", ex);
-		}
-		@Override protected void handleInstanceResolveException(String path, Exception ex){
-			InfernoReborn.LOGGER.warn("An error occurred while resolving '"+path+"': ", ex);
-		}
-		@Override protected void handleCompileSuccess(String path, CompileResult result){
-			result.printReports(path, InfernoReborn.LOGGER::debug);
-		}
-		@Override protected void handleCompileError(String path, CompileResult result){
-			result.printReports(path, InfernoReborn.LOGGER::warn);
-		}
-
-		@Nullable private RootAndDefinition abilityGenerator;
-		@Override @Nullable protected RootAndDefinition createDefaultDefinition(String path){
-			if(path.equals(ABILITY_GENERATOR_FILENAME)){
-				if(abilityGenerator==null){
-					abilityGenerator = new RootAndDefinition(DefaultInstanceProvider.defaultOperators());
-					AmongDefinition def = abilityGenerator.definition();
-					def.operators().addOperator("~", OperatorType.BINARY, "range", 4.5);
-					def.operators().addKeyword("weight", OperatorType.BINARY);
-					def.macros().add(Macro.builder("weight", MacroType.OPERATION)
-							.param("element").param("weight")
-							.build((args, copyConstant, reportHandler) ->
-									Among.namedObject("weighted")
-											.prop("element", args[0])
-											.prop("weight", args[1])), null);
-				}
-				return abilityGenerator;
-			}else return null;
-		}
-	};
+	private static final AmongEngine engine = new InfernalTypeConfigEngine();
 
 	private static final ExecutorService configLoadService = Executors.newSingleThreadExecutor(r -> new Thread(r, "Infernal Type Loader"));
 	private static volatile boolean configLoadInProgress;
+	private static final DecimalFormat fmt = new DecimalFormat("0.##");
 
 	private static List<InfernalType> infernalTypes = Collections.emptyList();
 
@@ -118,24 +73,29 @@ public final class InfernalTypes{
 	}
 
 	public static void load(){
+		load(defaultLogger);
+	}
+	public static void load(LogHandler logHandler){
 		if(configLoadInProgress) return;
 		configLoadInProgress = true;
 		configLoadService.submit(() -> {
-			loadNow();
+			loadNow(logHandler);
 			configLoadInProgress = false;
 		});
 	}
 
-	private static final DecimalFormat fmt = new DecimalFormat("0.##");
 	public static void loadNow(){
-		InfernoReborn.LOGGER.info("Loading infernal types...");
+		loadNow(defaultLogger);
+	}
+	public static void loadNow(LogHandler logHandler){
+		logHandler.logInfo("Loading infernal types...");
 		long start = System.nanoTime();
-		infernalTypes = loadFromConfig();
+		infernalTypes = loadFromConfig(logHandler);
 		long elapsed = System.nanoTime()-start;
-		InfernoReborn.LOGGER.info("{} infernal type(s) loaded in {} ms", infernalTypes.size(), fmt.format(elapsed/100000.0));
+		logHandler.logInfo(infernalTypes.size()+" infernal type(s) loaded in "+fmt.format(elapsed/100000.0)+" ms");
 	}
 
-	private static List<InfernalType> loadFromConfig(){
+	private static List<InfernalType> loadFromConfig(LogHandler logHandler){
 		try{
 			ReadResult rad = engine.readFrom(ABILITY_GENERATOR_FILENAME, InfernoReborn.LOGGER::warn);
 			engine.clearInstances();
@@ -145,18 +105,19 @@ public final class InfernalTypes{
 					if(a.isObj()){
 						InfernalType t = InfernalType.INFERNAL_TYPE.construct(a.asObj(), (type, message, srcIndex, ex, hints) -> {
 							Report r = new Report(type, message, srcIndex, ex, hints);
-							r.print(rad.source(), s -> InfernoReborn.LOGGER.log(
-									type==ReportType.ERROR ? Level.ERROR :
-											type==ReportType.WARN ? Level.WARN :
-													Level.INFO, s));
+							switch(type){
+								case INFO: r.print(rad.source(), logHandler::logInfo); break;
+								case WARN: r.print(rad.source(), logHandler::logWarn); break;
+								case ERROR: r.print(rad.source(), logHandler::logError); break;
+							}
 						});
 						if(t!=null) infernalTypes.add(t);
-					}else InfernoReborn.LOGGER.warn("Skipping over non-object value '"+a+"' in infernal generators");
+					}else logHandler.logWarn("Skipping over non-object value '"+a+"' in infernal generators");
 				}
 				return infernalTypes;
 			}
 		}catch(RuntimeException ex){
-			InfernoReborn.LOGGER.error("Cannot continue loading infernal types due to an unexpected exception", ex);
+			logHandler.logError("Cannot continue loading infernal types due to an unexpected exception", ex);
 		}
 		return Collections.emptyList();
 	}
@@ -186,6 +147,77 @@ public final class InfernalTypes{
 					context.getHolder().add(ability);
 		}catch(RuntimeException ex){
 			InfernoReborn.LOGGER.warn("An error occurred while generating infernal type {}", type, ex);
+		}
+	}
+
+	private static final LogHandler defaultLogger = new LogHandler(){
+		@Override public void logInfo(String message){
+			InfernoReborn.LOGGER.info(message);
+		}
+		@Override public void logWarn(String message){
+			InfernoReborn.LOGGER.warn(message);
+		}
+		@Override public void logWarn(String message, Throwable exception){
+			InfernoReborn.LOGGER.warn(message, exception);
+		}
+		@Override public void logError(String message){
+			InfernoReborn.LOGGER.error(message);
+		}
+		@Override public void logError(String message, Throwable exception){
+			InfernoReborn.LOGGER.error(message, exception);
+		}
+	};
+
+	public interface LogHandler{
+		void logInfo(String message);
+		void logWarn(String message);
+		void logWarn(String message, Throwable exception);
+		void logError(String message);
+		void logError(String message, Throwable exception);
+	}
+
+	private static class InfernalTypeConfigEngine extends AmongEngine{
+		{
+			addSourceProvider(path -> {
+				Path p = FMLPaths.CONFIGDIR.get().resolve(MODID+"/"+path+".among");
+				if(!Files.exists(p)) switch(path){
+					case ABILITY_GENERATOR_FILENAME: copyResource("config/default_infernal_generators.among", p); break;
+					case ABILITIES_FILENAME: copyResource("config/default_abilities.among", p); break;
+					default: return null;
+				}
+				return Files.exists(p) ? Source.read(Files.newBufferedReader(p, StandardCharsets.UTF_8)) : null;
+			});
+		}
+
+		@Override protected void handleSourceResolveException(String path, Exception ex){
+			InfernoReborn.LOGGER.warn("An error occurred while resolving '"+path+"': ", ex);
+		}
+		@Override protected void handleInstanceResolveException(String path, Exception ex){
+			InfernoReborn.LOGGER.warn("An error occurred while resolving '"+path+"': ", ex);
+		}
+		@Override protected void handleCompileSuccess(String path, CompileResult result){
+			result.printReports(path, InfernoReborn.LOGGER::info);
+		}
+		@Override protected void handleCompileError(String path, CompileResult result){
+			result.printReports(path, InfernoReborn.LOGGER::warn);
+		}
+
+		@Nullable private RootAndDefinition abilityGenerator;
+		@Override @Nullable protected RootAndDefinition createDefaultDefinition(String path){
+			if(!path.equals(ABILITY_GENERATOR_FILENAME)) return null;
+			if(abilityGenerator==null){
+				abilityGenerator = new RootAndDefinition(DefaultInstanceProvider.defaultOperators());
+				AmongDefinition def = abilityGenerator.definition();
+				def.operators().addOperator("~", OperatorType.BINARY, "range", 4.5);
+				def.operators().addKeyword("weight", OperatorType.BINARY);
+				def.macros().add(Macro.builder("weight", MacroType.OPERATION)
+						.param("element").param("weight")
+						.build((args, copyConstant, reportHandler) ->
+								Among.namedObject("weighted")
+										.prop("element", args[0])
+										.prop("weight", args[1])), null);
+			}
+			return abilityGenerator;
 		}
 	}
 }
