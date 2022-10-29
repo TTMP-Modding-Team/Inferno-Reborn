@@ -5,7 +5,6 @@ import net.minecraft.client.gui.ScreenManager;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.RenderTypeLookup;
 import net.minecraft.client.renderer.tileentity.SkullTileEntityRenderer;
-import net.minecraft.data.DataGenerator;
 import net.minecraft.item.IItemPropertyGetter;
 import net.minecraft.item.ItemModelsProperties;
 import net.minecraft.nbt.INBT;
@@ -25,7 +24,6 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber.Bus;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
-import net.minecraftforge.fml.event.lifecycle.GatherDataEvent;
 import net.minecraftforge.fml.event.lifecycle.InterModEnqueueEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import org.apache.logging.log4j.LogManager;
@@ -71,15 +69,6 @@ import ttmp.infernoreborn.contents.entity.SummonedZombieEntity;
 import ttmp.infernoreborn.contents.item.EssenceNetAccessorItem;
 import ttmp.infernoreborn.contents.item.JudgementItem;
 import ttmp.infernoreborn.contents.sigil.holder.SigilHolder;
-import ttmp.infernoreborn.datagen.BlockModelGen;
-import ttmp.infernoreborn.datagen.BlockTagGen;
-import ttmp.infernoreborn.datagen.BookDataProvider;
-import ttmp.infernoreborn.datagen.ItemModelGen;
-import ttmp.infernoreborn.datagen.ItemTagGen;
-import ttmp.infernoreborn.datagen.LootModifierGen;
-import ttmp.infernoreborn.datagen.LootTableGen;
-import ttmp.infernoreborn.datagen.McmetaGen;
-import ttmp.infernoreborn.datagen.RecipeGen;
 import ttmp.infernoreborn.network.ModNet;
 import ttmp.infernoreborn.util.EssenceHolder;
 
@@ -141,25 +130,6 @@ public class InfernoReborn{
 		}, () -> {
 			throw new UnsupportedOperationException();
 		});
-	}
-
-	@SubscribeEvent
-	public static void gatherData(GatherDataEvent event){
-		DataGenerator generator = event.getGenerator();
-		if(event.includeServer()){
-			generator.addProvider(new BookDataProvider(event.getGenerator()));
-			generator.addProvider(new RecipeGen(event.getGenerator()));
-			BlockTagGen blockTagGen = new BlockTagGen(event.getGenerator(), event.getExistingFileHelper());
-			generator.addProvider(blockTagGen);
-			generator.addProvider(new ItemTagGen(event.getGenerator(), blockTagGen, event.getExistingFileHelper()));
-			generator.addProvider(new LootModifierGen(event.getGenerator()));
-			generator.addProvider(new LootTableGen(event.getGenerator()));
-		}
-		if(event.includeClient()){
-			generator.addProvider(new ItemModelGen(event.getGenerator(), event.getExistingFileHelper()));
-			generator.addProvider(new BlockModelGen(event.getGenerator(), event.getExistingFileHelper()));
-			generator.addProvider(new McmetaGen(event.getGenerator(), event.getExistingFileHelper()));
-		}
 	}
 
 	@SubscribeEvent

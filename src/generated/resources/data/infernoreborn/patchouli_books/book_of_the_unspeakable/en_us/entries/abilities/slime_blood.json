@@ -6,10 +6,6 @@
     {
       "type": "text",
       "text": "text.infernoreborn.ability.slime_blood.0"
-    },
-    {
-      "type": "infernoreborn:ability_attribute",
-      "ability": "infernoreborn:slime_blood"
     }
   ]
 }

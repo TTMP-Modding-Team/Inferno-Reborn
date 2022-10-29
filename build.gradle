@@ -9,7 +9,7 @@ buildscript {
     dependencies {
         classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '5.1.+', changing: true
         classpath 'org.parchmentmc:librarian:1.+'
-        classpath group: 'org.spongepowered', name: 'mixingradle', version: '0.7-SNAPSHOT'
+        classpath 'org.spongepowered:mixingradle:0.7.+'
         classpath 'com.github.jengelman.gradle.plugins:shadow:6.1.0'
     }
 }
@@ -26,6 +26,22 @@ java.toolchain.languageVersion = JavaLanguageVersion.of(8) // Mojang ships Java 
 compileJava.options.encoding = 'UTF-8'
 
 println('Java: ' + System.getProperty('java.version') + ' JVM: ' + System.getProperty('java.vm.version') + '(' + System.getProperty('java.vendor') + ') Arch: ' + System.getProperty('os.arch'))
+
+sourceSets {
+    main {
+        resources { srcDir 'src/generated/resources' }
+    }
+
+    datagen {
+        java { srcDir "src/datagen/java" }
+        resources { srcDir "src/datagen/resources" }
+
+        compileClasspath += configurations.getByName("minecraft")
+        compileClasspath += sourceSets.main.output
+        runtimeClasspath += sourceSets.main.output
+    }
+}
+
 minecraft {
     mappings channel: 'parchment', version: '2022.03.06-1.16.5'
     accessTransformer = file('src/main/resources/META-INF/accesstransformer.cfg')
@@ -63,14 +79,12 @@ minecraft {
 
             mods {
                 infernoreborn {
-                    source sourceSets.main
+                    sources(sourceSets.main, sourceSets.datagen)
                 }
             }
         }
     }
 }
-
-sourceSets.main.resources { srcDir 'src/generated/resources' }
 
 mixin {
     add sourceSets.main, "infernoreborn.refmap.json"
@@ -78,9 +92,7 @@ mixin {
 
 dependencies {
     minecraft 'net.minecraftforge:forge:1.16.5-36.2.39'
-    if(System.getProperty("idea.sync.active")!="true") {
-        annotationProcessor 'org.spongepowered:mixin:0.8.2:processor'
-    }
+    annotationProcessor 'org.spongepowered:mixin:0.8.5:processor'
 }
 
 jar {

@@ -1,7 +1,6 @@
 package ttmp.infernoreborn.compat.patchouli;
 
 import com.google.gson.JsonObject;
-import ttmp.infernoreborn.datagen.builder.book.BookComponent;
 import vazkii.patchouli.api.ICustomComponent;
 
 /**
