@@ -33,9 +33,14 @@ public interface AbilityGen{
 				if(r!=null) r.reportError("Cannot read value '"+v+"' as resource location", p.sourcePosition());
 				return null;
 			})
-			.list("", Constructor.listOf(AbilityGen.ABILITY_GEN).then((l, r) -> new AbilityListGen(l)))
-			.list("choose", Constructor.listOf(AbilityGen.CHOOSE_ENTRY)
-					.then((e, _r) -> new ChooseAbilityGen(e)))
+			.list("", (l, r) -> {
+				List<AbilityGen> abilityGens = Constructor.listOf(AbilityGen.ABILITY_GEN).construct(l, r);
+				return abilityGens==null ? null : new AbilityListGen(abilityGens);
+			})
+			.list("choose", (l, r) -> {
+				List<ChooseAbilityGen.Entry> entries = Constructor.listOf(AbilityGen.CHOOSE_ENTRY).construct(l, r);
+				return entries==null ? null : new ChooseAbilityGen(entries);
+			})
 			.list("chooseMultiple", ConditionedConstructor.listCondition(c -> c
 							.minSize(2),
 					(l, r) -> {

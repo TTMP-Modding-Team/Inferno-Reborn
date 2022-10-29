@@ -14,6 +14,7 @@ import among.macro.MacroType;
 import among.obj.Among;
 import among.operator.OperatorType;
 import net.minecraft.entity.LivingEntity;
+import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.loading.FMLPaths;
 import org.apache.logging.log4j.Level;
 import ttmp.infernoreborn.InfernoReborn;
@@ -24,10 +25,10 @@ import ttmp.infernoreborn.util.Weighted;
 
 import javax.annotation.Nullable;
 import java.io.IOException;
-import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -90,7 +91,7 @@ public final class InfernalTypes{
 		}
 	};
 
-	private static final ExecutorService configLoadService = Executors.newSingleThreadExecutor();
+	private static final ExecutorService configLoadService = Executors.newSingleThreadExecutor(r -> new Thread(r, "Infernal Type Loader"));
 	private static volatile boolean configLoadInProgress;
 
 	private static List<InfernalType> infernalTypes = Collections.emptyList();
@@ -106,13 +107,14 @@ public final class InfernalTypes{
 	}
 
 	private static void copyResource(String resource, Path dest) throws IOException{
-		InputStream inputStream = InfernoReborn.class.getResourceAsStream(resource);
-		if(inputStream==null){
+		Path p = ModList.get().getModFileById(MODID).getFile().findResource(resource);
+		if(!Files.exists(p)){
 			InfernoReborn.LOGGER.error("Cannot locate resource {}", resource);
 			return;
 		}
 		InfernoReborn.LOGGER.info("Copying resource {} to path {}", resource, dest);
-		Files.copy(inputStream, dest);
+		Files.createDirectories(dest.getParent());
+		Files.copy(p, dest);
 	}
 
 	public static void load(){
@@ -124,29 +126,39 @@ public final class InfernalTypes{
 		});
 	}
 
+	private static final DecimalFormat fmt = new DecimalFormat("0.##");
 	public static void loadNow(){
+		InfernoReborn.LOGGER.info("Loading infernal types...");
+		long start = System.nanoTime();
 		infernalTypes = loadFromConfig();
-		InfernoReborn.LOGGER.info("{} infernal types loaded", infernalTypes.size());
+		long elapsed = System.nanoTime()-start;
+		InfernoReborn.LOGGER.info("{} infernal type(s) loaded in {} ms", infernalTypes.size(), fmt.format(elapsed/100000.0));
 	}
 
 	private static List<InfernalType> loadFromConfig(){
-		ReadResult rad = engine.readFrom(ABILITY_GENERATOR_FILENAME, InfernoReborn.LOGGER::warn);
-		engine.clearInstances();
-		if(!rad.isSuccess()) return Collections.emptyList();
-		List<InfernalType> infernalTypes = new ArrayList<>();
-		for(Among a : rad.root().values()){
-			if(a.isObj()){
-				InfernalType t = InfernalType.INFERNAL_TYPE.construct(a.asObj(), (type, message, srcIndex, ex, hints) -> {
-					Report r = new Report(type, message, srcIndex, ex, hints);
-					r.print(rad.source(), s -> InfernoReborn.LOGGER.log(
-							type==ReportType.ERROR ? Level.ERROR :
-									type==ReportType.WARN ? Level.WARN :
-											Level.INFO, s));
-				});
-				if(t!=null) infernalTypes.add(t);
-			}else InfernoReborn.LOGGER.warn("Skipping over non-object value '"+a+"' in infernal generators");
+		try{
+			ReadResult rad = engine.readFrom(ABILITY_GENERATOR_FILENAME, InfernoReborn.LOGGER::warn);
+			engine.clearInstances();
+			if(rad.isSuccess()){
+				List<InfernalType> infernalTypes = new ArrayList<>();
+				for(Among a : rad.root().values()){
+					if(a.isObj()){
+						InfernalType t = InfernalType.INFERNAL_TYPE.construct(a.asObj(), (type, message, srcIndex, ex, hints) -> {
+							Report r = new Report(type, message, srcIndex, ex, hints);
+							r.print(rad.source(), s -> InfernoReborn.LOGGER.log(
+									type==ReportType.ERROR ? Level.ERROR :
+											type==ReportType.WARN ? Level.WARN :
+													Level.INFO, s));
+						});
+						if(t!=null) infernalTypes.add(t);
+					}else InfernoReborn.LOGGER.warn("Skipping over non-object value '"+a+"' in infernal generators");
+				}
+				return infernalTypes;
+			}
+		}catch(RuntimeException ex){
+			InfernoReborn.LOGGER.error("Cannot continue loading infernal types due to an unexpected exception", ex);
 		}
-		return infernalTypes;
+		return Collections.emptyList();
 	}
 
 	public static void generate(LivingEntity entity, ServerAbilityHolder holder){

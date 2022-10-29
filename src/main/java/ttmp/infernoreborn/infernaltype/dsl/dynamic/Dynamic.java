@@ -196,10 +196,10 @@ public interface Dynamic{
 			.primitive((p, reportHandler) -> {
 				Boolean bool = Constructors.BOOL.construct(p, null);
 				if(bool!=null) return constantBool(bool);
-				Double num = Constructors.DOUBLE.construct(p, null);
-				if(num!=null) return constantNumber(num);
 				Integer i = Constructors.INT.construct(p, null);
 				if(i!=null) return constantInt(i);
+				Double num = Constructors.DOUBLE.construct(p, null);
+				if(num!=null) return constantNumber(num);
 				return constant(p.getValue());
 			})
 			.list("||", boolBiOp(Dynamic::boolOr))
