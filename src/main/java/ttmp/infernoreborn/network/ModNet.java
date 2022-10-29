@@ -27,7 +27,6 @@ import ttmp.infernoreborn.contents.container.SigilScrapperContainer;
 import ttmp.infernoreborn.contents.container.StigmaTableContainer;
 import ttmp.infernoreborn.contents.sigil.Sigil;
 import ttmp.infernoreborn.contents.sigil.holder.SigilHolder;
-import ttmp.infernoreborn.infernaltype.InfernalTypes;
 import ttmp.infernoreborn.util.EssenceHolder;
 import ttmp.infernoreborn.util.EssenceType;
 import ttmp.infernoreborn.util.damage.Damages;
@@ -47,9 +46,6 @@ public final class ModNet{
 			NETVERSION::equals);
 
 	public static void init(){
-		CHANNEL.registerMessage(0, SyncInfernalTypeMsg.class,
-				SyncInfernalTypeMsg::write, SyncInfernalTypeMsg::read,
-				Client::handleSyncAbilityGeneratorList);
 		CHANNEL.registerMessage(1, SyncAbilityHolderMsg.class,
 				SyncAbilityHolderMsg::write, SyncAbilityHolderMsg::read,
 				Client::handleSyncAbilityHolderMsg);
@@ -145,12 +141,6 @@ public final class ModNet{
 	private static final class Client{
 		private Client(){}
 
-		public static void handleSyncAbilityGeneratorList(SyncInfernalTypeMsg msg, Supplier<NetworkEvent.Context> ctx){
-			ctx.get().setPacketHandled(true);
-			//noinspection deprecation
-			ctx.get().enqueueWork(() -> InfernalTypes.syncInfernalTypes(msg.getInfernalTypes()));
-		}
-
 		public static void handleSyncAbilityHolderMsg(SyncAbilityHolderMsg msg, Supplier<NetworkEvent.Context> ctx){
 			ctx.get().setPacketHandled(true);
 			ctx.get().enqueueWork(() -> {
@@ -162,7 +152,6 @@ public final class ModNet{
 				if(h==null) return;
 				h.clear();
 				for(Ability a : msg.getAbilities()) h.add(a);
-				h.setAppliedInfernalType(msg.getAppliedInfernalType());
 			});
 		}
 

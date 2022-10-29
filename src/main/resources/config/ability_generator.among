@@ -1,0 +1,11 @@
+// infernal generators import this by default
+
+use public default_operators
+
+operator ~ as binary(4.5): range
+keyword weight as binary
+
+macro weight(elem, wgt): weighted {
+  weight: wgt
+  element: elem
+}

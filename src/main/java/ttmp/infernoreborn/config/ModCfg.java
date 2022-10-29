@@ -15,6 +15,7 @@ import net.minecraftforge.fml.config.ModConfig;
 import net.minecraftforge.fml.event.server.FMLServerAboutToStartEvent;
 import ttmp.infernoreborn.InfernoReborn;
 import ttmp.infernoreborn.contents.ModItems;
+import ttmp.infernoreborn.infernaltype.InfernalTypes;
 
 import javax.annotation.Nullable;
 import java.io.BufferedReader;
@@ -53,6 +54,8 @@ public final class ModCfg{
 		ForgeConfigSpec.Builder server = new ForgeConfigSpec.Builder();
 		maxHeartCrystals = server.comment("Maximum amount of Heart Crystal you can consume.").defineInRange("maxHeartCrystals", 10, 0, Integer.MAX_VALUE);
 		ModLoadingContext.get().registerConfig(ModConfig.Type.SERVER, server.build());
+
+		InfernalTypes.load();
 	}
 
 	@SubscribeEvent

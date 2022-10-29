@@ -1,0 +1,78 @@
+macro CommonAbility: [
+  "bulletproof"
+  "blastproof"
+  "melee_veteran"
+  "ranged_veteran"
+  "magic_veteran"
+  "vampire"
+  "survival_expert"
+  "the_brain"
+  "toughness"
+  "swiftness"
+  "sentry"
+  "eviolite_chansey"
+  "poisoned_mind"
+  "slime_blood"
+  "touch_of_midas"
+]
+
+macro CommonSkin: [
+  "mud_skin"
+  "frozen_skin"
+  "woolly_skin"
+  "fuzzy_skin"
+  "thorn_skin"
+]
+
+macro CommonWind: [
+  "windblast"
+  "windblast2"
+  "blinding_wind"
+  "fuzzy_wind"
+]
+
+macro RareAbility: [
+  "crowd_control"
+  "destiny_bond"
+  "focus"
+  "guts"
+  "health_kit"
+  "telekinesis"
+  "aether_walker"
+  "thunderbolt"
+  "the_red"
+  "dae_kae_mob"
+  "battle_momentum"
+  "evil_trick"
+  "conditional_reflex"
+  "magma_blood"
+  "diabolo"
+]
+
+macro RareSkin: [
+  "mud_skin"
+  "frozen_skin"
+  "woolly_skin"
+  "fuzzy_skin"
+  "thorn_skin"
+  "magma_skin"
+  "electric_skin"
+]
+
+macro RareWind: [
+  "windblast"
+  "windblast2"
+  "windblast3"
+  "blinding_wind"
+  "fuzzy_wind"
+  "scalding_wind"
+  "freezing_wind"
+  "poisoning_wind"
+]
+
+macro EpicAbility: [
+  "emperors_aura"
+  "assassin"
+  "gunpowder_swarm"
+  "killer_queen"
+]

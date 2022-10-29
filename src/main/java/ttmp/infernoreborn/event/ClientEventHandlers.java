@@ -96,7 +96,6 @@ public final class ClientEventHandlers{
 
 		ClientAbilityHolder h = ClientAbilityHolder.of(entity);
 		if(h==null) return;
-		event.getLeft().add("Applied Generator Scheme: "+(h.getAppliedInfernalType()!=null ? h.getAppliedInfernalType().getId() : "None"));
 		h.getAbilities().stream()
 				.map(ability -> ability.getName().getString())
 				.forEach(event.getLeft()::add);

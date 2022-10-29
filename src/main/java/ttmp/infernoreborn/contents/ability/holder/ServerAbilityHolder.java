@@ -9,7 +9,6 @@ import net.minecraft.entity.monster.IMob;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.ListNBT;
 import net.minecraft.util.Direction;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.MathHelper;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
@@ -28,7 +27,6 @@ import ttmp.infernoreborn.contents.ability.OnAbilityEvent;
 import ttmp.infernoreborn.contents.ability.OnAbilityUpdate;
 import ttmp.infernoreborn.contents.ability.cooldown.Cooldown;
 import ttmp.infernoreborn.contents.ability.cooldown.ServerCooldown;
-import ttmp.infernoreborn.infernaltype.InfernalType;
 import ttmp.infernoreborn.infernaltype.InfernalTypes;
 import ttmp.infernoreborn.network.ModNet;
 import ttmp.infernoreborn.network.SyncAbilityHolderMsg;
@@ -88,8 +86,6 @@ public class ServerAbilityHolder implements AbilityHolder, ICapabilitySerializab
 		}
 	};
 
-	@Nullable private InfernalType appliedInfernalType;
-
 	private boolean generateAbility = true;
 	private boolean disableDrop;
 
@@ -116,14 +112,6 @@ public class ServerAbilityHolder implements AbilityHolder, ICapabilitySerializab
 		this.addedAbilities.clear();
 		this.removedAbilities.addAll(this.abilities);
 		this.abilities.clear();
-		this.appliedInfernalType = null;
-	}
-
-	@Nullable public InfernalType getAppliedInfernalType(){
-		return appliedInfernalType;
-	}
-	public void setAppliedInfernalType(@Nullable InfernalType appliedInfernalType){
-		this.appliedInfernalType = appliedInfernalType;
 	}
 
 	public boolean generateAbility(){
@@ -226,9 +214,7 @@ public class ServerAbilityHolder implements AbilityHolder, ICapabilitySerializab
 
 	public void syncAbilityToClient(LivingEntity entity){
 		ModNet.CHANNEL.send(PacketDistributor.TRACKING_ENTITY.with(() -> entity),
-				new SyncAbilityHolderMsg(entity.getId(),
-						abilities,
-						appliedInfernalType!=null&&appliedInfernalType.getSpecialEffect()!=null ? appliedInfernalType : null));
+				new SyncAbilityHolderMsg(entity.getId(), abilities));
 	}
 
 	@Override public Cooldown cooldown(){
@@ -264,7 +250,6 @@ public class ServerAbilityHolder implements AbilityHolder, ICapabilitySerializab
 		CompoundNBT nbt = new CompoundNBT();
 		if(!abilities.isEmpty()) nbt.put("abilities", StupidUtils.writeToNbt(abilities, Abilities.getRegistry()));
 		if(this.generateAbility) nbt.putBoolean("generateAbility", true);
-		if(appliedInfernalType!=null) nbt.putString("infernalType", appliedInfernalType.getId().toString());
 		this.cooldown.save(nbt);
 		return nbt;
 	}
@@ -276,9 +261,6 @@ public class ServerAbilityHolder implements AbilityHolder, ICapabilitySerializab
 		ListNBT abilities = nbt.getList("abilities", Constants.NBT.TAG_STRING);
 		StupidUtils.read(abilities, Abilities.getRegistry(), this::add);
 		this.generateAbility = nbt.getBoolean("generateAbility");
-		this.appliedInfernalType = nbt.contains("infernalType", Constants.NBT.TAG_STRING) ?
-				InfernalTypes.get(new ResourceLocation(nbt.getString("infernalType"))) :
-				null;
 		this.cooldown.load(nbt);
 	}
 }

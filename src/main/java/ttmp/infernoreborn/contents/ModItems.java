@@ -20,7 +20,6 @@ import ttmp.infernoreborn.contents.item.EssenceNetBlockItem;
 import ttmp.infernoreborn.contents.item.FoundryBlockItem;
 import ttmp.infernoreborn.contents.item.HeartCrystalItem;
 import ttmp.infernoreborn.contents.item.JudgementItem;
-import ttmp.infernoreborn.contents.item.curio.ShieldProviderItem;
 import ttmp.infernoreborn.contents.item.SigilItem;
 import ttmp.infernoreborn.contents.item.TheBookItem;
 import ttmp.infernoreborn.contents.item.ability.FixedAbilityItem;
@@ -33,6 +32,7 @@ import ttmp.infernoreborn.contents.item.armor.ThanatosHeavyArmorItem;
 import ttmp.infernoreborn.contents.item.armor.ThanatosLightArmorItem;
 import ttmp.infernoreborn.contents.item.curio.BaseCurioItem;
 import ttmp.infernoreborn.contents.item.curio.CloudScarfItem;
+import ttmp.infernoreborn.contents.item.curio.ShieldProviderItem;
 import ttmp.infernoreborn.contents.item.weapon.CrimsonClaymoreItem;
 import ttmp.infernoreborn.contents.item.weapon.DragonSlayerItem;
 import ttmp.infernoreborn.contents.item.weapon.ExplosiveSwordItem;
@@ -95,7 +95,7 @@ public final class ModItems{
 	}
 
 	public static final RegistryObject<Item> PRIMAL_INFERNO_SPARK = REGISTER.register("primal_inferno_spark", () -> new RandomAbilityItem(sparks(Rarity.EPIC)));
-	public static final RegistryObject<Item> GENERATOR_INFERNO_SPARK = REGISTER.register("generator_inferno_spark", () -> new GeneratorAbilityItem(sparks(Rarity.RARE)));
+	public static final RegistryObject<Item> GENERATOR_INFERNO_SPARK = REGISTER.register("generator_inferno_spark", () -> new GeneratorAbilityItem(new Item.Properties().rarity(Rarity.EPIC)));
 	public static final RegistryObject<Item> INFERNO_SPARK = REGISTER.register("inferno_spark", () -> new FixedAbilityItem(sparks(Rarity.RARE)));
 
 	public static final RegistryObject<Item> BOOK_OF_THE_UNSPEAKABLE = REGISTER.register("book_of_the_unspeakable", () -> new TheBookItem(artifacts().stacksTo(1)));

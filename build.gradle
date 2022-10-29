@@ -4,16 +4,19 @@ buildscript {
         mavenCentral()
         maven { url = 'https://repo.spongepowered.org/repository/maven-public/' }
         maven { url = 'https://sizableshrimp.me/maven' }
+        maven { url = "https://plugins.gradle.org/m2/" }
     }
     dependencies {
         classpath group: 'me.sizableshrimp.parchmenttest', name: 'ForgeGradle', version: '4.1.+', changing: true
         classpath group: 'org.spongepowered', name: 'mixingradle', version: '0.7-SNAPSHOT'
+        classpath "com.github.jengelman.gradle.plugins:shadow:6.1.0"
     }
 }
 apply plugin: 'net.minecraftforge.gradle'
 // Only edit below this line, the above code adds and enables the necessary things for Forge to be setup.
 apply plugin: 'eclipse'
 apply plugin: 'org.spongepowered.mixin'
+apply plugin: 'com.github.johnrengelman.shadow'
 
 version = "${mod_version}"
 group = 'ttmp.infernoreborn'
@@ -119,6 +122,7 @@ dependencies {
 
 // Example for how to get properties into the manifest for reading by the runtime..
 jar {
+    archiveClassifier.set('slim')
     manifest {
         attributes([
             "Specification-Title": "Inferno Reborn",
@@ -146,6 +150,9 @@ repositories {
         url = "https://maven.theillusivec4.top/"
     }
     mavenCentral()
+    maven {
+        url = 'https://s01.oss.sonatype.org/content/repositories/snapshots/'
+    }
 }
 
 dependencies {
@@ -155,7 +162,11 @@ dependencies {
     runtimeOnly fg.deobf("top.theillusivec4.curios:curios-forge:1.16.5-4.0.5.2")
     compileOnly fg.deobf("top.theillusivec4.curios:curios-forge:1.16.5-4.0.5.2:api")
 
-    implementation 'io.github.amonglang:among:0.4.1'
+    implementation ('io.github.amonglang:among:0.6.0-SNAPSHOT'){
+        changing = true
+    }
+
+    implementation files('libs/construct-0.1.0.jar')
 }
 
 minecraft {
@@ -164,5 +175,15 @@ minecraft {
             property 'mixin.env.remapRefMap', 'true'
             property 'mixin.env.refMapRemappingFile', "${projectDir}/build/createSrgToMcp/output.srg"
         }
+    }
+}
+
+shadowJar {
+    archiveClassifier.set('')
+
+    dependencies {
+        exclude(dependency{
+            it.moduleGroup != 'io.github.amonglang' // only shadow among and construct
+        })
     }
 }

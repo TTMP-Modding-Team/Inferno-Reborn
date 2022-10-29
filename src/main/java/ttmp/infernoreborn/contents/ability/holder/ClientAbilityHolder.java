@@ -1,9 +1,6 @@
 package ttmp.infernoreborn.contents.ability.holder;
 
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.particle.Particle;
 import net.minecraft.entity.LivingEntity;
-import net.minecraft.particles.ParticleTypes;
 import net.minecraft.util.Direction;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
@@ -12,11 +9,9 @@ import ttmp.infernoreborn.capability.Caps;
 import ttmp.infernoreborn.contents.ability.Ability;
 import ttmp.infernoreborn.contents.ability.cooldown.Cooldown;
 import ttmp.infernoreborn.contents.ability.cooldown.EmptyCooldown;
-import ttmp.infernoreborn.infernaltype.InfernalType;
 
 import javax.annotation.Nullable;
 import java.util.LinkedHashSet;
-import java.util.Random;
 import java.util.Set;
 
 public class ClientAbilityHolder implements AbilityHolder, ICapabilityProvider{
@@ -27,8 +22,6 @@ public class ClientAbilityHolder implements AbilityHolder, ICapabilityProvider{
 	}
 
 	private final Set<Ability> abilities = new LinkedHashSet<>();
-
-	@Nullable private InfernalType appliedInfernalType;
 
 	@Override public Set<Ability> getAbilities(){
 		return abilities;
@@ -47,25 +40,25 @@ public class ClientAbilityHolder implements AbilityHolder, ICapabilityProvider{
 	}
 
 	@Override public void update(LivingEntity entity){
-		if(appliedInfernalType!=null&&appliedInfernalType.getSpecialEffect()!=null){
-			Random rand = entity.getRandom();
-			if(rand.nextBoolean()){
-				int[] colors = appliedInfernalType.getSpecialEffect().getColors();
-				int color = colors[rand.nextInt(colors.length)];
-				float r = (color >> 16&0xFF)/255f;
-				float g = (color >> 8&0xFF)/255f;
-				float b = (color&0xFF)/255f;
+		//if(appliedInfernalType!=null&&appliedInfernalType.getSpecialEffect()!=null){
+		//	Random rand = entity.getRandom();
+		//	if(rand.nextBoolean()){
+		//		int[] colors = appliedInfernalType.getSpecialEffect().getColors();
+		//		int color = colors[rand.nextInt(colors.length)];
+		//		float r = (color >> 16&0xFF)/255f;
+		//		float g = (color >> 8&0xFF)/255f;
+		//		float b = (color&0xFF)/255f;
 
-				Particle particle = Minecraft.getInstance().particleEngine.createParticle(ParticleTypes.INSTANT_EFFECT,
-						entity.getRandomX(.5),
-						entity.getRandomY(),
-						entity.getRandomZ(.5),
-						rand.nextGaussian(),
-						rand.nextGaussian(),
-						rand.nextGaussian());
-				if(particle!=null) particle.setColor(r, g, b);
-			}
-		}
+		//		Particle particle = Minecraft.getInstance().particleEngine.createParticle(ParticleTypes.INSTANT_EFFECT,
+		//				entity.getRandomX(.5),
+		//				entity.getRandomY(),
+		//				entity.getRandomZ(.5),
+		//				rand.nextGaussian(),
+		//				rand.nextGaussian(),
+		//				rand.nextGaussian());
+		//		if(particle!=null) particle.setColor(r, g, b);
+		//	}
+		//}
 	}
 
 	@Override public Cooldown cooldown(){
@@ -76,12 +69,5 @@ public class ClientAbilityHolder implements AbilityHolder, ICapabilityProvider{
 
 	@Override public <T> LazyOptional<T> getCapability(Capability<T> cap, @Nullable Direction side){
 		return cap==Caps.abilityHolder ? self.cast() : LazyOptional.empty();
-	}
-
-	@Nullable public InfernalType getAppliedInfernalType(){
-		return appliedInfernalType;
-	}
-	public void setAppliedInfernalType(@Nullable InfernalType appliedInfernalType){
-		this.appliedInfernalType = appliedInfernalType;
 	}
 }

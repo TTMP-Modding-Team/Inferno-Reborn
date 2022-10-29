@@ -1,78 +1,71 @@
 package ttmp.infernoreborn.infernaltype;
 
-import com.google.gson.JsonObject;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.util.ResourceLocation;
+import among.TypeFlags;
+import among.construct.ConditionedConstructor;
+import among.construct.Constructor;
+import among.obj.AmongObject;
+import ttmp.infernoreborn.infernaltype.dsl.abilitygen.AbilityGen;
+import ttmp.infernoreborn.infernaltype.dsl.dynamic.Dynamic;
+import ttmp.infernoreborn.infernaltype.dsl.dynamic.DynamicInt;
+import ttmp.infernoreborn.infernaltype.dsl.effect.InfernalEffect;
 
 import javax.annotation.Nullable;
+import java.util.Collections;
+import java.util.List;
 import java.util.Objects;
 
 public final class InfernalType{
-	public static InfernalType read(PacketBuffer buf){
-		return new InfernalType(buf.readResourceLocation(),
-				buf.readBoolean() ? SpecialEffect.read(buf) : null,
-				buf.readBoolean() ? ItemDisplay.read(buf) : null);
+	@Nullable private final String name;
+	private final DynamicInt weight;
+	private final List<InfernalEffect> effects;
+	@Nullable private final AbilityGen abilityGen;
+
+	public InfernalType(@Nullable String name, DynamicInt weight, List<InfernalEffect> effects, @Nullable AbilityGen abilityGen){
+		this.name = name;
+		this.weight = Objects.requireNonNull(weight);
+		this.effects = effects;
+		this.abilityGen = abilityGen;
 	}
 
-	private final ResourceLocation id;
-	@Nullable private final SpecialEffect specialEffect;
-	@Nullable private final ItemDisplay itemDisplay;
-
-	public InfernalType(ResourceLocation id, @Nullable SpecialEffect specialEffect, @Nullable ItemDisplay itemDisplay){
-		this.id = Objects.requireNonNull(id);
-		this.specialEffect = specialEffect;
-		this.itemDisplay = itemDisplay;
+	@Nullable public String getName(){
+		return name;
 	}
-	public InfernalType(ResourceLocation id, JsonObject object){
-		this.id = Objects.requireNonNull(id);
-		this.specialEffect = object.has("specialEffect") ? SpecialEffect.parse(object.get("specialEffect").getAsJsonObject()) : null;
-		this.itemDisplay = object.has("itemDisplay") ? ItemDisplay.parse(object.get("itemDisplay").getAsJsonObject()) : null;
+	public DynamicInt getWeight(){
+		return weight;
 	}
-
-	public ResourceLocation getId(){
-		return id;
+	public List<InfernalEffect> getEffects(){
+		return Collections.unmodifiableList(effects);
 	}
-	@Nullable public SpecialEffect getSpecialEffect(){
-		return specialEffect;
-	}
-	@Nullable public ItemDisplay getItemDisplay(){
-		return itemDisplay;
-	}
-
-	public JsonObject serialize(){
-		JsonObject o = new JsonObject();
-		serialize(o);
-		return o;
-	}
-
-	public void serialize(JsonObject o){
-		if(specialEffect!=null) o.add("specialEffect", specialEffect.serialize());
-		if(itemDisplay!=null) o.add("itemDisplay", itemDisplay.serialize());
-	}
-
-	public void write(PacketBuffer buf){
-		buf.writeResourceLocation(id);
-		buf.writeBoolean(specialEffect!=null);
-		if(specialEffect!=null) specialEffect.write(buf);
-		buf.writeBoolean(itemDisplay!=null);
-		if(itemDisplay!=null) itemDisplay.write(buf);
-	}
-
-	@Override public boolean equals(Object o){
-		if(this==o) return true;
-		if(o==null||getClass()!=o.getClass()) return false;
-		InfernalType that = (InfernalType)o;
-		return id.equals(that.id);
-	}
-	@Override public int hashCode(){
-		return id.hashCode();
+	@Nullable public AbilityGen getAbilityGen(){
+		return abilityGen;
 	}
 
 	@Override public String toString(){
 		return "InfernalType{"+
-				"id="+id+
-				", specialEffect="+specialEffect+
-				", itemDisplay="+itemDisplay+
+				"name='"+name+'\''+
+				", weight="+weight+
+				", effects="+effects+
+				", abilityGen="+abilityGen+
 				'}';
 	}
+
+	public static final Constructor<AmongObject, InfernalType> INFERNAL_TYPE = ConditionedConstructor.objectCondition(c -> c
+					.property("Weight")
+					.optionalProperty("Effects", TypeFlags.LIST)
+					.optionalProperty("Abilities"),
+			(o, reportHandler) -> {
+				DynamicInt weight = Dynamic.DYNAMIC_INT.construct(o.expectProperty("Weight"), reportHandler);
+				List<InfernalEffect> effects = o.hasProperty("Effects") ? Constructor.listOf(InfernalEffect.INFERNAL_EFFECT)
+						.construct(o.expectProperty("Effects").asList(), reportHandler) :
+						Collections.emptyList();
+				AbilityGen abilityGen;
+				if(o.hasProperty("Abilities")){
+					abilityGen = AbilityGen.ABILITY_GEN.construct(o.expectProperty("Abilities"), reportHandler);
+					if(abilityGen==null) return null;
+				}else abilityGen = null;
+				if(weight==null||effects==null) return null;
+				if(reportHandler!=null&&o.getName().matches("\\s"))
+					reportHandler.reportWarning("Avoid using whitespaces in infernal type name, as it is difficult to write in commands", o.sourcePosition());
+				return new InfernalType(o.hasName() ? o.getName() : null, weight, effects, abilityGen);
+			});
 }

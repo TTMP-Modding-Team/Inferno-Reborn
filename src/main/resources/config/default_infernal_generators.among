@@ -1,0 +1,149 @@
+use abilities
+
+{ Weight: 50 } // Empty
+
+common {
+  Weight: 20
+  Effects: [
+    Particle [ FFFFFF ]
+  ]
+  Abilities: [
+    choose(
+      "" weight 32
+      "heart" weight 16
+      "heart2" weight 8
+      "heart3" weight 4
+      "heart4" weight 2
+      "heart5" weight 1
+    )
+    choose(
+      "" weight 32
+      "wood_skin" weight 8
+      "rock_skin" weight 4
+      "iron_skin" weight 2
+    )
+    chooseMultiple(1~4, (
+      CommonAbility
+      choose(CommonSkin)
+      choose(CommonWind)
+    ))
+  ]
+}
+
+uncommon {
+  Weight: 10
+  Effects: [
+    Particle [ FF00FF, 00FFFF, FFFF00 ]
+  ]
+  Abilities: [
+    choose(
+      "" weight 1
+      "heart" weight 2
+      "heart2" weight 4
+      "heart3" weight 8
+      "heart4" weight 4
+      "heart5" weight 2
+      "heart6" weight 1
+      "heart7" weight 1
+    )
+    choose(
+      "" weight 64
+      "wood_skin" weight 16
+      "rock_skin" weight 16
+      "iron_skin" weight 4
+      "diamond_skin" weight 1
+    )
+    if(1~2==1,
+      chooseMultiple(1~2, (
+        RareAbility
+        choose(RareSkin)
+        choose(RareWind)
+      ))
+    )
+    chooseMultiple(2~8, (
+      CommonAbility
+      choose(CommonSkin)
+      choose(CommonWind)
+    ))
+  ]
+}
+
+rare {
+  Weight: 5
+  Effects: [
+    Particle [ FF00FF ]
+  ]
+  Abilities: [
+    choose(
+      "heart2" weight 4
+      "heart3" weight 8
+      "heart4" weight 16
+      "heart5" weight 32
+      "heart6" weight 8
+      "heart7" weight 2
+      "heart8" weight 1
+    )
+    choose(
+      "" weight 64
+      "rock_skin" weight 16
+      "iron_skin" weight 16
+      "diamond_skin" weight 4
+      "netherite_skin" weight 1
+    )
+    if(1~5==1, choose(RareSkin))
+    if(1~7==1, choose(RareWind))
+    chooseMultiple(1~3, RareAbility)
+    chooseMultiple(2~4, CommonAbility)
+  ]
+}
+
+epic {
+  Weight: 1
+  Effects: [
+    Particle [ 0 ]
+  ]
+  Abilities: switch(1~3, {
+    1: (
+      heart8
+      choose(EpicAbility)
+      chooseMultiple(4~7, (
+        RareAbility
+        choose(RareSkin)
+        choose(RareWind)
+      ))
+      chooseMultiple(4~6, (
+        CommonAbility
+        choose(CommonSkin)
+        choose(CommonWind)
+      ))
+    )
+    2: (
+      heart9
+      choose(EpicAbility)
+      chooseMultiple(3~6, (
+        RareAbility
+        choose(RareSkin)
+        choose(RareWind)
+      ))
+      chooseMultiple(3~5, (
+        CommonAbility
+        choose(CommonSkin)
+        choose(CommonWind)
+      ))
+    )
+    3: (
+      heart10
+      choose(EpicAbility)
+      chooseMultiple(3~5, (
+        RareAbility
+        choose(RareSkin)
+        choose(RareWind)
+      ))
+      chooseMultiple(2~4, (
+        CommonAbility
+        choose(CommonSkin)
+        choose(CommonWind)
+      ))
+    )
+  })
+}

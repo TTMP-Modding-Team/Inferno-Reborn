@@ -18,17 +18,15 @@ public class SyncAbilityHolderMsg{
 			Ability ability = Abilities.getRegistry().getValue(buf.readVarInt());
 			if(ability!=null) set.add(ability);
 		}
-		return new SyncAbilityHolderMsg(entityId, set, buf.readBoolean() ? InfernalTypes.get(buf.readResourceLocation()) : null);
+		return new SyncAbilityHolderMsg(entityId, set);
 	}
 
 	private final int entityId;
 	private final Set<Ability> abilities;
-	@Nullable private final InfernalType appliedInfernalType;
 
-	public SyncAbilityHolderMsg(int entityId, Set<Ability> abilities, @Nullable InfernalType appliedInfernalType){
+	public SyncAbilityHolderMsg(int entityId, Set<Ability> abilities){
 		this.entityId = entityId;
 		this.abilities = abilities;
-		this.appliedInfernalType = appliedInfernalType;
 	}
 
 	public int getEntityId(){
@@ -36,9 +34,6 @@ public class SyncAbilityHolderMsg{
 	}
 	public Set<Ability> getAbilities(){
 		return abilities;
-	}
-	@Nullable public InfernalType getAppliedInfernalType(){
-		return appliedInfernalType;
 	}
 
 	public void write(PacketBuffer buf){
@@ -48,7 +43,5 @@ public class SyncAbilityHolderMsg{
 			int id = Abilities.getRegistry().getID(a);
 			if(id!=-1) buf.writeVarInt(id);
 		}
-		buf.writeBoolean(appliedInfernalType!=null);
-		if(appliedInfernalType!=null) buf.writeResourceLocation(appliedInfernalType.getId());
 	}
 }
