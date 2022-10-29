@@ -1,6 +1,6 @@
 use abilities
 
-{ Weight: 50 } // Empty
+{ Weight: 100 } // Empty
 
 common {
   Weight: 20
@@ -9,20 +9,19 @@ common {
   ]
   Abilities: [
     choose(
-      "" weight 32
-      "heart" weight 16
-      "heart2" weight 8
-      "heart3" weight 4
-      "heart4" weight 2
-      "heart5" weight 1
+      "" weight 16
+      "heart" weight 8
+      "heart2" weight 4
+      "heart3" weight 2
+      "heart4" weight 1
     )
     choose(
-      "" weight 32
-      "wood_skin" weight 8
-      "rock_skin" weight 4
-      "iron_skin" weight 2
+      "" weight 16
+      "wood_skin" weight 4
+      "rock_skin" weight 2
+      "iron_skin" weight 1
     )
-    chooseMultiple(1~4, (
+    chooseMultiple(1~2, (
       CommonAbility
       choose(CommonSkin)
       choose(CommonWind)
@@ -37,14 +36,10 @@ uncommon {
   ]
   Abilities: [
     choose(
-      "" weight 1
-      "heart" weight 2
-      "heart2" weight 4
-      "heart3" weight 8
-      "heart4" weight 4
-      "heart5" weight 2
-      "heart6" weight 1
-      "heart7" weight 1
+      "heart2" weight 8
+      "heart3" weight 4
+      "heart4" weight 2
+      "heart5" weight 1
     )
     choose(
       "" weight 64
@@ -60,7 +55,7 @@ uncommon {
         choose(RareWind)
       ))
     )
-    chooseMultiple(2~8, (
+    chooseMultiple(2~3, (
       CommonAbility
       choose(CommonSkin)
       choose(CommonWind)
@@ -75,8 +70,6 @@ rare {
   ]
   Abilities: [
     choose(
-      "heart2" weight 4
-      "heart3" weight 8
       "heart4" weight 16
       "heart5" weight 32
       "heart6" weight 8
@@ -104,9 +97,9 @@ epic {
   ]
   Abilities: switch(1~3, {
     1: (
-      heart8
+      "heart8"
       choose(EpicAbility)
-      chooseMultiple(4~7, (
+      chooseMultiple(5~7, (
         RareAbility
         choose(RareSkin)
         choose(RareWind)
@@ -118,9 +111,9 @@ epic {
       ))
     )
     2: (
-      heart9
+      "heart9"
       choose(EpicAbility)
-      chooseMultiple(3~6, (
+      chooseMultiple(4~5, (
         RareAbility
         choose(RareSkin)
         choose(RareWind)
@@ -132,9 +125,9 @@ epic {
       ))
     )
     3: (
-      heart10
+      "heart10"
       choose(EpicAbility)
-      chooseMultiple(3~5, (
+      chooseMultiple(3~4, (
         RareAbility
         choose(RareSkin)
         choose(RareWind)
