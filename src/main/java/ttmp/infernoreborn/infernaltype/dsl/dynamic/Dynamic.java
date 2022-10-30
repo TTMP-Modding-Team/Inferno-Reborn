@@ -192,7 +192,7 @@ public interface Dynamic{
 		return new SwitchOp(value, c, defaultCase);
 	}
 
-	ConstructRule<Dynamic> DYNAMIC = ConstructRule.make(_b -> _b
+	Constructor<Among, Dynamic> DYNAMIC = ConstructRule.<Dynamic>make(_b -> _b
 			.primitive((p, reportHandler) -> {
 				Boolean bool = Constructors.BOOL.construct(p, null);
 				if(bool!=null) return constantBool(bool);
@@ -259,7 +259,7 @@ public interface Dynamic{
 						return switchOp(value, cases, defaultValue, r!=null ? r.reportAt(l.get(1).sourcePosition()) : null);
 					}))
 			.errorMessage("Invalid expression")
-	);
+	).then((d, r) -> d.collapseConstant());
 	Constructor<Among, DynamicBool> DYNAMIC_BOOL = (among, reportHandler) -> {
 		Dynamic d = DYNAMIC.construct(among, reportHandler);
 		if(d==null||d instanceof DynamicBool) return (DynamicBool)d;
