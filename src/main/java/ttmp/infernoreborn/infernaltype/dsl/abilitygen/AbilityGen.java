@@ -95,4 +95,6 @@ public interface AbilityGen{
 			.all(ABILITY_GEN.then((g, r) -> new ChooseAbilityGen.Entry(g)))
 			.errorMessage("Invalid ability")
 	);
+
+	static void loadClass(){}
 }

@@ -5,6 +5,7 @@ import among.construct.ConditionedConstructor;
 import among.construct.Constructor;
 import among.obj.AmongObject;
 import ttmp.infernoreborn.infernaltype.dsl.abilitygen.AbilityGen;
+import ttmp.infernoreborn.infernaltype.dsl.abilitygen.NoAbilityGen;
 import ttmp.infernoreborn.infernaltype.dsl.dynamic.Dynamic;
 import ttmp.infernoreborn.infernaltype.dsl.dynamic.DynamicInt;
 import ttmp.infernoreborn.infernaltype.dsl.effect.InfernalEffect;
@@ -18,13 +19,13 @@ public final class InfernalType{
 	@Nullable private final String name;
 	private final DynamicInt weight;
 	private final List<InfernalEffect> effects;
-	@Nullable private final AbilityGen abilityGen;
+	private final AbilityGen abilityGen;
 
 	public InfernalType(@Nullable String name, DynamicInt weight, List<InfernalEffect> effects, @Nullable AbilityGen abilityGen){
 		this.name = name;
 		this.weight = Objects.requireNonNull(weight);
 		this.effects = effects;
-		this.abilityGen = abilityGen;
+		this.abilityGen = abilityGen==null ? NoAbilityGen.INSTANCE : abilityGen;
 	}
 
 	@Nullable public String getName(){
@@ -36,17 +37,22 @@ public final class InfernalType{
 	public List<InfernalEffect> getEffects(){
 		return Collections.unmodifiableList(effects);
 	}
-	@Nullable public AbilityGen getAbilityGen(){
+	public AbilityGen getAbilityGen(){
 		return abilityGen;
 	}
 
 	@Override public String toString(){
-		return "InfernalType{"+
-				"name='"+name+'\''+
-				", weight="+weight+
-				", effects="+effects+
-				", abilityGen="+abilityGen+
-				'}';
+		StringBuilder stb = new StringBuilder().append("InfernalType{");
+		boolean first = true;
+		if(name!=null){
+			stb.append("name='").append(name).append('\'');
+			first = false;
+		}
+		if(!first) stb.append(", ");
+		stb.append("weight=").append(weight);
+		if(!effects.isEmpty()) stb.append(", effects=").append(effects);
+		if(abilityGen!=NoAbilityGen.INSTANCE) stb.append(", abilityGen=").append(abilityGen);
+		return stb.append('}').toString();
 	}
 
 	public static final Constructor<AmongObject, InfernalType> INFERNAL_TYPE = ConditionedConstructor.objectCondition(c -> c

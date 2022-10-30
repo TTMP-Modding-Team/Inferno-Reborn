@@ -1,6 +1,6 @@
 package ttmp.infernoreborn.infernaltype.dsl.dynamic;
 
-import among.construct.ConditionedConstructorBuilder.ListConstructorBuilder;
+import among.construct.ConditionedListConstructorBuilder;
 import among.construct.Constructor;
 import among.obj.AmongList;
 
@@ -8,7 +8,7 @@ import java.util.Random;
 import java.util.function.BiFunction;
 import java.util.function.Consumer;
 
-import static among.construct.ConditionedConstructor.listCondition;
+import static among.construct.ConditionedConstructor.binaryCondition;
 import static among.construct.ConditionedConstructor.listConditions;
 
 final class DynamicUtil{
@@ -22,59 +22,59 @@ final class DynamicUtil{
 	static Constructor<AmongList, Dynamic> boolBiOp(
 			BiFunction<DynamicBool, DynamicBool, Dynamic> boolFn
 	){
-		return listCondition(c -> c.minSize(2), (list, reportHandler) -> {
-			DynamicBool a = Dynamic.DYNAMIC_BOOL.construct(list.get(0), reportHandler);
-			DynamicBool b = Dynamic.DYNAMIC_BOOL.construct(list.get(1), reportHandler);
-			if(a==null||b==null) return null;
-			return boolFn.apply(a, b);
+		return binaryCondition((a, b, reportHandler) -> {
+			DynamicBool b1 = Dynamic.DYNAMIC_BOOL.construct(a, reportHandler);
+			DynamicBool b2 = Dynamic.DYNAMIC_BOOL.construct(b, reportHandler);
+			if(b1==null||b2==null) return null;
+			return boolFn.apply(b1, b2);
 		});
 	}
 	static Constructor<AmongList, Dynamic> intBiOp(
 			BiFunction<DynamicInt, DynamicInt, Dynamic> intFn
 	){
-		return listCondition(c -> c.minSize(2), (list, reportHandler) -> {
-			DynamicInt a = Dynamic.DYNAMIC_INT.construct(list.get(0), reportHandler);
-			DynamicInt b = Dynamic.DYNAMIC_INT.construct(list.get(1), reportHandler);
-			if(a==null||b==null) return null;
-			return intFn.apply(a, b);
+		return binaryCondition((a, b, reportHandler) -> {
+			DynamicInt i1 = Dynamic.DYNAMIC_INT.construct(a, reportHandler);
+			DynamicInt i2 = Dynamic.DYNAMIC_INT.construct(b, reportHandler);
+			if(i1==null||i2==null) return null;
+			return intFn.apply(i1, i2);
 		});
 	}
 	static Constructor<AmongList, Dynamic> numberBiOp(
 			BiFunction<DynamicNumber, DynamicNumber, Dynamic> numFn
 	){
-		return listCondition(c -> c.minSize(2), (list, reportHandler) -> {
-			DynamicNumber a = Dynamic.DYNAMIC_NUMBER.construct(list.get(0), reportHandler);
-			DynamicNumber b = Dynamic.DYNAMIC_NUMBER.construct(list.get(1), reportHandler);
-			if(a==null||b==null) return null;
-			return numFn.apply(a, b);
+		return binaryCondition((a, b, reportHandler) -> {
+			DynamicNumber n1 = Dynamic.DYNAMIC_NUMBER.construct(a, reportHandler);
+			DynamicNumber n2 = Dynamic.DYNAMIC_NUMBER.construct(b, reportHandler);
+			if(n1==null||n2==null) return null;
+			return numFn.apply(n1, n2);
 		});
 	}
 	static Constructor<AmongList, Dynamic> numberBiOp(
 			BiFunction<DynamicInt, DynamicInt, Dynamic> intFn,
 			BiFunction<DynamicNumber, DynamicNumber, Dynamic> numFn
 	){
-		return listCondition(c -> c.minSize(2), (list, reportHandler) -> {
-			DynamicNumber a = Dynamic.DYNAMIC_NUMBER.construct(list.get(0), reportHandler);
-			DynamicNumber b = Dynamic.DYNAMIC_NUMBER.construct(list.get(1), reportHandler);
-			if(a==null||b==null) return null;
-			return a instanceof DynamicInt&&b instanceof DynamicInt ?
-					intFn.apply((DynamicInt)a, (DynamicInt)b) :
-					numFn.apply(a, b);
+		return binaryCondition((a, b, reportHandler) -> {
+			DynamicNumber n1 = Dynamic.DYNAMIC_NUMBER.construct(a, reportHandler);
+			DynamicNumber n2 = Dynamic.DYNAMIC_NUMBER.construct(b, reportHandler);
+			if(n1==null||n2==null) return null;
+			return n1 instanceof DynamicInt&&n2 instanceof DynamicInt ?
+					intFn.apply((DynamicInt)n1, (DynamicInt)n2) :
+					numFn.apply(n1, n2);
 		});
 	}
 	static Constructor<AmongList, Dynamic> numberBiOp(
 			BiFunction<DynamicInt, DynamicInt, Dynamic> intFn,
 			BiFunction<DynamicNumber, DynamicNumber, Dynamic> numFn,
-			Consumer<ListConstructorBuilder<Dynamic>> consumer
+			Consumer<ConditionedListConstructorBuilder<Dynamic>> consumer
 	){
-		return listConditions(_b -> consumer.accept(_b.add(c -> c.minSize(2),
-				(list, reportHandler) -> {
-					DynamicNumber a = Dynamic.DYNAMIC_NUMBER.construct(list.get(0), reportHandler);
-					DynamicNumber b = Dynamic.DYNAMIC_NUMBER.construct(list.get(1), reportHandler);
-					if(a==null||b==null) return null;
-					return a instanceof DynamicInt&&b instanceof DynamicInt ?
-							intFn.apply((DynamicInt)a, (DynamicInt)b) :
-							numFn.apply(a, b);
+		return listConditions(_b -> consumer.accept(_b.addBinary(
+				(a, b, reportHandler) -> {
+					DynamicNumber n1 = Dynamic.DYNAMIC_NUMBER.construct(a, reportHandler);
+					DynamicNumber n2 = Dynamic.DYNAMIC_NUMBER.construct(b, reportHandler);
+					if(n1==null||n2==null) return null;
+					return n1 instanceof DynamicInt&&n2 instanceof DynamicInt ?
+							intFn.apply((DynamicInt)n1, (DynamicInt)n2) :
+							numFn.apply(n1, n2);
 				})));
 	}
 	static Constructor<AmongList, Dynamic> biOp(
@@ -83,17 +83,17 @@ final class DynamicUtil{
 			BiFunction<DynamicBool, DynamicBool, Dynamic> boolFn,
 			BiFunction<Dynamic, Dynamic, Dynamic> fn
 	){
-		return listCondition(c -> c.minSize(2), (list, reportHandler) -> {
-			Dynamic a = Dynamic.DYNAMIC.construct(list.get(0), reportHandler);
-			Dynamic b = Dynamic.DYNAMIC.construct(list.get(1), reportHandler);
-			if(a==null||b==null) return null;
-			if(a instanceof DynamicInt&&b instanceof DynamicInt)
-				return intFn.apply((DynamicInt)a, (DynamicInt)b);
-			if(a instanceof DynamicNumber&&b instanceof DynamicNumber)
-				return numFn.apply((DynamicNumber)a, (DynamicNumber)b);
-			if(a instanceof DynamicBool&&b instanceof DynamicBool)
-				return boolFn.apply((DynamicBool)a, (DynamicBool)b);
-			return fn.apply(a, b);
+		return binaryCondition((a, b, reportHandler) -> {
+			Dynamic o1 = Dynamic.DYNAMIC.construct(a, reportHandler);
+			Dynamic o2 = Dynamic.DYNAMIC.construct(b, reportHandler);
+			if(o1==null||o2==null) return null;
+			if(o1 instanceof DynamicInt&&o2 instanceof DynamicInt)
+				return intFn.apply((DynamicInt)o1, (DynamicInt)o2);
+			if(o1 instanceof DynamicNumber&&o2 instanceof DynamicNumber)
+				return numFn.apply((DynamicNumber)o1, (DynamicNumber)o2);
+			if(o1 instanceof DynamicBool&&o2 instanceof DynamicBool)
+				return boolFn.apply((DynamicBool)o1, (DynamicBool)o2);
+			return fn.apply(o1, o2);
 		});
 	}
 }

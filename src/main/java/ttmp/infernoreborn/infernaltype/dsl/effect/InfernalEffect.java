@@ -5,8 +5,12 @@ import among.construct.ConditionedConstructor;
 import among.construct.ConstructRule;
 import among.construct.Constructor;
 import among.obj.Among;
+import net.minecraft.network.PacketBuffer;
 import org.apache.commons.lang3.ArrayUtils;
+import ttmp.infernoreborn.InfernoReborn;
 import ttmp.infernoreborn.infernaltype.InfernalGenContext;
+
+import javax.annotation.Nullable;
 
 public interface InfernalEffect{
 	void apply(InfernalGenContext context);

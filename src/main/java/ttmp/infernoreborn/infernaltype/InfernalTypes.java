@@ -18,6 +18,8 @@ import net.minecraftforge.fml.loading.FMLPaths;
 import ttmp.infernoreborn.InfernoReborn;
 import ttmp.infernoreborn.contents.ability.Ability;
 import ttmp.infernoreborn.contents.ability.holder.ServerAbilityHolder;
+import ttmp.infernoreborn.infernaltype.dsl.abilitygen.AbilityGen;
+import ttmp.infernoreborn.infernaltype.dsl.dynamic.Dynamic;
 import ttmp.infernoreborn.infernaltype.dsl.effect.InfernalEffect;
 import ttmp.infernoreborn.util.Weighted;
 
@@ -38,6 +40,13 @@ import static ttmp.infernoreborn.InfernoReborn.MODID;
 
 public final class InfernalTypes{
 	private InfernalTypes(){}
+
+	// This isn't necessary per se, it's just for convenience in debugging
+	// because apparently classloading error is ignored by worker thread, and you can't handle it either
+	static{
+		Dynamic.loadClass();
+		AbilityGen.loadClass();
+	}
 
 	private static final String INFERNAL_TYPES_FILENAME = "infernal_types";
 	private static final String ABILITIES_FILENAME = "abilities";
@@ -139,12 +148,11 @@ public final class InfernalTypes{
 	}
 
 	private static void generate(InfernalGenContext context, InfernalType type){
+		context.getHolder().clearParticleEffects();
 		try{
-			for(InfernalEffect e : type.getEffects())
-				e.apply(context);
-			if(type.getAbilityGen()!=null)
-				for(Ability ability : type.getAbilityGen().generate(context))
-					context.getHolder().add(ability);
+			for(InfernalEffect e : type.getEffects()) e.apply(context);
+			for(Ability ability : type.getAbilityGen().generate(context))
+				context.getHolder().add(ability);
 		}catch(RuntimeException ex){
 			InfernoReborn.LOGGER.warn("An error occurred while generating infernal type {}", type, ex);
 		}

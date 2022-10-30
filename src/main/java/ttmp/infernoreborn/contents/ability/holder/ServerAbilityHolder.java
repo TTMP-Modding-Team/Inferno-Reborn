@@ -28,6 +28,7 @@ import ttmp.infernoreborn.contents.ability.OnAbilityUpdate;
 import ttmp.infernoreborn.contents.ability.cooldown.Cooldown;
 import ttmp.infernoreborn.contents.ability.cooldown.ServerCooldown;
 import ttmp.infernoreborn.infernaltype.InfernalTypes;
+import ttmp.infernoreborn.infernaltype.dsl.effect.ParticleEffect;
 import ttmp.infernoreborn.network.ModNet;
 import ttmp.infernoreborn.network.SyncAbilityHolderMsg;
 import ttmp.infernoreborn.util.LazyPopulatedList;
@@ -35,10 +36,12 @@ import ttmp.infernoreborn.util.StupidUtils;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.Set;
@@ -112,6 +115,7 @@ public class ServerAbilityHolder implements AbilityHolder, ICapabilitySerializab
 		this.addedAbilities.clear();
 		this.removedAbilities.addAll(this.abilities);
 		this.abilities.clear();
+		clearParticleEffects();
 	}
 
 	public boolean generateAbility(){
@@ -126,6 +130,15 @@ public class ServerAbilityHolder implements AbilityHolder, ICapabilitySerializab
 	}
 	public void setDisableDrop(boolean disableDrop){
 		this.disableDrop = disableDrop;
+	}
+
+	@Nullable private List<ParticleEffect> effects;
+	public void addParticleEffect(ParticleEffect effect){
+		if(this.effects==null) effects = new ArrayList<>();
+		effects.add(effect);
+	}
+	public void clearParticleEffects(){
+		this.effects = null;
 	}
 
 	public void markSpawned(){
@@ -214,7 +227,7 @@ public class ServerAbilityHolder implements AbilityHolder, ICapabilitySerializab
 
 	public void syncAbilityToClient(LivingEntity entity){
 		ModNet.CHANNEL.send(PacketDistributor.TRACKING_ENTITY.with(() -> entity),
-				new SyncAbilityHolderMsg(entity.getId(), abilities));
+				new SyncAbilityHolderMsg(entity.getId(), abilities, effects==null ? Collections.emptyList() : effects));
 	}
 
 	@Override public Cooldown cooldown(){

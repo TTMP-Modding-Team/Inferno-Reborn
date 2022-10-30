@@ -152,6 +152,7 @@ public final class ModNet{
 				if(h==null) return;
 				h.clear();
 				for(Ability a : msg.getAbilities()) h.add(a);
+				h.setEffects(msg.getEffects());
 			});
 		}
 

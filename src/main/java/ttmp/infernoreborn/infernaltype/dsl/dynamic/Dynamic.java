@@ -213,7 +213,7 @@ public interface Dynamic{
 			.list(">=", numberBiOp(Dynamic::intGtEq, Dynamic::numGtEq))
 			.list("<=", numberBiOp(Dynamic::intLtEq, Dynamic::numLtEq))
 			.list("+", numberBiOp(Dynamic::intAdd, Dynamic::numAdd, __b -> __b
-					.add(c -> c.size(1), (l, r) -> Dynamic.DYNAMIC_INT.construct(l.get(0), r))))
+					.addStrictUnary((in, reportHandler) -> Dynamic.DYNAMIC_INT.construct(in, reportHandler))))
 			.list("-", numberBiOp(Dynamic::intSubtract, Dynamic::numSubtract, __b -> __b
 					.add(c -> c.size(1), (l, r) -> {
 						DynamicNumber n = Dynamic.DYNAMIC_NUMBER.construct(l, r);
@@ -278,4 +278,6 @@ public interface Dynamic{
 		if(reportHandler!=null) reportHandler.reportError("Expected number", among.sourcePosition());
 		return null;
 	};
+
+	static void loadClass(){}
 }
