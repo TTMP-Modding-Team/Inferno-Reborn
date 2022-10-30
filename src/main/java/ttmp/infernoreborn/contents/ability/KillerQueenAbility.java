@@ -28,6 +28,7 @@ public final class KillerQueenAbility{
 						entity.hurt(Damages.killerQueen(entity), c);
 						entity.level.explode(entity, new LivingOnlyEntityDamageSource("explosion.player", null, entity).setExplosion(),
 								null, target.getX(), target.getY(), target.getZ(), 1+c/2f, false, Explosion.Mode.NONE);
+						target.removeEffect(ModEffects.KILLER_QUEEN.get());
 					}
 				}).onHit((entity, holder, event) -> {
 					Entity directEntity = event.getSource().getDirectEntity();
