@@ -217,7 +217,7 @@ public final class InfernalTypes{
 				abilityGenerator = new RootAndDefinition(DefaultInstanceProvider.defaultOperators());
 				AmongDefinition def = abilityGenerator.definition();
 				def.operators().addOperator("~", OperatorType.BINARY, "range", 4.5);
-				def.operators().addKeyword("weight", OperatorType.BINARY);
+				def.operators().addKeyword("weight", OperatorType.BINARY, 0.5);
 				def.macros().add(Macro.builder("weight", MacroType.OPERATION)
 						.param("element").param("weight")
 						.build((args, copyConstant, reportHandler) ->
