@@ -25,7 +25,7 @@ final class WeightedInternal{
 		for(int w : weights) if(w>0) wgtSum += w;
 		if(wgtSum==0) return -1;
 		long wgt = nextLong(random, wgtSum);
-		for(int i = 0; i<weights.length; wgt -= weights[i++]){
+		for(int i = 0; i<weights.length; i++){
 			if(wgt<weights[i]) return i;
 			if(weights[i]>0) wgt -= weights[i];
 		}
@@ -43,7 +43,7 @@ final class WeightedInternal{
 
 		while(quantity>0){
 			long wgt = nextLong(random, wgtSum);
-			for(int i = 0; i<weights.length; wgt -= weights[i++]){
+			for(int i = 0; i<weights.length; i++){
 				if(wgt<weights[i]){
 					indices.add(i);
 					wgtSum -= weights[i];
