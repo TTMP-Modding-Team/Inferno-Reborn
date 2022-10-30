@@ -130,11 +130,11 @@ repositories {
 }
 
 dependencies {
-    compileOnly fg.deobf("vazkii.patchouli:Patchouli:1.16.4-52-SNAPSHOT:api")
-    runtimeOnly fg.deobf("vazkii.patchouli:Patchouli:1.16.4-52-SNAPSHOT")
-    implementation fg.deobf("mezz.jei:jei-1.16.5:7.7.1.110")
-    runtimeOnly fg.deobf("top.theillusivec4.curios:curios-forge:1.16.5-4.0.5.2")
-    compileOnly fg.deobf("top.theillusivec4.curios:curios-forge:1.16.5-4.0.5.2:api")
+    compileOnly fg.deobf("vazkii.patchouli:Patchouli:1.16.4-53.3:api")
+    runtimeOnly fg.deobf("vazkii.patchouli:Patchouli:1.16.4-53.3")
+    implementation fg.deobf("mezz.jei:jei-1.16.5:7.7.1.152")
+    runtimeOnly fg.deobf("top.theillusivec4.curios:curios-forge:1.16.5-4.0.8.2")
+    compileOnly fg.deobf("top.theillusivec4.curios:curios-forge:1.16.5-4.0.8.2:api")
 
     implementation ('io.github.amonglang:among:0.6.0-SNAPSHOT'){
         changing = true
