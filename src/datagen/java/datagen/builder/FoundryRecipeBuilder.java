@@ -102,12 +102,8 @@ public class FoundryRecipeBuilder{
 	}
 
 	private void ensureValid(ResourceLocation id){
-		if(this.advancement.getCriteria().isEmpty()){
-			throw new IllegalStateException("No way of obtaining recipe "+id);
-		}
-		if(ingredients.isEmpty())
-			throw new IllegalStateException("No ingredients");
-		if(ingredients.size()>2)
-			throw new IllegalStateException("Too many ingredients");
+		// if(this.advancement.getCriteria().isEmpty()) throw new IllegalStateException("No way of obtaining recipe "+id);
+		if(ingredients.isEmpty()) throw new IllegalStateException("No ingredients");
+		if(ingredients.size()>2) throw new IllegalStateException("Too many ingredients");
 	}
 }

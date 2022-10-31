@@ -1,0 +1,25 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    " 1 ",
+    "232",
+    "444"
+  ],
+  "key": {
+    "1": {
+      "tag": "infernoreborn:greater_essences"
+    },
+    "2": {
+      "tag": "forge:ingots/iron"
+    },
+    "3": {
+      "tag": "forge:ingots/gold"
+    },
+    "4": {
+      "tag": "minecraft:planks"
+    }
+  },
+  "result": {
+    "item": "infernoreborn:sigil_engraving_table_3x3"
+  }
+}

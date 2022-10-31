@@ -11,6 +11,7 @@ import net.minecraft.loot.LootParameterSet;
 import net.minecraft.loot.LootParameterSets;
 import net.minecraft.loot.LootPool;
 import net.minecraft.loot.LootTable;
+import net.minecraft.loot.RandomValueRange;
 import net.minecraft.loot.ValidationTracker;
 import net.minecraft.loot.functions.CopyNbt;
 import net.minecraft.util.ResourceLocation;
@@ -27,6 +28,8 @@ import java.util.function.Consumer;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
+import static net.minecraft.loot.RandomValueRange.between;
+
 public class LootTableGen extends LootTableProvider{
 	public LootTableGen(DataGenerator generator){
 		super(generator);
@@ -42,7 +45,7 @@ public class LootTableGen extends LootTableProvider{
 	public static class BlockTables extends BlockLootTables{
 		@Override protected void addTables(){
 			add(ModBlocks.HEART_CRYSTAL_ORE.get(), createSingleItemTableWithSilkTouch(ModBlocks.HEART_CRYSTAL_ORE.get(), ModItems.HEART_CRYSTAL.get()));
-			dropSelf(ModBlocks.PYRITE_ORE.get());
+			add(ModBlocks.PYRITE_ORE.get(), createSingleItemTableWithSilkTouch(ModBlocks.PYRITE_ORE.get(), ModItems.PYRITE_NUGGET.get(), between(2, 6)));
 
 			dropSelf(ModBlocks.PYRITE_BLOCK.get());
 			dropSelf(ModBlocks.NETHER_STEEL_BLOCK.get());

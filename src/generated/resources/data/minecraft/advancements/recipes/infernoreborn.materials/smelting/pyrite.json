@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "rewards": {
+    "recipes": [
+      "minecraft:smelting/pyrite"
+    ]
+  },
+  "criteria": {
+    "has_pyrite_ore": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "tag": "forge:ores/pyrite"
+          }
+        ]
+      }
+    },
+    "has_the_recipe": {
+      "trigger": "minecraft:recipe_unlocked",
+      "conditions": {
+        "recipe": "minecraft:smelting/pyrite"
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_pyrite_ore",
+      "has_the_recipe"
+    ]
+  ]
+}

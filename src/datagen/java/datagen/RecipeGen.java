@@ -1,6 +1,11 @@
 package datagen;
 
+import datagen.builder.FoundryRecipeBuilder;
+import datagen.builder.NotSoSpecialRecipeBuilder;
+import datagen.builder.ShapedSigilEngravingRecipeBuilder;
+import datagen.builder.ShapedSigilTableCraftingRecipeBuilder;
 import net.minecraft.advancements.ICriterionInstance;
+import net.minecraft.data.CookingRecipeBuilder;
 import net.minecraft.data.CustomRecipeBuilder;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.IFinishedRecipe;
@@ -17,11 +22,8 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.Tags;
 import ttmp.infernoreborn.contents.ModItems;
 import ttmp.infernoreborn.contents.ModRecipes;
+import ttmp.infernoreborn.contents.ModTags;
 import ttmp.infernoreborn.contents.Sigils;
-import datagen.builder.FoundryRecipeBuilder;
-import datagen.builder.NotSoSpecialRecipeBuilder;
-import datagen.builder.ShapedSigilEngravingRecipeBuilder;
-import datagen.builder.ShapedSigilTableCraftingRecipeBuilder;
 import ttmp.infernoreborn.util.EssenceSize;
 import ttmp.infernoreborn.util.EssenceType;
 
@@ -63,6 +65,64 @@ public class RecipeGen extends RecipeProvider{
 		compactAndUncompact(ModItems.DAMASCUS_STEEL_BLOCK.get(), ModItems.DAMASCUS_STEEL_INGOT.get(), consumer);
 		compactAndUncompact(ModItems.DAMASCUS_STEEL_INGOT.get(), ModItems.DAMASCUS_STEEL_NUGGET.get(), consumer);
 
+		ShapelessRecipeBuilder.shapeless(ModItems.BOOK_OF_THE_UNSPEAKABLE::get)
+				.requires(Items.PAPER)
+				.requires(ModTags.ESSENCES)
+				.unlockedBy("fuck", has(ModTags.ESSENCES))
+				.save(consumer);
+		ShapedRecipeBuilder.shaped(ModItems.ESSENCE_HOLDER::get)
+				.pattern(" 1 ")
+				.pattern("111")
+				.pattern(" 1 ")
+				.define('1', ModTags.ESSENCES)
+				.unlockedBy("fuck", has(ModTags.ESSENCES))
+				.save(consumer);
+		ShapedRecipeBuilder.shaped(ModItems.ESSENCE_HOLDER_BLOCK::get)
+				.pattern("1")
+				.pattern("2")
+				.define('1', ModItems.ESSENCE_HOLDER.get())
+				.define('2', Tags.Items.INGOTS_GOLD)
+				.unlockedBy("fuck", has(ModItems.ESSENCE_HOLDER.get()))
+				.save(consumer);
+		ShapedRecipeBuilder.shaped(ModItems.FOUNDRY::get)
+				.pattern("111")
+				.pattern("121")
+				.pattern("111")
+				.define('1', ModItems.FOUNDRY_TILE.get())
+				.define('2', Items.BLAST_FURNACE)
+				.unlockedBy("fuck", has(ModTags.ESSENCES))
+				.save(consumer);
+		ShapedRecipeBuilder.shaped(ModItems.SIGIL_ENGRAVING_TABLE_3X3::get)
+				.pattern(" 1 ")
+				.pattern("232")
+				.pattern("444")
+				.define('1', ModTags.GREATER_ESSENCES)
+				.define('2', Tags.Items.INGOTS_IRON)
+				.define('3', Tags.Items.INGOTS_GOLD)
+				.define('4', ItemTags.PLANKS)
+				.unlockedBy("fuck", has(ModTags.ESSENCES))
+				.save(consumer);
+
+		new ShapedSigilTableCraftingRecipeBuilder(ModItems.RUNESTONE.get())
+				.pattern("1")
+				.pattern("X")
+				.defineAsCenter('X', Ingredient.of(Tags.Items.STONE))
+				.define('1', Ingredient.of(ModTags.ESSENCES))
+				.save(consumer, new ResourceLocation(MODID, "sigilcraft/runestone"));
+		new ShapedSigilTableCraftingRecipeBuilder(ModItems.FOUNDRY_TILE.get())
+				.pattern("1")
+				.pattern("X")
+				.defineAsCenter('X', Ingredient.of(Items.BRICKS))
+				.define('1', Ingredient.of(ModTags.ESSENCES))
+				.save(consumer, new ResourceLocation(MODID, "sigilcraft/foundry_tile"));
+		new ShapedSigilTableCraftingRecipeBuilder(ModItems.SIGIL_ENGRAVING_TABLE_5X5.get())
+				.pattern("121")
+				.pattern("2X2")
+				.pattern("121")
+				.defineAsCenter('X', Ingredient.of(ModItems.SIGIL_ENGRAVING_TABLE_3X3.get()))
+				.define('1', Ingredient.of(ModTags.INGOTS_PYRITE))
+				.define('2', Ingredient.of(ModItems.RUNESTONE.get()))
+				.save(consumer, new ResourceLocation(MODID, "sigilcraft/sigil_engraving_table_5x5"));
 		new ShapedSigilTableCraftingRecipeBuilder(Items.PUFFERFISH)
 				.pattern("  111  ")
 				.pattern("3144413")
@@ -70,11 +130,10 @@ public class RecipeGen extends RecipeProvider{
 				.pattern(" 24442 ")
 				.pattern("  222  ")
 				.defineAsCenter('X', Ingredient.of(Items.COBBLESTONE))
-				.define('1', Ingredient.of(greaterCrystal(EssenceType.DOMINANCE)))
-				.define('2', Ingredient.of(greaterCrystal(EssenceType.AIR)))
-				.define('3', Ingredient.of(greaterCrystal(EssenceType.WATER)))
-				.define('4', Ingredient.of(greaterCrystal(EssenceType.BLOOD)))
-				.unlockedBy("fuck", has(greaterCrystal(EssenceType.DOMINANCE)))
+				.define('1', Ingredient.of(exquisite(EssenceType.DOMINANCE)))
+				.define('2', Ingredient.of(exquisite(EssenceType.AIR)))
+				.define('3', Ingredient.of(exquisite(EssenceType.WATER)))
+				.define('4', Ingredient.of(exquisite(EssenceType.BLOOD)))
 				.save(consumer, new ResourceLocation(MODID, "sigilcraft/pf"));
 /*
 
@@ -105,34 +164,34 @@ public class RecipeGen extends RecipeProvider{
 				.pattern("1X1")
 				.pattern(" 2 ")
 				.defineAsCenter('X')
-				.define('1', Ingredient.of(shard(EssenceType.AIR)))
-				.define('2', Ingredient.of(shard(EssenceType.DOMINANCE)))
-				.unlockedBy("fuck", has(shard(EssenceType.DOMINANCE)))
+				.define('1', Ingredient.of(normal(EssenceType.AIR)))
+				.define('2', Ingredient.of(normal(EssenceType.DOMINANCE)))
+				.unlockedBy("fuck", has(normal(EssenceType.DOMINANCE)))
 				.save(consumer, new ResourceLocation(MODID, "sigil_engraving/goat_eyes"));
 		new ShapedSigilEngravingRecipeBuilder(Sigils.FAINT_AFFLICTION.get())
 				.pattern("11 ")
 				.pattern("1X1")
 				.pattern(" 2 ")
 				.defineAsCenter('X')
-				.define('1', Ingredient.of(shard(EssenceType.FIRE)))
-				.define('2', Ingredient.of(shard(EssenceType.DEATH)))
-				.unlockedBy("fuck", has(shard(EssenceType.FIRE)))
+				.define('1', Ingredient.of(normal(EssenceType.FIRE)))
+				.define('2', Ingredient.of(normal(EssenceType.DEATH)))
+				.unlockedBy("fuck", has(normal(EssenceType.FIRE)))
 				.save(consumer, new ResourceLocation(MODID, "sigil_engraving/faint_affliction"));
 		new ShapedSigilEngravingRecipeBuilder(Sigils.FAINT_ENDURANCE.get())
 				.pattern("111")
 				.pattern(" X ")
 				.pattern("111")
 				.defineAsCenter('X')
-				.define('1', Ingredient.of(shard(EssenceType.METAL)))
-				.unlockedBy("fuck", has(shard(EssenceType.METAL)))
+				.define('1', Ingredient.of(normal(EssenceType.METAL)))
+				.unlockedBy("fuck", has(normal(EssenceType.METAL)))
 				.save(consumer, new ResourceLocation(MODID, "sigil_engraving/faint_endurance"));
 		new ShapedSigilEngravingRecipeBuilder(Sigils.FAINT_HEART.get())
 				.pattern("1 1")
 				.pattern("1X1")
 				.pattern(" 1 ")
 				.defineAsCenter('X')
-				.define('1', Ingredient.of(shard(EssenceType.BLOOD)))
-				.unlockedBy("fuck", has(shard(EssenceType.BLOOD)))
+				.define('1', Ingredient.of(normal(EssenceType.BLOOD)))
+				.unlockedBy("fuck", has(normal(EssenceType.BLOOD)))
 				.save(consumer, new ResourceLocation(MODID, "sigil_engraving/faint_heart"));
 		new ShapedSigilEngravingRecipeBuilder(Sigils.MARK_OF_AFFLICTION.get())
 				.pattern(" 1 1 ")
@@ -141,9 +200,9 @@ public class RecipeGen extends RecipeProvider{
 				.pattern("  2  ")
 				.pattern("  2  ")
 				.defineAsCenter('X')
-				.define('1', Ingredient.of(crystal(EssenceType.FIRE)))
-				.define('2', Ingredient.of(crystal(EssenceType.DEATH)))
-				.unlockedBy("fuck", has(crystal(EssenceType.FIRE)))
+				.define('1', Ingredient.of(greater(EssenceType.FIRE)))
+				.define('2', Ingredient.of(greater(EssenceType.DEATH)))
+				.unlockedBy("fuck", has(greater(EssenceType.FIRE)))
 				.save(consumer, new ResourceLocation(MODID, "sigil_engraving/mark_of_affliction"));
 		new ShapedSigilEngravingRecipeBuilder(Sigils.MARK_OF_ENDURANCE.get())
 				.pattern("11111")
@@ -152,8 +211,8 @@ public class RecipeGen extends RecipeProvider{
 				.pattern(" 1 1 ")
 				.pattern("11111")
 				.defineAsCenter('X')
-				.define('1', Ingredient.of(crystal(EssenceType.METAL)))
-				.unlockedBy("fuck", has(crystal(EssenceType.METAL)))
+				.define('1', Ingredient.of(greater(EssenceType.METAL)))
+				.unlockedBy("fuck", has(greater(EssenceType.METAL)))
 				.save(consumer, new ResourceLocation(MODID, "sigil_engraving/mark_of_endurance"));
 		new ShapedSigilEngravingRecipeBuilder(Sigils.MINI_HEART.get())
 				.pattern(" 1 1 ")
@@ -162,8 +221,8 @@ public class RecipeGen extends RecipeProvider{
 				.pattern(" 1 1 ")
 				.pattern("  1  ")
 				.defineAsCenter('X')
-				.define('1', Ingredient.of(crystal(EssenceType.BLOOD)))
-				.unlockedBy("fuck", has(crystal(EssenceType.BLOOD)))
+				.define('1', Ingredient.of(greater(EssenceType.BLOOD)))
+				.unlockedBy("fuck", has(greater(EssenceType.BLOOD)))
 				.save(consumer, new ResourceLocation(MODID, "sigil_engraving/mini_heart"));
 		new ShapedSigilEngravingRecipeBuilder(Sigils.RUNIC_SHIELD.get())
 				.pattern(" 1 1 1 ")
@@ -174,8 +233,8 @@ public class RecipeGen extends RecipeProvider{
 				.pattern("1 1 1 1")
 				.pattern(" 1 1 1 ")
 				.defineAsCenter('X')
-				.define('1', Ingredient.of(crystal(EssenceType.EARTH)))
-				.unlockedBy("fuck", has(crystal(EssenceType.EARTH)))
+				.define('1', Ingredient.of(greater(EssenceType.EARTH)))
+				.unlockedBy("fuck", has(greater(EssenceType.EARTH)))
 				.save(consumer, new ResourceLocation(MODID, "sigil_engraving/sth"));
 		new ShapedSigilEngravingRecipeBuilder(Sigils.SIGIL_OF_TRAVELER.get())
 				.pattern("11111")
@@ -184,8 +243,8 @@ public class RecipeGen extends RecipeProvider{
 				.pattern(" 111 ")
 				.pattern("1 1 1")
 				.defineAsCenter('X')
-				.define('1', Ingredient.of(crystal(EssenceType.AIR)))
-				.unlockedBy("fuck", has(crystal(EssenceType.AIR)))
+				.define('1', Ingredient.of(greater(EssenceType.AIR)))
+				.unlockedBy("fuck", has(greater(EssenceType.AIR)))
 				.save(consumer, new ResourceLocation(MODID, "sigil_engraving/sigil_of_traveler"));
 		new ShapedSigilEngravingRecipeBuilder(Sigils.FROSTBITE_RUNE.get())
 				.pattern("1  1 ")
@@ -194,8 +253,8 @@ public class RecipeGen extends RecipeProvider{
 				.pattern(" 1 11")
 				.pattern("1  1 ")
 				.defineAsCenter('X')
-				.define('1', Ingredient.of(crystal(EssenceType.FROST)))
-				.unlockedBy("fuck", has(crystal(EssenceType.FROST)))
+				.define('1', Ingredient.of(greater(EssenceType.FROST)))
+				.unlockedBy("fuck", has(greater(EssenceType.FROST)))
 				.save(consumer, new ResourceLocation(MODID, "sigil_engraving/frostbite_rune"));
 		new ShapedSigilEngravingRecipeBuilder(Sigils.SCALD_RUNE.get())
 				.pattern(" 1  1")
@@ -204,26 +263,30 @@ public class RecipeGen extends RecipeProvider{
 				.pattern("  1 1")
 				.pattern(" 1  1")
 				.defineAsCenter('X')
-				.define('1', Ingredient.of(crystal(EssenceType.FIRE)))
-				.unlockedBy("fuck", has(crystal(EssenceType.FIRE)))
+				.define('1', Ingredient.of(greater(EssenceType.FIRE)))
+				.unlockedBy("fuck", has(greater(EssenceType.FIRE)))
 				.save(consumer, new ResourceLocation(MODID, "sigil_engraving/scald_rune"));
 
 		new FoundryRecipeBuilder(new ItemStack(Items.NETHERITE_INGOT, 2))
 				.ingredient(Ingredient.of(Tags.Items.INGOTS_GOLD), 1)
 				.ingredient(Ingredient.of(Items.NETHERITE_SCRAP), 8)
-				.unlockedBy("netherite_scrap", has(Items.NETHERITE_SCRAP))
 				.save(consumer, new ResourceLocation(MODID, "foundry/netherite_ingot"));
 		new FoundryRecipeBuilder(new ItemStack(ModItems.NETHER_STEEL_INGOT.get(), 2))
 				.ingredient(Ingredient.of(Tags.Items.INGOTS_IRON), 1)
 				.ingredient(Ingredient.of(Items.NETHERITE_SCRAP), 8)
-				.unlockedBy("netherite_scrap", has(Items.NETHERITE_SCRAP))
 				.save(consumer, new ResourceLocation(MODID, "foundry/nether_steel"));
 		new FoundryRecipeBuilder(new ItemStack(ModItems.DAMASCUS_STEEL_INGOT.get()))
 				.ingredient(Ingredient.of(Tags.Items.INGOTS_IRON), 1)
 				.ingredient(Ingredient.of(ItemTags.COALS), 4)
 				.essence(EssenceType.METAL, 9)
-				.unlockedBy("iron", has(Tags.Items.INGOTS_IRON))
 				.save(consumer, new ResourceLocation(MODID, "foundry/damascus_steel_ingot"));
+
+		CookingRecipeBuilder.smelting(Ingredient.of(ModTags.ORES_PYRITE), ModItems.PYRITE_INGOT.get(), 1, 200)
+				.unlockedBy("has_pyrite_ore", has(ModTags.ORES_PYRITE))
+				.save(consumer, "smelting/pyrite");
+		CookingRecipeBuilder.blasting(Ingredient.of(ModTags.ORES_PYRITE), ModItems.PYRITE_INGOT.get(), 1, 100)
+				.unlockedBy("has_pyrite_ore", has(ModTags.ORES_PYRITE))
+				.save(consumer, "blasting/pyrite");
 
 		// buildTestSigilcraftRecipe(consumer);
 	}
@@ -265,13 +328,13 @@ public class RecipeGen extends RecipeProvider{
 		}
 	}
 
-	private static Item shard(EssenceType type){
+	private static Item normal(EssenceType type){
 		return type.getEssenceItem();
 	}
-	private static Item crystal(EssenceType type){
+	private static Item greater(EssenceType type){
 		return type.getGreaterEssenceItem();
 	}
-	private static Item greaterCrystal(EssenceType type){
+	private static Item exquisite(EssenceType type){
 		return type.getExquisiteEssenceItem();
 	}
 

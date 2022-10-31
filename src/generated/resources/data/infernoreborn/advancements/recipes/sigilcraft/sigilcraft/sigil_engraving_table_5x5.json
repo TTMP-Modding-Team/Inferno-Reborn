@@ -2,14 +2,14 @@
   "parent": "minecraft:recipes/root",
   "rewards": {
     "recipes": [
-      "infernoreborn:foundry/netherite_ingot"
+      "infernoreborn:sigilcraft/sigil_engraving_table_5x5"
     ]
   },
   "criteria": {
     "has_the_recipe": {
       "trigger": "minecraft:recipe_unlocked",
       "conditions": {
-        "recipe": "infernoreborn:foundry/netherite_ingot"
+        "recipe": "infernoreborn:sigilcraft/sigil_engraving_table_5x5"
       }
     }
   },

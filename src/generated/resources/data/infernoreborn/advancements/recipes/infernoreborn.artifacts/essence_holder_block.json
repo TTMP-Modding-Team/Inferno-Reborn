@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "rewards": {
+    "recipes": [
+      "infernoreborn:essence_holder_block"
+    ]
+  },
+  "criteria": {
+    "fuck": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "item": "infernoreborn:essence_holder"
+          }
+        ]
+      }
+    },
+    "has_the_recipe": {
+      "trigger": "minecraft:recipe_unlocked",
+      "conditions": {
+        "recipe": "infernoreborn:essence_holder_block"
+      }
+    }
+  },
+  "requirements": [
+    [
+      "fuck",
+      "has_the_recipe"
+    ]
+  ]
+}

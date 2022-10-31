@@ -5,6 +5,7 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
+import net.minecraft.block.material.MaterialColor;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.IBlockReader;
 import net.minecraftforge.fml.RegistryObject;
@@ -15,6 +16,7 @@ import ttmp.infernoreborn.contents.block.FoundryBlock;
 import ttmp.infernoreborn.contents.block.GoldenSkullBlock;
 import ttmp.infernoreborn.contents.block.GoldenWallSkullBlock;
 import ttmp.infernoreborn.contents.block.NamedContainerBlock;
+import ttmp.infernoreborn.contents.block.PyriteOreBlock;
 import ttmp.infernoreborn.contents.block.SigilScrapperBlock;
 import ttmp.infernoreborn.contents.block.essencenet.EssenceNetCoreBlock;
 import ttmp.infernoreborn.contents.block.essencenet.EssenceNetExporterBlock;
@@ -31,47 +33,68 @@ public final class ModBlocks{
 	public static final DeferredRegister<Block> REGISTER = DeferredRegister.create(ForgeRegistries.BLOCKS, MODID);
 
 	public static final RegistryObject<Block> HEART_CRYSTAL_ORE = REGISTER.register("heart_crystal_ore", () -> new Block(
-			Properties.of(Material.STONE).lightLevel(s -> 10)));
-	public static final RegistryObject<Block> PYRITE_ORE = REGISTER.register("pyrite_ore", () -> new Block(
-			Properties.of(Material.STONE)));
+			Properties.of(Material.STONE)
+					.requiresCorrectToolForDrops()
+					.strength(3, 3)
+					.lightLevel(s -> 10)));
+	public static final RegistryObject<Block> PYRITE_ORE = REGISTER.register("pyrite_ore", () -> new PyriteOreBlock(
+			Properties.of(Material.STONE, MaterialColor.NETHER)
+					.requiresCorrectToolForDrops()
+					.strength(3, 3)
+					.sound(SoundType.NETHER_GOLD_ORE)));
 	public static final RegistryObject<Block> PYRITE_BLOCK = REGISTER.register("pyrite_block", () -> new Block(
-			Properties.of(Material.METAL)));
+			Properties.of(Material.METAL, MaterialColor.METAL)
+					.requiresCorrectToolForDrops()
+					.strength(5, 6)
+					.sound(SoundType.METAL)));
 	public static final RegistryObject<Block> NETHER_STEEL_BLOCK = REGISTER.register("nether_steel_block", () -> new Block(
-			Properties.of(Material.METAL)));
+			Properties.of(Material.METAL, MaterialColor.COLOR_BLACK)
+					.requiresCorrectToolForDrops()
+					.strength(50, 1200)
+					.sound(SoundType.NETHERITE_BLOCK)));
 	public static final RegistryObject<Block> DAMASCUS_STEEL_BLOCK = REGISTER.register("damascus_steel_block", () -> new Block(
-			Properties.of(Material.METAL).requiresCorrectToolForDrops().strength(5, 6).sound(SoundType.METAL)));
+			Properties.of(Material.METAL, MaterialColor.COLOR_BLACK)
+					.requiresCorrectToolForDrops()
+					.strength(5, 6)
+					.sound(SoundType.METAL)));
 
 	public static final RegistryObject<Block> RUNESTONE = REGISTER.register("runestone", () -> new Block(
-			Properties.of(Material.STONE)));
+			Properties.of(Material.STONE, MaterialColor.STONE).requiresCorrectToolForDrops().strength(1.5f, 6)));
 
-	public static final RegistryObject<Block> SIGIL_ENGRAVING_TABLE_3X3 = REGISTER.register("sigil_engraving_table_3x3", () -> new NamedContainerBlock(Properties.of(Material.WOOD)){
+	public static final RegistryObject<Block> SIGIL_ENGRAVING_TABLE_3X3 = REGISTER.register("sigil_engraving_table_3x3", () -> new NamedContainerBlock(
+			Properties.of(Material.WOOD).strength(2.5f).sound(SoundType.WOOD)){
 		@Override public TileEntity createTileEntity(BlockState state, IBlockReader world){
 			return SigilEngravingTableTile.new3x3();
 		}
 	});
-	public static final RegistryObject<Block> SIGIL_ENGRAVING_TABLE_5X5 = REGISTER.register("sigil_engraving_table_5x5", () -> new NamedContainerBlock(Properties.of(Material.WOOD)){
+	public static final RegistryObject<Block> SIGIL_ENGRAVING_TABLE_5X5 = REGISTER.register("sigil_engraving_table_5x5", () -> new NamedContainerBlock(
+			Properties.of(Material.WOOD).strength(2.5f).sound(SoundType.WOOD)){
 		@Override public TileEntity createTileEntity(BlockState state, IBlockReader world){
 			return SigilEngravingTableTile.new5x5();
 		}
 	});
-	public static final RegistryObject<Block> SIGIL_ENGRAVING_TABLE_7X7 = REGISTER.register("sigil_engraving_table_7x7", () -> new NamedContainerBlock(Properties.of(Material.WOOD)){
+	public static final RegistryObject<Block> SIGIL_ENGRAVING_TABLE_7X7 = REGISTER.register("sigil_engraving_table_7x7", () -> new NamedContainerBlock(
+			Properties.of(Material.WOOD).strength(2.5f).sound(SoundType.WOOD)){
 		@Override public TileEntity createTileEntity(BlockState state, IBlockReader world){
 			return SigilEngravingTableTile.new7x7();
 		}
 	});
 
-	public static final RegistryObject<Block> STIGMA_TABLE_5X5 = REGISTER.register("stigma_table_5x5", () -> new NamedContainerBlock(Properties.of(Material.WOOD)){
+	public static final RegistryObject<Block> STIGMA_TABLE_5X5 = REGISTER.register("stigma_table_5x5", () -> new NamedContainerBlock(
+			Properties.of(Material.WOOD).strength(2.5f).sound(SoundType.WOOD)){
 		@Override public TileEntity createTileEntity(BlockState state, IBlockReader world){
 			return StigmaTableTile.new5x5();
 		}
 	});
-	public static final RegistryObject<Block> STIGMA_TABLE_7X7 = REGISTER.register("stigma_table_7x7", () -> new NamedContainerBlock(Properties.of(Material.WOOD)){
+	public static final RegistryObject<Block> STIGMA_TABLE_7X7 = REGISTER.register("stigma_table_7x7", () -> new NamedContainerBlock(
+			Properties.of(Material.WOOD).strength(2.5f).sound(SoundType.WOOD)){
 		@Override public TileEntity createTileEntity(BlockState state, IBlockReader world){
 			return StigmaTableTile.new7x7();
 		}
 	});
 
-	public static final RegistryObject<Block> SIGIL_SCRAPPER = REGISTER.register("sigil_scrapper", () -> new SigilScrapperBlock(Properties.of(Material.WOOD)));
+	public static final RegistryObject<Block> SIGIL_SCRAPPER = REGISTER.register("sigil_scrapper", () -> new SigilScrapperBlock(
+			Properties.of(Material.WOOD).strength(2.5f).sound(SoundType.WOOD)));
 
 	public static final RegistryObject<Block> FOUNDRY_TILE = REGISTER.register("foundry_tile", () -> new Block(
 			Properties.of(Material.STONE).requiresCorrectToolForDrops().strength(3.5f)));

@@ -1,0 +1,23 @@
+{
+  "type": "infernoreborn:shaped_sigil_table_crafting",
+  "pattern": [
+    "121",
+    "2X2",
+    "121"
+  ],
+  "key": {
+    "1": {
+      "tag": "forge:ingots/pyrite"
+    },
+    "2": {
+      "item": "infernoreborn:runestone"
+    },
+    "X": {
+      "item": "infernoreborn:sigil_engraving_table_3x3"
+    }
+  },
+  "result": {
+    "item": "infernoreborn:sigil_engraving_table_5x5"
+  },
+  "center": "X"
+}

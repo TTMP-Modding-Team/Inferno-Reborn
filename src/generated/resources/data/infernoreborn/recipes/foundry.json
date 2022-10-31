@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "111",
+    "121",
+    "111"
+  ],
+  "key": {
+    "1": {
+      "item": "infernoreborn:foundry_tile"
+    },
+    "2": {
+      "item": "minecraft:blast_furnace"
+    }
+  },
+  "result": {
+    "item": "infernoreborn:foundry"
+  }
+}

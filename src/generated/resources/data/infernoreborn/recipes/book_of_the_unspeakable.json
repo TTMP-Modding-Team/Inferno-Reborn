@@ -1,0 +1,14 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    {
+      "item": "minecraft:paper"
+    },
+    {
+      "tag": "infernoreborn:essence_shards"
+    }
+  ],
+  "result": {
+    "item": "infernoreborn:book_of_the_unspeakable"
+  }
+}
