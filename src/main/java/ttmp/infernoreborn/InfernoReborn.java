@@ -50,6 +50,7 @@ import ttmp.infernoreborn.client.screen.EssenceHolderScreen;
 import ttmp.infernoreborn.client.screen.FoundryScreen;
 import ttmp.infernoreborn.client.screen.SigilEngravingTableScreen;
 import ttmp.infernoreborn.client.screen.SigilScrapperScreen;
+import ttmp.infernoreborn.client.screen.StigmaScrapperScreen;
 import ttmp.infernoreborn.client.screen.StigmaTableScreen;
 import ttmp.infernoreborn.config.ModCfg;
 import ttmp.infernoreborn.contents.Abilities;
@@ -157,6 +158,7 @@ public class InfernoReborn{
 				ScreenManager.register(ModContainers.STIGMA_TABLE_5X5.get(), StigmaTableScreen.X5::new);
 				ScreenManager.register(ModContainers.STIGMA_TABLE_7X7.get(), StigmaTableScreen.X7::new);
 				ScreenManager.register(ModContainers.SIGIL_SCRAPPER.get(), SigilScrapperScreen::new);
+				ScreenManager.register(ModContainers.STIGMA_SCRAPPER.get(), StigmaScrapperScreen::new);
 				ScreenManager.register(ModContainers.FOUNDRY.get(), FoundryScreen::new);
 
 				ItemModelsProperties.register(ModItems.EXPLOSIVE_SWORD.get(), new ResourceLocation("using"),

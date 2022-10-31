@@ -44,10 +44,9 @@ public abstract class SigilEngravingTableScreen extends ContainerScreen<SigilEng
 		renderTooltip(stack, mx, my);
 	}
 
+	@SuppressWarnings({"deprecation", "ConstantConditions"})
 	@Override protected void renderBg(MatrixStack stack, float partialTicks, int mx, int my){
-		//noinspection deprecation
 		RenderSystem.color4f(1, 1, 1, 1);
-		//noinspection ConstantConditions
 		this.minecraft.getTextureManager().bind(getImage());
 		blit(stack, leftPos, topPos, 0, 0, imageWidth, imageHeight);
 

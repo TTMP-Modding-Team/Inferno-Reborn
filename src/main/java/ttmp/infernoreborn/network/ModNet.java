@@ -20,12 +20,13 @@ import ttmp.infernoreborn.capability.ClientPlayerCapability;
 import ttmp.infernoreborn.capability.TickingTaskHandler;
 import ttmp.infernoreborn.client.ParticlePlacingTask;
 import ttmp.infernoreborn.client.screen.EssenceHolderScreen;
-import ttmp.infernoreborn.client.screen.SigilScrapper;
+import ttmp.infernoreborn.client.screen.ScrapperScreen;
 import ttmp.infernoreborn.client.screen.SigilScreen;
 import ttmp.infernoreborn.contents.ability.Ability;
 import ttmp.infernoreborn.contents.ability.holder.ClientAbilityHolder;
 import ttmp.infernoreborn.contents.container.EssenceHolderContainer;
 import ttmp.infernoreborn.contents.container.SigilScrapperContainer;
+import ttmp.infernoreborn.contents.container.StigmaScrapperContainer;
 import ttmp.infernoreborn.contents.container.StigmaTableContainer;
 import ttmp.infernoreborn.contents.sigil.Sigil;
 import ttmp.infernoreborn.contents.sigil.holder.SigilHolder;
@@ -75,8 +76,8 @@ public final class ModNet{
 		CHANNEL.registerMessage(9, SyncSigilScreenMsg.class,
 				SyncSigilScreenMsg::write, SyncSigilScreenMsg::read,
 				Client::handleSyncSigilScreen, Optional.of(NetworkDirection.PLAY_TO_CLIENT));
-		CHANNEL.registerMessage(10, SyncSigilScrapperScreenMsg.class,
-				SyncSigilScrapperScreenMsg::write, SyncSigilScrapperScreenMsg::read,
+		CHANNEL.registerMessage(10, SyncScrapperScreenMsg.class,
+				SyncScrapperScreenMsg::write, SyncScrapperScreenMsg::read,
 				Client::handleSyncScrapperScreen, Optional.of(NetworkDirection.PLAY_TO_CLIENT));
 	}
 
@@ -97,10 +98,20 @@ public final class ModNet{
 			ctx.get().setPacketHandled(true);
 			if(msg.getSigil()!=null) ctx.get().enqueueWork(() -> {
 				ServerPlayerEntity sender = ctx.get().getSender();
-				if(sender==null||!(sender.containerMenu instanceof SigilScrapperContainer)) return;
-				SigilScrapperContainer container = (SigilScrapperContainer)sender.containerMenu;
-				SigilHolder h = container.getSigilHolder();
-				if(h!=null) h.remove(msg.getSigil());
+				if(sender==null) return;
+				if(sender.containerMenu instanceof SigilScrapperContainer){
+					SigilScrapperContainer container = (SigilScrapperContainer)sender.containerMenu;
+					SigilHolder h = container.getSigilHolder();
+					if(h!=null) h.remove(msg.getSigil());
+				}else if(sender.containerMenu instanceof StigmaScrapperContainer){
+					StigmaScrapperContainer container = (StigmaScrapperContainer)sender.containerMenu;
+					SigilHolder h = container.getSigilHolder();
+					if(h.has(msg.getSigil())){
+						sender.hurt(Damages.engraving(), msg.getSigil().getPoint()*2);
+						if(!sender.isAlive()) return;
+						h.remove(msg.getSigil());
+					}
+				}
 			});
 		}
 
@@ -116,7 +127,7 @@ public final class ModNet{
 				if(h==null) return;
 				Sigil sigil = container.getCurrentRecipe().tryEngrave(h, container.getInventory());
 				if(sigil==null) return;
-				sender.hurt(Damages.engraving(), sigil.getPoint());
+				sender.hurt(Damages.engraving(), sigil.getPoint()*2);
 				if(!sender.isAlive()) return;
 
 				h.add(sigil);
@@ -221,12 +232,12 @@ public final class ModNet{
 					((SigilScreen)screen).sync(msg.getCurrentSigils(), msg.getNewSigils());
 			});
 		}
-		public static void handleSyncScrapperScreen(SyncSigilScrapperScreenMsg msg, Supplier<NetworkEvent.Context> ctx){
+		public static void handleSyncScrapperScreen(SyncScrapperScreenMsg msg, Supplier<NetworkEvent.Context> ctx){
 			ctx.get().setPacketHandled(true);
 			ctx.get().enqueueWork(() -> {
 				Screen screen = Minecraft.getInstance().screen;
-				if(screen instanceof SigilScrapper)
-					((SigilScrapper)screen).sync(msg.getMaxSigils(), msg.getSigils());
+				if(screen instanceof ScrapperScreen)
+					((ScrapperScreen)screen).sync(msg.getMaxSigils(), msg.getSigils());
 			});
 		}
 	}

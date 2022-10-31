@@ -18,6 +18,7 @@ import ttmp.infernoreborn.contents.block.GoldenWallSkullBlock;
 import ttmp.infernoreborn.contents.block.NamedContainerBlock;
 import ttmp.infernoreborn.contents.block.PyriteOreBlock;
 import ttmp.infernoreborn.contents.block.SigilScrapperBlock;
+import ttmp.infernoreborn.contents.block.StigmaScrapperBlock;
 import ttmp.infernoreborn.contents.block.essencenet.EssenceNetCoreBlock;
 import ttmp.infernoreborn.contents.block.essencenet.EssenceNetExporterBlock;
 import ttmp.infernoreborn.contents.block.essencenet.EssenceNetImporterBlock;
@@ -94,6 +95,8 @@ public final class ModBlocks{
 	});
 
 	public static final RegistryObject<Block> SIGIL_SCRAPPER = REGISTER.register("sigil_scrapper", () -> new SigilScrapperBlock(
+			Properties.of(Material.WOOD).strength(2.5f).sound(SoundType.WOOD)));
+	public static final RegistryObject<Block> STIGMA_SCRAPPER = REGISTER.register("stigma_scrapper", () -> new StigmaScrapperBlock(
 			Properties.of(Material.WOOD).strength(2.5f).sound(SoundType.WOOD)));
 
 	public static final RegistryObject<Block> FOUNDRY_TILE = REGISTER.register("foundry_tile", () -> new Block(

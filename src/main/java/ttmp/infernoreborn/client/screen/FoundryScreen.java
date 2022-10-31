@@ -33,10 +33,9 @@ public class FoundryScreen extends ContainerScreen<FoundryContainer>{
 		renderTooltip(matrixStack, mx, my);
 	}
 
+	@SuppressWarnings({"deprecation", "ConstantConditions"})
 	@Override protected void renderBg(MatrixStack matrixStack, float partialTicks, int mx, int my){
-		//noinspection deprecation
 		RenderSystem.color4f(1, 1, 1, 1);
-		//noinspection ConstantConditions
 		this.minecraft.getTextureManager().bind(TEXTURE);
 		blit(matrixStack, leftPos, topPos, 0, 0, imageWidth, imageHeight);
 

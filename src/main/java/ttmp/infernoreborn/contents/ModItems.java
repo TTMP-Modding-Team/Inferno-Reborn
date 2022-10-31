@@ -220,6 +220,7 @@ public final class ModItems{
 	public static final RegistryObject<BlockItem> STIGMA_TABLE_7X7 = REGISTER.register("stigma_table_7x7", () -> new BlockItem(ModBlocks.STIGMA_TABLE_7X7.get(), artifacts()));
 
 	public static final RegistryObject<BlockItem> SIGIL_SCRAPPER = REGISTER.register("sigil_scrapper", () -> new BlockItem(ModBlocks.SIGIL_SCRAPPER.get(), artifacts()));
+	public static final RegistryObject<BlockItem> STIGMA_SCRAPPER = REGISTER.register("stigma_scrapper", () -> new BlockItem(ModBlocks.STIGMA_SCRAPPER.get(), artifacts()));
 
 	public static final RegistryObject<Item> FOUNDRY = REGISTER.register("foundry", () -> new FoundryBlockItem(ModBlocks.FOUNDRY.get(), artifacts().setISTER(() -> FoundryISTER::new)));
 

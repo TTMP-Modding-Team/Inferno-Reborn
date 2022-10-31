@@ -129,7 +129,7 @@ public final class SkinAbility{
 			if(hitEntity instanceof LivingEntity&&
 					hitEntity.isAlive()&&
 					!event.getSource().isProjectile()&&
-					!CuriosApi.getCuriosHelper().findEquippedCurio(ModItems.BATTLE_MITTS.get(), (LivingEntity)hitEntity).isPresent())
+					!CuriosApi.getCuriosHelper().findFirstCurio((LivingEntity)hitEntity, ModItems.BATTLE_MITTS.get()).isPresent())
 				effect.apply(event, (LivingEntity)hitEntity);
 		};
 	}

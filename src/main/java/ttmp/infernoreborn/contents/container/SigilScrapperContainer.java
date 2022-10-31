@@ -14,7 +14,7 @@ import ttmp.infernoreborn.contents.ModContainers;
 import ttmp.infernoreborn.contents.sigil.Sigil;
 import ttmp.infernoreborn.contents.sigil.holder.SigilHolder;
 import ttmp.infernoreborn.network.ModNet;
-import ttmp.infernoreborn.network.SyncSigilScrapperScreenMsg;
+import ttmp.infernoreborn.network.SyncScrapperScreenMsg;
 
 import javax.annotation.Nullable;
 import java.util.Collections;
@@ -102,7 +102,7 @@ public class SigilScrapperContainer extends Container{
 		}
 		if(updated&&player instanceof ServerPlayerEntity){
 			ModNet.CHANNEL.send(PacketDistributor.PLAYER.with(() -> (ServerPlayerEntity)player),
-					new SyncSigilScrapperScreenMsg(maxSigils, sigilsCache));
+					new SyncScrapperScreenMsg(maxSigils, sigilsCache));
 		}
 	}
 }

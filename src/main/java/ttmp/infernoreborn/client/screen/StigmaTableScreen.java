@@ -58,10 +58,9 @@ public abstract class StigmaTableScreen extends ContainerScreen<StigmaTableConta
 		renderTooltip(stack, mx, my);
 	}
 
+	@SuppressWarnings({"deprecation", "ConstantConditions"})
 	@Override protected void renderBg(MatrixStack stack, float partialTicks, int mx, int my){
-		//noinspection deprecation
 		RenderSystem.color4f(1, 1, 1, 1);
-		//noinspection ConstantConditions
 		this.minecraft.getTextureManager().bind(getImage());
 		blit(stack, leftPos, topPos+12, 0, 0, imageWidth, imageHeight-12);
 
@@ -99,9 +98,9 @@ public abstract class StigmaTableScreen extends ContainerScreen<StigmaTableConta
 			super.render(pMatrixStack, mouseX, mouseY, pPartialTicks);
 		}
 
+		@SuppressWarnings("deprecation")
 		@Override public void renderButton(MatrixStack matrixStack, int mouseX, int mouseY, float partialTicks){
 			Minecraft.getInstance().getTextureManager().bind(getImage());
-			//noinspection deprecation
 			RenderSystem.color4f(1, 1, 1, this.alpha);
 			RenderSystem.enableBlend();
 			RenderSystem.defaultBlendFunc();

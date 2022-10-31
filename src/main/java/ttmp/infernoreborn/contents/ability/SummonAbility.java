@@ -19,13 +19,13 @@ public final class SummonAbility{
 				.addTargetedSkill(10, 600, (entity, holder, target) -> summon(entity, new SummonedSkeletonEntity(entity.level))));
 	}
 
+	@SuppressWarnings("deprecation")
 	private static boolean summon(Entity entity, Entity minion){
 		double x = entity.getRandomX(4);
 		double y = entity.getY();
 		double z = entity.getRandomZ(4);
 		while(true){
 			BlockPos p = new BlockPos(x, y, z);
-			//noinspection deprecation
 			if(entity.level.getBlockState(p).isAir(entity.level, p)) break;
 			y++;
 		}
