@@ -15,18 +15,20 @@ import ttmp.infernoreborn.client.color.ColorUtils;
 import ttmp.infernoreborn.contents.container.SigilScrapperContainer;
 import ttmp.infernoreborn.contents.item.SigilItem;
 import ttmp.infernoreborn.contents.sigil.Sigil;
-import ttmp.infernoreborn.contents.sigil.holder.SigilHolder;
 import ttmp.infernoreborn.network.ModNet;
 import ttmp.infernoreborn.network.ScrapSigilMsg;
 
 import javax.annotation.Nullable;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import static ttmp.infernoreborn.InfernoReborn.MODID;
 
-public class SigilScrapperScreen extends ContainerScreen<SigilScrapperContainer>{
+// TODO this currently supports up to 32 sigils
+public class SigilScrapperScreen extends ContainerScreen<SigilScrapperContainer> implements SigilScrapper{
 	private static final ResourceLocation TEXTURE = new ResourceLocation(MODID, "textures/gui/sigil_scrapper.png");
 	private static final float SIGIL_SCRAP_PRESS_TICKS = 20;
 
@@ -43,6 +45,14 @@ public class SigilScrapperScreen extends ContainerScreen<SigilScrapperContainer>
 
 		titleLabelY = -11;
 		inventoryLabelY = 70;
+	}
+
+	private int maxSigils;
+	private List<Sigil> sigils = Collections.emptyList();
+
+	@Override public void sync(int maxSigils, List<Sigil> sigils){
+		this.maxSigils = maxSigils;
+		this.sigils = sigils;
 	}
 
 	@Nullable private Sigil hoveringSigil;
@@ -77,20 +87,16 @@ public class SigilScrapperScreen extends ContainerScreen<SigilScrapperContainer>
 		this.minecraft.getTextureManager().bind(TEXTURE);
 		blit(pose, leftPos, topPos, 0, 0, imageWidth, imageHeight);
 
-		SigilHolder sigilHolder = menu.getSigilHolder();
-		if(sigilHolder!=null){
-			int index = 0;
-			for(Sigil sigil : sigilHolder.getSigils()){
-				int sigilX = getSigilX(index);
-				int sigilY = getSigilY(index);
-				ItemStack item = sigilItems.computeIfAbsent(sigil, SigilItem::createSigilItem);
-				itemRenderer.renderAndDecorateFakeItem(item, leftPos+sigilX, topPos+sigilY);
-				itemRenderer.renderGuiItemDecorations(font, item, leftPos+sigilX, topPos+sigilY, "");
-				if(isHovering(sigilX, sigilY, 16, 16, mx, my)){
-					this.hoveringSigil = sigil;
-					this.hoveringSigilIndex = index;
-				}
-				if(++index>=32) return;
+		for(int i = 0; i<Math.min(32, sigils.size()); i++){
+			Sigil sigil = sigils.get(i);
+			int sigilX = getSigilX(i);
+			int sigilY = getSigilY(i);
+			ItemStack item = sigilItems.computeIfAbsent(sigil, SigilItem::createSigilItem);
+			itemRenderer.renderAndDecorateFakeItem(item, leftPos+sigilX, topPos+sigilY);
+			itemRenderer.renderGuiItemDecorations(font, item, leftPos+sigilX, topPos+sigilY, "");
+			if(isHovering(sigilX, sigilY, 16, 16, mx, my)){
+				this.hoveringSigil = sigil;
+				this.hoveringSigilIndex = i;
 			}
 		}
 	}
@@ -139,26 +145,31 @@ public class SigilScrapperScreen extends ContainerScreen<SigilScrapperContainer>
 		}
 	}
 
-	@Override public boolean mouseClicked(double pMouseX, double pMouseY, int pButton){
-		if(pButton==0){
-			SigilHolder sigilHolder = menu.getSigilHolder();
-			int sigils = sigilHolder==null ? 0 : sigilHolder.getSigils().size();
-			if(sigils>0){
-				for(int i = 0; i<Math.min(32, sigils); i++){ // The UI is supposed to handle 32 sigils at maximum anyway, TODO fixit I guess
-					if(isHovering(getSigilX(i), getSigilY(i), 16, 16, pMouseX, pMouseY)){
-						resetPressingSigil();
-						pressingSigilIndex = i;
-						return true;
-					}
-				}
+	@Override public boolean mouseClicked(double mouseX, double mouseY, int button){
+		if(button==0){
+			int i = sigilIndexAt(mouseX, mouseY);
+			if(i>=0&&i<sigils.size()){
+				resetPressingSigil();
+				pressingSigilIndex = i;
+				return true;
 			}
 		}
-
-		return super.mouseClicked(pMouseX, pMouseY, pButton);
+		return super.mouseClicked(mouseX, mouseY, button);
 	}
-	@Override public boolean mouseReleased(double pMouseX, double pMouseY, int pButton){
+	@Override public boolean mouseReleased(double mouseX, double mouseY, int button){
 		resetPressingSigil();
-		return super.mouseReleased(pMouseX, pMouseY, pButton);
+		return super.mouseReleased(mouseX, mouseY, button);
+	}
+
+	public int sigilIndexAt(double mouseX, double mouseY){
+		for(int i = 0; i<Math.min(32, sigils.size()); i++){
+			if(isHovering(getSigilX(i), getSigilY(i), 16, 16, mouseX, mouseY)) return i;
+		}
+		return -1;
+	}
+	@Nullable public Sigil sigilAt(double mouseX, double mouseY){
+		int i = sigilIndexAt(mouseX, mouseY);
+		return i>=0&&i<sigils.size() ? sigils.get(i) : null;
 	}
 
 	private void resetPressingSigil(){

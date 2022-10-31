@@ -180,7 +180,7 @@ public class PlayerCapability implements ICapabilitySerializable<CompoundNBT>{
 				this.shieldList.remove(this.bodyShield);
 				this.syncShield = true;
 			}
-			MutableShield s = applySigilModifier(this, SigilSlot.BODY, ArmorShield.BODY_SHIELD);
+			MutableShield s = applySigilModifier(this.sigils, SigilSlot.BODY, ArmorShield.BODY_SHIELD);
 			if(s!=null){
 				this.shieldList.add(this.bodyShield = combine(s.toImmutable(), this.bodyShield));
 				this.syncShield = sort = true;
@@ -205,7 +205,7 @@ public class PlayerCapability implements ICapabilitySerializable<CompoundNBT>{
 					EquipmentSlotType type = EquipmentSlotType.byTypeAndIndex(ARMOR, i);
 					if(!ass.armorSet.uses(type)) continue;
 					usedArmor[i] = true;
-					applySigilModifier(player.getItemBySlot(type), SigilSlot.ARMOR, ass.shield, shield);
+					applySigilModifier(SigilHolder.of(player.getItemBySlot(type)), SigilSlot.ARMOR, ass.shield, shield);
 				}
 				newArmorShields.put(ass.id, combine(shield.toImmutable(), this.armorShields.get(ass.id)));
 			}
@@ -221,7 +221,7 @@ public class PlayerCapability implements ICapabilitySerializable<CompoundNBT>{
 			for(int i = 0; i<4; i++){
 				if(usedArmor[i]) continue;
 				EquipmentSlotType type = EquipmentSlotType.byTypeAndIndex(ARMOR, i);
-				defaultArmorShield = applySigilModifier(player.getItemBySlot(type), SigilSlot.of(type), ArmorShield.DEFAULT_ARMOR_SHIELD, defaultArmorShield);
+				defaultArmorShield = applySigilModifier(SigilHolder.of(player.getItemBySlot(type)), SigilSlot.of(type), ArmorShield.DEFAULT_ARMOR_SHIELD, defaultArmorShield);
 			}
 
 			if(this.defaultArmorShield!=null){
@@ -256,13 +256,13 @@ public class PlayerCapability implements ICapabilitySerializable<CompoundNBT>{
 					}
 					Shield providedShield = getProvidedShield(stackInSlot);
 					if(providedShield!=null){
-						MutableShield s = applySigilModifier(stackInSlot, SigilSlot.CURIO, providedShield);
+						MutableShield s = applySigilModifier(SigilHolder.of(stackInSlot), SigilSlot.CURIO, providedShield);
 						ActiveShield combine = combine(s!=null ? s.toImmutable() : providedShield, activeShield);
 						this.curioShields.put(slot, combine);
 						this.shieldList.add(combine);
 						this.syncShield = sort = true;
 					}else{
-						MutableShield s = applySigilModifier(stackInSlot, SigilSlot.CURIO, ArmorShield.DEFAULT_CURIO_SHIELD);
+						MutableShield s = applySigilModifier(SigilHolder.of(stackInSlot), SigilSlot.CURIO, ArmorShield.DEFAULT_CURIO_SHIELD);
 						if(s!=null){
 							ActiveShield combine = combine(s.toImmutable(), activeShield);
 							this.curioShields.put(slot, combine);
@@ -295,17 +295,14 @@ public class PlayerCapability implements ICapabilitySerializable<CompoundNBT>{
 		return newShield;
 	}
 
-	@Nullable private static MutableShield applySigilModifier(ICapabilityProvider capabilityProvider, SigilSlot sigilSlot, Shield original){
-		return applySigilModifier(capabilityProvider, sigilSlot, original, null);
+	@Nullable private static MutableShield applySigilModifier(@Nullable SigilHolder h, SigilSlot sigilSlot, Shield original){
+		return applySigilModifier(h, sigilSlot, original, null);
 	}
-	@Nullable private static MutableShield applySigilModifier(ICapabilityProvider capabilityProvider, SigilSlot sigilSlot, Shield original, @Nullable MutableShield existing){
-		SigilHolder h = SigilHolder.of(capabilityProvider);
-		if(h!=null){
-			for(Sigil sigil : h.getSigils()){
-				if(!(sigil instanceof ShieldModifier)) continue;
-				if(existing==null) existing = new MutableShield(original);
-				((ShieldModifier)sigil).applyShieldModifier(sigilSlot, original, existing);
-			}
+	@Nullable private static MutableShield applySigilModifier(@Nullable SigilHolder holder, SigilSlot sigilSlot, Shield original, @Nullable MutableShield existing){
+		if(holder!=null) for(Sigil sigil : holder.getSigils()){
+			if(!(sigil instanceof ShieldModifier)) continue;
+			if(existing==null) existing = new MutableShield(original);
+			((ShieldModifier)sigil).applyShieldModifier(sigilSlot, original, existing);
 		}
 		return existing;
 	}

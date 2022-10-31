@@ -136,16 +136,14 @@ public abstract class SigilEngravingTableContainer extends Container{
 
 	protected void update(){
 		if(player.level.isClientSide()) return;
-		ItemStack stack = inventory.getCenterItem();
-		SigilHolder h = SigilHolder.of(stack);
+		SigilHolder h = SigilHolder.of(inventory.getCenterItem());
 		if(h!=null){
 			if(!currentSigils.equals(h.getSigils())){
 				currentSigils.clear();
 				currentSigils.addAll(h.getSigils());
 				sigilsUpdated = true;
 			}
-			ItemStack stack2 = getResultCache();
-			SigilHolder h2 = stack2.isEmpty() ? null : SigilHolder.of(stack2);
+			SigilHolder h2 = SigilHolder.of(getResultCache());
 			if(h2!=null){
 				if(!newSigils.equals(h2.getSigils())){
 					newSigils.clear();

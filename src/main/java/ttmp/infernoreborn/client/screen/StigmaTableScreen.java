@@ -94,9 +94,9 @@ public abstract class StigmaTableScreen extends ContainerScreen<StigmaTableConta
 			ModNet.CHANNEL.sendToServer(new EngraveBodySigilMsg());
 		}
 
-		@Override public void render(MatrixStack pMatrixStack, int pMouseX, int pMouseY, float pPartialTicks){
+		@Override public void render(MatrixStack pMatrixStack, int mouseX, int mouseY, float pPartialTicks){
 			this.active = sigilCache!=null;
-			super.render(pMatrixStack, pMouseX, pMouseY, pPartialTicks);
+			super.render(pMatrixStack, mouseX, mouseY, pPartialTicks);
 		}
 
 		@Override public void renderButton(MatrixStack matrixStack, int mouseX, int mouseY, float partialTicks){
@@ -113,11 +113,11 @@ public abstract class StigmaTableScreen extends ContainerScreen<StigmaTableConta
 			}
 		}
 
-		@Override public void renderToolTip(MatrixStack matrixStack, int pMouseX, int pMouseY){
+		@Override public void renderToolTip(MatrixStack matrixStack, int mouseX, int mouseY){
 			if(sigilCache!=null) renderWrappedToolTip(matrixStack,
 					Collections.singletonList(new TranslationTextComponent("")),
-					pMouseX,
-					pMouseY,
+					mouseX,
+					mouseY,
 					font);
 		}
 	}
