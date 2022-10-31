@@ -7,6 +7,9 @@ common {
   Effects: [
     Particle [ FFFFFF ]
   ]
+  ItemColor: {
+    Secondary: ffffff
+  }
   Abilities: [
     choose(
       "" weight 16
@@ -34,6 +37,9 @@ uncommon {
   Effects: [
     Particle [ FF00FF, 00FFFF, FFFF00 ]
   ]
+  ItemColor: {
+    Secondary: ffff00
+  }
   Abilities: [
     choose(
       "heart2" weight 8
@@ -68,6 +74,9 @@ rare {
   Effects: [
     Particle [ FF00FF ]
   ]
+  ItemColor: {
+    Secondary: ff00ff
+  }
   Abilities: [
     choose(
       "heart4" weight 16
@@ -95,6 +104,9 @@ epic {
   Effects: [
     Particle [ 0 ]
   ]
+  ItemColor: {
+    Secondary: 0
+  }
   Abilities: switch(1~3, {
     1: (
       "heart8"

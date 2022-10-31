@@ -225,7 +225,7 @@ public final class InfernalTypes{
 										.prop("element", args[0])
 										.prop("weight", args[1])), null);
 			}
-			return abilityGenerator;
+			return abilityGenerator.copy();
 		}
 	}
 }

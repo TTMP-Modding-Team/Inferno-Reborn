@@ -5,12 +5,9 @@ import among.construct.ConditionedConstructor;
 import among.construct.ConstructRule;
 import among.construct.Constructor;
 import among.obj.Among;
-import net.minecraft.network.PacketBuffer;
 import org.apache.commons.lang3.ArrayUtils;
-import ttmp.infernoreborn.InfernoReborn;
 import ttmp.infernoreborn.infernaltype.InfernalGenContext;
-
-import javax.annotation.Nullable;
+import ttmp.infernoreborn.infernaltype.dsl.InfernalTypeDsl;
 
 public interface InfernalEffect{
 	void apply(InfernalGenContext context);
@@ -23,14 +20,8 @@ public interface InfernalEffect{
 			.list("Particle", ConditionedConstructor.listCondition(c -> c
 							.minSize(1)
 							.elementType(TypeFlags.PRIMITIVE),
-					Constructor.listOf(
-							Constructor.tryConstruct(
-									Constructor.generifyValue((a, _r) -> {
-										int i = Integer.parseUnsignedInt(a.getValue(), 16);
-										if(i>=0&&i<=0xFFFFFF) return i;
-										if(_r!=null) _r.reportError("Invalid color", a.sourcePosition());
-										return null;
-									}), "Invalid color", false)
-					).then((ints, reportHandler) -> particle(ArrayUtils.toPrimitive(ints.toArray(new Integer[0]))))))
+					Constructor.listOf(Constructor.generifyValue(InfernalTypeDsl.RGB))
+							.then((ints, reportHandler) ->
+									particle(ArrayUtils.toPrimitive(ints.toArray(new Integer[0]))))))
 	);
 }

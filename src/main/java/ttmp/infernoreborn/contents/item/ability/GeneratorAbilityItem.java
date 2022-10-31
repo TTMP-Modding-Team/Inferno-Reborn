@@ -9,6 +9,7 @@ import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.Style;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.Constants;
+import ttmp.infernoreborn.contents.ModItems;
 import ttmp.infernoreborn.contents.ability.holder.ServerAbilityHolder;
 import ttmp.infernoreborn.infernaltype.InfernalType;
 import ttmp.infernoreborn.infernaltype.InfernalTypes;
@@ -42,12 +43,40 @@ public class GeneratorAbilityItem extends AbstractAbilityItem{
 
 	@Nullable public static InfernalType getType(ItemStack stack){
 		CompoundNBT tag = stack.getTag();
-		if(tag==null||!tag.contains("Type", Constants.NBT.TAG_STRING)) return null;
-		return InfernalTypes.getInfernalType(tag.getString("Type"));
+		return tag!=null&&tag.contains("Type", Constants.NBT.TAG_STRING) ?
+				InfernalTypes.getInfernalType(tag.getString("Type")) : null;
 	}
-	public static void setType(ItemStack stack, @Nullable String type){
-		CompoundNBT tag = stack.getOrCreateTag();
-		if(type==null) tag.remove("Type");
-		else tag.putString("Type", type);
+
+	public static int getPrimaryColor(ItemStack stack, int fallback){
+		CompoundNBT tag = stack.getTag();
+		return tag!=null&&tag.contains("PrimaryColor", Constants.NBT.TAG_INT) ?
+				tag.getInt("PrimaryColor") : fallback;
+	}
+
+	public static int getSecondaryColor(ItemStack stack, int fallback){
+		CompoundNBT tag = stack.getTag();
+		return tag!=null&&tag.contains("SecondaryColor", Constants.NBT.TAG_INT) ?
+				tag.getInt("SecondaryColor") : fallback;
+	}
+
+	public static int getHighlightColor(ItemStack stack, int fallback){
+		CompoundNBT tag = stack.getTag();
+		return tag!=null&&tag.contains("HighlightColor", Constants.NBT.TAG_INT) ?
+				tag.getInt("HighlightColor") : fallback;
+	}
+
+	public static ItemStack createItemStack(InfernalType type){
+		ItemStack stack = new ItemStack(ModItems.GENERATOR_INFERNO_SPARK.get());
+		if(type.getName()!=null){
+			CompoundNBT tag = stack.getOrCreateTag();
+			tag.putString("Type", type.getName());
+			InfernalType.ItemColor color = type.getItemColor();
+			if(color!=null){
+				if(color.getPrimary()!=null) tag.putInt("PrimaryColor", color.getPrimary());
+				if(color.getSecondary()!=null) tag.putInt("SecondaryColor", color.getSecondary());
+				if(color.getHighlight()!=null) tag.putInt("HighlightColor", color.getHighlight());
+			}
+		}
+		return stack;
 	}
 }

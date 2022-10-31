@@ -19,7 +19,6 @@ import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import ttmp.infernoreborn.capability.PlayerCapability;
-import ttmp.infernoreborn.contents.ModItems;
 import ttmp.infernoreborn.contents.item.ability.GeneratorAbilityItem;
 import ttmp.infernoreborn.infernaltype.InfernalType;
 import ttmp.infernoreborn.infernaltype.InfernalTypes;
@@ -124,8 +123,7 @@ public final class InfernoRebornCommands{
 		if(t==null) throw infernalType_noTypeNamed.create(infernalTypeId);
 
 		for(ServerPlayerEntity sp : targets){
-			ItemStack stack = new ItemStack(ModItems.GENERATOR_INFERNO_SPARK.get());
-			GeneratorAbilityItem.setType(stack, infernalTypeId);
+			ItemStack stack = GeneratorAbilityItem.createItemStack(t);
 			if(sp.inventory.add(stack)&&stack.isEmpty()){
 				stack.setCount(1);
 				ItemEntity e = sp.drop(stack, false);

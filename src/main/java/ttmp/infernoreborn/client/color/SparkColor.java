@@ -10,14 +10,10 @@ public class SparkColor implements IItemColor{
 		Ability[] abilities = FixedAbilityItem.getAbilities(stack);
 
 		switch(i){
-			case 0:
-				return ColorUtils.getPrimaryColorBlend(abilities);
-			case 1:
-				return ColorUtils.getSecondaryColorBlend(abilities);
-			case 2:
-				return ColorUtils.getHighlightColorBlend(abilities);
-			default:
-				return -1;
+			case 0: return ColorUtils.getPrimaryColorBlend(abilities);
+			case 1: return ColorUtils.getSecondaryColorBlend(abilities);
+			case 2: return ColorUtils.getHighlightColorBlend(abilities);
+			default: return -1;
 		}
 	}
 }
