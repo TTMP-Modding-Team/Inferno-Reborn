@@ -1,9 +1,0 @@
-debug <me>
-debug 3.14*2
-debug 5+6+7 == 18
-
-// Stupid shits
-
-debug (debug (<me>))
-debug debug 3.14 * debug 2
-debug debug 5+6+7 == 5+debug 6+debug 7

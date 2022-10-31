@@ -1,9 +1,0 @@
-define cat: <cat>
-define dog: <dog>
-define red: #ff0000
-define everything: 40+2
-
-debug cat
-debug dog
-debug red
-debug everything
