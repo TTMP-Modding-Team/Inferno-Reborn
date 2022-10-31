@@ -13,7 +13,7 @@ import net.minecraftforge.items.SlotItemHandler;
 import ttmp.infernoreborn.capability.Caps;
 import ttmp.infernoreborn.contents.ModContainers;
 import ttmp.infernoreborn.contents.tile.FoundryTile;
-import ttmp.infernoreborn.util.EssenceType;
+import ttmp.infernoreborn.util.Essence;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -95,7 +95,7 @@ public class FoundryContainer extends Container{
 			}else{
 				if(stackAtSlot.getCapability(Caps.essenceHolder).isPresent()){
 					if(!this.moveItemStackTo(stackAtSlot, FoundryTile.ESSENCE_HOLDER_SLOT, FoundryTile.ESSENCE_HOLDER_SLOT+1, false)) return ItemStack.EMPTY;
-				}else if(EssenceType.isEssenceItem(stackAtSlot)){
+				}else if(Essence.isEssenceItem(stackAtSlot)){
 					if(!this.moveItemStackTo(stackAtSlot, FoundryTile.ESSENCE_INPUT_SLOT, FoundryTile.ESSENCE_INPUT_SLOT+1, false)) return ItemStack.EMPTY;
 				}else if(!this.moveItemStackTo(stackAtSlot, FoundryTile.INPUT_SLOT_1, FoundryTile.INPUT_SLOT_2+1, false)) return ItemStack.EMPTY;
 			}

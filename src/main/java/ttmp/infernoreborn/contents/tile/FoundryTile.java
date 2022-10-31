@@ -36,10 +36,9 @@ import ttmp.infernoreborn.contents.ModTileEntities;
 import ttmp.infernoreborn.contents.block.FoundryBlock;
 import ttmp.infernoreborn.contents.container.FoundryContainer;
 import ttmp.infernoreborn.contents.recipe.foundry.FoundryRecipe;
-import ttmp.infernoreborn.inventory.EssenceHolderItemHandler;
 import ttmp.infernoreborn.inventory.FoundryInventory;
+import ttmp.infernoreborn.util.Essence;
 import ttmp.infernoreborn.util.EssenceHolder;
-import ttmp.infernoreborn.util.EssenceType;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -90,18 +89,25 @@ public class FoundryTile extends TileEntity implements ITickableTileEntity, INam
 	@Override public void tick(){
 		if(level==null||level.isClientSide) return;
 		ItemStack essenceHolder = inv.getStackInSlot(ESSENCE_HOLDER_SLOT);
-		ItemStack essence = inv.getStackInSlot(ESSENCE_INPUT_SLOT);
-		if(!essenceHolder.isEmpty()&&!essence.isEmpty()){
+		if(!essenceHolder.isEmpty()){
 			//noinspection ConstantConditions
 			@Nullable EssenceHolder h = essenceHolder.getCapability(Caps.essenceHolder).orElse(null);
 			//noinspection ConstantConditions
 			if(h!=null){
-				EssenceHolderItemHandler ih = EssenceHolderItemHandler.withInstance(h);
-				for(int i = 0; i<ih.getSlots(); i++){
-					essence = ih.insertItem(i, essence, false);
-					if(essence.isEmpty()) break;
+				ItemStack essenceInput = inv.getStackInSlot(ESSENCE_INPUT_SLOT);
+				Essence essence = Essence.from(essenceInput);
+				if(essence!=null){
+					if(h.insertEssence(essence.getType(), essence.getAmount(), true)==essence.getAmount()){
+						h.insertEssence(essence.getType(), essence.getAmount(), false);
+						inv.setStackInSlot(ESSENCE_INPUT_SLOT, ItemStack.EMPTY);
+					}else{
+						essence = Essence.from(essenceInput.getItem(), 1);
+						if(essence!=null&&h.insertEssence(essence.getType(), essence.getAmount(), true)==essence.getAmount()){
+							h.insertEssence(essence.getType(), essence.getAmount(), false);
+							essenceInput.shrink(1);
+						}
+					}
 				}
-				inv.setStackInSlot(ESSENCE_INPUT_SLOT, essence);
 			}
 		}
 		if(currentRecipe!=null){
@@ -266,7 +272,7 @@ public class FoundryTile extends TileEntity implements ITickableTileEntity, INam
 				case ESSENCE_HOLDER_SLOT:
 					return stack.getCapability(Caps.essenceHolder).isPresent();
 				case ESSENCE_INPUT_SLOT:
-					return EssenceType.isEssenceItem(stack);
+					return Essence.isEssenceItem(stack);
 				default:
 					return true;
 			}

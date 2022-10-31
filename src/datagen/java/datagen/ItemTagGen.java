@@ -48,5 +48,6 @@ public class ItemTagGen extends ItemTagsProvider{
 		this.tag(ModTags.CURIOS_NECKLACE).add(ModItems.CLOUD_SCARF.get());
 		this.tag(ModTags.CURIOS_RING).add(ModItems.NORMAL_RING.get(), ModItems.SHIELD_RING_1.get());
 		this.tag(ModTags.CURIOS_HANDS).add(ModItems.BATTLE_MITTS.get());
+		this.tag(ModTags.CURIOS_ESSENCE_HOLDER).add(ModItems.ESSENCE_HOLDER.get(), ModItems.BOOK_OF_THE_UNSPEAKABLE_COMBINED.get(), ModItems.ESSENCE_NET_ACCESSOR.get());
 	}
 }

@@ -5,6 +5,7 @@ import net.minecraft.client.gui.ScreenManager;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.RenderTypeLookup;
 import net.minecraft.client.renderer.tileentity.SkullTileEntityRenderer;
+import net.minecraft.inventory.container.PlayerContainer;
 import net.minecraft.item.IItemPropertyGetter;
 import net.minecraft.item.ItemModelsProperties;
 import net.minecraft.nbt.INBT;
@@ -12,6 +13,7 @@ import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.ColorHandlerEvent;
+import net.minecraftforge.client.event.TextureStitchEvent;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityManager;
 import net.minecraftforge.event.entity.EntityAttributeCreationEvent;
@@ -104,6 +106,9 @@ public class InfernoReborn{
 		InterModComms.sendTo("curios", SlotTypeMessage.REGISTER_TYPE, () -> SlotTypePreset.NECKLACE.getMessageBuilder().build());
 		InterModComms.sendTo("curios", SlotTypeMessage.REGISTER_TYPE, () -> SlotTypePreset.RING.getMessageBuilder().size(2).build());
 		InterModComms.sendTo("curios", SlotTypeMessage.REGISTER_TYPE, () -> SlotTypePreset.HANDS.getMessageBuilder().build());
+		InterModComms.sendTo("curios", SlotTypeMessage.REGISTER_TYPE, () -> new SlotTypeMessage.Builder("essence_holder")
+				.icon(new ResourceLocation(MODID, "item/empty_essence_holder"))
+				.size(1).build());
 	}
 
 	@SubscribeEvent
@@ -189,6 +194,12 @@ public class InfernoReborn{
 			event.getItemColors().register(new PrimalInfernoSparkColor(), ModItems.GENERATOR_INFERNO_SPARK.get());
 			event.getItemColors().register(new PrimalInfernoSparkColor(), ModItems.PRIMAL_INFERNO_SPARK.get());
 			event.getItemColors().register(new EssenceHolderBookSparkColor(), ModItems.BOOK_OF_THE_UNSPEAKABLE_COMBINED.get(), ModItems.ESSENCE_HOLDER.get());
+		}
+
+		@SubscribeEvent
+		public static void beforeTextureStitch(TextureStitchEvent.Pre event){
+			if(event.getMap().location().equals(PlayerContainer.BLOCK_ATLAS))
+				event.addSprite(new ResourceLocation(MODID, "item/empty_essence_holder"));
 		}
 	}
 }

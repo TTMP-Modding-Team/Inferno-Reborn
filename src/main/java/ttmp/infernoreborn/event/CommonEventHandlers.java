@@ -6,6 +6,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.ai.attributes.Attribute;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
+import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.ItemStack;
@@ -27,13 +28,17 @@ import net.minecraftforge.event.entity.living.LivingExperienceDropEvent;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import net.minecraftforge.event.entity.player.AttackEntityEvent;
 import net.minecraftforge.event.entity.player.CriticalHitEvent;
+import net.minecraftforge.event.entity.player.EntityItemPickupEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.event.world.ExplosionEvent;
+import net.minecraftforge.eventbus.api.Event;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.LogicalSide;
 import net.minecraftforge.fml.common.Mod;
 import top.theillusivec4.curios.api.CuriosApi;
+import top.theillusivec4.curios.api.SlotResult;
+import ttmp.infernoreborn.capability.Caps;
 import ttmp.infernoreborn.capability.EssenceNetProvider;
 import ttmp.infernoreborn.capability.PlayerCapability;
 import ttmp.infernoreborn.capability.SimpleTickingTaskHandler;
@@ -48,12 +53,15 @@ import ttmp.infernoreborn.contents.ability.holder.ServerAbilityHolder;
 import ttmp.infernoreborn.contents.sigil.holder.ItemSigilHolder;
 import ttmp.infernoreborn.contents.sigil.holder.SigilHolder;
 import ttmp.infernoreborn.util.ArmorSets;
+import ttmp.infernoreborn.util.Essence;
+import ttmp.infernoreborn.util.EssenceHolder;
 import ttmp.infernoreborn.util.LivingUtils;
 import ttmp.infernoreborn.util.SigilSlot;
 import ttmp.infernoreborn.util.SigilUtils;
 import ttmp.infernoreborn.util.damage.LivingOnly;
 
 import javax.annotation.Nullable;
+import java.util.List;
 
 import static ttmp.infernoreborn.InfernoReborn.MODID;
 
@@ -279,7 +287,7 @@ public class CommonEventHandlers{
 	@SubscribeEvent
 	public static void onPlayerTick(TickEvent.PlayerTickEvent event){
 		if(CuriosApi.getCuriosHelper()
-				.findEquippedCurio(ModItems.CLOUD_SCARF.get(), event.player)
+				.findFirstCurio(event.player, ModItems.CLOUD_SCARF.get())
 				.isPresent()){
 			event.player.flyingSpeed = (float)(CLOUD_SCARF_FLYING_SPEED);
 		}
@@ -309,5 +317,39 @@ public class CommonEventHandlers{
 	public static void onLivingExperienceDrop(LivingExperienceDropEvent event){
 		ServerAbilityHolder h = ServerAbilityHolder.of(event.getEntityLiving());
 		if(h!=null&&h.disableDrop()) event.setCanceled(true);
+	}
+
+	@SuppressWarnings("ConstantConditions")
+	@SubscribeEvent
+	public static void onEntityItemPickup(EntityItemPickupEvent event){
+		ItemEntity e = event.getItem();
+		if(e.getOwner()!=null&&e.lifespan-e.getAge()>200&&!e.getOwner().equals(event.getPlayer().getUUID()))
+			return; // from ItemEntity
+		ItemStack stack = e.getItem();
+		Essence essence = Essence.from(stack);
+		if(essence!=null){
+			int amount = essence.getAmount();
+			if(amount>0){
+				List<SlotResult> curios = CuriosApi.getCuriosHelper().findCurios(event.getPlayer(), "essence_holder");
+				if(curios.isEmpty()) return;
+				for(SlotResult curio : curios){
+					EssenceHolder h = curio.getStack().getCapability(Caps.essenceHolder).orElse(null);
+					if(h!=null){
+						amount -= h.insertEssence(essence.getType(), amount, false);
+						if(amount==0) break;
+					}
+				}
+			}
+			if(essence.getAmount()==amount) return;
+			event.setResult(Event.Result.ALLOW);
+			e.setItem(ItemStack.EMPTY);
+			for(ItemStack s : Essence.items(essence.getType(), amount)){ // spawn leftover
+				ItemEntity e2 = new ItemEntity(e.level, e.getX(), e.getY(), e.getZ());
+				e2.yRot = e.yRot;
+				e2.setDeltaMovement(e.getDeltaMovement());
+				e2.setItem(s);
+				e.level.addFreshEntity(e2);
+			}
+		}
 	}
 }
