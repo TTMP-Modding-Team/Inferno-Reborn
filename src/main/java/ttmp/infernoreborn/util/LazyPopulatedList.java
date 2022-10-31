@@ -6,8 +6,9 @@ import javax.annotation.Nullable;
 import java.util.AbstractList;
 import java.util.Collection;
 import java.util.List;
+import java.util.RandomAccess;
 
-public abstract class LazyPopulatedList<O, E> extends AbstractList<E>{
+public abstract class LazyPopulatedList<O, E> extends AbstractList<E> implements RandomAccess{
 	private final Collection<O> collection;
 
 	@Nullable private List<E> delegate;
