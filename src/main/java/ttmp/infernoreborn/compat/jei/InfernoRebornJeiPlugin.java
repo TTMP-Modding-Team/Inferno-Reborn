@@ -16,10 +16,12 @@ import net.minecraft.client.world.ClientWorld;
 import net.minecraft.inventory.container.Container;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
+import ttmp.infernoreborn.client.screen.EssenceHolderScreen;
 import ttmp.infernoreborn.client.screen.FoundryScreen;
 import ttmp.infernoreborn.client.screen.SigilEngravingTableScreen;
 import ttmp.infernoreborn.client.screen.SigilScrapperScreen;
 import ttmp.infernoreborn.client.screen.StigmaTableScreen;
+import ttmp.infernoreborn.compat.jei.guihandler.EssenceHolderHandler;
 import ttmp.infernoreborn.compat.jei.guihandler.SigilScrapperHandler;
 import ttmp.infernoreborn.compat.jei.guihandler.SigilTableHandler;
 import ttmp.infernoreborn.compat.jei.sigil.RecipeSize;
@@ -119,6 +121,7 @@ public class InfernoRebornJeiPlugin implements IModPlugin{
 		registration.addGuiContainerHandler(SigilEngravingTableScreen.class, new SigilTableHandler<>(o -> o.getSigilWidget()));
 		registration.addGuiContainerHandler(StigmaTableScreen.class, new SigilTableHandler<>(o -> o.getSigilWidget()));
 		registration.addGuiContainerHandler(SigilScrapperScreen.class, new SigilScrapperHandler());
+		registration.addGuiContainerHandler(EssenceHolderScreen.class, new EssenceHolderHandler());
 	}
 
 	@Override public void registerRecipeTransferHandlers(IRecipeTransferRegistration registration){

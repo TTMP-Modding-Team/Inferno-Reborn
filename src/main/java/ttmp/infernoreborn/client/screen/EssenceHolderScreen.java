@@ -1,6 +1,7 @@
 package ttmp.infernoreborn.client.screen;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.gui.screen.inventory.ContainerScreen;
 import net.minecraft.client.util.InputMappings;
@@ -22,6 +23,7 @@ import java.util.List;
 
 import static ttmp.infernoreborn.InfernoReborn.MODID;
 
+@SuppressWarnings("deprecation")
 public class EssenceHolderScreen extends ContainerScreen<EssenceHolderContainer>{
 	private static final ResourceLocation GUI = new ResourceLocation(MODID, "textures/gui/essence_holder.png");
 
@@ -34,6 +36,13 @@ public class EssenceHolderScreen extends ContainerScreen<EssenceHolderContainer>
 		}
 	}
 
+	@Nullable public EssenceSlot essenceSlotAt(double mouseX, double mouseY){
+		for(EssenceSlot slot : essenceSlots)
+			if(isHovering(slot.x, slot.y, 16, 16, mouseX, mouseY))
+				return slot;
+		return null;
+	}
+
 	@Override public void render(MatrixStack matrixStack, int mouseX, int mouseY, float partialTicks){
 		this.renderBackground(matrixStack);
 		super.render(matrixStack, mouseX, mouseY, partialTicks);
@@ -41,7 +50,6 @@ public class EssenceHolderScreen extends ContainerScreen<EssenceHolderContainer>
 	}
 
 	@Override protected void renderBg(MatrixStack matrixStack, float partialTicks, int mouseX, int mouseY){
-		//noinspection deprecation
 		RenderSystem.color4f(1, 1, 1, 1);
 		//noinspection ConstantConditions
 		this.minecraft.getTextureManager().bind(GUI);
@@ -57,14 +65,27 @@ public class EssenceHolderScreen extends ContainerScreen<EssenceHolderContainer>
 		for(EssenceSlot slot : essenceSlots){
 			//noinspection ConstantConditions
 			this.itemRenderer.renderAndDecorateItem(this.minecraft.player, slot.getItemStack(), slot.x, slot.y);
-			this.itemRenderer.renderGuiItemDecorations(this.font, slot.getItemStack(), slot.x, slot.y, slot.formatCount());
+			if(slot.getCount()>0){
+				this.itemRenderer.renderGuiItemDecorations(this.font, slot.getItemStack(), slot.x, slot.y, slot.formatCount());
 
-			if(this.isHovering(slot.x, slot.y, 16, 16, mouseX, mouseY)){
+				if(this.isHovering(slot.x, slot.y, 16, 16, mouseX, mouseY)){
+					RenderSystem.disableDepthTest();
+					RenderSystem.enableAlphaTest();
+					RenderSystem.colorMask(true, true, true, false);
+					int slotColor = this.getSlotColor(this.slotColor);
+					this.fillGradient(matrixStack, slot.x, slot.y, slot.x+16, slot.y+16, slotColor, slotColor);
+					RenderSystem.colorMask(true, true, true, true);
+					RenderSystem.enableDepthTest();
+				}
+			}else{
 				RenderSystem.disableDepthTest();
-				RenderSystem.colorMask(true, true, true, false);
-				int slotColor = this.getSlotColor(this.slotColor);
-				this.fillGradient(matrixStack, slot.x, slot.y, slot.x+16, slot.y+16, slotColor, slotColor);
+				RenderSystem.enableBlend();
+				RenderSystem.blendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
+				RenderSystem.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
 				RenderSystem.colorMask(true, true, true, true);
+				RenderSystem.color4f(1, 1, 1, 0.5f);
+				this.minecraft.getTextureManager().bind(GUI);
+				blit(matrixStack, slot.x, slot.y, slot.x, slot.y, 16, 16);
 				RenderSystem.enableDepthTest();
 			}
 		}
@@ -74,24 +95,22 @@ public class EssenceHolderScreen extends ContainerScreen<EssenceHolderContainer>
 
 	@Override protected void renderTooltip(MatrixStack matrixStack, int mouseX, int mouseY){
 		super.renderTooltip(matrixStack, mouseX, mouseY);
-		for(EssenceSlot slot : essenceSlots){
-			//noinspection ConstantConditions
-			if(this.minecraft.player.inventory.getCarried().isEmpty()&&isHovering(slot.x, slot.y, 16, 16, mouseX, mouseY)){
-				this.renderTooltip(matrixStack, slot.getItemStack(), mouseX, mouseY);
-			}
-		}
+		//noinspection ConstantConditions
+		if(!this.minecraft.player.inventory.getCarried().isEmpty()) return;
+		EssenceSlot slot = essenceSlotAt(mouseX, mouseY);
+		if(slot!=null&&slot.getCount()>0)
+			this.renderTooltip(matrixStack, slot.getItemStack(), mouseX, mouseY);
 	}
 
-	@Override public boolean mouseClicked(double x, double y, int type){
-		for(EssenceSlot slot : essenceSlots){
-			if(isHovering(slot.x, slot.y, 16, 16, x, y)){
-				boolean shift = hasShiftDown();
-				menu.handleEssenceHolderSlotClick(slot.slot, type, shift);
-				ModNet.CHANNEL.sendToServer(new EssenceHolderSlotClickMsg(slot.slot, type, shift));
-				return true;
-			}
+	@Override public boolean mouseClicked(double mouseX, double mouseY, int type){
+		EssenceSlot slot = essenceSlotAt(mouseX, mouseY);
+		if(slot!=null){
+			boolean shift = hasShiftDown();
+			menu.handleEssenceHolderSlotClick(slot.slot, type, shift);
+			ModNet.CHANNEL.sendToServer(new EssenceHolderSlotClickMsg(slot.slot, type, shift));
+			return true;
 		}
-		return super.mouseClicked(x, y, type);
+		return super.mouseClicked(mouseX, mouseY, type);
 	}
 
 	@Override protected boolean checkHotbarKeyPressed(int key, int scancode){
@@ -116,8 +135,8 @@ public class EssenceHolderScreen extends ContainerScreen<EssenceHolderContainer>
 		return null;
 	}
 
-	private static final class EssenceSlot{
-		private static final DecimalFormat F = new DecimalFormat("0.#");
+	public static final class EssenceSlot{
+		private static final DecimalFormat format = new DecimalFormat("0.#");
 
 		private final EssenceHolderItemHandler essenceHolder;
 		private final int slot;
@@ -144,9 +163,9 @@ public class EssenceHolderScreen extends ContainerScreen<EssenceHolderContainer>
 			int count = getCount();
 			if(count<=0) return TextFormatting.RED+"0";
 			if(count<1_000) return String.valueOf(count);
-			if(count<1_000_000) return F.format(count/1_000.0)+"K";
-			if(count<1_000_000_000) return F.format(count/1_000_000.0)+"M";
-			return F.format(count/1_000_000_000.0)+"G";
+			if(count<1_000_000) return format.format(count/1_000.0)+"K";
+			if(count<1_000_000_000) return format.format(count/1_000_000.0)+"M";
+			return format.format(count/1_000_000_000.0)+"G";
 		}
 	}
 }
