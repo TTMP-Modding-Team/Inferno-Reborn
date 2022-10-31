@@ -18,6 +18,8 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import ttmp.infernoreborn.client.screen.FoundryScreen;
 import ttmp.infernoreborn.client.screen.SigilEngravingTableScreen;
+import ttmp.infernoreborn.client.screen.StigmaTableScreen;
+import ttmp.infernoreborn.compat.jei.guihandler.SigilTableHandler;
 import ttmp.infernoreborn.compat.jei.sigil.RecipeSize;
 import ttmp.infernoreborn.compat.jei.sigil.ShapedSigilEngravingRecipeCategory;
 import ttmp.infernoreborn.compat.jei.sigil.ShapedSigilTableCraftingRecipeCategory;
@@ -111,6 +113,9 @@ public class InfernoRebornJeiPlugin implements IModPlugin{
 		registration.addRecipeClickArea(SigilEngravingTableScreen.X5.class, 137, 91, 12, 8, ShapedSigilEngravingRecipeCategory.getUidBySize(RecipeSize.X5), ShapedSigilTableCraftingRecipeCategory.getUidBySize(RecipeSize.X5));
 		registration.addRecipeClickArea(SigilEngravingTableScreen.X7.class, 144, 117, 12, 8, ShapedSigilEngravingRecipeCategory.getUidBySize(RecipeSize.X7), ShapedSigilTableCraftingRecipeCategory.getUidBySize(RecipeSize.X7));
 		registration.addRecipeClickArea(FoundryScreen.class, 82, 23, 30, 10, FoundryRecipeCategory.UID);
+
+		registration.addGuiContainerHandler(SigilEngravingTableScreen.class, new SigilTableHandler<>(o -> o.getSigilWidget()));
+		registration.addGuiContainerHandler(StigmaTableScreen.class, new SigilTableHandler<>(o -> o.getSigilWidget()));
 	}
 
 	@Override public void registerRecipeTransferHandlers(IRecipeTransferRegistration registration){

@@ -11,31 +11,24 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
-import ttmp.infernoreborn.capability.Caps;
-import ttmp.infernoreborn.client.GibberishFactory;
 import ttmp.infernoreborn.contents.ModItems;
-import ttmp.infernoreborn.contents.Sigils;
 import ttmp.infernoreborn.contents.container.StigmaTableContainer;
 import ttmp.infernoreborn.contents.item.SigilItem;
 import ttmp.infernoreborn.contents.sigil.Sigil;
-import ttmp.infernoreborn.contents.sigil.holder.EmptySigilHolder;
-import ttmp.infernoreborn.contents.sigil.holder.SigilHolder;
 import ttmp.infernoreborn.network.EngraveBodySigilMsg;
 import ttmp.infernoreborn.network.ModNet;
 
 import javax.annotation.Nullable;
 import java.util.Collections;
-import java.util.Objects;
+import java.util.Set;
 
 import static ttmp.infernoreborn.InfernoReborn.MODID;
 
-public abstract class StigmaTableScreen extends ContainerScreen<StigmaTableContainer>{
-	private final GibberishFactory gibFactory = new GibberishFactory();
-
-	private int sigilIdCache = -1;
+public abstract class StigmaTableScreen extends ContainerScreen<StigmaTableContainer> implements SigilScreen{
 	@Nullable private Sigil sigilCache;
 	@Nullable private ItemStack sigilItem;
 	private Btn button;
+	private SigilWidget sigilWidget;
 
 	public StigmaTableScreen(StigmaTableContainer container, PlayerInventory inv, ITextComponent title){
 		super(container, inv, title);
@@ -43,12 +36,20 @@ public abstract class StigmaTableScreen extends ContainerScreen<StigmaTableConta
 
 	protected abstract ResourceLocation getImage();
 	protected abstract int textStart();
+	public SigilWidget getSigilWidget(){
+		return sigilWidget;
+	}
 
-	@Override public void init(Minecraft pMinecraft, int pWidth, int pHeight){
+	@Override protected void init(){
+		super.init();
 		titleLabelY = 0;
-		super.init(pMinecraft, pWidth, pHeight);
-		button = new Btn(leftPos+menu.centerSlotX(), topPos+menu.centerSlotY());
-		addButton(button);
+		button = addButton(new Btn(leftPos+menu.centerSlotX(), topPos+menu.centerSlotY()));
+		sigilWidget = addButton(new SigilWidget(leftPos+textStart(), topPos+12+2,
+				(width-imageWidth)/2-4-20, () -> menu.getMaxPoints(), sigilWidget));
+	}
+
+	@Override public void sync(Set<Sigil> currentSigils, Set<Sigil> newSigils){
+		sigilWidget.sync(currentSigils, newSigils);
 	}
 
 	@Override public void render(MatrixStack stack, int mx, int my, float partialTicks){
@@ -64,29 +65,14 @@ public abstract class StigmaTableScreen extends ContainerScreen<StigmaTableConta
 		this.minecraft.getTextureManager().bind(getImage());
 		blit(stack, leftPos, topPos+12, 0, 0, imageWidth, imageHeight-12);
 
-		int currentSigil = menu.getCurrentSigil();
-		if(sigilIdCache!=currentSigil){
-			sigilIdCache = currentSigil;
-			sigilCache = Sigils.getRegistry().getValue(currentSigil);
+		@Nullable Sigil sigil = menu.getCraftingResultSigil();
+		if(sigilCache!=sigil){
+			sigilCache = sigil;
 			if(sigilCache!=null){
 				if(sigilItem==null) sigilItem = new ItemStack(ModItems.SIGIL.get());
 				SigilItem.setSigil(sigilItem, sigilCache);
 			}
 		}
-		SigilHolder h = inventory.player.getCapability(Caps.sigilHolder).orElse(EmptySigilHolder.INSTANCE);
-		if(h.getMaxPoints()<=0) return;
-
-		drawString(stack,
-				font,
-				(sigilCache!=null ? h.getTotalPoint()+sigilCache.getPoint() : h.getTotalPoint())+" / "+menu.getMaxPoints(),
-				leftPos+textStart(),
-				topPos+12+2,
-				0xFFFFFF);
-		font.drawWordWrap(sigilCache!=null ? gibFactory.toText(h, sigilCache) : gibFactory.toText(h),
-				leftPos+textStart(),
-				topPos+12+2+9,
-				(width-imageWidth)/2-4-20,
-				0xFFFFFF);
 	}
 
 	@Override protected void renderTooltip(MatrixStack matrixStack, int x, int y){
@@ -121,9 +107,9 @@ public abstract class StigmaTableScreen extends ContainerScreen<StigmaTableConta
 			RenderSystem.defaultBlendFunc();
 			RenderSystem.enableDepthTest();
 			this.blit(matrixStack, this.x, this.y, 240, sigilCache!=null ? isHovered() ? 16 : 0 : 32, 16, 16);
-			if(sigilCache!=null){
-				itemRenderer.renderGuiItem(Objects.requireNonNull(sigilItem), this.x, this.y);
-				itemRenderer.renderGuiItemDecorations(font, Objects.requireNonNull(sigilItem), this.x, this.y, "");
+			if(sigilCache!=null&&sigilItem!=null){
+				itemRenderer.renderGuiItem(sigilItem, this.x, this.y);
+				itemRenderer.renderGuiItemDecorations(font, sigilItem, this.x, this.y, "");
 			}
 		}
 

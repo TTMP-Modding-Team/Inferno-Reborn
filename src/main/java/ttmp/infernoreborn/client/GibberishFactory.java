@@ -2,13 +2,14 @@ package ttmp.infernoreborn.client;
 
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.Color;
+import net.minecraft.util.text.IFormattableTextComponent;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.Style;
 import ttmp.infernoreborn.client.color.ColorUtils;
 import ttmp.infernoreborn.contents.sigil.Sigil;
-import ttmp.infernoreborn.contents.sigil.holder.SigilHolder;
 
-import javax.annotation.Nullable;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
@@ -22,25 +23,27 @@ public class GibberishFactory{
 
 	private final Map<Sigil, String> gibberish = new HashMap<>();
 
-	public StringTextComponent toText(SigilHolder h, @Nullable SigilHolder h2){
-		StringTextComponent text = new StringTextComponent("");
-		text.withStyle(ROOT_STYLE);
+	public ITextComponent toText(Collection<Sigil> currentSigils, Collection<Sigil> newSigils){
+		IFormattableTextComponent text = new StringTextComponent("")
+				.withStyle(ROOT_STYLE);
 		boolean first = true;
 		long t = System.currentTimeMillis();
-		double blend = getBlend(t, PHASE)*.5;
 
-		for(Sigil sigil : h.getSigils()){
-			if(sigil.getPoint()<=0) continue;
-			if(first) first = false;
-			else text.append(" ");
-			StringTextComponent subtext = new StringTextComponent(getOrCreateGibberish(sigil));
-			subtext.setStyle(subtext.getStyle().withColor(Color.fromRgb(ColorUtils.blend(sigil.getBrighterColor(), sigil.getDarkerColor(), blend))));
-			text.append(subtext);
+		if(!currentSigils.isEmpty()){
+			double blend = getBlend(t, PHASE)*.5;
+			for(Sigil sigil : currentSigils){
+				if(sigil.getPoint()<=0) continue;
+				if(first) first = false;
+				else text.append(" ");
+				StringTextComponent subtext = new StringTextComponent(getOrCreateGibberish(sigil));
+				subtext.setStyle(subtext.getStyle().withColor(Color.fromRgb(ColorUtils.blend(sigil.getBrighterColor(), sigil.getDarkerColor(), blend))));
+				text.append(subtext);
+			}
 		}
-		if(h2!=null){
+		if(!newSigils.isEmpty()){
 			double blend2 = getBlend(t, PHASE2);
-			for(Sigil sigil : h2.getSigils()){
-				if(sigil.getPoint()<=0||h.has(sigil)) continue;
+			for(Sigil sigil : newSigils){
+				if(sigil.getPoint()<=0||currentSigils.contains(sigil)) continue;
 				if(first) first = false;
 				else text.append(" ");
 				StringTextComponent subtext = new StringTextComponent(getOrCreateGibberish(sigil));
@@ -48,35 +51,6 @@ public class GibberishFactory{
 				text.append(subtext);
 			}
 		}
-
-		return text;
-	}
-
-	public StringTextComponent toText(SigilHolder h, Sigil... addedSigils){
-		StringTextComponent text = new StringTextComponent("");
-		text.withStyle(ROOT_STYLE);
-		boolean first = true;
-		long t = System.currentTimeMillis();
-		double blend = getBlend(t, PHASE)*.5;
-
-		for(Sigil sigil : h.getSigils()){
-			if(sigil.getPoint()<=0) continue;
-			if(first) first = false;
-			else text.append(" ");
-			StringTextComponent subtext = new StringTextComponent(getOrCreateGibberish(sigil));
-			subtext.setStyle(subtext.getStyle().withColor(Color.fromRgb(ColorUtils.blend(sigil.getBrighterColor(), sigil.getDarkerColor(), blend))));
-			text.append(subtext);
-		}
-		double blend2 = getBlend(t, PHASE2);
-		for(Sigil sigil : addedSigils){
-			if(sigil.getPoint()<=0||h.has(sigil)) continue;
-			if(first) first = false;
-			else text.append(" ");
-			StringTextComponent subtext = new StringTextComponent(getOrCreateGibberish(sigil));
-			subtext.setStyle(subtext.getStyle().withColor(Color.fromRgb(ColorUtils.blend(sigil.getBrighterColor(), sigil.getDarkerColor(), blend2))));
-			text.append(subtext);
-		}
-
 		return text;
 	}
 

@@ -20,6 +20,7 @@ import ttmp.infernoreborn.capability.ClientPlayerCapability;
 import ttmp.infernoreborn.capability.TickingTaskHandler;
 import ttmp.infernoreborn.client.ParticlePlacingTask;
 import ttmp.infernoreborn.client.screen.EssenceHolderScreen;
+import ttmp.infernoreborn.client.screen.SigilScreen;
 import ttmp.infernoreborn.contents.ability.Ability;
 import ttmp.infernoreborn.contents.ability.holder.ClientAbilityHolder;
 import ttmp.infernoreborn.contents.container.EssenceHolderContainer;
@@ -70,6 +71,9 @@ public final class ModNet{
 		CHANNEL.registerMessage(8, SyncBodySigilMsg.class,
 				SyncBodySigilMsg::write, SyncBodySigilMsg::read,
 				Client::handleSyncBodySigil, Optional.of(NetworkDirection.PLAY_TO_CLIENT));
+		CHANNEL.registerMessage(9, SyncSigilScreenMsg.class,
+				SyncSigilScreenMsg::write, SyncSigilScreenMsg::read,
+				Client::handleSyncSigilScreen, Optional.of(NetworkDirection.PLAY_TO_CLIENT));
 	}
 
 	private static final class Server{
@@ -202,6 +206,15 @@ public final class ModNet{
 				for(Sigil sigil : msg.getSigils()){
 					h.forceAdd(sigil);
 				}
+			});
+		}
+
+		public static void handleSyncSigilScreen(SyncSigilScreenMsg msg, Supplier<NetworkEvent.Context> ctx){
+			ctx.get().setPacketHandled(true);
+			ctx.get().enqueueWork(() -> {
+				Screen screen = Minecraft.getInstance().screen;
+				if(screen instanceof SigilScreen)
+					((SigilScreen)screen).sync(msg.getCurrentSigils(), msg.getNewSigils());
 			});
 		}
 	}

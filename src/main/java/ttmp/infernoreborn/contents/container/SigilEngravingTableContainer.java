@@ -14,17 +14,23 @@ import net.minecraft.util.IWorldPosCallable;
 import net.minecraft.util.NonNullList;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeHooks;
+import net.minecraftforge.fml.network.PacketDistributor;
 import ttmp.infernoreborn.contents.ModContainers;
 import ttmp.infernoreborn.contents.ModRecipes;
 import ttmp.infernoreborn.contents.recipe.sigilcraft.SigilcraftRecipe;
+import ttmp.infernoreborn.contents.sigil.Sigil;
 import ttmp.infernoreborn.contents.sigil.holder.SigilHolder;
 import ttmp.infernoreborn.inventory.DelegateSigilcraftInventory;
 import ttmp.infernoreborn.inventory.SigilTableInventory;
 import ttmp.infernoreborn.inventory.SigilcraftInventory;
+import ttmp.infernoreborn.network.ModNet;
+import ttmp.infernoreborn.network.SyncSigilScreenMsg;
 import ttmp.infernoreborn.util.RealIntReferenceHolder;
 
 import javax.annotation.Nullable;
+import java.util.HashSet;
 import java.util.Objects;
+import java.util.Set;
 
 public abstract class SigilEngravingTableContainer extends Container{
 	public static SigilEngravingTableContainer create3x3(int id, PlayerInventory playerInventory){
@@ -53,6 +59,10 @@ public abstract class SigilEngravingTableContainer extends Container{
 
 	private final RealIntReferenceHolder maxPoints = new RealIntReferenceHolder();
 
+	private final Set<Sigil> currentSigils = new HashSet<>();
+	private final Set<Sigil> newSigils = new HashSet<>();
+	private boolean sigilsUpdated;
+
 	public SigilEngravingTableContainer(@Nullable ContainerType<?> type, int id, PlayerInventory playerInventory, int size){
 		this(type, id, playerInventory, new SigilTableInventory(size, size), IWorldPosCallable.NULL);
 	}
@@ -75,7 +85,7 @@ public abstract class SigilEngravingTableContainer extends Container{
 			this.addSlot(new Slot(playerInventory, i1, invStartX()+i1*18, invStartY()+18*3+4));
 
 		this.access.execute((w, p) -> slotChangedCraftingGrid(w));
-		updateMaxPoint();
+		update();
 
 		this.maxPoints.register(this::addDataSlot);
 	}
@@ -124,19 +134,35 @@ public abstract class SigilEngravingTableContainer extends Container{
 		player.connection.send(new SSetSlotPacket(containerId, 0, resultStack));
 	}
 
-	protected void updateMaxPoint(){
+	protected void update(){
 		if(player.level.isClientSide()) return;
 		ItemStack stack = inventory.getCenterItem();
 		SigilHolder h = SigilHolder.of(stack);
-		if(h==null) return;
-		ItemStack stack2 = getResultCache();
-		SigilHolder h2 = SigilHolder.of(stack2);
-		maxPoints.set((h2!=null ? h2 : h).getMaxPoints());
+		if(h!=null){
+			if(!currentSigils.equals(h.getSigils())){
+				currentSigils.clear();
+				currentSigils.addAll(h.getSigils());
+				sigilsUpdated = true;
+			}
+			ItemStack stack2 = getResultCache();
+			SigilHolder h2 = stack2.isEmpty() ? null : SigilHolder.of(stack2);
+			if(h2!=null){
+				if(!newSigils.equals(h2.getSigils())){
+					newSigils.clear();
+					newSigils.addAll(h2.getSigils());
+					sigilsUpdated = true;
+				}
+			}else if(!newSigils.isEmpty()){
+				newSigils.clear();
+				sigilsUpdated = true;
+			}
+			maxPoints.set((h2!=null ? h2 : h).getMaxPoints());
+		}else maxPoints.set(0);
 	}
 
 	@Override public void slotsChanged(IInventory inv){
 		this.access.execute((w, p) -> slotChangedCraftingGrid(w));
-		updateMaxPoint();
+		update();
 	}
 
 	@Override public boolean stillValid(PlayerEntity player){
@@ -159,7 +185,8 @@ public abstract class SigilEngravingTableContainer extends Container{
 			}else{
 				SigilHolder h = SigilHolder.of(stackAtSlot);
 				if(h!=null&&h.getMaxPoints()>0&&
-						!this.moveItemStackTo(stackAtSlot, (playerInvStart)/2, (playerInvStart)/2+1, false)) return ItemStack.EMPTY;
+						!this.moveItemStackTo(stackAtSlot, (playerInvStart)/2, (playerInvStart)/2+1, false))
+					return ItemStack.EMPTY;
 				if(!this.moveItemStackTo(stackAtSlot, slotIndex<playerInvStart+9 ? playerInvStart+9 : playerInvStart,
 						slotIndex<playerInvStart+9 ? this.slots.size() : playerInvStart+9, true))
 					return ItemStack.EMPTY;
@@ -178,6 +205,17 @@ public abstract class SigilEngravingTableContainer extends Container{
 
 	@Override public boolean canTakeItemForPickAll(ItemStack stack, Slot slot){
 		return slot.container!=this.resultSlots&&super.canTakeItemForPickAll(stack, slot);
+	}
+
+	@Override public void broadcastChanges(){
+		super.broadcastChanges();
+		if(sigilsUpdated){
+			sigilsUpdated = false;
+			if(player instanceof ServerPlayerEntity){
+				SyncSigilScreenMsg msg = new SyncSigilScreenMsg(currentSigils, newSigils);
+				ModNet.CHANNEL.send(PacketDistributor.PLAYER.with(() -> (ServerPlayerEntity)player), msg);
+			}
+		}
 	}
 
 	public static class SigilEngravingResultSlot extends Slot{

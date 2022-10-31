@@ -2,6 +2,7 @@ package ttmp.infernoreborn.contents.container;
 
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.container.Container;
 import net.minecraft.inventory.container.ContainerType;
@@ -9,6 +10,7 @@ import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.IWorldPosCallable;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.network.PacketDistributor;
 import ttmp.infernoreborn.capability.Caps;
 import ttmp.infernoreborn.contents.ModContainers;
 import ttmp.infernoreborn.contents.ModRecipes;
@@ -21,10 +23,15 @@ import ttmp.infernoreborn.contents.sigil.holder.SigilHolder;
 import ttmp.infernoreborn.inventory.DelegateSigilcraftInventory;
 import ttmp.infernoreborn.inventory.SigilTableInventory;
 import ttmp.infernoreborn.inventory.SigilcraftInventory;
+import ttmp.infernoreborn.network.ModNet;
+import ttmp.infernoreborn.network.SyncSigilScreenMsg;
 import ttmp.infernoreborn.util.RealIntReferenceHolder;
 
 import javax.annotation.Nullable;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.Objects;
+import java.util.Set;
 
 public abstract class StigmaTableContainer extends Container{
 	public static StigmaTableContainer create5x5(int id, PlayerInventory playerInventory){
@@ -40,14 +47,17 @@ public abstract class StigmaTableContainer extends Container{
 		return new StigmaTableContainer.X7(ModContainers.STIGMA_TABLE_7X7.get(), id, playerInventory, inventory, access);
 	}
 
+	private final PlayerEntity player;
 	private final SigilcraftInventory inventory;
 	private final IWorldPosCallable access;
 	private final SigilHolder sigilHolder;
 
-	private final RealIntReferenceHolder currentSigil = new RealIntReferenceHolder();
+	private final RealIntReferenceHolder craftingResult = new RealIntReferenceHolder();
 	private final RealIntReferenceHolder maxPoints = new RealIntReferenceHolder();
 
 	@Nullable private SigilEngravingRecipe currentRecipe;
+
+	private final Set<Sigil> currentSigils = new HashSet<>();
 
 	public StigmaTableContainer(@Nullable ContainerType<?> type, int id, PlayerInventory playerInventory, int size){
 		this(type, id, playerInventory, new SigilTableInventory(size, size), IWorldPosCallable.NULL);
@@ -55,6 +65,7 @@ public abstract class StigmaTableContainer extends Container{
 	public StigmaTableContainer(@Nullable ContainerType<?> type, int id, PlayerInventory playerInventory, SigilcraftInventory inventory, IWorldPosCallable access){
 		super(type, id);
 
+		this.player = playerInventory.player;
 		this.inventory = new DelegateSigilcraftInventory(inventory, this);
 		this.access = access;
 		this.sigilHolder = playerInventory.player.getCapability(Caps.sigilHolder).orElse(EmptySigilHolder.INSTANCE);
@@ -71,7 +82,7 @@ public abstract class StigmaTableContainer extends Container{
 			this.addSlot(new Slot(playerInventory, i1, invStartX()+i1*18, invStartY()+18*3+4));
 
 		this.access.execute((w, p) -> slotChangedCraftingGrid(w));
-		this.currentSigil.register(this::addDataSlot);
+		this.craftingResult.register(this::addDataSlot);
 		this.maxPoints.set(sigilHolder.getMaxPoints());
 		this.maxPoints.register(this::addDataSlot);
 	}
@@ -96,8 +107,18 @@ public abstract class StigmaTableContainer extends Container{
 		return currentRecipe;
 	}
 
-	public int getCurrentSigil(){
-		return currentSigil.get();
+	public int getCraftingResultSigilId(){
+		return craftingResult.get();
+	}
+	private int craftingResultSigilIdCache;
+	@Nullable private Sigil craftingResultSigilCache;
+	@Nullable public Sigil getCraftingResultSigil(){
+		int id = craftingResult.get();
+		if(id!=craftingResultSigilIdCache){
+			craftingResultSigilIdCache = id;
+			craftingResultSigilCache = Sigils.getRegistry().getValue(id);
+		}
+		return craftingResultSigilCache;
 	}
 	public int getMaxPoints(){
 		return maxPoints.get();
@@ -111,11 +132,12 @@ public abstract class StigmaTableContainer extends Container{
 			Sigil sigil = ((SigilEngravingRecipe)recipe).tryEngrave(sigilHolder, inventory);
 			if(sigil!=null){
 				currentRecipe = (SigilEngravingRecipe)recipe;
-				currentSigil.set(Sigils.getRegistry().getID(sigil));
+				craftingResult.set(Sigils.getRegistry().getID(sigil));
 				return;
 			}
 		}
-		currentSigil.set(-1);
+		currentRecipe = null;
+		craftingResult.set(-1);
 	}
 
 	@Override public void slotsChanged(IInventory inv){
@@ -142,7 +164,8 @@ public abstract class StigmaTableContainer extends Container{
 			}else{
 				SigilHolder h = SigilHolder.of(stackAtSlot);
 				if(h!=null&&h.getMaxPoints()>0&&
-						!this.moveItemStackTo(stackAtSlot, (playerInvStart)/2, (playerInvStart)/2+1, false)) return ItemStack.EMPTY;
+						!this.moveItemStackTo(stackAtSlot, (playerInvStart)/2, (playerInvStart)/2+1, false))
+					return ItemStack.EMPTY;
 				if(!this.moveItemStackTo(stackAtSlot, slotIndex<playerInvStart+9 ? playerInvStart+9 : playerInvStart,
 						slotIndex<playerInvStart+9 ? this.slots.size() : playerInvStart+9, true))
 					return ItemStack.EMPTY;
@@ -157,6 +180,28 @@ public abstract class StigmaTableContainer extends Container{
 			if(slotIndex==0) player.drop(s, false);
 		}
 		return stack;
+	}
+
+	private int previousResultSigilId = -1;
+	@Override public void broadcastChanges(){
+		super.broadcastChanges();
+
+		boolean updated = false;
+		if(!currentSigils.equals(sigilHolder.getSigils())){
+			updated = true;
+			currentSigils.clear();
+			currentSigils.addAll(sigilHolder.getSigils());
+		}
+		int sigilId = getCraftingResultSigilId();
+		if(previousResultSigilId!=sigilId){
+			updated = true;
+			previousResultSigilId = sigilId;
+		}
+		if(updated&&player instanceof ServerPlayerEntity){
+			Sigil s = getCraftingResultSigil();
+			SyncSigilScreenMsg msg = new SyncSigilScreenMsg(currentSigils, s!=null ? Collections.singleton(s) : Collections.emptySet());
+			ModNet.CHANNEL.send(PacketDistributor.PLAYER.with(() -> (ServerPlayerEntity)player), msg);
+		}
 	}
 
 	public static class X5 extends StigmaTableContainer{
