@@ -22,6 +22,7 @@ import ttmp.infernoreborn.contents.item.HeartCrystalItem;
 import ttmp.infernoreborn.contents.item.JudgementItem;
 import ttmp.infernoreborn.contents.item.SigilItem;
 import ttmp.infernoreborn.contents.item.TheBookItem;
+import ttmp.infernoreborn.contents.item.ability.AbilityColorPickerItem;
 import ttmp.infernoreborn.contents.item.ability.FixedAbilityItem;
 import ttmp.infernoreborn.contents.item.ability.GeneratorAbilityItem;
 import ttmp.infernoreborn.contents.item.ability.RandomAbilityItem;
@@ -232,6 +233,8 @@ public final class ModItems{
 
 	public static final RegistryObject<Item> SIGIL = REGISTER.register("sigil", () -> new SigilItem(sigils()));
 	public static final RegistryObject<Item> BODY_SIGIL = REGISTER.register("body_sigil", () -> new BodySigilItem(sigils()));
+
+	public static final RegistryObject<Item> ABILITY_COLOR_PICKER = REGISTER.register("ability_color_picker", () -> new AbilityColorPickerItem(new Item.Properties()));
 
 	private static RegistryObject<Item> essence(EssenceType type, EssenceSize size){
 		String id;

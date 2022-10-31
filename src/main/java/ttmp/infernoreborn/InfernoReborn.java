@@ -37,6 +37,7 @@ import ttmp.infernoreborn.capability.EssenceNetProvider;
 import ttmp.infernoreborn.capability.PlayerCapability;
 import ttmp.infernoreborn.capability.ShieldProvider;
 import ttmp.infernoreborn.capability.TickingTaskHandler;
+import ttmp.infernoreborn.client.color.AbilityColorPickerColor;
 import ttmp.infernoreborn.client.color.EssenceHolderBookSparkColor;
 import ttmp.infernoreborn.client.color.GeneratorSparkColor;
 import ttmp.infernoreborn.client.color.PrimalInfernoSparkColor;
@@ -197,6 +198,7 @@ public class InfernoReborn{
 			event.getItemColors().register(new GeneratorSparkColor(), ModItems.GENERATOR_INFERNO_SPARK.get());
 			event.getItemColors().register(new PrimalInfernoSparkColor(), ModItems.PRIMAL_INFERNO_SPARK.get());
 			event.getItemColors().register(new EssenceHolderBookSparkColor(), ModItems.BOOK_OF_THE_UNSPEAKABLE_COMBINED.get(), ModItems.ESSENCE_HOLDER.get());
+			event.getItemColors().register(new AbilityColorPickerColor(), ModItems.ABILITY_COLOR_PICKER.get());
 		}
 
 		@SubscribeEvent

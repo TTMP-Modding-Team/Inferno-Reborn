@@ -11,6 +11,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.ForgeHooks;
+import net.minecraftforge.fml.LogicalSide;
 import net.minecraftforge.fml.network.NetworkDirection;
 import net.minecraftforge.fml.network.NetworkEvent;
 import net.minecraftforge.fml.network.NetworkRegistry;
@@ -19,15 +20,18 @@ import ttmp.infernoreborn.capability.Caps;
 import ttmp.infernoreborn.capability.ClientPlayerCapability;
 import ttmp.infernoreborn.capability.TickingTaskHandler;
 import ttmp.infernoreborn.client.ParticlePlacingTask;
+import ttmp.infernoreborn.client.screen.AbilityColorPickerScreen;
 import ttmp.infernoreborn.client.screen.EssenceHolderScreen;
 import ttmp.infernoreborn.client.screen.ScrapperScreen;
 import ttmp.infernoreborn.client.screen.SigilScreen;
+import ttmp.infernoreborn.contents.ModItems;
 import ttmp.infernoreborn.contents.ability.Ability;
 import ttmp.infernoreborn.contents.ability.holder.ClientAbilityHolder;
 import ttmp.infernoreborn.contents.container.EssenceHolderContainer;
 import ttmp.infernoreborn.contents.container.SigilScrapperContainer;
 import ttmp.infernoreborn.contents.container.StigmaScrapperContainer;
 import ttmp.infernoreborn.contents.container.StigmaTableContainer;
+import ttmp.infernoreborn.contents.item.ability.AbilityColorPickerItem;
 import ttmp.infernoreborn.contents.sigil.Sigil;
 import ttmp.infernoreborn.contents.sigil.holder.SigilHolder;
 import ttmp.infernoreborn.util.EssenceHolder;
@@ -79,6 +83,15 @@ public final class ModNet{
 		CHANNEL.registerMessage(10, SyncScrapperScreenMsg.class,
 				SyncScrapperScreenMsg::write, SyncScrapperScreenMsg::read,
 				Client::handleSyncScrapperScreen, Optional.of(NetworkDirection.PLAY_TO_CLIENT));
+		CHANNEL.registerMessage(11, AbilityColorPickerMsg.class,
+				AbilityColorPickerMsg::write, AbilityColorPickerMsg::read,
+				ModNet::handleOpenAbilityColorPicker);
+	}
+
+	public static void handleOpenAbilityColorPicker(AbilityColorPickerMsg msg, Supplier<NetworkEvent.Context> ctx){
+		if(ctx.get().getDirection().getReceptionSide()==LogicalSide.CLIENT)
+			Client.handleOpenAbilityColorPicker(msg, ctx);
+		else Server.handleOpenAbilityColorPicker(msg, ctx);
 	}
 
 	private static final class Server{
@@ -153,6 +166,21 @@ public final class ModNet{
 						}
 					}
 				}
+			});
+		}
+		public static void handleOpenAbilityColorPicker(AbilityColorPickerMsg msg, Supplier<NetworkEvent.Context> ctx){
+			ctx.get().setPacketHandled(true);
+			ctx.get().enqueueWork(() -> {
+				ServerPlayerEntity sender = ctx.get().getSender();
+				if(sender==null||
+						msg.getInventoryIndex()<0||
+						msg.getInventoryIndex()>=sender.inventory.getContainerSize()) return;
+				ItemStack stack = sender.inventory.getItem(msg.getInventoryIndex());
+				if(stack.isEmpty()||stack.getItem()!=ModItems.ABILITY_COLOR_PICKER.get()) return;
+				AbilityColorPickerItem.set(stack,
+						msg.getPrimaryColor(),
+						msg.getSecondaryColor(),
+						msg.getHighlightColor());
 			});
 		}
 	}
@@ -238,6 +266,17 @@ public final class ModNet{
 				Screen screen = Minecraft.getInstance().screen;
 				if(screen instanceof ScrapperScreen)
 					((ScrapperScreen)screen).sync(msg.getMaxSigils(), msg.getSigils());
+			});
+		}
+
+		public static void handleOpenAbilityColorPicker(AbilityColorPickerMsg msg, Supplier<NetworkEvent.Context> ctx){
+			ctx.get().setPacketHandled(true);
+			ctx.get().enqueueWork(() -> {
+				Minecraft.getInstance().setScreen(new AbilityColorPickerScreen(
+						msg.getInventoryIndex(),
+						msg.getPrimaryColor(),
+						msg.getSecondaryColor(),
+						msg.getHighlightColor()));
 			});
 		}
 	}
