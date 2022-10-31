@@ -14,11 +14,11 @@ public class FaintEnduranceSigil extends AttributeSigil{
 	}
 
 	@Override protected void applyAttributes(SigilSlot slot, ListMultimap<Attribute, AttributeModifier> attributes){
-		addToModifier(attributes, ModAttributes.DAMAGE_RESISTANCE.get(), .025, Operation.ADDITION);
+		addToModifier(attributes, ModAttributes.DAMAGE_RESISTANCE.get(), .025, Operation.MULTIPLY_BASE);
 	}
 
 	@Override protected void createSigilBookEntryContent(SigilPageBuilder builder){
 		builder.effectsFor(SigilSlot.BODY, SigilSlot.ARMOR, SigilSlot.CURIO)
-				.attribute(ModAttributes.DAMAGE_RESISTANCE.get(), .025, Operation.ADDITION);
+				.attribute(ModAttributes.DAMAGE_RESISTANCE.get(), .025, Operation.MULTIPLY_BASE);
 	}
 }
