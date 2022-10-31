@@ -6,6 +6,8 @@ import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.NonNullList;
+import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.text.IFormattableTextComponent;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.Style;
@@ -57,7 +59,13 @@ public class FixedAbilityItem extends AbstractAbilityItem{
 
 	@Override public void appendHoverText(ItemStack stack, @Nullable World world, List<ITextComponent> text, ITooltipFlag flags){
 		for(Ability a : getAbilities(stack)){
-			text.add(a.getName().setStyle(Style.EMPTY.applyFormat(TextFormatting.GRAY)));
+			IFormattableTextComponent t = a.getName().setStyle(Style.EMPTY.applyFormat(TextFormatting.GRAY));
+			if(flags.isAdvanced()){
+				ResourceLocation id = a.getRegistryName();
+				if(id!=null) t.append("  ")
+						.append(new StringTextComponent(id.toString()).withStyle(TextFormatting.DARK_GRAY));
+			}
+			text.add(t);
 		}
 	}
 

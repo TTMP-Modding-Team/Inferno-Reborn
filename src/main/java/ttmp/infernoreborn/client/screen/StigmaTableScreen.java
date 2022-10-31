@@ -117,7 +117,7 @@ public abstract class StigmaTableScreen extends ContainerScreen<StigmaTableConta
 			if(sigilCache==null) return;
 			List<ITextComponent> tooltip = new ArrayList<>();
 			tooltip.add(sigilCache.getName().withStyle(TextFormatting.YELLOW));
-			SigilItem.appendTooltip(sigilCache, tooltip);
+			SigilItem.appendTooltip(tooltip, sigilCache, Minecraft.getInstance().options.advancedItemTooltips);
 			renderWrappedToolTip(matrixStack, tooltip, mouseX, mouseY, font);
 		}
 	}

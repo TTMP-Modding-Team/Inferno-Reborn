@@ -51,10 +51,10 @@ public class SigilItem extends Item{
 
 	@Override public void appendHoverText(ItemStack stack, @Nullable World level, List<ITextComponent> text, ITooltipFlag flags){
 		Sigil sigil = getSigil(stack);
-		if(sigil!=null) appendTooltip(sigil, text);
+		if(sigil!=null) appendTooltip(text, sigil, flags.isAdvanced());
 	}
 
-	public static void appendTooltip(Sigil sigil, List<ITextComponent> text){
+	public static void appendTooltip(List<ITextComponent> text, Sigil sigil, boolean advanced){
 		text.add(new TranslationTextComponent("tooltip.infernoreborn.sigil.points",
 				new StringTextComponent(String.valueOf(sigil.getPoint()))
 						.withStyle(TextFormatting.GOLD))
@@ -69,6 +69,12 @@ public class SigilItem extends Item{
 		}
 		text.add(new TranslationTextComponent("tooltip.infernoreborn.sigil.slots", slots)
 				.withStyle(Style.EMPTY.withColor(ColorUtils.SIGIL_TEXT_COLOR)));
+		if(advanced){
+			ResourceLocation id = sigil.getRegistryName();
+			if(id!=null)
+				text.add(new TranslationTextComponent("tooltip.infernoreborn.sigil.id", id)
+						.withStyle(TextFormatting.DARK_GRAY));
+		}
 	}
 
 	@Nullable public static Sigil getSigil(ItemStack stack){
