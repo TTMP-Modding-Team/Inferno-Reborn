@@ -22,7 +22,6 @@ import top.theillusivec4.curios.api.CuriosApi;
 import top.theillusivec4.curios.api.type.capability.ICuriosItemHandler;
 import top.theillusivec4.curios.api.type.inventory.ICurioStacksHandler;
 import top.theillusivec4.curios.api.type.inventory.IDynamicStackHandler;
-import ttmp.infernoreborn.InfernoReborn;
 import ttmp.infernoreborn.contents.sigil.Sigil;
 import ttmp.infernoreborn.contents.sigil.holder.PlayerSigilHolder;
 import ttmp.infernoreborn.contents.sigil.holder.SigilHolder;
@@ -174,7 +173,6 @@ public class PlayerCapability implements ICapabilitySerializable<CompoundNBT>{
 		boolean sort = false;
 
 		if(this.updateBodyShield){
-			InfernoReborn.LOGGER.debug("Updating body shield");
 			this.updateBodyShield = false;
 			if(this.bodyShield!=null){
 				this.shieldList.remove(this.bodyShield);
@@ -195,7 +193,6 @@ public class PlayerCapability implements ICapabilitySerializable<CompoundNBT>{
 			this.armorCache[i] = stack.copy();
 		}
 		if(updateArmorShield){
-			InfernoReborn.LOGGER.debug("Updating armor shield");
 			boolean[] usedArmor = new boolean[4];
 			Map<String, ActiveShield> newArmorShields = new HashMap<>();
 			for(ArmorShield ass : ArmorShield.getArmorShields()){
@@ -247,7 +244,6 @@ public class PlayerCapability implements ICapabilitySerializable<CompoundNBT>{
 					if(ItemStack.matches(curioCache.getOrDefault(slot, ItemStack.EMPTY), stackInSlot)) continue;
 					if(stackInSlot.isEmpty()) curioCache.remove(slot);
 					else curioCache.put(slot, stackInSlot.copy());
-					InfernoReborn.LOGGER.debug("Updating curio slot "+slot);
 
 					ActiveShield activeShield = curioShields.remove(slot);
 					if(activeShield!=null){

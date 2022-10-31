@@ -4,7 +4,6 @@ import net.minecraft.util.Direction;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.common.util.LazyOptional;
-import ttmp.infernoreborn.InfernoReborn;
 import ttmp.infernoreborn.network.TickingTask;
 
 import javax.annotation.Nullable;
@@ -16,7 +15,6 @@ public class SimpleTickingTaskHandler implements TickingTaskHandler, ICapability
 	private final List<TickingTask> actions = new ArrayList<>();
 
 	@Override public void add(TickingTask task){
-		InfernoReborn.LOGGER.info("Adding tickng task {}", task);
 		this.actions.add(task);
 	}
 

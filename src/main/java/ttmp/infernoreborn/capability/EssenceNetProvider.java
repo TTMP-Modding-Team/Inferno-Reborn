@@ -10,7 +10,6 @@ import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ICapabilitySerializable;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fml.server.ServerLifecycleHooks;
-import ttmp.infernoreborn.InfernoReborn;
 import ttmp.infernoreborn.util.EssenceHolder;
 
 import javax.annotation.Nonnull;
@@ -38,17 +37,15 @@ public interface EssenceNetProvider{
 		return server.overworld().getCapability(Caps.essenceNetProvider).orElse(EMPTY);
 	}
 
-	final class Impl implements EssenceNetProvider, ICapabilitySerializable<ListNBT> {
+	final class Impl implements EssenceNetProvider, ICapabilitySerializable<ListNBT>{
 		private static final int NET_SIZE_LIMIT = 100000000;
 
 		private final Int2ObjectMap<EssenceHolder> essenceHolders = new Int2ObjectOpenHashMap<>();
-
 
 		@Override public int assignNew(){
 			if(essenceHolders.size()>=NET_SIZE_LIMIT) return 0;
 			int size = essenceHolders.size()+1;
 			essenceHolders.put(size, new EssenceHolder());
-			InfernoReborn.LOGGER.info("New essence holder network assigned: #{}", size);
 			return size;
 		}
 

@@ -10,7 +10,6 @@ import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.common.util.LazyOptional;
-import ttmp.infernoreborn.InfernoReborn;
 import ttmp.infernoreborn.capability.Caps;
 import ttmp.infernoreborn.config.ModCfg;
 import ttmp.infernoreborn.contents.Sigils;
@@ -23,7 +22,6 @@ import java.util.Collections;
 import java.util.LinkedHashSet;
 import java.util.Objects;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 public class ItemSigilHolder implements SigilHolder, ICapabilityProvider{
 	private static final String SIGIL_NBT = "InfernoRebornSigil";
@@ -70,7 +68,6 @@ public class ItemSigilHolder implements SigilHolder, ICapabilityProvider{
 			}
 		}else{
 			CompoundNBT tag = this.stack.getOrCreateTag();
-			String tagBefore = tag.toString();
 			ListNBT list = tag.getList(SIGIL_NBT, Constants.NBT.TAG_STRING);
 
 			if(list.isEmpty()){
@@ -82,15 +79,13 @@ public class ItemSigilHolder implements SigilHolder, ICapabilityProvider{
 				int si = 0;
 				for(int i = 0; i<list.size(); i++){
 					if(si>=sigils.length) list.remove(i--);
-					else if(list.getString(i).equals(Objects.requireNonNull(sigils[si].getRegistryName()).toString())) si++;
+					else if(list.getString(i).equals(Objects.requireNonNull(sigils[si].getRegistryName()).toString()))
+						si++;
 					else list.remove(i--); // Assume it's deleted
 				}
 				for(; si<sigils.length; si++)
 					list.add(StringNBT.valueOf(Objects.requireNonNull(sigils[si].getRegistryName()).toString()));
 			}
-			InfernoReborn.LOGGER.debug("Shit {}\n{}\n{}", tagBefore, tag, sigils.stream()
-					.map(s -> Objects.requireNonNull(s.getRegistryName()).toString())
-					.collect(Collectors.joining(", ")));
 		}
 	}
 
