@@ -10,7 +10,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraft.util.text.TextFormatting;
 import ttmp.infernoreborn.contents.ModItems;
 import ttmp.infernoreborn.contents.container.StigmaTableContainer;
 import ttmp.infernoreborn.contents.item.SigilItem;
@@ -19,7 +19,8 @@ import ttmp.infernoreborn.network.EngraveBodySigilMsg;
 import ttmp.infernoreborn.network.ModNet;
 
 import javax.annotation.Nullable;
-import java.util.Collections;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 
 import static ttmp.infernoreborn.InfernoReborn.MODID;
@@ -113,11 +114,11 @@ public abstract class StigmaTableScreen extends ContainerScreen<StigmaTableConta
 		}
 
 		@Override public void renderToolTip(MatrixStack matrixStack, int mouseX, int mouseY){
-			if(sigilCache!=null) renderWrappedToolTip(matrixStack,
-					Collections.singletonList(new TranslationTextComponent("")),
-					mouseX,
-					mouseY,
-					font);
+			if(sigilCache==null) return;
+			List<ITextComponent> tooltip = new ArrayList<>();
+			tooltip.add(sigilCache.getName().withStyle(TextFormatting.YELLOW));
+			SigilItem.appendTooltip(sigilCache, tooltip);
+			renderWrappedToolTip(matrixStack, tooltip, mouseX, mouseY, font);
 		}
 	}
 

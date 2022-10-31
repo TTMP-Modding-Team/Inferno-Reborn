@@ -51,7 +51,10 @@ public class SigilItem extends Item{
 
 	@Override public void appendHoverText(ItemStack stack, @Nullable World level, List<ITextComponent> text, ITooltipFlag flags){
 		Sigil sigil = getSigil(stack);
-		if(sigil==null) return;
+		if(sigil!=null) appendTooltip(sigil, text);
+	}
+
+	public static void appendTooltip(Sigil sigil, List<ITextComponent> text){
 		text.add(new TranslationTextComponent("tooltip.infernoreborn.sigil.points",
 				new StringTextComponent(String.valueOf(sigil.getPoint()))
 						.withStyle(TextFormatting.GOLD))

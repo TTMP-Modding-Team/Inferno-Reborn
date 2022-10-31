@@ -8,6 +8,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Rarity;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.event.entity.living.LivingAttackEvent;
 import net.minecraftforge.registries.ForgeRegistryEntry;
@@ -63,7 +64,7 @@ public class Sigil extends ForgeRegistryEntry<Sigil>{
 		return "sigil."+n.getNamespace()+"."+n.getPath();
 	}
 
-	public ITextComponent getName(){
+	public TextComponent getName(){
 		return new TranslationTextComponent(getUnlocalizedName());
 	}
 
