@@ -193,6 +193,8 @@ public interface Dynamic{
 	}
 
 	Constructor<Among, Dynamic> DYNAMIC = ConstructRule.<Dynamic>make(_b -> _b
+			.primitive("entity", () -> DynamicConstants.ENTITY_TYPE)
+			.primitive("entityIsMob", () -> DynamicConstants.ENTITY_IS_MOB)
 			.primitive((p, reportHandler) -> {
 				Boolean bool = Constructors.BOOL.construct(p, null);
 				if(bool!=null) return constantBool(bool);
@@ -231,8 +233,8 @@ public interface Dynamic{
 			.list("range", intBiOp(Dynamic::intRange))
 			.list("if", ConditionedConstructor.listCondition(c -> c.minSize(3), (l, r) -> {
 				DynamicBool condition = Dynamic.DYNAMIC_BOOL.construct(l.get(0), r);
-				Dynamic ifThen = Dynamic.DYNAMIC.construct(l.get(0), r);
-				Dynamic elseThen = Dynamic.DYNAMIC.construct(l.get(0), r);
+				Dynamic ifThen = Dynamic.DYNAMIC.construct(l.get(1), r);
+				Dynamic elseThen = Dynamic.DYNAMIC.construct(l.get(2), r);
 				if(condition==null||ifThen==null||elseThen==null) return null;
 				if(ifThen instanceof DynamicInt&&elseThen instanceof DynamicInt)
 					return intIf(condition, (DynamicInt)ifThen, (DynamicInt)elseThen);

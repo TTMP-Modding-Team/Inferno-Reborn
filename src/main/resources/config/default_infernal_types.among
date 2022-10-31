@@ -3,7 +3,7 @@ use abilities
 { Weight: 100 } // Empty
 
 common {
-  Weight: 20
+  Weight: if(entityIsMob&&entity!="creeper", 20, 0)
   Effects: [
     Particle [ FFFFFF ]
   ]
@@ -30,7 +30,7 @@ common {
 }
 
 uncommon {
-  Weight: 10
+  Weight: if(entityIsMob&&entity!="creeper", 10, 0)
   Effects: [
     Particle [ FF00FF, 00FFFF, FFFF00 ]
   ]
@@ -64,7 +64,7 @@ uncommon {
 }
 
 rare {
-  Weight: 5
+  Weight: if(entityIsMob&&entity!="creeper", 5, 0)
   Effects: [
     Particle [ FF00FF ]
   ]
@@ -91,7 +91,7 @@ rare {
 }
 
 epic {
-  Weight: 1
+  Weight: if(entityIsMob&&entity!="creeper", 1, 0)
   Effects: [
     Particle [ 0 ]
   ]

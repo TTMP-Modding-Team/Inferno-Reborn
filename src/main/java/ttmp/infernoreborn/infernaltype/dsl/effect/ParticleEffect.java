@@ -23,7 +23,7 @@ public final class ParticleEffect implements InfernalEffect{
 	}
 
 	@Override public String toString(){
-		return "Particle["+Arrays.stream(colors).mapToObj(Integer::toHexString).collect(Collectors.joining(", "))+']';
+		return "Particle["+Arrays.stream(colors).mapToObj(i -> String.format("%06X", i)).collect(Collectors.joining(", "))+']';
 	}
 
 	@Override public void apply(InfernalGenContext context){

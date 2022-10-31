@@ -5,7 +5,6 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.ai.attributes.Attribute;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.entity.ai.attributes.ModifiableAttributeInstance;
-import net.minecraft.entity.monster.IMob;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.ListNBT;
 import net.minecraft.util.Direction;
@@ -149,11 +148,8 @@ public class ServerAbilityHolder implements AbilityHolder, ICapabilitySerializab
 	@Override
 	public void update(LivingEntity entity){
 		if(generateAbility){
-			if(entity instanceof IMob){
-				clear();
-				InfernalTypes.generate(entity, this);
-			}
 			generateAbility = false;
+			InfernalTypes.generate(entity, this);
 		}
 
 		if(!addedAbilities.isEmpty()||!removedAbilities.isEmpty()){

@@ -25,6 +25,6 @@ public final class DynamicConstant implements Dynamic{
 	}
 
 	@Override public String toString(){
-		return "{"+constant+"}";
+		return "\""+constant+'"';
 	}
 }
