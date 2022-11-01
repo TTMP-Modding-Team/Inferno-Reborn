@@ -33,43 +33,45 @@ public class AbilityColorPickerItem extends Item{
 			ModNet.CHANNEL.send(PacketDistributor.PLAYER.with(() -> (ServerPlayerEntity)player),
 					new AbilityColorPickerMsg(hand==Hand.MAIN_HAND ?
 							player.inventory.selected : player.inventory.items.size()+player.inventory.armor.size(),
-							getPrimaryColor(stack, 0xFFFFFF),
-							getSecondaryColor(stack, 0xFFFFFF),
-							getHighlightColor(stack, 0xFFFFFF)));
+							getPrimaryColor(stack),
+							getSecondaryColor(stack),
+							getHighlightColor(stack)));
 		}
 		return ActionResult.sidedSuccess(player.getItemInHand(hand), level.isClientSide);
 	}
 
 	@Override public void appendHoverText(ItemStack stack, @Nullable World level, List<ITextComponent> tooltip, ITooltipFlag flag){
-		append(tooltip, getPrimaryColor(stack, 0xFFFFFF), "Primary");
-		append(tooltip, getSecondaryColor(stack, 0xFFFFFF), "Secondary");
-		append(tooltip, getHighlightColor(stack, 0xFFFFFF), "Highlight");
+		int primaryColor = getPrimaryColor(stack)&0xFFFFFF;
+		int secondaryColor = getSecondaryColor(stack)&0xFFFFFF;
+		int highlightColor = getHighlightColor(stack)&0xFFFFFF;
+		if(primaryColor!=0xFFFFFF) append(tooltip, primaryColor, "Primary");
+		if(secondaryColor!=0xFFFFFF) append(tooltip, secondaryColor, "Secondary");
+		if(primaryColor!=highlightColor) append(tooltip, highlightColor, "Highlight");
 	}
 
 	private static void append(List<ITextComponent> tooltip, int color, String name){
-		color &= 0xFFFFFF;
-		if(color!=0xFFFFFF) tooltip.add(new StringTextComponent(name+": ")
+		tooltip.add(new StringTextComponent(name+": ")
 				.withStyle(TextFormatting.GRAY)
 				.append(new StringTextComponent(String.format("#%06x", color))
 						.withStyle(Style.EMPTY.withColor(Color.fromRgb(color)))));
 	}
 
-	public static int getPrimaryColor(ItemStack stack, int fallback){
+	public static int getPrimaryColor(ItemStack stack){
 		CompoundNBT tag = stack.getTag();
 		return tag!=null&&tag.contains("PrimaryColor", Constants.NBT.TAG_INT) ?
-				tag.getInt("PrimaryColor") : fallback;
+				tag.getInt("PrimaryColor") : 0xFFFFFF;
 	}
 
-	public static int getSecondaryColor(ItemStack stack, int fallback){
+	public static int getSecondaryColor(ItemStack stack){
 		CompoundNBT tag = stack.getTag();
 		return tag!=null&&tag.contains("SecondaryColor", Constants.NBT.TAG_INT) ?
-				tag.getInt("SecondaryColor") : fallback;
+				tag.getInt("SecondaryColor") : 0xFFFFFF;
 	}
 
-	public static int getHighlightColor(ItemStack stack, int fallback){
+	public static int getHighlightColor(ItemStack stack){
 		CompoundNBT tag = stack.getTag();
 		return tag!=null&&tag.contains("HighlightColor", Constants.NBT.TAG_INT) ?
-				tag.getInt("HighlightColor") : fallback;
+				tag.getInt("HighlightColor") : getPrimaryColor(stack);
 	}
 
 	public static void set(ItemStack stack, int primary, int secondary, int highlight){
@@ -78,8 +80,11 @@ public class AbilityColorPickerItem extends Item{
 		highlight &= 0xFFFFFF;
 		if(primary==0xFFFFFF&&secondary==0xFFFFFF&&highlight==0xFFFFFF) return;
 		CompoundNBT tag = stack.getOrCreateTag();
-		tag.putInt("PrimaryColor", primary);
-		tag.putInt("SecondaryColor", secondary);
-		tag.putInt("HighlightColor", highlight);
+		if(primary!=0xFFFFFF) tag.putInt("PrimaryColor", primary);
+		else tag.remove("PrimaryColor");
+		if(secondary!=0xFFFFFF) tag.putInt("SecondaryColor", secondary);
+		else tag.remove("SecondaryColor");
+		if(highlight!=primary) tag.putInt("HighlightColor", highlight);
+		else tag.remove("HighlightColor");
 	}
 }
