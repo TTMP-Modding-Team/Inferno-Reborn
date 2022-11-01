@@ -49,8 +49,8 @@ public class AbilityColorPickerItem extends Item{
 	private static void append(List<ITextComponent> tooltip, int color, String name){
 		color &= 0xFFFFFF;
 		if(color!=0xFFFFFF) tooltip.add(new StringTextComponent(name+": ")
-				.withStyle(TextFormatting.DARK_GRAY)
-				.append(new StringTextComponent(String.format("%06x", color))
+				.withStyle(TextFormatting.GRAY)
+				.append(new StringTextComponent(String.format("#%06x", color))
 						.withStyle(Style.EMPTY.withColor(Color.fromRgb(color)))));
 	}
 

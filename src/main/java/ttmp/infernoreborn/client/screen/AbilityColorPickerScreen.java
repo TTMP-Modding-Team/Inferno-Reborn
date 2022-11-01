@@ -15,6 +15,8 @@ import ttmp.infernoreborn.network.ModNet;
 
 import javax.annotation.Nullable;
 import java.util.function.IntConsumer;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class AbilityColorPickerScreen extends Screen{
 	private final int inventoryIndex;
@@ -46,9 +48,9 @@ public class AbilityColorPickerScreen extends Screen{
 		highlight = rgbField(20+5+20+5, highlight, originalHighlightColor, value -> this.highlightColor = value);
 		addButton(new Button(width-50, 0, 64, 32, new StringTextComponent("Apply"), btn -> {
 			try{
-				int primaryColor = color(primary.getValue().trim());
-				int secondaryColor = color(secondary.getValue().trim());
-				int highlightColor = color(highlight.getValue().trim());
+				int primaryColor = color(primary.getValue());
+				int secondaryColor = color(secondary.getValue());
+				int highlightColor = color(highlight.getValue());
 				ModNet.CHANNEL.sendToServer(new AbilityColorPickerMsg(inventoryIndex,
 						primaryColor, secondaryColor, highlightColor));
 				this.minecraft.player.closeContainer();
@@ -56,11 +58,12 @@ public class AbilityColorPickerScreen extends Screen{
 		}));
 	}
 
+	private static final Pattern regex = Pattern.compile("#?([0-9a-fA-F]{6})");
+
 	private TextFieldWidget rgbField(int y, @Nullable TextFieldWidget previous, int initialColor, IntConsumer onUpdate){
 		TextFieldWidget widget = new TextFieldWidget(font, 0, y, 60, 12, previous, StringTextComponent.EMPTY);
 		if(previous==null) widget.setValue(String.format("%06x", initialColor));
 		widget.setTextColor(-1);
-		widget.setMaxLength(6);
 		widget.setResponder(s -> {
 			try{
 				onUpdate.accept(color(s));
@@ -74,9 +77,9 @@ public class AbilityColorPickerScreen extends Screen{
 
 	private static int color(String s){
 		if(Strings.isBlank(s)) return 0xFFFFFF;
-		s = s.trim();
-		if(s.length()!=6) throw new NumberFormatException();
-		return Integer.parseUnsignedInt(s, 16);
+		Matcher m = regex.matcher(s.trim());
+		if(m.matches()) return Integer.parseUnsignedInt(m.group(1), 16);
+		else throw new NumberFormatException();
 	}
 
 	@Override public void tick(){
