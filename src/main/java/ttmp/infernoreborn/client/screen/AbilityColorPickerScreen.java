@@ -57,8 +57,8 @@ public class AbilityColorPickerScreen extends Screen{
 	}
 
 	private TextFieldWidget rgbField(int y, @Nullable TextFieldWidget previous, int initialColor, IntConsumer onUpdate){
-		TextFieldWidget widget = new TextFieldWidget(font, 0, y, 60, 12, previous,
-				new StringTextComponent(String.format("%06x", initialColor)));
+		TextFieldWidget widget = new TextFieldWidget(font, 0, y, 60, 12, previous, StringTextComponent.EMPTY);
+		if(previous==null) widget.setValue(String.format("%06x", initialColor));
 		widget.setTextColor(-1);
 		widget.setMaxLength(6);
 		widget.setResponder(s -> {

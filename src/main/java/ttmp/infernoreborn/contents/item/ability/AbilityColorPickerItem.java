@@ -8,8 +8,11 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
+import net.minecraft.util.text.Color;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.util.text.Style;
+import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.fml.network.PacketDistributor;
@@ -38,14 +41,17 @@ public class AbilityColorPickerItem extends Item{
 	}
 
 	@Override public void appendHoverText(ItemStack stack, @Nullable World level, List<ITextComponent> tooltip, ITooltipFlag flag){
-		for(int c : new int[]{
-				getPrimaryColor(stack, 0xFFFFFF),
-				getSecondaryColor(stack, 0xFFFFFF),
-				getHighlightColor(stack, 0xFFFFFF)
-		}){
-			c &= 0xFFFFFF;
-			if(c!=0xFFFFFF) tooltip.add(new StringTextComponent(String.format("%06x", c)));
-		}
+		append(tooltip, getPrimaryColor(stack, 0xFFFFFF), "Primary");
+		append(tooltip, getSecondaryColor(stack, 0xFFFFFF), "Secondary");
+		append(tooltip, getHighlightColor(stack, 0xFFFFFF), "Highlight");
+	}
+
+	private static void append(List<ITextComponent> tooltip, int color, String name){
+		color &= 0xFFFFFF;
+		if(color!=0xFFFFFF) tooltip.add(new StringTextComponent(name+": ")
+				.withStyle(TextFormatting.DARK_GRAY)
+				.append(new StringTextComponent(String.format("%06x", color))
+						.withStyle(Style.EMPTY.withColor(Color.fromRgb(color)))));
 	}
 
 	public static int getPrimaryColor(ItemStack stack, int fallback){
