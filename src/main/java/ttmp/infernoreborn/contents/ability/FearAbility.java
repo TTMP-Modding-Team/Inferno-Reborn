@@ -16,7 +16,7 @@ public final class FearAbility{
 
 
 	public static Ability diabolo(){
-		return new Ability(new Ability.Properties(0x4B0000, 0x4B0000)
+		return new Ability(new Ability.Properties(0x710020, 0xae0b0b, 0xae0b0b)
 				.addSkill(10, 600, (entity, holder) -> {
 					List<LivingEntity> entityList = LivingUtils.getLivingEntitiesInCylinder(entity, 12, 3).stream()
 							.filter((e) -> !(e instanceof MobEntity))

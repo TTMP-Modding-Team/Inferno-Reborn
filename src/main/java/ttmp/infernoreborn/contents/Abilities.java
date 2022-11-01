@@ -125,12 +125,12 @@ public final class Abilities{
 	//////////////////////////////////////////////////
 
 	public static final RegistryObject<Ability> BULLETPROOF = REGISTER.register("bulletproof", () ->
-			new Ability(new Ability.Properties(0xC8C8C8, 0xC8C8C8)
+			new Ability(new Ability.Properties(0x827b7a, 0x302c2b, 0xb89f9a)
 					.addAttribute(ModAttributes.RANGED_DAMAGE_RESISTANCE.get(), "fa9b6063-66b7-4bbd-a4d8-1d35a088fa92", .8, Operation.MULTIPLY_BASE)
 					.drops(EssenceType.METAL, 9)));
 
 	public static final RegistryObject<Ability> BLASTPROOF = REGISTER.register("blastproof", () ->
-			new Ability(new Ability.Properties(0xC8C8C8, 0xC8C8C8)
+			new Ability(new Ability.Properties(0x7f8f7b, 0x303d2c, 0xafbfaa)
 					.onHit((entity, holder, event) -> {
 						if(event.getSource().isExplosion()) event.setAmount(event.getAmount()*.2f);
 					}).drops(EssenceType.WATER, 9)));
@@ -140,7 +140,7 @@ public final class Abilities{
 	public static final RegistryObject<Ability> MAGIC_VETERAN = REGISTER.register("magic_veteran", VeteranAbility::magicVeteran);
 
 	public static final RegistryObject<Ability> VAMPIRE = REGISTER.register("vampire", () ->
-			new Ability(new Ability.Properties(0x800000, 0x800000)
+			new Ability(new Ability.Properties(0x110000, 0x410d0d, 0xcd0202)
 					.onHit((entity, holder, event) -> {
 						float amount = event.getAmount();
 						if(entity!=event.getSource().getDirectEntity()) amount /= 2;
@@ -150,7 +150,7 @@ public final class Abilities{
 					.drops(EssenceType.DEATH, 5)));
 
 	public static final RegistryObject<Ability> SURVIVAL_EXPERT = REGISTER.register("survival_expert", () ->
-			new Ability(new Ability.Properties(0x2BB826, 0x00000)
+			new Ability(new Ability.Properties(0x85cd30, 0x164d07)
 					.onUpdate((entity, holder) -> {
 						if(entity.isOnFire()) entity.clearFire();
 						if(!entity.getActiveEffects().isEmpty()){
@@ -173,7 +173,7 @@ public final class Abilities{
 					.drops(EssenceType.WATER, 2)));
 
 	public static final RegistryObject<Ability> THE_BRAIN = REGISTER.register("the_brain", () ->
-			new Ability(new Ability.Properties(0x00, 0x00)
+			new Ability(new Ability.Properties(0xf5bfa4, 0x992614, 0xf2bcb3)
 					.addSkill(10, 300, (entity, holder) -> {
 						if(entity.getLastHurtByMob()==null) return false;
 						for(LivingEntity e : LivingUtils.getLivingEntitiesInCylinder(entity, 32, 10))
@@ -185,27 +185,27 @@ public final class Abilities{
 					.drops(EssenceType.DEATH, 6)));
 
 	public static final RegistryObject<Ability> TOUGHNESS = REGISTER.register("toughness", () ->
-			new Ability(new Ability.Properties(0x3F3F3F, 0x003FCF)
+			new Ability(new Ability.Properties(0xd8d8d8, 0xb91955, 0xf4f4f4)
 					.addAttribute(Attributes.MOVEMENT_SPEED, "ec3aa988-af1f-4ae9-8cf6-b1d5e62addaa", -0.2, Operation.MULTIPLY_TOTAL)
 					.addAttribute(ModAttributes.DAMAGE_RESISTANCE.get(), "9c03cdb9-bb2d-4d03-8766-26632b0966df", .2, Operation.MULTIPLY_BASE)
 					.drops(EssenceType.EARTH, 5)
 					.drops(EssenceType.WATER, 5)));
 
 	public static final RegistryObject<Ability> SWIFTNESS = REGISTER.register("swiftness", () ->
-			new Ability(new Ability.Properties(0x003FCF, 0x3F3F3F)
+			new Ability(new Ability.Properties(0xd8d8d8, 0x1061b3, 0xf4f4f4)
 					.addAttribute(Attributes.MOVEMENT_SPEED, "0759550c-3e02-4dee-89b8-2d490347da5e", 0.3, Operation.MULTIPLY_TOTAL)
 					.addAttribute(ModAttributes.DAMAGE_RESISTANCE.get(), "3db07150-8675-4c9e-acf1-c35100cf76b8", -.1, Operation.MULTIPLY_BASE)
 					.drops(EssenceType.AIR, 5)
 					.drops(EssenceType.FIRE, 5)));
 
 	public static final RegistryObject<Ability> SENTRY = REGISTER.register("sentry", () ->
-			new Ability(new Ability.Properties(0x8000, 0x80000)
+			new Ability(new Ability.Properties(0xb91c07, 0x454545, 0x858585)
 					.onUpdate((entity, holder) -> holder.cooldown().decreaseAll(4))
 					.addAttribute(Attributes.MOVEMENT_SPEED, "41669826-6fde-4dc6-b67f-28a28a1f2dbb", -0.9, Operation.MULTIPLY_BASE)
 					.drops(EssenceType.EARTH, 9)));
 
 	public static final RegistryObject<Ability> EVIOLITE_CHANSEY = REGISTER.register("eviolite_chansey", () ->
-			new Ability(new Ability.Properties(0xFFCFF, 0xFFCFF)
+			new Ability(new Ability.Properties(0xff92be, 0xb62993, 0xffb7f2)
 					.addAttribute(Attributes.ATTACK_DAMAGE, "ba20b5e3-e189-444f-9233-c710d7ac810e", -0.8, Operation.MULTIPLY_TOTAL)
 					.addAttribute(Attributes.MAX_HEALTH, "f72d69be-39ff-4dbc-b938-ff0740ad528c", 1.5, Operation.MULTIPLY_TOTAL)
 					.addAttribute(ModAttributes.DAMAGE_RESISTANCE.get(), "41bd35ff-0f02-434c-81a2-be6791739e00", .4, Operation.MULTIPLY_BASE)
@@ -213,7 +213,7 @@ public final class Abilities{
 					.drops(EssenceType.WATER, 5)));
 
 	public static final RegistryObject<Ability> POISONED_MIND = REGISTER.register("poisoned_mind", () ->
-			new Ability(new Ability.Properties(0x00, 0x00)
+			new Ability(new Ability.Properties(0xea0ed8, 0x6eeaa8, 0xa3e1f3)
 					.onDeath((entity, holder, event) -> {
 						Potion[] potionArray = {Potions.SLOWNESS, Potions.STRONG_SLOWNESS, Potions.LONG_SLOWNESS, Potions.HARMING, Potions.STRONG_HARMING, Potions.POISON, Potions.LONG_POISON, Potions.STRONG_POISON, Potions.WEAKNESS, Potions.LONG_WEAKNESS};
 						PotionEntity potionEntity = new PotionEntity(entity.level, entity);
@@ -226,7 +226,7 @@ public final class Abilities{
 	public static final RegistryObject<Ability> SLIME_BLOOD = REGISTER.register("slime_blood", SlimeBloodAbility::slimeBlood);
 
 	public static final RegistryObject<Ability> TOUCH_OF_MIDAS = REGISTER.register("touch_of_midas", () ->
-			new Ability(new Ability.Properties(0xFDF55F, 0xDD9515)
+			new Ability(new Ability.Properties(0xf69c0e, 0xf0d93e, 0xf7e468)
 					.onHit((entity, holder, event) -> {
 						if(entity!=event.getSource().getDirectEntity()) return;
 						LivingEntity target = event.getEntityLiving();
@@ -251,14 +251,14 @@ public final class Abilities{
 	//////////////////////////////////////////////////
 
 	public static final RegistryObject<Ability> CROWD_CONTROL = REGISTER.register("crowd_control", () ->
-			new Ability(new Ability.Properties(0x000000, 0x0000000)
+			new Ability(new Ability.Properties(0x8a38df, 0x870059, 0x870059)
 					.onHit((entity, holder, event) -> {
 						event.getEntityLiving().addEffect(new EffectInstance(Effects.LEVITATION, 100));
 						LivingUtils.addStackEffect(event.getEntityLiving(), Effects.DIG_SLOWDOWN, 100, 0, 1, 5, true, true);
 					}).drops(EssenceType.DOMINANCE, 4*9)));
 
 	public static final RegistryObject<Ability> DESTINY_BOND = REGISTER.register("destiny_bond", () ->
-			new Ability(new Ability.Properties(0x0000, 0x0000)
+			new Ability(new Ability.Properties(0x8a38df, 0x2b0981, 0x2b0981)
 					.onDeath((entity, holder, event) -> {
 						Entity target = event.getSource().getEntity();
 						if(!(target instanceof LivingEntity)) return;
@@ -267,23 +267,24 @@ public final class Abilities{
 					.drops(EssenceType.DEATH, 12)));
 
 	public static final RegistryObject<Ability> FOCUS = REGISTER.register("focus", () ->
-			new Ability(new Ability.Properties(0x00, 0x00)
+			new Ability(new Ability.Properties(0x693a38, 0xe47512, 0xa0a0a0)
 					.onHurt((entity, holder, event) -> {
 						if(event.getSource().getEntity() instanceof LivingEntity){
 							LivingEntity target = (LivingEntity)event.getSource().getEntity();
-							if(target!=null&&target==event.getSource().getDirectEntity()) event.setAmount(event.getAmount()*.5f);
+							if(target!=null&&target==event.getSource().getDirectEntity())
+								event.setAmount(event.getAmount()*.5f);
 						}
 					}).drops(EssenceType.BLOOD, 9)
 					.drops(EssenceType.WATER, 9)
 					.drops(EssenceType.FIRE, 9)));
 
 	public static final RegistryObject<Ability> GUTS = REGISTER.register("guts", () ->
-			new Ability(new Ability.Properties(0xB24100, 0xB24100)
+			new Ability(new Ability.Properties(0x494949, 0xab381e, 0xa0a0a0)
 					.onHurt((entity, holder, event) -> LivingUtils.addStackEffect(entity, Effects.DAMAGE_RESISTANCE, 60, 0, 1, 3))
 					.drops(EssenceType.METAL, 4*9)));
 
 	public static final RegistryObject<Ability> HEALTH_KIT = REGISTER.register("health_kit", () ->
-			new Ability(new Ability.Properties(0x00, 0x00)
+			new Ability(new Ability.Properties(0xf54343, 0xc3c3c3)
 					.addSkill(10, 500, (entity, holder) -> {
 						if(entity.getHealth()+10>=entity.getMaxHealth()) return false;
 						entity.heal(10);
@@ -293,7 +294,7 @@ public final class Abilities{
 					.drops(EssenceType.WATER, 9)));
 
 	public static final RegistryObject<Ability> TELEKINESIS = REGISTER.register("telekinesis", () ->
-			new Ability(new Ability.Properties(0xB71100, 0xB71100)
+			new Ability(new Ability.Properties(0xb71100, 0x5c0c0c, 0xe70000)
 					.addTargetedSkill(5, 250, (entity, holder, target) -> {
 						double relX = (entity.getX()-target.getX());
 						double relZ = (entity.getZ()-target.getZ());
@@ -308,7 +309,7 @@ public final class Abilities{
 					.drops(EssenceType.WATER, 2*9)));
 
 	public static final RegistryObject<Ability> AETHER_WALKER = REGISTER.register("aether_walker", () ->
-			new Ability(new Ability.Properties(0xC0E4FF, 0xC0E4FF)
+			new Ability(new Ability.Properties(0xc0e4ff, 0xe3f3ff, 0xcaecfa)
 					.addTargetedSkill(0, 7, (entity, holder, target) -> {
 						double relX = (target.getX()-entity.getX());
 						double relZ = (target.getZ()-entity.getZ());
@@ -321,7 +322,7 @@ public final class Abilities{
 					.drops(EssenceType.AIR, 2*9)));
 
 	public static final RegistryObject<Ability> THUNDERBOLT = REGISTER.register("thunderbolt", () ->
-			new Ability(new Ability.Properties(0xFFFF00, 0xFFFF00)
+			new Ability(new Ability.Properties(0xffeb7e, 0xffcd03, 0xfff9bb)
 					.addTargetedSkill(10, 400, (entity, holder, target) -> {
 						TickingTaskHandler h = TickingTaskHandler.of(target.level);
 						if(h==null) return false;
@@ -344,13 +345,14 @@ public final class Abilities{
 						return true;
 					})
 					.onAttacked((entity, holder, event) -> {
-						if(event.getSource().isFire()||event.getSource()==DamageSource.LIGHTNING_BOLT) event.setCanceled(true);
+						if(event.getSource().isFire()||event.getSource()==DamageSource.LIGHTNING_BOLT)
+							event.setCanceled(true);
 					}).drops(EssenceType.MAGIC, 2*9)
 					.drops(EssenceType.FIRE, 9)
 					.drops(EssenceType.AIR, 9)));
 
 	public static final RegistryObject<Ability> THE_RED = REGISTER.register("the_red", () ->
-			new Ability(new Ability.Properties(0xC80000, 0xC80000)
+			new Ability(new Ability.Properties(0xc80000, 0xc80000)
 					.addAttribute(Attributes.MOVEMENT_SPEED, "33a6142f-5b04-490c-85ce-11cc79510f9a", 2, Operation.MULTIPLY_BASE)
 					.addAttribute(ModAttributes.FALLING_DAMAGE_RESISTANCE.get(), "5cb842c2-beb3-4da0-b4c6-aa0323fe292a", 1, Operation.MULTIPLY_BASE)
 					.drops(EssenceType.BLOOD, 2*9)
@@ -367,7 +369,7 @@ public final class Abilities{
 					}).drops(EssenceType.METAL, 4*9)));
 
 	public static final RegistryObject<Ability> BATTLE_MOMENTUM = REGISTER.register("battle_momentum", () ->
-			new Ability(new Ability.Properties(0x6041F8, 0x6041F8)
+			new Ability(new Ability.Properties(0x5128d5, 0x6041f8, 0x6041f8)
 					.onAttacked((entity, holder, event) -> holder.cooldown().decreaseAll(10))
 					.onHit((entity, holder, event) -> holder.cooldown().decreaseAll(20))
 					.drops(EssenceType.FIRE, 2*9)
@@ -375,7 +377,7 @@ public final class Abilities{
 					.drops(EssenceType.DOMINANCE, 9)));
 
 	public static final RegistryObject<Ability> EVIL_TRICK = REGISTER.register("evil_trick", () ->
-			new Ability(new Ability.Properties(0x191919, 0x191919)
+			new Ability(new Ability.Properties(0x1d1d1d, 0x750000)
 					.addTargetedSkill(5, 50, (entity, holder, target) -> {
 						if(!(entity.getHealth()/entity.getMaxHealth()<0.4)) return false;
 						boolean succeed = false;
@@ -392,7 +394,7 @@ public final class Abilities{
 					.drops(EssenceType.DOMINANCE, 9)));
 
 	public static final RegistryObject<Ability> CONDITIONAL_REFLEX = REGISTER.register("conditional_reflex", () ->
-			new Ability(new Ability.Properties(0x0, 0x0)
+			new Ability(new Ability.Properties(0xe0fa87, 0x0d1814, 0xe5e3e2)
 					.withCooldownTicket((ticket, properties) -> properties.onAttacked((entity, holder, event) -> {
 						LivingEntity target = LivingUtils.getTarget(entity);
 						if(target!=null){
@@ -417,7 +419,7 @@ public final class Abilities{
 	//////////////////////////////////////////////////
 
 	public static final RegistryObject<Ability> EMPERORS_AURA = REGISTER.register("emperors_aura", () ->
-			new Ability(new Ability.Properties(0xDCB600, 0xDCB600)
+			new Ability(new Ability.Properties(0xb20000, 0xdcb600, 0xdcb600)
 					.onHit((entity, holder, event) -> {
 						for(LivingEntity e : LivingUtils.getLivingEntitiesInCylinder(entity, 16, 10))
 							if(e.isAlive()&&!(e instanceof PlayerEntity))
@@ -428,7 +430,7 @@ public final class Abilities{
 					.drops(EssenceType.DOMINANCE, 9*9)));
 
 	public static final RegistryObject<Ability> ASSASSIN = REGISTER.register("assassin", () ->
-			new Ability(new Ability.Properties(0x332B40, 0x332B40)
+			new Ability(new Ability.Properties(0x292c36, 0x292c36, 0x53555e)
 					.addTargetedSkill(5, 500, (entity, holder, target) -> {
 						if(entity.doHurtTarget(target)){
 							entity.teleportTo(target.getX()-0.5, target.getY()+target.getEyeHeight(), target.getZ()-0.5);
@@ -451,7 +453,7 @@ public final class Abilities{
 					.drops(EssenceType.DEATH, 9*9)));
 
 	public static final RegistryObject<Ability> GUNPOWDER_SWARM = REGISTER.register("gunpowder_swarm", () ->
-			new Ability(new Ability.Properties(0x00C800, 0x00C800)
+			new Ability(new Ability.Properties(0x58ba34, 0x34d80e, 0x34d80e)
 					.addTargetedSkill(10, 100, (entity, holder, target) -> {
 						CreeperMissileEntity missile = new CreeperMissileEntity(entity.level);
 						missile.setPos(entity.getX(), entity.getEyeY(), entity.getZ());
@@ -470,7 +472,7 @@ public final class Abilities{
 	//////////////////////////////////////////////////
 
 	public static RegistryObject<Ability> BLACK_HOLE = REGISTER.register("black_hole", () ->
-			new Ability(new Ability.Properties(0, 0)
+			new Ability(new Ability.Properties(0, 0x97470c, 0xff7814)
 					.onUpdate((entity, holder) -> {
 						List<Entity> entityList = entity.level.getEntities(entity, entity.getBoundingBox().inflate(6), e -> !(e==entity)&&e instanceof LivingEntity);
 						for(Entity target : entityList){

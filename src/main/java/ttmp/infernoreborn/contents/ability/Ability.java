@@ -39,9 +39,9 @@ public class Ability extends ForgeRegistryEntry<Ability>{
 	private final Set<AbilitySkill> skills;
 
 	public Ability(Properties properties){
-		this.primaryColor = properties.primaryColor;
-		this.secondaryColor = properties.secondaryColor;
-		this.highlightColor = properties.highlightColor;
+		this.primaryColor = properties.primaryColor&0xFFFFFF;
+		this.secondaryColor = properties.secondaryColor&0xFFFFFF;
+		this.highlightColor = properties.highlightColor&0xFFFFFF;
 		this.attributes = ImmutableMultimap.copyOf(properties.attributes);
 		this.cooldownTickets = properties.cooldownTickets.toArray(new CooldownTicket[0]);
 		for(CooldownTicket t : this.cooldownTickets) t.ability = this;

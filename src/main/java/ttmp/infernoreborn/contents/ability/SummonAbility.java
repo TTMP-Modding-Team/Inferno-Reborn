@@ -10,12 +10,12 @@ public final class SummonAbility{
 	private SummonAbility(){}
 
 	public static Ability zombieNecromancy(){
-		return new Ability(new Ability.Properties(0x466D36, 0x466D36)
+		return new Ability(new Ability.Properties(0x8c18b2, 0x466d36, 0x466d36)
 				.addTargetedSkill(10, 600, (entity, holder, target) -> summon(entity, new SummonedZombieEntity(entity.level))));
 	}
 
 	public static Ability skeletonNecromancy(){
-		return new Ability(new Ability.Properties(0x787878, 0x787878)
+		return new Ability(new Ability.Properties(0x8c18b2, 0x787878, 0x787878)
 				.addTargetedSkill(10, 600, (entity, holder, target) -> summon(entity, new SummonedSkeletonEntity(entity.level))));
 	}
 

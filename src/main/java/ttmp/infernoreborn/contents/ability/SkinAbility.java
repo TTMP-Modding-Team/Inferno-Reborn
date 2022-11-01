@@ -60,7 +60,7 @@ public final class SkinAbility{
 				.drops(EssenceType.EARTH, 5));
 	}
 	public static Ability frozenSkin(){
-		return new Ability(new Ability.Properties(0x2979bd, 0x2979bd)
+		return new Ability(new Ability.Properties(0x55b4e0, 0x2979bd)
 				.addAttribute(Attributes.ARMOR, "66fc401d-84e0-45f2-9abf-9a0fb7dee78a", 1, ADDITION)
 				.onHurt(skin((event, hit) -> LivingUtils.addStackEffect(hit, Effects.MOVEMENT_SLOWDOWN, 40, 0, 1, 3, true, true)))
 				.drops(EssenceType.METAL, 5)
@@ -81,7 +81,7 @@ public final class SkinAbility{
 				.drops(EssenceType.MAGIC, 5));
 	}
 	public static Ability thornSkin(){
-		return new Ability(new Ability.Properties(0xC8C8C8, 0xC8C8C8)
+		return new Ability(new Ability.Properties(0x869c90, 0x1a8c0f, 0x7b967e)
 				.onHurt(skin((event, hit) -> {
 					if(event.getSource() instanceof EntityDamageSource&&((EntityDamageSource)event.getSource()).isThorns()) return;
 					hit.hurt(DamageSource.thorns(event.getEntityLiving()), ThornsEnchantment.getDamage(2, event.getEntityLiving().getRandom()));
@@ -91,7 +91,7 @@ public final class SkinAbility{
 				.drops(EssenceType.MAGIC, 2));
 	}
 	public static Ability magmaSkin(){
-		return new Ability(new Ability.Properties(0x340000, 0x340000)
+		return new Ability(new Ability.Properties(0xff9419, 0xc43206, 0xfccd60)
 				.onUpdate((entity, holder) -> entity.setSecondsOnFire(1))
 				.onAttacked((entity, holder, event) -> {
 					if(event.getSource().isFire()) event.setCanceled(true);
@@ -103,7 +103,7 @@ public final class SkinAbility{
 				.drops(EssenceType.FIRE, 2*9));
 	}
 	public static Ability electricSkin(){
-		return new Ability(new Ability.Properties(0xFFFF00, 0xFFFF00)
+		return new Ability(new Ability.Properties(0xd9d514, 0xa67907, 0xf7f692)
 				.withCooldownTicket((ticket, properties) ->
 						properties.onAttacked((entity, holder, event) -> {
 							Cooldown cooldown = holder.cooldown();

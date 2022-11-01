@@ -20,7 +20,7 @@ public final class SlimeBloodAbility{
 	private SlimeBloodAbility(){}
 
 	public static Ability slimeBlood(){
-		return new Ability(new Ability.Properties(0x400000, 0x400000)
+		return new Ability(new Ability.Properties(0xb33016, 0x307c2a, 0x5dc84f)
 				.onAttacked((entity, holder, event) -> {
 					if(cannotTriggerSlimeBlood(event.getSource())||entity.getRandom().nextInt(2)!=0) return;
 					MagmaCubeEntity magmaCube = new MagmaCubeEntity(EntityType.MAGMA_CUBE, entity.level);
@@ -30,7 +30,7 @@ public final class SlimeBloodAbility{
 	}
 
 	public static Ability magmaBlood(){
-		return new Ability(new Ability.Properties(0x400000, 0x400000)
+		return new Ability(new Ability.Properties(0xc62005, 0x4a0c02, 0xcf6f1a)
 				.onAttacked((entity, holder, event) -> {
 					if(cannotTriggerSlimeBlood(event.getSource())||entity.getRandom().nextInt(2)!=0) return;
 					MagmaCubeEntity magmaCube = new MagmaCubeEntity(EntityType.MAGMA_CUBE, entity.level);

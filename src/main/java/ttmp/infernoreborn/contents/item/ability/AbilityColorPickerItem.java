@@ -78,7 +78,6 @@ public class AbilityColorPickerItem extends Item{
 		primary &= 0xFFFFFF;
 		secondary &= 0xFFFFFF;
 		highlight &= 0xFFFFFF;
-		if(primary==0xFFFFFF&&secondary==0xFFFFFF&&highlight==0xFFFFFF) return;
 		CompoundNBT tag = stack.getOrCreateTag();
 		if(primary!=0xFFFFFF) tag.putInt("PrimaryColor", primary);
 		else tag.remove("PrimaryColor");
