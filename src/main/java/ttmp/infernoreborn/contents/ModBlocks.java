@@ -11,6 +11,8 @@ import net.minecraft.world.IBlockReader;
 import net.minecraftforge.fml.RegistryObject;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
+import ttmp.infernoreborn.contents.block.CampfireCrucibleBlock;
+import ttmp.infernoreborn.contents.block.CrucibleBlock;
 import ttmp.infernoreborn.contents.block.EssenceHolderBlock;
 import ttmp.infernoreborn.contents.block.FoundryBlock;
 import ttmp.infernoreborn.contents.block.GoldenSkullBlock;
@@ -98,6 +100,11 @@ public final class ModBlocks{
 			Properties.of(Material.WOOD).strength(2.5f).sound(SoundType.WOOD)));
 	public static final RegistryObject<Block> STIGMA_SCRAPPER = REGISTER.register("stigma_scrapper", () -> new StigmaScrapperBlock(
 			Properties.of(Material.WOOD).strength(2.5f).sound(SoundType.WOOD)));
+
+	public static final RegistryObject<Block> CRUCIBLE = REGISTER.register("crucible", () -> new CrucibleBlock(
+			Properties.of(Material.METAL, MaterialColor.STONE).requiresCorrectToolForDrops().strength(2).noOcclusion().sound(SoundType.LANTERN)));
+	public static final RegistryObject<Block> CRUCIBLE_CAMPFIRE = REGISTER.register("crucible_campfire", () -> new CampfireCrucibleBlock(
+			Properties.of(Material.METAL, MaterialColor.STONE).requiresCorrectToolForDrops().strength(2).lightLevel(s -> s.getValue(LIT) ? 15 : 0).noOcclusion().sound(SoundType.LANTERN)));
 
 	public static final RegistryObject<Block> FOUNDRY_TILE = REGISTER.register("foundry_tile", () -> new Block(
 			Properties.of(Material.STONE).requiresCorrectToolForDrops().strength(3.5f)));

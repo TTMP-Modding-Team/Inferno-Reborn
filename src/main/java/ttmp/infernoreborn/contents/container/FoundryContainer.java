@@ -93,7 +93,7 @@ public class FoundryContainer extends Container{
 			if(slotIndex<foundry.getSlots()){
 				if(!this.moveItemStackTo(stackAtSlot, foundry.getSlots(), this.slots.size(), true)) return ItemStack.EMPTY;
 			}else{
-				if(stackAtSlot.getCapability(Caps.essenceHolder).isPresent()){
+				if(stackAtSlot.getCapability(Caps.essenceHandler).isPresent()){
 					if(!this.moveItemStackTo(stackAtSlot, FoundryTile.ESSENCE_HOLDER_SLOT, FoundryTile.ESSENCE_HOLDER_SLOT+1, false)) return ItemStack.EMPTY;
 				}else if(Essence.isEssenceItem(stackAtSlot)){
 					if(!this.moveItemStackTo(stackAtSlot, FoundryTile.ESSENCE_INPUT_SLOT, FoundryTile.ESSENCE_INPUT_SLOT+1, false)) return ItemStack.EMPTY;

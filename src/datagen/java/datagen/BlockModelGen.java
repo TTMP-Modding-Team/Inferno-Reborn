@@ -87,14 +87,26 @@ public class BlockModelGen extends BlockStateProvider{
 				.build());
 
 		getVariantBuilder(ModBlocks.FOUNDRY_MOLD_1.get()).forAllStates(state ->
-				ConfiguredModel.builder().modelFile(new ExistingModelFile(res("block/foundry/mold_1"), existingFileHelper))
+				ConfiguredModel.builder().modelFile(existing(res("block/foundry/mold_1")))
 						.rotationY(state.getValue(HORIZONTAL_FACING).get2DDataValue()*90-90).build());
 		getVariantBuilder(ModBlocks.FOUNDRY_MOLD_2.get()).forAllStates(state ->
-				ConfiguredModel.builder().modelFile(new ExistingModelFile(res("block/foundry/mold_2"), existingFileHelper))
+				ConfiguredModel.builder().modelFile(existing(res("block/foundry/mold_2")))
 						.rotationY(state.getValue(HORIZONTAL_FACING).get2DDataValue()*90+90).build());
 
-		simpleItemAndBlock(ModBlocks.ESSENCE_HOLDER_BLOCK.get(), new ExistingModelFile(res("block/essence_holder"), existingFileHelper));
-		simpleItemAndBlock(ModBlocks.ESSENCE_NET_CORE.get(), new ExistingModelFile(res("block/essence_net_core"), existingFileHelper));
+		ExistingModelFile crucible = existing(res("block/crucible"));
+		ExistingModelFile crucibleCampfire = existing(res("block/crucible_campfire"));
+		ExistingModelFile crucibleCampfireOff = existing(res("block/crucible_campfire_off"));
+
+		simpleBlockItem(ModBlocks.CRUCIBLE.get(), crucible);
+		getVariantBuilder(ModBlocks.CRUCIBLE.get()).forAllStates(state ->
+				ConfiguredModel.builder().modelFile(crucible).build());
+		simpleBlockItem(ModBlocks.CRUCIBLE_CAMPFIRE.get(), crucibleCampfire);
+		getVariantBuilder(ModBlocks.CRUCIBLE_CAMPFIRE.get()).forAllStates(state ->
+				ConfiguredModel.builder().modelFile(state.getValue(LIT) ? crucibleCampfire : crucibleCampfireOff)
+						.rotationY(((int)state.getValue(HORIZONTAL_FACING).toYRot())%360).build());
+
+		simpleItemAndBlock(ModBlocks.ESSENCE_HOLDER_BLOCK.get(), existing(res("block/essence_holder")));
+		simpleItemAndBlock(ModBlocks.ESSENCE_NET_CORE.get(), existing(res("block/essence_net_core")));
 		getVariantBuilder(ModBlocks.ESSENCE_NET_IMPORTER.get()).forAllStates(state -> ConfiguredModel.builder()
 				.modelFile(state.getValue(ModProperties.NO_NETWORK) ?
 						models().cubeAll("block/essence_net_importer/essence_net_importer_no_network", res("block/essence_net_importer/essence_net_importer_no_network")) :
@@ -121,8 +133,8 @@ public class BlockModelGen extends BlockStateProvider{
 			return models().cubeBottomTop(name, res(side), res("block/essence_net_exporter/essence_net_exporter_side"), res(top));
 		});
 
-		simpleBlock(ModBlocks.GOLDEN_SKULL.get(), new ExistingModelFile(new ResourceLocation("block/skull"), existingFileHelper));
-		simpleBlock(ModBlocks.GOLDEN_WALL_SKULL.get(), new ExistingModelFile(new ResourceLocation("block/skull"), existingFileHelper));
+		simpleBlock(ModBlocks.GOLDEN_SKULL.get(), existing(new ResourceLocation("block/skull")));
+		simpleBlock(ModBlocks.GOLDEN_WALL_SKULL.get(), existing(new ResourceLocation("block/skull")));
 	}
 
 	private static ResourceLocation res(String path){
@@ -136,5 +148,9 @@ public class BlockModelGen extends BlockStateProvider{
 
 	private ModelFile simpleBottomTop(String modelName, String textureBaseName){
 		return models().cubeBottomTop(modelName, res(textureBaseName+"side"), res(textureBaseName+"bottom"), res(textureBaseName+"top"));
+	}
+
+	private ExistingModelFile existing(ResourceLocation location){
+		return new ExistingModelFile(location, existingFileHelper);
 	}
 }

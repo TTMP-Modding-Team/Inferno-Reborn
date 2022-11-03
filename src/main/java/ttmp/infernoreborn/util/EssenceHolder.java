@@ -3,9 +3,7 @@ package ttmp.infernoreborn.util;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraftforge.common.util.INBTSerializable;
 
-import java.util.Arrays;
-
-public final class EssenceHolder implements Essences, INBTSerializable<CompoundNBT>{
+public class EssenceHolder implements Essences, EssenceHandler, INBTSerializable<CompoundNBT>{
 	private final int[] essences = new int[EssenceType.values().length];
 	private final int max;
 
@@ -20,48 +18,36 @@ public final class EssenceHolder implements Essences, INBTSerializable<CompoundN
 		return essences[type.ordinal()];
 	}
 	public void setEssence(EssenceType type, int essence){
-		this.essences[type.ordinal()] = Math.min(Math.max(0, essence), max);
+		essence = Math.min(Math.max(0, essence), max);
+		if(this.essences[type.ordinal()]!=essence){
+			this.essences[type.ordinal()] = essence;
+			onChanged(type);
+		}
 	}
 
-	public int insertEssence(EssenceType type, int essence, boolean simulate){
+	@Override public long totalEssences(){
+		long sum = 0;
+		for(int essence : essences) sum += essence;
+		return sum;
+	}
+
+	@Override public int insertEssence(EssenceType type, int essence, boolean simulate){
 		if(essence<=0) return essence;
 		int toInsert = Math.min(max-this.essences[type.ordinal()], essence);
-		if(!simulate) this.essences[type.ordinal()] += toInsert;
+		if(toInsert>0&&!simulate){
+			this.essences[type.ordinal()] += toInsert;
+			onChanged(type);
+		}
 		return toInsert;
 	}
-	public int extractEssence(EssenceType type, int essence, boolean simulate){
+	@Override public int extractEssence(EssenceType type, int essence, boolean simulate){
 		if(essence<=0) return essence;
 		int toExtract = Math.min(this.essences[type.ordinal()], essence);
-		if(!simulate) this.essences[type.ordinal()] -= toExtract;
+		if(toExtract>0&&!simulate){
+			this.essences[type.ordinal()] -= toExtract;
+			onChanged(type);
+		}
 		return toExtract;
-	}
-
-	public boolean insertEssences(Essences holder, boolean simulate){
-		for(EssenceType type : EssenceType.values()){
-			int essence = holder.getEssence(type);
-			if(essence>0&&insertEssence(type, essence, true)!=essence) return false;
-		}
-		if(!simulate){
-			for(EssenceType type : EssenceType.values()){
-				int essence = holder.getEssence(type);
-				if(essence>0) insertEssence(type, essence, false);
-			}
-		}
-		return true;
-	}
-
-	public boolean extractEssences(Essences holder, boolean simulate){
-		for(EssenceType type : EssenceType.values()){
-			int essence = holder.getEssence(type);
-			if(essence>0&&extractEssence(type, essence, true)!=essence) return false;
-		}
-		if(!simulate){
-			for(EssenceType type : EssenceType.values()){
-				int essence = holder.getEssence(type);
-				if(essence>0) extractEssence(type, essence, false);
-			}
-		}
-		return true;
 	}
 
 	@Override public boolean isEmpty(){
@@ -71,8 +57,15 @@ public final class EssenceHolder implements Essences, INBTSerializable<CompoundN
 	}
 
 	public void clear(){
-		Arrays.fill(essences, 0);
+		for(int i = 0; i<essences.length; i++){
+			if(essences[i]!=0){
+				essences[i] = 0;
+				onChanged(EssenceType.values()[i]);
+			}
+		}
 	}
+
+	protected void onChanged(EssenceType type){}
 
 	@Override public CompoundNBT serializeNBT(){
 		CompoundNBT nbt = new CompoundNBT();

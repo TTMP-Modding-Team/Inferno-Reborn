@@ -36,7 +36,7 @@ public class EssenceHolderItem extends Item{
 			private final LazyOptional<EssenceHolder> self = LazyOptional.of(() -> essenceHolder);
 
 			@Nonnull @Override public <T> LazyOptional<T> getCapability(Capability<T> cap, @Nullable Direction side){
-				return Caps.essenceHolder==cap ? self.cast() : LazyOptional.empty();
+				return Caps.essenceHolder==cap||Caps.essenceHandler==cap ? self.cast() : LazyOptional.empty();
 			}
 
 			@Override public CompoundNBT serializeNBT(){

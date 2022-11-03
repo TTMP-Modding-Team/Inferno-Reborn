@@ -85,6 +85,8 @@
 	"block.infernoreborn.sigil_scrapper": "Sigil Scrapper",
 	"block.infernoreborn.foundry_tile": "Foundry Tile",
 	"block.infernoreborn.foundry": "Foundry",
+	"block.infernoreborn.crucible": "Crucible",
+	"block.infernoreborn.crucible_campfire": "Crucible with Campfire",
 	"block.infernoreborn.golden_skull": "Golden Skull",
 
 	"tooltip.infernoreborn.expand": "[%s]",

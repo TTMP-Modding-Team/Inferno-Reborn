@@ -54,7 +54,7 @@ import ttmp.infernoreborn.contents.sigil.holder.ItemSigilHolder;
 import ttmp.infernoreborn.contents.sigil.holder.SigilHolder;
 import ttmp.infernoreborn.util.ArmorSets;
 import ttmp.infernoreborn.util.Essence;
-import ttmp.infernoreborn.util.EssenceHolder;
+import ttmp.infernoreborn.util.EssenceHandler;
 import ttmp.infernoreborn.util.LivingUtils;
 import ttmp.infernoreborn.util.SigilSlot;
 import ttmp.infernoreborn.util.SigilUtils;
@@ -333,7 +333,7 @@ public class CommonEventHandlers{
 				List<SlotResult> curios = CuriosApi.getCuriosHelper().findCurios(event.getPlayer(), "essence_holder");
 				if(curios.isEmpty()) return;
 				for(SlotResult curio : curios){
-					EssenceHolder h = curio.getStack().getCapability(Caps.essenceHolder).orElse(null);
+					EssenceHandler h = curio.getStack().getCapability(Caps.essenceHandler).orElse(null);
 					if(h!=null){
 						amount -= h.insertEssence(essence.getType(), amount, false);
 						if(amount==0) break;

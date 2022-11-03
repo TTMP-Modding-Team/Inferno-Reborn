@@ -34,7 +34,6 @@ sourceSets {
 
     datagen {
         java { srcDir "src/datagen/java" }
-        resources { srcDir "src/datagen/resources" }
 
         compileClasspath += configurations.getByName("minecraft")
         compileClasspath += sourceSets.main.output
@@ -75,7 +74,7 @@ minecraft {
             workingDirectory project.file('run')
             property 'forge.logging.markers', 'REGISTRIES'
             property 'forge.logging.console.level', 'debug'
-            args '--mod', 'infernoreborn', '--all', '--output', file('src/generated/resources/'), '--existing', file('src/main/resources/')
+            args '--mod', 'infernoreborn', '--all', '--output', file('src/generated/resources/'), '--existing', file('src/main/resources/'), '--existing', file('src/datagen/resources/')
 
             mods {
                 infernoreborn {

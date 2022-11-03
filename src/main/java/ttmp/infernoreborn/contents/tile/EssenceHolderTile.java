@@ -37,7 +37,7 @@ public class EssenceHolderTile extends TileEntity implements INamedContainerProv
 	@Nullable private LazyOptional<EssenceHolder> essenceHolderLO;
 
 	@Nonnull @Override public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable Direction side){
-		if(cap==Caps.essenceHolder){
+		if(cap==Caps.essenceHolder||cap==Caps.essenceHandler){
 			if(essenceHolderLO==null) essenceHolderLO = LazyOptional.of(() -> essenceHolder);
 			return essenceHolderLO.cast();
 		}else return super.getCapability(cap, side);

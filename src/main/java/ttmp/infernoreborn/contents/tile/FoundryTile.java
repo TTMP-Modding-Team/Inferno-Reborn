@@ -38,7 +38,7 @@ import ttmp.infernoreborn.contents.container.FoundryContainer;
 import ttmp.infernoreborn.contents.recipe.foundry.FoundryRecipe;
 import ttmp.infernoreborn.inventory.FoundryInventory;
 import ttmp.infernoreborn.util.Essence;
-import ttmp.infernoreborn.util.EssenceHolder;
+import ttmp.infernoreborn.util.EssenceHandler;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -91,7 +91,7 @@ public class FoundryTile extends TileEntity implements ITickableTileEntity, INam
 		ItemStack essenceHolder = inv.getStackInSlot(ESSENCE_HOLDER_SLOT);
 		if(!essenceHolder.isEmpty()){
 			//noinspection ConstantConditions
-			@Nullable EssenceHolder h = essenceHolder.getCapability(Caps.essenceHolder).orElse(null);
+			@Nullable EssenceHandler h = essenceHolder.getCapability(Caps.essenceHandler).orElse(null);
 			//noinspection ConstantConditions
 			if(h!=null){
 				ItemStack essenceInput = inv.getStackInSlot(ESSENCE_INPUT_SLOT);
@@ -270,7 +270,7 @@ public class FoundryTile extends TileEntity implements ITickableTileEntity, INam
 		@Override public boolean isItemValid(int slot, @Nonnull ItemStack stack){
 			switch(slot){
 				case ESSENCE_HOLDER_SLOT:
-					return stack.getCapability(Caps.essenceHolder).isPresent();
+					return stack.getCapability(Caps.essenceHandler).isPresent();
 				case ESSENCE_INPUT_SLOT:
 					return Essence.isEssenceItem(stack);
 				default:
@@ -284,8 +284,8 @@ public class FoundryTile extends TileEntity implements ITickableTileEntity, INam
 			super((IItemHandlerModifiable)getInput());
 		}
 
-		@SuppressWarnings("ConstantConditions") @Nullable @Override public EssenceHolder getEssenceHolder(){
-			return FoundryTile.this.inv.getStackInSlot(ESSENCE_HOLDER_SLOT).getCapability(Caps.essenceHolder).orElse(null);
+		@SuppressWarnings("ConstantConditions") @Nullable @Override public EssenceHandler getEssenceHandler(){
+			return FoundryTile.this.inv.getStackInSlot(ESSENCE_HOLDER_SLOT).getCapability(Caps.essenceHandler).orElse(null);
 		}
 	}
 }

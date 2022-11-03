@@ -13,8 +13,10 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.HandSide;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.EntityRayTraceResult;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.vector.Matrix4f;
@@ -40,6 +42,7 @@ import ttmp.infernoreborn.client.color.ColorUtils;
 import ttmp.infernoreborn.contents.ability.holder.ClientAbilityHolder;
 import ttmp.infernoreborn.contents.sigil.Sigil;
 import ttmp.infernoreborn.contents.sigil.holder.SigilHolder;
+import ttmp.infernoreborn.contents.tile.CrucibleTile;
 import ttmp.infernoreborn.shield.ShieldSkin;
 
 import java.text.DecimalFormat;
@@ -63,18 +66,25 @@ public final class ClientEventHandlers{
 		}
 	}
 
+	@SuppressWarnings("ConstantConditions")
 	@SubscribeEvent
 	public static void onTextRender(RenderGameOverlayEvent.Text event){
 		debugAbilities(event);
 		ClientPlayerEntity player = Minecraft.getInstance().player;
 		if(player!=null){
-			//noinspection ConstantConditions
 			ClientPlayerCapability shield = player.getCapability(Caps.clientPlayerShield).orElse(null);
-			//noinspection ConstantConditions
 			if(shield!=null){
 				event.getRight().add(shield.shields.size()+" shields");
 				for(ActiveShield s : shield.shields){
 					event.getRight().add(s.getSkin().id+(s.isDown() ? " (DOWN): " : ": ")+s.getDurability()+" / "+s.getMaxDurability());
+				}
+			}
+			if(Minecraft.getInstance().hitResult!=null&&Minecraft.getInstance().hitResult.getType()==RayTraceResult.Type.BLOCK){
+				BlockRayTraceResult hitResult = (BlockRayTraceResult)Minecraft.getInstance().hitResult;
+				TileEntity be = Minecraft.getInstance().level.getBlockEntity(hitResult.getBlockPos());
+				if(be instanceof CrucibleTile){
+					CrucibleTile crucible = (CrucibleTile)be;
+					event.getLeft().add("Heat: "+crucible.getHeat()+", Stir: "+crucible.getManualStirPower()+", ClientStir: "+crucible.clientStir);
 				}
 			}
 		}

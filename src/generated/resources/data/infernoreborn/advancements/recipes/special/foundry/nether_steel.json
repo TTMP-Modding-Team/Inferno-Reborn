@@ -6,6 +6,16 @@
     ]
   },
   "criteria": {
+    "netherite_scrap": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "item": "minecraft:netherite_scrap"
+          }
+        ]
+      }
+    },
     "has_the_recipe": {
       "trigger": "minecraft:recipe_unlocked",
       "conditions": {
@@ -15,6 +25,7 @@
   },
   "requirements": [
     [
+      "netherite_scrap",
       "has_the_recipe"
     ]
   ]

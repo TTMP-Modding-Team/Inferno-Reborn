@@ -4,6 +4,7 @@ import net.minecraft.tileentity.TileEntityType;
 import net.minecraftforge.fml.RegistryObject;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
+import ttmp.infernoreborn.contents.tile.CrucibleTile;
 import ttmp.infernoreborn.contents.tile.EssenceHolderTile;
 import ttmp.infernoreborn.contents.tile.EssenceNetCoreTile;
 import ttmp.infernoreborn.contents.tile.EssenceNetExporterTile;
@@ -42,6 +43,9 @@ public final class ModTileEntities{
 			TileEntityType.Builder.of(FoundryProxyTile::grateProxy, ModBlocks.FOUNDRY_GRATE_1.get(), ModBlocks.FOUNDRY_GRATE_2.get()).build(null));
 	public static final RegistryObject<TileEntityType<FoundryProxyTile>> FOUNDRY_MOLD_PROXY = REGISTER.register("foundry_mold_proxy", () ->
 			TileEntityType.Builder.of(FoundryProxyTile::moldProxy, ModBlocks.FOUNDRY_MOLD_1.get(), ModBlocks.FOUNDRY_MOLD_2.get()).build(null));
+
+	public static final RegistryObject<TileEntityType<CrucibleTile>> CRUCIBLE = REGISTER.register("crucible", () ->
+			TileEntityType.Builder.of(CrucibleTile::new, ModBlocks.CRUCIBLE.get(), ModBlocks.CRUCIBLE_CAMPFIRE.get()).build(null));
 
 	public static final RegistryObject<TileEntityType<EssenceHolderTile>> ESSENCE_HOLDER = REGISTER.register("essence_holder", () ->
 			TileEntityType.Builder.of(EssenceHolderTile::new, ModBlocks.ESSENCE_HOLDER_BLOCK.get()).build(null));

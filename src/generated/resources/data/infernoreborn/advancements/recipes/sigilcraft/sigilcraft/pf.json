@@ -6,6 +6,16 @@
     ]
   },
   "criteria": {
+    "fuck": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "item": "infernoreborn:exquisite_dominance_essence"
+          }
+        ]
+      }
+    },
     "has_the_recipe": {
       "trigger": "minecraft:recipe_unlocked",
       "conditions": {
@@ -15,6 +25,7 @@
   },
   "requirements": [
     [
+      "fuck",
       "has_the_recipe"
     ]
   ]

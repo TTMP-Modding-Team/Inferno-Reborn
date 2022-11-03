@@ -5,6 +5,7 @@ import net.minecraftforge.common.capabilities.CapabilityInject;
 import ttmp.infernoreborn.contents.ability.holder.AbilityHolder;
 import ttmp.infernoreborn.contents.item.EssenceNetAccessorItem;
 import ttmp.infernoreborn.contents.sigil.holder.SigilHolder;
+import ttmp.infernoreborn.util.EssenceHandler;
 import ttmp.infernoreborn.util.EssenceHolder;
 
 public final class Caps{
@@ -14,6 +15,8 @@ public final class Caps{
 	public static Capability<AbilityHolder> abilityHolder;
 	@CapabilityInject(EssenceHolder.class)
 	public static Capability<EssenceHolder> essenceHolder;
+	@CapabilityInject(EssenceHandler.class)
+	public static Capability<EssenceHandler> essenceHandler;
 	@CapabilityInject(SigilHolder.class)
 	public static Capability<SigilHolder> sigilHolder;
 	@CapabilityInject(TickingTaskHandler.class)

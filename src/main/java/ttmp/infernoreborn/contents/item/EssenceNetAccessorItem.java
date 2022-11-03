@@ -95,7 +95,7 @@ public class EssenceNetAccessorItem extends Item implements EssenceNetCoreBlock.
 		@Nullable private LazyOptional<Data> self;
 
 		@Nonnull @Override public <T> LazyOptional<T> getCapability(Capability<T> cap, @Nullable Direction side){
-			if(cap==Caps.essenceHolder){
+			if(cap==Caps.essenceHolder||cap==Caps.essenceHandler){
 				if(essenceHolderCache==null){
 					EssenceHolder h = EssenceNetProvider.getInstance().get(networkId);
 					essenceHolderCache = h!=null ? LazyOptional.of(() -> h) : LazyOptional.empty();

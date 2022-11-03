@@ -1,6 +1,7 @@
 package ttmp.infernoreborn;
 
 import net.minecraft.block.SkullBlock;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.ScreenManager;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.RenderTypeLookup;
@@ -13,6 +14,7 @@ import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.ColorHandlerEvent;
+import net.minecraftforge.client.event.ParticleFactoryRegisterEvent;
 import net.minecraftforge.client.event.TextureStitchEvent;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityManager;
@@ -37,6 +39,7 @@ import ttmp.infernoreborn.capability.EssenceNetProvider;
 import ttmp.infernoreborn.capability.PlayerCapability;
 import ttmp.infernoreborn.capability.ShieldProvider;
 import ttmp.infernoreborn.capability.TickingTaskHandler;
+import ttmp.infernoreborn.client.CrucibleBubbleParticle;
 import ttmp.infernoreborn.client.color.AbilityColorPickerColor;
 import ttmp.infernoreborn.client.color.EssenceHolderBookSparkColor;
 import ttmp.infernoreborn.client.color.GeneratorSparkColor;
@@ -44,6 +47,7 @@ import ttmp.infernoreborn.client.color.PrimalInfernoSparkColor;
 import ttmp.infernoreborn.client.color.SparkColor;
 import ttmp.infernoreborn.client.render.AnvilEntityRenderer;
 import ttmp.infernoreborn.client.render.CreeperMissileEntityRenderer;
+import ttmp.infernoreborn.client.render.CrucibleTileEntityRenderer;
 import ttmp.infernoreborn.client.render.GoldenSkullTileEntityRenderer;
 import ttmp.infernoreborn.client.render.SummonedSkeletonRenderer;
 import ttmp.infernoreborn.client.render.SummonedZombieRenderer;
@@ -63,6 +67,7 @@ import ttmp.infernoreborn.contents.ModEffects;
 import ttmp.infernoreborn.contents.ModEntities;
 import ttmp.infernoreborn.contents.ModItems;
 import ttmp.infernoreborn.contents.ModLootModifiers;
+import ttmp.infernoreborn.contents.ModParticles;
 import ttmp.infernoreborn.contents.ModRecipes;
 import ttmp.infernoreborn.contents.ModTileEntities;
 import ttmp.infernoreborn.contents.Sigils;
@@ -98,6 +103,7 @@ public class InfernoReborn{
 		ModTileEntities.REGISTER.register(modEventBus);
 		ModEntities.REGISTER.register(modEventBus);
 		Sigils.REGISTER.register(modEventBus);
+		ModParticles.REGISTER.register(modEventBus);
 
 		ModCfg.init();
 		ModNet.init();
@@ -177,11 +183,13 @@ public class InfernoReborn{
 
 				RenderTypeLookup.setRenderLayer(ModBlocks.FOUNDRY_MOLD_1.get(), RenderType.cutout());
 				RenderTypeLookup.setRenderLayer(ModBlocks.FOUNDRY_MOLD_2.get(), RenderType.cutout());
+				RenderTypeLookup.setRenderLayer(ModBlocks.CRUCIBLE_CAMPFIRE.get(), RenderType.cutout());
 				RenderTypeLookup.setRenderLayer(ModBlocks.ESSENCE_HOLDER_BLOCK.get(), RenderType.translucent());
 				RenderTypeLookup.setRenderLayer(ModBlocks.ESSENCE_NET_CORE.get(), RenderType.translucent());
 
 				SkullTileEntityRenderer.MODEL_BY_TYPE.put(GoldenSkullBlock.TYPE, SkullTileEntityRenderer.MODEL_BY_TYPE.get(SkullBlock.Types.SKELETON));
 				SkullTileEntityRenderer.SKIN_BY_TYPE.put(GoldenSkullBlock.TYPE, new ResourceLocation(MODID, "textures/entity/golden_skull.png"));
+
 			});
 			RenderingRegistry.registerEntityRenderingHandler(ModEntities.WIND.get(), WindEntityRenderer::new);
 			RenderingRegistry.registerEntityRenderingHandler(ModEntities.ANVIL.get(), AnvilEntityRenderer::new);
@@ -190,6 +198,7 @@ public class InfernoReborn{
 			RenderingRegistry.registerEntityRenderingHandler(ModEntities.SUMMONED_SKELETON.get(), SummonedSkeletonRenderer::new);
 
 			ClientRegistry.bindTileEntityRenderer(ModTileEntities.GOLDEN_SKULL.get(), GoldenSkullTileEntityRenderer::new);
+			ClientRegistry.bindTileEntityRenderer(ModTileEntities.CRUCIBLE.get(), CrucibleTileEntityRenderer::new);
 		}
 
 		@SubscribeEvent
@@ -205,6 +214,11 @@ public class InfernoReborn{
 		public static void beforeTextureStitch(TextureStitchEvent.Pre event){
 			if(event.getMap().location().equals(PlayerContainer.BLOCK_ATLAS))
 				event.addSprite(new ResourceLocation(MODID, "item/empty_essence_holder"));
+		}
+
+		@SubscribeEvent
+		public static void registerParticleFactory(ParticleFactoryRegisterEvent event){
+			Minecraft.getInstance().particleEngine.register(ModParticles.CRUCIBLE_BUBBLE.get(), CrucibleBubbleParticle.Factory::new);
 		}
 	}
 }

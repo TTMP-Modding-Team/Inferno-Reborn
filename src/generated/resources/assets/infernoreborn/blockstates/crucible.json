@@ -1,0 +1,10 @@
+{
+  "variants": {
+    "automated=false": {
+      "model": "infernoreborn:block/crucible"
+    },
+    "automated=true": {
+      "model": "infernoreborn:block/crucible"
+    }
+  }
+}

@@ -13,6 +13,7 @@ import net.minecraftforge.registries.ForgeRegistries;
 import ttmp.infernoreborn.client.render.FoundryISTER;
 import ttmp.infernoreborn.client.render.GoldenSkullISTER;
 import ttmp.infernoreborn.contents.item.BodySigilItem;
+import ttmp.infernoreborn.contents.item.CrucibleBlockItem;
 import ttmp.infernoreborn.contents.item.EssenceHolderBookItem;
 import ttmp.infernoreborn.contents.item.EssenceHolderItem;
 import ttmp.infernoreborn.contents.item.EssenceNetAccessorItem;
@@ -222,6 +223,9 @@ public final class ModItems{
 
 	public static final RegistryObject<BlockItem> SIGIL_SCRAPPER = REGISTER.register("sigil_scrapper", () -> new BlockItem(ModBlocks.SIGIL_SCRAPPER.get(), artifacts()));
 	public static final RegistryObject<BlockItem> STIGMA_SCRAPPER = REGISTER.register("stigma_scrapper", () -> new BlockItem(ModBlocks.STIGMA_SCRAPPER.get(), artifacts()));
+
+	public static final RegistryObject<BlockItem> CRUCIBLE = REGISTER.register("crucible", () -> new CrucibleBlockItem(ModBlocks.CRUCIBLE.get(), artifacts()));
+	public static final RegistryObject<BlockItem> CRUCIBLE_CAMPFIRE = REGISTER.register("crucible_campfire", () -> new BlockItem(ModBlocks.CRUCIBLE_CAMPFIRE.get(), new Item.Properties()));
 
 	public static final RegistryObject<Item> FOUNDRY = REGISTER.register("foundry", () -> new FoundryBlockItem(ModBlocks.FOUNDRY.get(), artifacts().setISTER(() -> FoundryISTER::new)));
 

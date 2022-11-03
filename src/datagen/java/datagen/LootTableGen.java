@@ -1,19 +1,25 @@
 package datagen;
 
 import com.mojang.datafixers.util.Pair;
+import datagen.builder.FuckingLootEntryBuilder;
+import net.minecraft.advancements.criterion.EnchantmentPredicate;
+import net.minecraft.advancements.criterion.ItemPredicate;
+import net.minecraft.advancements.criterion.MinMaxBounds;
 import net.minecraft.block.Block;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.LootTableProvider;
 import net.minecraft.data.loot.BlockLootTables;
+import net.minecraft.enchantment.Enchantments;
+import net.minecraft.item.Items;
 import net.minecraft.loot.ConstantRange;
-import net.minecraft.loot.ItemLootEntry;
 import net.minecraft.loot.LootParameterSet;
 import net.minecraft.loot.LootParameterSets;
-import net.minecraft.loot.LootPool;
 import net.minecraft.loot.LootTable;
-import net.minecraft.loot.RandomValueRange;
 import net.minecraft.loot.ValidationTracker;
+import net.minecraft.loot.conditions.ILootCondition;
+import net.minecraft.loot.conditions.MatchTool;
 import net.minecraft.loot.functions.CopyNbt;
+import net.minecraft.loot.functions.SetCount;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.RegistryObject;
 import ttmp.infernoreborn.contents.ModBlocks;
@@ -28,9 +34,14 @@ import java.util.function.Consumer;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
+import static net.minecraft.loot.ItemLootEntry.lootTableItem;
+import static net.minecraft.loot.LootPool.lootPool;
+import static net.minecraft.loot.LootTable.lootTable;
 import static net.minecraft.loot.RandomValueRange.between;
 
 public class LootTableGen extends LootTableProvider{
+	private static final ILootCondition.IBuilder HAS_SILK_TOUCH = MatchTool.toolMatches(ItemPredicate.Builder.item()
+			.hasEnchantment(new EnchantmentPredicate(Enchantments.SILK_TOUCH, MinMaxBounds.IntBound.atLeast(1))));
 	public LootTableGen(DataGenerator generator){
 		super(generator);
 	}
@@ -57,12 +68,24 @@ public class LootTableGen extends LootTableProvider{
 			dropSelf(ModBlocks.SIGIL_ENGRAVING_TABLE_5X5.get());
 			dropSelf(ModBlocks.SIGIL_ENGRAVING_TABLE_7X7.get());
 			dropSelf(ModBlocks.SIGIL_SCRAPPER.get());
+			dropSelf(ModBlocks.STIGMA_SCRAPPER.get());
 
 			dropSelf(ModBlocks.STIGMA_TABLE_5X5.get());
 			dropSelf(ModBlocks.STIGMA_TABLE_7X7.get());
 
 			dropSelf(ModBlocks.FOUNDRY_TILE.get());
 			add(ModBlocks.FOUNDRY.get(), b -> createNameableBlockEntityTable(ModBlocks.FOUNDRY.get()));
+			dropSelf(ModBlocks.CRUCIBLE.get());
+			add(ModBlocks.CRUCIBLE_CAMPFIRE.get(), b -> lootTable().withPool(applyExplosionCondition(b, lootPool()
+					.setRolls(ConstantRange.exactly(1))
+					.add(new FuckingLootEntryBuilder(
+							lootTableItem(Items.CAMPFIRE)
+									.when(HAS_SILK_TOUCH)
+									.otherwise(lootTableItem(Items.CHARCOAL)
+											.apply(SetCount.setCount(ConstantRange.exactly(2)))),
+							lootTableItem(ModBlocks.CRUCIBLE.get())
+					)))
+			));
 
 			addNbtCopiedDrop(ModBlocks.ESSENCE_HOLDER_BLOCK.get(), "Essence");
 
@@ -80,10 +103,10 @@ public class LootTableGen extends LootTableProvider{
 		private void addNbtCopiedDrop(Block block, String... keys){
 			CopyNbt.Builder copyData = CopyNbt.copyData(CopyNbt.Source.BLOCK_ENTITY);
 			for(String key : keys) copyData.copy(key, "BlockEntityTag."+key);
-			add(block, LootTable.lootTable().withPool(
-					applyExplosionCondition(block, LootPool.lootPool()
+			add(block, lootTable().withPool(
+					applyExplosionCondition(block, lootPool()
 							.setRolls(ConstantRange.exactly(1))
-							.add(ItemLootEntry.lootTableItem(block)
+							.add(lootTableItem(block)
 									.apply(copyData)))));
 		}
 

@@ -19,6 +19,7 @@ import net.minecraftforge.registries.ForgeRegistryEntry;
 import ttmp.infernoreborn.contents.ModItems;
 import ttmp.infernoreborn.contents.ModRecipes;
 import ttmp.infernoreborn.inventory.FoundryInventory;
+import ttmp.infernoreborn.util.EssenceHandler;
 import ttmp.infernoreborn.util.EssenceHolder;
 import ttmp.infernoreborn.util.EssenceType;
 import ttmp.infernoreborn.util.Essences;
@@ -63,7 +64,7 @@ public class FoundryRecipe implements IRecipe<FoundryInventory>{
 		int[] consumptions = workOutConsumptions(inv);
 		if(consumptions==null) return false;
 		if(essences!=null&&!essences.isEmpty()){
-			EssenceHolder essenceHolder = inv.getEssenceHolder();
+			EssenceHandler essenceHolder = inv.getEssenceHandler();
 			if(essenceHolder==null||!essenceHolder.extractEssences(essences, simulate)) return false;
 		}
 		if(!simulate){
