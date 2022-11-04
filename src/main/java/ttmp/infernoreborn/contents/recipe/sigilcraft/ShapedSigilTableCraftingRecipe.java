@@ -9,8 +9,8 @@ import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.JSONUtils;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
+import ttmp.infernoreborn.api.sigil.SigilcraftInventory;
 import ttmp.infernoreborn.contents.ModRecipes;
-import ttmp.infernoreborn.inventory.SigilcraftInventory;
 
 import java.util.Map;
 

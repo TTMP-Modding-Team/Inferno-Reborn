@@ -4,9 +4,10 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.MobEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.potion.EffectInstance;
+import ttmp.infernoreborn.api.LivingUtils;
+import ttmp.infernoreborn.api.ability.Ability;
+import ttmp.infernoreborn.api.essence.EssenceType;
 import ttmp.infernoreborn.contents.ModEffects;
-import ttmp.infernoreborn.util.EssenceType;
-import ttmp.infernoreborn.util.LivingUtils;
 
 import java.util.List;
 import java.util.stream.Collectors;

@@ -1,6 +1,7 @@
 package ttmp.infernoreborn.shield;
 
 import net.minecraft.util.ResourceLocation;
+import ttmp.infernoreborn.api.shield.ShieldSkin;
 
 import javax.annotation.Nullable;
 import java.util.HashMap;

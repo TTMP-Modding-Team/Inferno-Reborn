@@ -5,8 +5,8 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
+import ttmp.infernoreborn.api.sigil.Sigil;
 import ttmp.infernoreborn.contents.container.SigilScrapperContainer;
-import ttmp.infernoreborn.contents.sigil.Sigil;
 import ttmp.infernoreborn.network.ModNet;
 import ttmp.infernoreborn.network.ScrapSigilMsg;
 

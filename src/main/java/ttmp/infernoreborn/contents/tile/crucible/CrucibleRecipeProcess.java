@@ -3,9 +3,9 @@ package ttmp.infernoreborn.contents.tile.crucible;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.util.Constants;
-import ttmp.infernoreborn.contents.recipe.crucible.CrucibleRecipe;
-import ttmp.infernoreborn.inventory.CrucibleInventory;
-import ttmp.infernoreborn.util.Simulation;
+import ttmp.infernoreborn.api.Simulation;
+import ttmp.infernoreborn.api.crucible.CrucibleInventory;
+import ttmp.infernoreborn.api.crucible.CrucibleRecipe;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;

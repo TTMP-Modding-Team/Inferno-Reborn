@@ -25,8 +25,8 @@ import ttmp.infernoreborn.contents.ModItems;
 import ttmp.infernoreborn.contents.ModRecipes;
 import ttmp.infernoreborn.contents.ModTags;
 import ttmp.infernoreborn.contents.Sigils;
-import ttmp.infernoreborn.util.EssenceSize;
-import ttmp.infernoreborn.util.EssenceType;
+import ttmp.infernoreborn.api.essence.EssenceSize;
+import ttmp.infernoreborn.api.essence.EssenceType;
 
 import java.util.ArrayList;
 import java.util.List;

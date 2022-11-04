@@ -1,8 +1,8 @@
 package ttmp.infernoreborn.network;
 
 import net.minecraft.network.PacketBuffer;
+import ttmp.infernoreborn.api.ability.Ability;
 import ttmp.infernoreborn.contents.Abilities;
-import ttmp.infernoreborn.contents.ability.Ability;
 import ttmp.infernoreborn.infernaltype.dsl.effect.ParticleEffect;
 
 import java.util.ArrayList;

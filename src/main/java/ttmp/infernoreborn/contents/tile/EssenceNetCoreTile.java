@@ -3,7 +3,7 @@ package ttmp.infernoreborn.contents.tile;
 import net.minecraft.block.BlockState;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntity;
-import ttmp.infernoreborn.capability.EssenceNetProvider;
+import ttmp.infernoreborn.api.essence.EssenceNetProvider;
 import ttmp.infernoreborn.contents.ModTileEntities;
 import ttmp.infernoreborn.contents.item.EssenceNetBlockItem;
 

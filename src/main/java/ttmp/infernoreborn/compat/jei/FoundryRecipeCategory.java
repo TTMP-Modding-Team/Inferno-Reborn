@@ -13,12 +13,12 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
+import ttmp.infernoreborn.api.QuantifiedIngredient;
+import ttmp.infernoreborn.api.essence.EssenceIngredient;
+import ttmp.infernoreborn.api.essence.EssenceType;
+import ttmp.infernoreborn.api.foundry.FoundryRecipe;
 import ttmp.infernoreborn.contents.ModBlocks;
 import ttmp.infernoreborn.contents.ModItems;
-import ttmp.infernoreborn.contents.recipe.EssenceIngredient;
-import ttmp.infernoreborn.contents.recipe.foundry.FoundryRecipe;
-import ttmp.infernoreborn.util.EssenceType;
-import ttmp.infernoreborn.util.QuantifiedIngredient;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -60,7 +60,7 @@ public class FoundryRecipeCategory implements IRecipeCategory<FoundryRecipe>{
 	@Override public Class<? extends FoundryRecipe> getRecipeClass(){
 		return FoundryRecipe.class;
 	}
-	@Override public String getTitle(){
+	@Deprecated @Override public String getTitle(){
 		return getTitleAsTextComponent().getString();
 	}
 	@Override public ITextComponent getTitleAsTextComponent(){

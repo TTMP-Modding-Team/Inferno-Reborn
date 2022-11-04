@@ -4,7 +4,6 @@ import net.minecraft.tileentity.TileEntityType;
 import net.minecraftforge.fml.RegistryObject;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
-import ttmp.infernoreborn.contents.tile.crucible.CrucibleTile;
 import ttmp.infernoreborn.contents.tile.EssenceHolderTile;
 import ttmp.infernoreborn.contents.tile.EssenceNetCoreTile;
 import ttmp.infernoreborn.contents.tile.EssenceNetExporterTile;
@@ -14,6 +13,7 @@ import ttmp.infernoreborn.contents.tile.FoundryTile;
 import ttmp.infernoreborn.contents.tile.GoldenSkullTile;
 import ttmp.infernoreborn.contents.tile.SigilEngravingTableTile;
 import ttmp.infernoreborn.contents.tile.StigmaTableTile;
+import ttmp.infernoreborn.contents.tile.crucible.CrucibleTile;
 
 import static ttmp.infernoreborn.InfernoReborn.MODID;
 

@@ -10,9 +10,9 @@ import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.IWorldPosCallable;
 import net.minecraftforge.fml.network.PacketDistributor;
+import ttmp.infernoreborn.api.sigil.Sigil;
+import ttmp.infernoreborn.api.sigil.SigilHolder;
 import ttmp.infernoreborn.contents.ModContainers;
-import ttmp.infernoreborn.contents.sigil.Sigil;
-import ttmp.infernoreborn.contents.sigil.holder.SigilHolder;
 import ttmp.infernoreborn.network.ModNet;
 import ttmp.infernoreborn.network.SyncScrapperScreenMsg;
 

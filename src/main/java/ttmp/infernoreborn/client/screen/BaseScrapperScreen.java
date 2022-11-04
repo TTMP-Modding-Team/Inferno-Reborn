@@ -11,9 +11,9 @@ import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.Style;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.TranslationTextComponent;
+import ttmp.infernoreborn.api.sigil.Sigil;
 import ttmp.infernoreborn.client.color.ColorUtils;
 import ttmp.infernoreborn.contents.item.SigilItem;
-import ttmp.infernoreborn.contents.sigil.Sigil;
 
 import javax.annotation.Nullable;
 import java.util.Arrays;

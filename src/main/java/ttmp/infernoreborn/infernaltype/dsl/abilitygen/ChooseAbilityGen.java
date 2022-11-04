@@ -1,6 +1,6 @@
 package ttmp.infernoreborn.infernaltype.dsl.abilitygen;
 
-import ttmp.infernoreborn.contents.ability.Ability;
+import ttmp.infernoreborn.api.ability.Ability;
 import ttmp.infernoreborn.infernaltype.InfernalGenContext;
 import ttmp.infernoreborn.infernaltype.dsl.dynamic.Dynamic;
 import ttmp.infernoreborn.infernaltype.dsl.dynamic.DynamicInt;

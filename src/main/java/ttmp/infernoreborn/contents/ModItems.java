@@ -10,6 +10,9 @@ import net.minecraft.item.WallOrFloorItem;
 import net.minecraftforge.fml.RegistryObject;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
+import ttmp.infernoreborn.api.essence.EssenceSize;
+import ttmp.infernoreborn.api.essence.EssenceType;
+import ttmp.infernoreborn.api.shield.SimpleShield;
 import ttmp.infernoreborn.client.render.FoundryISTER;
 import ttmp.infernoreborn.client.render.GoldenSkullISTER;
 import ttmp.infernoreborn.contents.item.BodySigilItem;
@@ -39,9 +42,6 @@ import ttmp.infernoreborn.contents.item.weapon.CrimsonClaymoreItem;
 import ttmp.infernoreborn.contents.item.weapon.DragonSlayerItem;
 import ttmp.infernoreborn.contents.item.weapon.ExplosiveSwordItem;
 import ttmp.infernoreborn.shield.ShieldSkins;
-import ttmp.infernoreborn.shield.SimpleShield;
-import ttmp.infernoreborn.util.EssenceSize;
-import ttmp.infernoreborn.util.EssenceType;
 
 import static ttmp.infernoreborn.InfernoReborn.MODID;
 

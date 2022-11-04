@@ -5,9 +5,9 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
-import ttmp.infernoreborn.compat.patchouli.sigil.SigilBookEntry;
+import ttmp.infernoreborn.api.sigil.Sigil;
+import ttmp.infernoreborn.api.sigil.page.SigilBookEntry;
 import ttmp.infernoreborn.contents.Sigils;
-import ttmp.infernoreborn.contents.sigil.Sigil;
 import vazkii.patchouli.api.IComponentRenderContext;
 import vazkii.patchouli.api.IVariable;
 

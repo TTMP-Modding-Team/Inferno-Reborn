@@ -6,18 +6,19 @@ import net.minecraft.item.crafting.SpecialRecipeSerializer;
 import net.minecraftforge.fml.RegistryObject;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
+import ttmp.infernoreborn.api.RecipeTypes;
+import ttmp.infernoreborn.api.crucible.CrucibleRecipe;
+import ttmp.infernoreborn.api.foundry.FoundryRecipe;
+import ttmp.infernoreborn.api.sigil.SigilcraftRecipe;
 import ttmp.infernoreborn.contents.recipe.ApplySigilRecipe;
 import ttmp.infernoreborn.contents.recipe.CombineSparkRecipe;
 import ttmp.infernoreborn.contents.recipe.EssenceHolderBookRecipe;
-import ttmp.infernoreborn.contents.recipe.crucible.CrucibleRecipe;
 import ttmp.infernoreborn.contents.recipe.crucible.SimpleCrucibleRecipe;
 import ttmp.infernoreborn.contents.recipe.crucible.SimpleCrucibleRecipeSerializer;
-import ttmp.infernoreborn.contents.recipe.foundry.FoundryRecipe;
 import ttmp.infernoreborn.contents.recipe.foundry.SimpleFoundryRecipe;
 import ttmp.infernoreborn.contents.recipe.foundry.SimpleFoundryRecipeSerializer;
 import ttmp.infernoreborn.contents.recipe.sigilcraft.ShapedSigilEngravingRecipe;
 import ttmp.infernoreborn.contents.recipe.sigilcraft.ShapedSigilTableCraftingRecipe;
-import ttmp.infernoreborn.contents.recipe.sigilcraft.SigilcraftRecipe;
 
 import static ttmp.infernoreborn.InfernoReborn.MODID;
 
@@ -40,4 +41,11 @@ public final class ModRecipes{
 	public static final RegistryObject<IRecipeSerializer<SimpleFoundryRecipe>> FOUNDRY = REGISTER.register("foundry", SimpleFoundryRecipeSerializer::new);
 
 	public static final RegistryObject<IRecipeSerializer<SimpleCrucibleRecipe>> CRUCIBLE = REGISTER.register("crucible", SimpleCrucibleRecipeSerializer::new);
+
+	static{
+		IRecipeType.register(MODID+":sigilcraft");
+		IRecipeType.register(MODID+":foundry");
+		IRecipeType.register(MODID+":crucible");
+		RecipeTypes.setTypes();
+	}
 }

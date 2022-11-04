@@ -4,7 +4,6 @@ import net.minecraft.entity.EntityType;
 import net.minecraft.entity.ai.attributes.AttributeModifierMap;
 import net.minecraft.entity.ai.attributes.Attributes;
 import net.minecraft.entity.monster.ZombieEntity;
-import net.minecraft.util.DamageSource;
 import net.minecraft.world.World;
 import ttmp.infernoreborn.contents.ModEntities;
 

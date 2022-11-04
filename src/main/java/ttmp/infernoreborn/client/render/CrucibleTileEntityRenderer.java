@@ -20,8 +20,8 @@ import net.minecraft.util.math.vector.Vector4f;
 import net.minecraftforge.fluids.FluidAttributes;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.IFluidTank;
-import ttmp.infernoreborn.contents.tile.crucible.CrucibleTile;
 import ttmp.infernoreborn.contents.tile.crucible.Crucible;
+import ttmp.infernoreborn.contents.tile.crucible.CrucibleTile;
 
 import java.util.Random;
 

@@ -2,8 +2,8 @@ package ttmp.infernoreborn.infernaltype.dsl.abilitygen;
 
 import net.minecraft.util.ResourceLocation;
 import ttmp.infernoreborn.InfernoReborn;
+import ttmp.infernoreborn.api.ability.Ability;
 import ttmp.infernoreborn.contents.Abilities;
-import ttmp.infernoreborn.contents.ability.Ability;
 import ttmp.infernoreborn.infernaltype.InfernalGenContext;
 
 import javax.annotation.Nullable;

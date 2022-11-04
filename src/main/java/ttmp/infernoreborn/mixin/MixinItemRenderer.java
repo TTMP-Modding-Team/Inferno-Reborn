@@ -13,10 +13,10 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import ttmp.infernoreborn.api.sigil.Sigil;
+import ttmp.infernoreborn.api.sigil.SigilHolder;
 import ttmp.infernoreborn.contents.ModItems;
 import ttmp.infernoreborn.contents.item.SigilItem;
-import ttmp.infernoreborn.contents.sigil.Sigil;
-import ttmp.infernoreborn.contents.sigil.holder.SigilHolder;
 
 import javax.annotation.Nullable;
 

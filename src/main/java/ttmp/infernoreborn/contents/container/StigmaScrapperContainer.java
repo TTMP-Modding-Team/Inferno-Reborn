@@ -5,11 +5,11 @@ import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.inventory.container.Container;
 import net.minecraftforge.fml.network.PacketDistributor;
-import ttmp.infernoreborn.capability.Caps;
+import ttmp.infernoreborn.api.Caps;
+import ttmp.infernoreborn.api.sigil.EmptySigilHolder;
+import ttmp.infernoreborn.api.sigil.Sigil;
+import ttmp.infernoreborn.api.sigil.SigilHolder;
 import ttmp.infernoreborn.contents.ModContainers;
-import ttmp.infernoreborn.contents.sigil.Sigil;
-import ttmp.infernoreborn.contents.sigil.holder.EmptySigilHolder;
-import ttmp.infernoreborn.contents.sigil.holder.SigilHolder;
 import ttmp.infernoreborn.network.ModNet;
 import ttmp.infernoreborn.network.SyncScrapperScreenMsg;
 

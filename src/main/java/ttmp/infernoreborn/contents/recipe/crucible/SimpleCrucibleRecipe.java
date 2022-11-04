@@ -4,12 +4,13 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipeSerializer;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fluids.FluidStack;
+import ttmp.infernoreborn.api.QuantifiedIngredient;
+import ttmp.infernoreborn.api.Simulation;
+import ttmp.infernoreborn.api.crucible.CrucibleInventory;
+import ttmp.infernoreborn.api.crucible.CrucibleRecipe;
+import ttmp.infernoreborn.api.essence.EssenceIngredient;
 import ttmp.infernoreborn.contents.ModRecipes;
-import ttmp.infernoreborn.contents.recipe.EssenceIngredient;
 import ttmp.infernoreborn.contents.recipe.RecipeHelper;
-import ttmp.infernoreborn.inventory.CrucibleInventory;
-import ttmp.infernoreborn.util.QuantifiedIngredient;
-import ttmp.infernoreborn.util.Simulation;
 
 import java.util.Arrays;
 import java.util.Collections;

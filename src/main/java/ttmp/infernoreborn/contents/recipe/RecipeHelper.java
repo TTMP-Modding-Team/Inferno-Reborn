@@ -10,8 +10,8 @@ import net.minecraft.util.JSONUtils;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.registries.ForgeRegistries;
-import ttmp.infernoreborn.util.QuantifiedIngredient;
-import ttmp.infernoreborn.util.Simulation;
+import ttmp.infernoreborn.api.QuantifiedIngredient;
+import ttmp.infernoreborn.api.Simulation;
 
 public final class RecipeHelper{
 	private RecipeHelper(){}

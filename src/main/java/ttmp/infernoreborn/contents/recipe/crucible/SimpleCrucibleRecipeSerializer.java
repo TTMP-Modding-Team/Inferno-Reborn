@@ -11,10 +11,11 @@ import net.minecraft.util.JSONUtils;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.registries.ForgeRegistryEntry;
-import ttmp.infernoreborn.contents.recipe.EssenceIngredient;
+import ttmp.infernoreborn.api.QuantifiedIngredient;
+import ttmp.infernoreborn.api.crucible.CrucibleRecipe;
+import ttmp.infernoreborn.api.essence.EssenceIngredient;
 import ttmp.infernoreborn.contents.recipe.RecipeHelper;
 import ttmp.infernoreborn.contents.tile.crucible.Crucible;
-import ttmp.infernoreborn.util.QuantifiedIngredient;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -3,9 +3,9 @@ package ttmp.infernoreborn.contents.sigil;
 import com.google.common.collect.ListMultimap;
 import net.minecraft.entity.ai.attributes.Attribute;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
-import ttmp.infernoreborn.compat.patchouli.sigil.SigilPageBuilder;
+import ttmp.infernoreborn.api.sigil.SigilSlot;
+import ttmp.infernoreborn.api.sigil.page.SigilPageBuilder;
 import ttmp.infernoreborn.contents.ModAttributes;
-import ttmp.infernoreborn.util.SigilSlot;
 
 public class FeatherFallSigil extends AttributeSigil{
 	public FeatherFallSigil(Properties properties){

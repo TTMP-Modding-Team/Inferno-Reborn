@@ -6,8 +6,8 @@ import net.minecraft.util.text.IFormattableTextComponent;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.Style;
+import ttmp.infernoreborn.api.sigil.Sigil;
 import ttmp.infernoreborn.client.color.ColorUtils;
-import ttmp.infernoreborn.contents.sigil.Sigil;
 
 import java.util.Collection;
 import java.util.HashMap;

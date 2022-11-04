@@ -33,17 +33,16 @@ import net.minecraftforge.event.entity.player.ItemTooltipEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import org.lwjgl.opengl.GL11;
-import ttmp.infernoreborn.capability.Caps;
+import ttmp.infernoreborn.api.TickingTaskHandler;
+import ttmp.infernoreborn.api.shield.ShieldSkin;
+import ttmp.infernoreborn.api.sigil.Sigil;
+import ttmp.infernoreborn.api.sigil.SigilHolder;
+import ttmp.infernoreborn.capability.ClientAbilityHolder;
 import ttmp.infernoreborn.capability.ClientPlayerCapability;
 import ttmp.infernoreborn.capability.ClientPlayerCapability.ActiveShield;
 import ttmp.infernoreborn.capability.SimpleTickingTaskHandler;
-import ttmp.infernoreborn.capability.TickingTaskHandler;
 import ttmp.infernoreborn.client.color.ColorUtils;
-import ttmp.infernoreborn.contents.ability.holder.ClientAbilityHolder;
-import ttmp.infernoreborn.contents.sigil.Sigil;
-import ttmp.infernoreborn.contents.sigil.holder.SigilHolder;
 import ttmp.infernoreborn.contents.tile.crucible.CrucibleTile;
-import ttmp.infernoreborn.shield.ShieldSkin;
 
 import java.text.DecimalFormat;
 import java.util.List;
@@ -72,7 +71,7 @@ public final class ClientEventHandlers{
 		debugAbilities(event);
 		ClientPlayerEntity player = Minecraft.getInstance().player;
 		if(player!=null){
-			ClientPlayerCapability shield = player.getCapability(Caps.clientPlayerShield).orElse(null);
+			ClientPlayerCapability shield = player.getCapability(ClientPlayerCapability.clientPlayerShield).orElse(null);
 			if(shield!=null){
 				event.getRight().add(shield.shields.size()+" shields");
 				for(ActiveShield s : shield.shields){
@@ -154,7 +153,7 @@ public final class ClientEventHandlers{
 				(PlayerEntity)mc.getCameraEntity() : null;
 		if(player==null) return;
 		//noinspection ConstantConditions
-		ClientPlayerCapability cps = player.getCapability(Caps.clientPlayerShield).orElse(null);
+		ClientPlayerCapability cps = player.getCapability(ClientPlayerCapability.clientPlayerShield).orElse(null);
 		//noinspection ConstantConditions
 		if(cps==null||cps.shields.isEmpty()) return;
 

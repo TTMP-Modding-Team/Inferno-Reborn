@@ -16,6 +16,8 @@ import net.minecraft.client.world.ClientWorld;
 import net.minecraft.inventory.container.Container;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
+import ttmp.infernoreborn.api.RecipeTypes;
+import ttmp.infernoreborn.api.sigil.SigilcraftRecipe;
 import ttmp.infernoreborn.client.screen.EssenceHolderScreen;
 import ttmp.infernoreborn.client.screen.FoundryScreen;
 import ttmp.infernoreborn.client.screen.SigilEngravingTableScreen;
@@ -39,7 +41,6 @@ import ttmp.infernoreborn.contents.item.ability.GeneratorAbilityItem;
 import ttmp.infernoreborn.contents.recipe.sigilcraft.BaseSigilcraftRecipe;
 import ttmp.infernoreborn.contents.recipe.sigilcraft.ShapedSigilEngravingRecipe;
 import ttmp.infernoreborn.contents.recipe.sigilcraft.ShapedSigilTableCraftingRecipe;
-import ttmp.infernoreborn.contents.recipe.sigilcraft.SigilcraftRecipe;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
@@ -80,7 +81,7 @@ public class InfernoRebornJeiPlugin implements IModPlugin{
 		Multimap<RecipeSize, ShapedSigilEngravingRecipe> sigilEngravingRecipes = ArrayListMultimap.create();
 		Multimap<RecipeSize, ShapedSigilTableCraftingRecipe> sigilTableCraftingRecipes = ArrayListMultimap.create();
 
-		for(SigilcraftRecipe recipe : world.getRecipeManager().getAllRecipesFor(ModRecipes.SIGILCRAFT_RECIPE_TYPE)){
+		for(SigilcraftRecipe recipe : world.getRecipeManager().getAllRecipesFor(RecipeTypes.sigilcraftRecipeType())){
 			if(recipe instanceof ShapedSigilEngravingRecipe){
 				ShapedSigilEngravingRecipe r = (ShapedSigilEngravingRecipe)recipe;
 				RecipeSize recipeSize = getRecipeSize(r);

@@ -12,10 +12,10 @@ import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
-import ttmp.infernoreborn.capability.Caps;
+import ttmp.infernoreborn.api.Caps;
+import ttmp.infernoreborn.api.essence.EssenceHolder;
 import ttmp.infernoreborn.contents.ModTileEntities;
 import ttmp.infernoreborn.contents.container.EssenceHolderContainer;
-import ttmp.infernoreborn.util.EssenceHolder;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;

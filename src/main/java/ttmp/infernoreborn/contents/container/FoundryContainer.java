@@ -10,10 +10,10 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.IItemHandlerModifiable;
 import net.minecraftforge.items.SlotItemHandler;
-import ttmp.infernoreborn.capability.Caps;
+import ttmp.infernoreborn.api.Caps;
+import ttmp.infernoreborn.api.essence.Essence;
 import ttmp.infernoreborn.contents.ModContainers;
 import ttmp.infernoreborn.contents.tile.FoundryTile;
-import ttmp.infernoreborn.util.Essence;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;

@@ -9,12 +9,12 @@ import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
-import ttmp.infernoreborn.capability.EssenceNetProvider;
+import ttmp.infernoreborn.api.essence.EssenceHolder;
+import ttmp.infernoreborn.api.essence.EssenceNetProvider;
 import ttmp.infernoreborn.contents.ModTileEntities;
 import ttmp.infernoreborn.contents.block.ModProperties;
 import ttmp.infernoreborn.contents.item.EssenceNetBlockItem;
 import ttmp.infernoreborn.inventory.EssenceHolderItemHandler;
-import ttmp.infernoreborn.util.EssenceHolder;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;

@@ -8,12 +8,13 @@ import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.JSONUtils;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
+import ttmp.infernoreborn.api.sigil.Sigil;
+import ttmp.infernoreborn.api.sigil.SigilEngravingRecipe;
+import ttmp.infernoreborn.api.sigil.SigilHolder;
+import ttmp.infernoreborn.api.sigil.SigilcraftInventory;
 import ttmp.infernoreborn.contents.ModRecipes;
 import ttmp.infernoreborn.contents.Sigils;
 import ttmp.infernoreborn.contents.item.SigilItem;
-import ttmp.infernoreborn.contents.sigil.Sigil;
-import ttmp.infernoreborn.contents.sigil.holder.SigilHolder;
-import ttmp.infernoreborn.inventory.SigilcraftInventory;
 
 import javax.annotation.Nullable;
 import java.util.Map;

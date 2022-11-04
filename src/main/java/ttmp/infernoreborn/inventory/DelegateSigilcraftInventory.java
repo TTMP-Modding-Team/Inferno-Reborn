@@ -3,6 +3,7 @@ package ttmp.infernoreborn.inventory;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.container.Container;
 import net.minecraft.item.ItemStack;
+import ttmp.infernoreborn.api.sigil.SigilcraftInventory;
 
 public class DelegateSigilcraftInventory implements SigilcraftInventory{
 	protected final SigilcraftInventory delegate;

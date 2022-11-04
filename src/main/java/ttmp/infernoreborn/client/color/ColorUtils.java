@@ -2,7 +2,7 @@ package ttmp.infernoreborn.client.color;
 
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.text.Color;
-import ttmp.infernoreborn.contents.ability.Ability;
+import ttmp.infernoreborn.api.ability.Ability;
 
 import java.util.Random;
 

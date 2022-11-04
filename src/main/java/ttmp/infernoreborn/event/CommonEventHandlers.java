@@ -6,6 +6,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.ai.attributes.Attribute;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
+import net.minecraft.entity.ai.attributes.ModifiableAttributeInstance;
 import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
@@ -38,25 +39,26 @@ import net.minecraftforge.fml.LogicalSide;
 import net.minecraftforge.fml.common.Mod;
 import top.theillusivec4.curios.api.CuriosApi;
 import top.theillusivec4.curios.api.SlotResult;
-import ttmp.infernoreborn.capability.Caps;
-import ttmp.infernoreborn.capability.EssenceNetProvider;
+import ttmp.infernoreborn.InfernoReborn;
+import ttmp.infernoreborn.api.Caps;
+import ttmp.infernoreborn.api.LivingUtils;
+import ttmp.infernoreborn.api.TickingTaskHandler;
+import ttmp.infernoreborn.api.ability.AbilityHolder;
+import ttmp.infernoreborn.api.ability.OnAbilityEvent;
+import ttmp.infernoreborn.api.essence.Essence;
+import ttmp.infernoreborn.api.essence.EssenceHandler;
+import ttmp.infernoreborn.api.sigil.SigilHolder;
+import ttmp.infernoreborn.api.sigil.SigilSlot;
+import ttmp.infernoreborn.capability.ClientAbilityHolder;
+import ttmp.infernoreborn.capability.ItemSigilHolder;
 import ttmp.infernoreborn.capability.PlayerCapability;
+import ttmp.infernoreborn.capability.ServerAbilityHolder;
+import ttmp.infernoreborn.capability.SimpleEssenceNetProvider;
 import ttmp.infernoreborn.capability.SimpleTickingTaskHandler;
-import ttmp.infernoreborn.capability.TickingTaskHandler;
 import ttmp.infernoreborn.contents.ModAttributes;
 import ttmp.infernoreborn.contents.ModEffects;
 import ttmp.infernoreborn.contents.ModItems;
-import ttmp.infernoreborn.contents.ability.OnAbilityEvent;
-import ttmp.infernoreborn.contents.ability.holder.AbilityHolder;
-import ttmp.infernoreborn.contents.ability.holder.ClientAbilityHolder;
-import ttmp.infernoreborn.contents.ability.holder.ServerAbilityHolder;
-import ttmp.infernoreborn.contents.sigil.holder.ItemSigilHolder;
-import ttmp.infernoreborn.contents.sigil.holder.SigilHolder;
-import ttmp.infernoreborn.util.ArmorSets;
-import ttmp.infernoreborn.util.Essence;
-import ttmp.infernoreborn.util.EssenceHandler;
-import ttmp.infernoreborn.util.LivingUtils;
-import ttmp.infernoreborn.util.SigilSlot;
+import ttmp.infernoreborn.shield.ArmorSets;
 import ttmp.infernoreborn.util.SigilUtils;
 import ttmp.infernoreborn.util.damage.LivingOnly;
 
@@ -96,7 +98,7 @@ public class CommonEventHandlers{
 	public static void attachWorldCapabilities(AttachCapabilitiesEvent<World> event){
 		event.addCapability(TICKING_TASK_HANDLER_KEY, new SimpleTickingTaskHandler());
 		if(event.getObject().dimension()==World.OVERWORLD)
-			event.addCapability(ESSENCE_NET, new EssenceNetProvider.Impl());
+			event.addCapability(ESSENCE_NET, new SimpleEssenceNetProvider());
 	}
 
 	@SubscribeEvent
@@ -105,7 +107,7 @@ public class CommonEventHandlers{
 		if(!entity.isAlive()) return;
 
 		if(!entity.level.isClientSide&&entity.invulnerableTime<=0){
-			float regen = (float)LivingUtils.getAttrib(entity, ModAttributes.REGENERATION.get());
+			float regen = (float)getAttrib(entity, ModAttributes.REGENERATION.get());
 			if(regen>0) entity.heal(regen);
 		}
 
@@ -115,7 +117,7 @@ public class CommonEventHandlers{
 
 	@SubscribeEvent
 	public static void onLivingAttack(LivingAttackEvent event){
-		if(event.getSource()==DamageSource.FALL&&LivingUtils.getAttrib(event.getEntityLiving(), ModAttributes.FALLING_DAMAGE_RESISTANCE.get())>=2)
+		if(event.getSource()==DamageSource.FALL&&getAttrib(event.getEntityLiving(), ModAttributes.FALLING_DAMAGE_RESISTANCE.get())>=2)
 			event.setCanceled(true);
 
 		ServerAbilityHolder h = ServerAbilityHolder.of(event.getEntityLiving());
@@ -140,22 +142,22 @@ public class CommonEventHandlers{
 		float mod = 0;
 
 		if(event.getSource()==DamageSource.FALL)
-			res = (float)(LivingUtils.getAttrib(event.getEntityLiving(), ModAttributes.FALLING_DAMAGE_RESISTANCE.get())-1);
+			res = (float)(getAttrib(event.getEntityLiving(), ModAttributes.FALLING_DAMAGE_RESISTANCE.get())-1);
 		else if(!event.getSource().isBypassInvul()){
-			res = (float)LivingUtils.getAttrib(entity, ModAttributes.DAMAGE_RESISTANCE.get());
+			res = (float)getAttrib(entity, ModAttributes.DAMAGE_RESISTANCE.get());
 			if(event.getSource().isMagic())
-				res += LivingUtils.getAttrib(event.getEntityLiving(), ModAttributes.MAGIC_DAMAGE_RESISTANCE.get())-1;
+				res += getAttrib(event.getEntityLiving(), ModAttributes.MAGIC_DAMAGE_RESISTANCE.get())-1;
 			if(attacker!=null&&event.getSource().getDirectEntity()==attacker)
-				res += LivingUtils.getAttrib(event.getEntityLiving(), ModAttributes.MELEE_DAMAGE_RESISTANCE.get())-1;
+				res += getAttrib(event.getEntityLiving(), ModAttributes.MELEE_DAMAGE_RESISTANCE.get())-1;
 			if(!event.getSource().isMagic()&&event.getSource().isProjectile())
-				res += LivingUtils.getAttrib(event.getEntityLiving(), ModAttributes.RANGED_DAMAGE_RESISTANCE.get())-1;
+				res += getAttrib(event.getEntityLiving(), ModAttributes.RANGED_DAMAGE_RESISTANCE.get())-1;
 		}else res = 0;
 
 		if(attacker!=null){
 			if(event.getSource().isMagic())
-				mod += LivingUtils.getAttrib(attacker, ModAttributes.MAGIC_ATTACK.get());
+				mod += getAttrib(attacker, ModAttributes.MAGIC_ATTACK.get());
 			if(!event.getSource().isMagic()&&event.getSource().isProjectile())
-				mod += LivingUtils.getAttrib(attacker, ModAttributes.RANGED_ATTACK.get());
+				mod += getAttrib(attacker, ModAttributes.RANGED_ATTACK.get());
 		}
 
 		float dmg = event.getAmount()+mod;
@@ -351,5 +353,12 @@ public class CommonEventHandlers{
 				e.level.addFreshEntity(e2);
 			}
 		}
+	}
+
+	private static double getAttrib(LivingEntity entity, Attribute attrib){
+		ModifiableAttributeInstance a1 = entity.getAttribute(attrib);
+		if(a1!=null) return a1.getValue();
+		InfernoReborn.LOGGER.warn("Cannot find {} from {}", attrib, entity);
+		return attrib.getDefaultValue();
 	}
 }

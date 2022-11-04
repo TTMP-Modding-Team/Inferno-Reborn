@@ -9,10 +9,10 @@ import net.minecraft.loot.conditions.ILootCondition;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.loot.GlobalLootModifierSerializer;
 import net.minecraftforge.common.loot.LootModifier;
-import ttmp.infernoreborn.contents.ability.Ability;
-import ttmp.infernoreborn.contents.ability.holder.AbilityHolder;
-import ttmp.infernoreborn.util.Essence;
-import ttmp.infernoreborn.util.EssenceType;
+import ttmp.infernoreborn.api.ability.Ability;
+import ttmp.infernoreborn.api.ability.AbilityHolder;
+import ttmp.infernoreborn.api.essence.Essence;
+import ttmp.infernoreborn.api.essence.EssenceType;
 
 import javax.annotation.Nonnull;
 import java.util.List;

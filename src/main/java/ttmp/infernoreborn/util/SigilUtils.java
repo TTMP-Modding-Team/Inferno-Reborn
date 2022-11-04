@@ -11,9 +11,10 @@ import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.event.entity.living.LivingAttackEvent;
 import net.minecraftforge.items.IItemHandlerModifiable;
 import top.theillusivec4.curios.api.CuriosApi;
-import ttmp.infernoreborn.contents.sigil.Sigil;
-import ttmp.infernoreborn.contents.sigil.context.SigilEventContext;
-import ttmp.infernoreborn.contents.sigil.holder.SigilHolder;
+import ttmp.infernoreborn.api.sigil.Sigil;
+import ttmp.infernoreborn.api.sigil.SigilHolder;
+import ttmp.infernoreborn.api.sigil.SigilSlot;
+import ttmp.infernoreborn.api.sigil.context.SigilEventContext;
 
 import java.util.function.BiConsumer;
 

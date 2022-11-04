@@ -4,8 +4,8 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.particle.Particle;
 import net.minecraft.particles.IParticleData;
 import net.minecraft.util.math.vector.Vector3d;
+import ttmp.infernoreborn.api.TickingTask;
 import ttmp.infernoreborn.network.ParticleMsg;
-import ttmp.infernoreborn.network.TickingTask;
 
 import javax.annotation.Nullable;
 import java.util.Random;

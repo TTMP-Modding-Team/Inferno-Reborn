@@ -1,8 +1,8 @@
 package ttmp.infernoreborn.network;
 
 import net.minecraft.network.PacketBuffer;
-import ttmp.infernoreborn.util.EssenceHolder;
-import ttmp.infernoreborn.util.EssenceType;
+import ttmp.infernoreborn.api.essence.EssenceHolder;
+import ttmp.infernoreborn.api.essence.EssenceType;
 
 public class EssenceHolderScreenEssenceSyncMsg{
 	private final int[] essences = new int[EssenceType.values().length];

@@ -15,10 +15,10 @@ import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.common.capabilities.ICapabilitySerializable;
 import net.minecraftforge.common.util.LazyOptional;
-import ttmp.infernoreborn.capability.Caps;
+import ttmp.infernoreborn.api.Caps;
+import ttmp.infernoreborn.api.essence.EssenceHolder;
+import ttmp.infernoreborn.api.essence.EssenceType;
 import ttmp.infernoreborn.contents.container.EssenceHolderContainerProvider;
-import ttmp.infernoreborn.util.EssenceHolder;
-import ttmp.infernoreborn.util.EssenceType;
 import ttmp.infernoreborn.util.ExpandKey;
 
 import javax.annotation.Nonnull;

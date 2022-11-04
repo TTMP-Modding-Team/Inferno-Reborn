@@ -1,6 +1,7 @@
 package ttmp.infernoreborn.contents.ability;
 
-import ttmp.infernoreborn.util.EssenceType;
+import ttmp.infernoreborn.api.ability.Ability;
+import ttmp.infernoreborn.api.essence.EssenceType;
 
 public final class VeteranAbility{
 	private VeteranAbility(){}

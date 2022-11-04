@@ -2,7 +2,7 @@ package ttmp.infernoreborn.contents.item.ability;
 
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.ItemStack;
-import ttmp.infernoreborn.contents.ability.holder.ServerAbilityHolder;
+import ttmp.infernoreborn.capability.ServerAbilityHolder;
 
 public class RandomAbilityItem extends AbstractAbilityItem{
 	public RandomAbilityItem(Properties properties){

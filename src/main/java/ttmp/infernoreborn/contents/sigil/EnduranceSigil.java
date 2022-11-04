@@ -4,9 +4,9 @@ import com.google.common.collect.ListMultimap;
 import net.minecraft.entity.ai.attributes.Attribute;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.entity.ai.attributes.AttributeModifier.Operation;
-import ttmp.infernoreborn.compat.patchouli.sigil.SigilPageBuilder;
+import ttmp.infernoreborn.api.sigil.SigilSlot;
+import ttmp.infernoreborn.api.sigil.page.SigilPageBuilder;
 import ttmp.infernoreborn.contents.ModAttributes;
-import ttmp.infernoreborn.util.SigilSlot;
 
 public class EnduranceSigil extends AttributeSigil{
 	public EnduranceSigil(Properties properties){

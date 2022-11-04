@@ -3,10 +3,11 @@ package ttmp.infernoreborn.contents.sigil;
 import com.google.common.collect.ListMultimap;
 import net.minecraft.entity.ai.attributes.Attribute;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
-import ttmp.infernoreborn.contents.sigil.context.ItemContext;
-import ttmp.infernoreborn.contents.sigil.context.SigilEventContext;
-import ttmp.infernoreborn.util.LivingUtils;
-import ttmp.infernoreborn.util.SigilSlot;
+import ttmp.infernoreborn.api.LivingUtils;
+import ttmp.infernoreborn.api.sigil.Sigil;
+import ttmp.infernoreborn.api.sigil.SigilSlot;
+import ttmp.infernoreborn.api.sigil.context.ItemContext;
+import ttmp.infernoreborn.api.sigil.context.SigilEventContext;
 
 import javax.annotation.Nullable;
 import java.util.EnumMap;

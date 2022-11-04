@@ -13,10 +13,10 @@ import net.minecraft.item.crafting.IRecipeSerializer;
 import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.util.ResourceLocation;
 import ttmp.infernoreborn.contents.ModRecipes;
-import ttmp.infernoreborn.contents.recipe.EssenceIngredient;
-import ttmp.infernoreborn.contents.recipe.foundry.FoundryRecipe;
-import ttmp.infernoreborn.util.EssenceType;
-import ttmp.infernoreborn.util.QuantifiedIngredient;
+import ttmp.infernoreborn.api.essence.EssenceIngredient;
+import ttmp.infernoreborn.api.foundry.FoundryRecipe;
+import ttmp.infernoreborn.api.essence.EssenceType;
+import ttmp.infernoreborn.api.QuantifiedIngredient;
 
 import java.util.ArrayList;
 import java.util.List;

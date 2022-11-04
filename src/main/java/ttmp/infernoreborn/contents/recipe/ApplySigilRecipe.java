@@ -6,11 +6,11 @@ import net.minecraft.item.crafting.IRecipeSerializer;
 import net.minecraft.item.crafting.SpecialRecipe;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
-import ttmp.infernoreborn.capability.Caps;
+import ttmp.infernoreborn.api.Caps;
+import ttmp.infernoreborn.api.sigil.Sigil;
+import ttmp.infernoreborn.api.sigil.SigilHolder;
 import ttmp.infernoreborn.contents.ModRecipes;
 import ttmp.infernoreborn.contents.item.SigilItem;
-import ttmp.infernoreborn.contents.sigil.Sigil;
-import ttmp.infernoreborn.contents.sigil.holder.SigilHolder;
 
 import java.util.ArrayList;
 import java.util.HashSet;

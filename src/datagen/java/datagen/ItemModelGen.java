@@ -9,7 +9,7 @@ import net.minecraftforge.client.model.generators.ModelBuilder;
 import net.minecraftforge.client.model.generators.ModelFile;
 import net.minecraftforge.common.data.ExistingFileHelper;
 import ttmp.infernoreborn.contents.ModItems;
-import ttmp.infernoreborn.util.EssenceType;
+import ttmp.infernoreborn.api.essence.EssenceType;
 
 import java.util.Objects;
 

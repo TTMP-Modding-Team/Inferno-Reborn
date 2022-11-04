@@ -5,6 +5,7 @@ import net.minecraft.inventory.ItemStackHelper;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.NonNullList;
+import ttmp.infernoreborn.api.sigil.SigilcraftInventory;
 
 public class SigilTableInventory implements SigilcraftInventory{
 	protected final NonNullList<ItemStack> items;

@@ -5,7 +5,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import ttmp.infernoreborn.InfernoReborn;
-import ttmp.infernoreborn.util.EssenceType;
+import ttmp.infernoreborn.api.essence.EssenceType;
 
 import javax.annotation.Nullable;
 import java.util.Random;

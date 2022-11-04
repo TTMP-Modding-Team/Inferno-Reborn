@@ -9,6 +9,7 @@ import net.minecraftforge.fml.common.Mod.EventBusSubscriber.Bus;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistry;
 import net.minecraftforge.registries.RegistryBuilder;
+import ttmp.infernoreborn.api.sigil.Sigil;
 import ttmp.infernoreborn.contents.sigil.AfflictionSigil;
 import ttmp.infernoreborn.contents.sigil.BlessingOfMercurySigil;
 import ttmp.infernoreborn.contents.sigil.EnduranceSigil;
@@ -22,7 +23,6 @@ import ttmp.infernoreborn.contents.sigil.MiniHeartSigil;
 import ttmp.infernoreborn.contents.sigil.RunicShieldSigil;
 import ttmp.infernoreborn.contents.sigil.ScaldRuneSigil;
 import ttmp.infernoreborn.contents.sigil.ShieldModifierSigil;
-import ttmp.infernoreborn.contents.sigil.Sigil;
 import ttmp.infernoreborn.contents.sigil.TravelerSigil;
 
 import static ttmp.infernoreborn.InfernoReborn.MODID;

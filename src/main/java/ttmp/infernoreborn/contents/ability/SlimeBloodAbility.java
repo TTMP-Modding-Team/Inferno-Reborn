@@ -10,8 +10,9 @@ import net.minecraft.util.DamageSource;
 import net.minecraft.util.EntityDamageSource;
 import net.minecraft.world.IServerWorld;
 import ttmp.infernoreborn.InfernoReborn;
-import ttmp.infernoreborn.contents.ability.holder.ServerAbilityHolder;
-import ttmp.infernoreborn.util.EssenceType;
+import ttmp.infernoreborn.api.ability.Ability;
+import ttmp.infernoreborn.api.essence.EssenceType;
+import ttmp.infernoreborn.capability.ServerAbilityHolder;
 import ttmp.infernoreborn.util.SlimeEntityAccessor;
 
 import javax.annotation.Nullable;

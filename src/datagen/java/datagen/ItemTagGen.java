@@ -7,7 +7,7 @@ import net.minecraft.item.Item;
 import net.minecraftforge.common.data.ExistingFileHelper;
 import ttmp.infernoreborn.contents.ModItems;
 import ttmp.infernoreborn.contents.ModTags;
-import ttmp.infernoreborn.util.EssenceType;
+import ttmp.infernoreborn.api.essence.EssenceType;
 
 import javax.annotation.Nullable;
 

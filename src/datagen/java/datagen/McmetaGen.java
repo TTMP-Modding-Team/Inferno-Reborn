@@ -10,7 +10,7 @@ import net.minecraft.resources.ResourcePackType;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.data.ExistingFileHelper;
 import ttmp.infernoreborn.InfernoReborn;
-import ttmp.infernoreborn.util.EssenceType;
+import ttmp.infernoreborn.api.essence.EssenceType;
 
 import java.io.IOException;
 import java.nio.file.Path;

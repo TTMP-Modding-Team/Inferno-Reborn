@@ -8,11 +8,11 @@ import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
-import ttmp.infernoreborn.capability.Caps;
+import ttmp.infernoreborn.api.Caps;
+import ttmp.infernoreborn.api.essence.EssenceHolder;
+import ttmp.infernoreborn.api.essence.EssenceType;
 import ttmp.infernoreborn.contents.ModItems;
 import ttmp.infernoreborn.contents.ModRecipes;
-import ttmp.infernoreborn.util.EssenceHolder;
-import ttmp.infernoreborn.util.EssenceType;
 
 public class EssenceHolderBookRecipe implements ICraftingRecipe{
 	private final ResourceLocation id;

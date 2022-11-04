@@ -28,14 +28,22 @@ compileJava.options.encoding = 'UTF-8'
 println('Java: ' + System.getProperty('java.version') + ' JVM: ' + System.getProperty('java.vm.version') + '(' + System.getProperty('java.vendor') + ') Arch: ' + System.getProperty('os.arch'))
 
 sourceSets {
+    api {
+        compileClasspath += configurations.getByName("minecraft")
+    }
+
     main {
         resources { srcDir 'src/generated/resources' }
+        compileClasspath += sourceSets.api.output
+        runtimeClasspath += sourceSets.api.output
     }
 
     datagen {
         java { srcDir "src/datagen/java" }
 
         compileClasspath += configurations.getByName("minecraft")
+        compileClasspath += sourceSets.api.output
+        runtimeClasspath += sourceSets.api.output
         compileClasspath += sourceSets.main.output
         runtimeClasspath += sourceSets.main.output
     }
@@ -53,7 +61,7 @@ minecraft {
 
             mods {
                 infernoreborn {
-                    source sourceSets.main
+                    sources(sourceSets.main, sourceSets.api)
                 }
             }
         }
@@ -65,7 +73,7 @@ minecraft {
 
             mods {
                 infernoreborn {
-                    source sourceSets.main
+                    sources(sourceSets.main, sourceSets.api)
                 }
             }
         }
@@ -78,7 +86,7 @@ minecraft {
 
             mods {
                 infernoreborn {
-                    sources(sourceSets.main, sourceSets.datagen)
+                    sources(sourceSets.main, sourceSets.api, sourceSets.datagen)
                 }
             }
         }
@@ -98,13 +106,13 @@ jar {
     archiveClassifier.set('slim')
     manifest {
         attributes([
-            "Specification-Title": "Inferno Reborn",
-            "Specification-Vendor": "ttmp",
-            "Specification-Version": "1",
-            "Implementation-Title": project.name,
-            "Implementation-Version": "${version}",
-            "Implementation-Vendor" : "ttmp",
-            "Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ")
+                "Specification-Title"     : "Inferno Reborn",
+                "Specification-Vendor"    : "ttmp",
+                "Specification-Version"   : "1",
+                "Implementation-Title"    : project.name,
+                "Implementation-Version"  : "${version}",
+                "Implementation-Vendor"   : "ttmp",
+                "Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ")
         ])
     }
 }
@@ -135,7 +143,9 @@ dependencies {
     runtimeOnly fg.deobf("top.theillusivec4.curios:curios-forge:1.16.5-4.0.8.2")
     compileOnly fg.deobf("top.theillusivec4.curios:curios-forge:1.16.5-4.0.8.2:api")
 
-    implementation ('io.github.amonglang:among:0.6.0-SNAPSHOT'){
+    apiImplementation fg.deobf("top.theillusivec4.curios:curios-forge:1.16.5-4.0.8.2:api")
+
+    implementation('io.github.amonglang:among:0.6.0-SNAPSHOT'){
         changing = true
     }
 

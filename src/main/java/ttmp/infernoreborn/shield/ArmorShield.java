@@ -1,7 +1,7 @@
 package ttmp.infernoreborn.shield;
 
-import ttmp.infernoreborn.util.ArmorSet;
-import ttmp.infernoreborn.util.ArmorSets;
+import ttmp.infernoreborn.api.shield.Shield;
+import ttmp.infernoreborn.api.shield.SimpleShield;
 
 import javax.annotation.Nullable;
 import java.util.Collection;

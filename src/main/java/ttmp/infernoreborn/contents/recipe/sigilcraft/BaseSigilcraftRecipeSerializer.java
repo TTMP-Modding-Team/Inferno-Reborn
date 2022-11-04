@@ -12,6 +12,7 @@ import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.util.JSONUtils;
 import net.minecraft.util.NonNullList;
 import net.minecraftforge.registries.ForgeRegistryEntry;
+import ttmp.infernoreborn.api.sigil.SigilcraftRecipe;
 
 import java.util.Map;
 import java.util.Set;

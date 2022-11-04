@@ -2,8 +2,8 @@ package ttmp.infernoreborn.network;
 
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.network.PacketBuffer;
+import ttmp.infernoreborn.api.shield.ShieldSkin;
 import ttmp.infernoreborn.capability.PlayerCapability.ActiveShield;
-import ttmp.infernoreborn.shield.ShieldSkin;
 import ttmp.infernoreborn.shield.ShieldSkins;
 
 import javax.annotation.Nullable;

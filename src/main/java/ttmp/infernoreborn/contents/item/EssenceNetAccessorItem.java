@@ -12,21 +12,25 @@ import net.minecraft.util.Hand;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.capabilities.CapabilityInject;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.common.capabilities.ICapabilitySerializable;
 import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.common.util.LazyOptional;
-import ttmp.infernoreborn.capability.Caps;
-import ttmp.infernoreborn.capability.EssenceNetProvider;
+import ttmp.infernoreborn.api.Caps;
+import ttmp.infernoreborn.api.essence.EssenceHolder;
+import ttmp.infernoreborn.api.essence.EssenceNetProvider;
 import ttmp.infernoreborn.contents.block.essencenet.EssenceNetCoreBlock;
 import ttmp.infernoreborn.contents.container.EssenceHolderContainerProvider;
-import ttmp.infernoreborn.util.EssenceHolder;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.List;
 
 public class EssenceNetAccessorItem extends Item implements EssenceNetCoreBlock.HasEssenceNet{
+	@CapabilityInject(EssenceNetAccessorItem.Data.class)
+	public static Capability<EssenceNetAccessorItem.Data> essenceNetAccessorData;
+
 	public EssenceNetAccessorItem(Properties properties){
 		super(properties);
 	}
@@ -40,7 +44,7 @@ public class EssenceNetAccessorItem extends Item implements EssenceNetCoreBlock.
 		return data!=null ? data.networkId : 0;
 	}
 	@Override public void setNetwork(ItemStack stack, int network){
-		stack.getCapability(Caps.essenceNetAccessorData).ifPresent(data -> data.setNetworkId(network));
+		stack.getCapability(essenceNetAccessorData).ifPresent(data -> data.setNetworkId(network));
 	}
 
 	@Override public ActionResult<ItemStack> use(World world, PlayerEntity player, Hand hand){
@@ -66,12 +70,12 @@ public class EssenceNetAccessorItem extends Item implements EssenceNetCoreBlock.
 
 	@Override public void readShareTag(ItemStack stack, @Nullable CompoundNBT nbt){
 		if(nbt!=null&&nbt.contains("EssenceNetworkID", Constants.NBT.TAG_INT)){
-			stack.getCapability(Caps.essenceNetAccessorData).ifPresent(data -> data.setNetworkId(nbt.getInt("EssenceNetworkID")));
+			stack.getCapability(essenceNetAccessorData).ifPresent(data -> data.setNetworkId(nbt.getInt("EssenceNetworkID")));
 		}
 	}
 
 	@SuppressWarnings("ConstantConditions") @Nullable private static Data data(ItemStack stack){
-		return stack.getCapability(Caps.essenceNetAccessorData).orElse(null);
+		return stack.getCapability(essenceNetAccessorData).orElse(null);
 	}
 
 	public static final class Data implements ICapabilitySerializable<IntNBT>{
@@ -101,7 +105,7 @@ public class EssenceNetAccessorItem extends Item implements EssenceNetCoreBlock.
 					essenceHolderCache = h!=null ? LazyOptional.of(() -> h) : LazyOptional.empty();
 				}
 				return essenceHolderCache.cast();
-			}else if(cap==Caps.essenceNetAccessorData){
+			}else if(cap==essenceNetAccessorData){
 				if(self==null) self = LazyOptional.of(() -> this);
 				return self.cast();
 			}else return LazyOptional.empty();

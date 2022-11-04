@@ -1,9 +1,9 @@
 package ttmp.infernoreborn.network;
 
 import net.minecraft.network.PacketBuffer;
+import ttmp.infernoreborn.api.sigil.Sigil;
+import ttmp.infernoreborn.api.sigil.SigilHolder;
 import ttmp.infernoreborn.contents.Sigils;
-import ttmp.infernoreborn.contents.sigil.Sigil;
-import ttmp.infernoreborn.contents.sigil.holder.SigilHolder;
 
 import java.util.ArrayList;
 import java.util.Collection;

@@ -6,7 +6,7 @@ import among.construct.ConstructRule;
 import among.construct.Constructor;
 import com.google.common.collect.Maps;
 import net.minecraft.util.ResourceLocation;
-import ttmp.infernoreborn.contents.ability.Ability;
+import ttmp.infernoreborn.api.ability.Ability;
 import ttmp.infernoreborn.infernaltype.InfernalGenContext;
 import ttmp.infernoreborn.infernaltype.dsl.SwitchDsl;
 import ttmp.infernoreborn.infernaltype.dsl.SwitchDsl.Cases;

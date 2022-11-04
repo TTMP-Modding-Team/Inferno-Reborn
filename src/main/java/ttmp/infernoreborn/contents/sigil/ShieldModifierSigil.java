@@ -1,9 +1,10 @@
 package ttmp.infernoreborn.contents.sigil;
 
-import ttmp.infernoreborn.shield.MutableShield;
-import ttmp.infernoreborn.shield.Shield;
-import ttmp.infernoreborn.shield.ShieldModifier;
-import ttmp.infernoreborn.util.SigilSlot;
+import ttmp.infernoreborn.api.shield.MutableShield;
+import ttmp.infernoreborn.api.shield.Shield;
+import ttmp.infernoreborn.api.shield.ShieldModifier;
+import ttmp.infernoreborn.api.sigil.Sigil;
+import ttmp.infernoreborn.api.sigil.SigilSlot;
 
 import java.util.Objects;
 

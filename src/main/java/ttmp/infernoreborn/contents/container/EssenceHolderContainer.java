@@ -12,13 +12,13 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.IntReferenceHolder;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fml.network.PacketDistributor;
-import ttmp.infernoreborn.capability.Caps;
+import ttmp.infernoreborn.api.Caps;
+import ttmp.infernoreborn.api.essence.EssenceHolder;
+import ttmp.infernoreborn.api.essence.EssenceType;
 import ttmp.infernoreborn.contents.ModContainers;
 import ttmp.infernoreborn.inventory.EssenceHolderItemHandler;
 import ttmp.infernoreborn.network.EssenceHolderScreenEssenceSyncMsg;
 import ttmp.infernoreborn.network.ModNet;
-import ttmp.infernoreborn.util.EssenceHolder;
-import ttmp.infernoreborn.util.EssenceType;
 
 import javax.annotation.Nullable;
 

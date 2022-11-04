@@ -5,8 +5,8 @@ import com.google.common.collect.Multimap;
 import net.minecraft.entity.ai.attributes.Attribute;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.util.ResourceLocation;
+import ttmp.infernoreborn.api.ability.Ability;
 import ttmp.infernoreborn.contents.Abilities;
-import ttmp.infernoreborn.contents.ability.Ability;
 import vazkii.patchouli.api.IVariable;
 
 import javax.annotation.Nullable;

@@ -5,10 +5,11 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.ai.attributes.AttributeModifier.Operation;
 import net.minecraft.potion.EffectInstance;
 import net.minecraft.world.Explosion;
+import ttmp.infernoreborn.api.LivingUtils;
+import ttmp.infernoreborn.api.ability.Ability;
+import ttmp.infernoreborn.api.essence.EssenceType;
 import ttmp.infernoreborn.contents.ModAttributes;
 import ttmp.infernoreborn.contents.ModEffects;
-import ttmp.infernoreborn.util.EssenceType;
-import ttmp.infernoreborn.util.LivingUtils;
 import ttmp.infernoreborn.util.damage.Damages;
 import ttmp.infernoreborn.util.damage.LivingOnlyEntityDamageSource;
 

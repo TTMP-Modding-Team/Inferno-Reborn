@@ -10,11 +10,13 @@ import net.minecraft.util.DamageSource;
 import net.minecraft.util.EntityDamageSource;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import top.theillusivec4.curios.api.CuriosApi;
+import ttmp.infernoreborn.api.LivingUtils;
+import ttmp.infernoreborn.api.ability.Ability;
+import ttmp.infernoreborn.api.ability.Cooldown;
+import ttmp.infernoreborn.api.ability.OnAbilityEvent;
+import ttmp.infernoreborn.api.essence.EssenceType;
 import ttmp.infernoreborn.contents.ModAttributes;
 import ttmp.infernoreborn.contents.ModItems;
-import ttmp.infernoreborn.contents.ability.cooldown.Cooldown;
-import ttmp.infernoreborn.util.EssenceType;
-import ttmp.infernoreborn.util.LivingUtils;
 
 import static net.minecraft.entity.ai.attributes.AttributeModifier.Operation.ADDITION;
 import static net.minecraft.entity.ai.attributes.AttributeModifier.Operation.MULTIPLY_BASE;

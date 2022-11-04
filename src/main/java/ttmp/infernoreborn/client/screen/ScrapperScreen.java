@@ -1,6 +1,6 @@
 package ttmp.infernoreborn.client.screen;
 
-import ttmp.infernoreborn.contents.sigil.Sigil;
+import ttmp.infernoreborn.api.sigil.Sigil;
 
 import javax.annotation.Nullable;
 import java.util.List;

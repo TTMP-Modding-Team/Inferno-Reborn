@@ -15,11 +15,11 @@ import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.Constants;
+import ttmp.infernoreborn.api.sigil.Sigil;
+import ttmp.infernoreborn.api.sigil.SigilSlot;
 import ttmp.infernoreborn.client.color.ColorUtils;
 import ttmp.infernoreborn.contents.ModItems;
 import ttmp.infernoreborn.contents.Sigils;
-import ttmp.infernoreborn.contents.sigil.Sigil;
-import ttmp.infernoreborn.util.SigilSlot;
 
 import javax.annotation.Nullable;
 import java.util.List;

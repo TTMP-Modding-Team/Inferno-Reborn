@@ -2,9 +2,9 @@ package ttmp.infernoreborn.compat.jei.guihandler;
 
 import mezz.jei.api.gui.handlers.IGuiContainerHandler;
 import net.minecraft.client.gui.screen.inventory.ContainerScreen;
+import ttmp.infernoreborn.api.sigil.Sigil;
 import ttmp.infernoreborn.client.screen.ScrapperScreen;
 import ttmp.infernoreborn.contents.item.SigilItem;
-import ttmp.infernoreborn.contents.sigil.Sigil;
 
 import javax.annotation.Nullable;
 

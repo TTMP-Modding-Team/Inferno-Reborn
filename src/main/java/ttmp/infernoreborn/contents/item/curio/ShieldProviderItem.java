@@ -1,15 +1,14 @@
 package ttmp.infernoreborn.contents.item.curio;
 
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.Direction;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.common.util.LazyOptional;
-import ttmp.infernoreborn.capability.Caps;
-import ttmp.infernoreborn.capability.ShieldProvider;
-import ttmp.infernoreborn.shield.Shield;
+import ttmp.infernoreborn.api.Caps;
+import ttmp.infernoreborn.api.shield.Shield;
+import ttmp.infernoreborn.api.shield.ShieldProvider;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;

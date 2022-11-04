@@ -1,8 +1,9 @@
 package ttmp.infernoreborn.contents.sigil;
 
 import net.minecraft.util.text.TranslationTextComponent;
-import ttmp.infernoreborn.compat.patchouli.sigil.SigilPageBuilder;
-import ttmp.infernoreborn.util.SigilSlot;
+import ttmp.infernoreborn.api.sigil.Sigil;
+import ttmp.infernoreborn.api.sigil.SigilSlot;
+import ttmp.infernoreborn.api.sigil.page.SigilPageBuilder;
 
 public class GoatEyeSigil extends Sigil{
 	public GoatEyeSigil(Properties properties){

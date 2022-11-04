@@ -2,6 +2,7 @@ package ttmp.infernoreborn.contents.ability;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.util.math.BlockPos;
+import ttmp.infernoreborn.api.ability.Ability;
 import ttmp.infernoreborn.contents.entity.SummonedSkeletonEntity;
 import ttmp.infernoreborn.contents.entity.SummonedZombieEntity;
 

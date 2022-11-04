@@ -1,6 +1,6 @@
 package ttmp.infernoreborn.infernaltype.dsl.abilitygen;
 
-import ttmp.infernoreborn.contents.ability.Ability;
+import ttmp.infernoreborn.api.ability.Ability;
 import ttmp.infernoreborn.infernaltype.InfernalGenContext;
 
 import java.util.Collections;

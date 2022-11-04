@@ -1,7 +1,7 @@
 package ttmp.infernoreborn.infernaltype;
 
 import net.minecraft.entity.LivingEntity;
-import ttmp.infernoreborn.contents.ability.holder.ServerAbilityHolder;
+import ttmp.infernoreborn.capability.ServerAbilityHolder;
 
 import java.util.Random;
 

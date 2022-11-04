@@ -3,9 +3,11 @@ package ttmp.infernoreborn.contents.ability;
 import net.minecraft.potion.EffectInstance;
 import net.minecraft.potion.Effects;
 import net.minecraft.world.World;
+import ttmp.infernoreborn.api.ability.Ability;
+import ttmp.infernoreborn.api.ability.AbilitySkill;
+import ttmp.infernoreborn.api.essence.EssenceType;
 import ttmp.infernoreborn.contents.ModEffects;
 import ttmp.infernoreborn.contents.entity.WindEntity;
-import ttmp.infernoreborn.util.EssenceType;
 
 import java.util.function.Function;
 

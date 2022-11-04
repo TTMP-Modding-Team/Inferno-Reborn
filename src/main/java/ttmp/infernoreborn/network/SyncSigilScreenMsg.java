@@ -1,8 +1,8 @@
 package ttmp.infernoreborn.network;
 
 import net.minecraft.network.PacketBuffer;
+import ttmp.infernoreborn.api.sigil.Sigil;
 import ttmp.infernoreborn.contents.Sigils;
-import ttmp.infernoreborn.contents.sigil.Sigil;
 
 import java.util.HashSet;
 import java.util.Set;

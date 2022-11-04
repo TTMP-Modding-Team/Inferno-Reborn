@@ -2,7 +2,7 @@ package ttmp.infernoreborn.client.color;
 
 import net.minecraft.client.renderer.color.IItemColor;
 import net.minecraft.item.ItemStack;
-import ttmp.infernoreborn.contents.ability.Ability;
+import ttmp.infernoreborn.api.ability.Ability;
 import ttmp.infernoreborn.contents.item.ability.FixedAbilityItem;
 
 public class SparkColor implements IItemColor{

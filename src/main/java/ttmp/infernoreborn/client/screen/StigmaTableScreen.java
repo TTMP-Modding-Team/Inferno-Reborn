@@ -11,10 +11,10 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TextFormatting;
+import ttmp.infernoreborn.api.sigil.Sigil;
 import ttmp.infernoreborn.contents.ModItems;
 import ttmp.infernoreborn.contents.container.StigmaTableContainer;
 import ttmp.infernoreborn.contents.item.SigilItem;
-import ttmp.infernoreborn.contents.sigil.Sigil;
 import ttmp.infernoreborn.network.EngraveBodySigilMsg;
 import ttmp.infernoreborn.network.ModNet;
 

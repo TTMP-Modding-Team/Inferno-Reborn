@@ -9,13 +9,13 @@ import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.items.CapabilityItemHandler;
-import ttmp.infernoreborn.capability.EssenceNetProvider;
+import ttmp.infernoreborn.api.essence.EssenceHolder;
+import ttmp.infernoreborn.api.essence.EssenceNetProvider;
+import ttmp.infernoreborn.api.essence.EssenceSize;
+import ttmp.infernoreborn.api.essence.EssenceType;
 import ttmp.infernoreborn.contents.ModTileEntities;
 import ttmp.infernoreborn.contents.block.ModProperties;
 import ttmp.infernoreborn.contents.item.EssenceNetBlockItem;
-import ttmp.infernoreborn.util.EssenceHolder;
-import ttmp.infernoreborn.util.EssenceSize;
-import ttmp.infernoreborn.util.EssenceType;
 
 import javax.annotation.Nullable;
 import java.util.Objects;

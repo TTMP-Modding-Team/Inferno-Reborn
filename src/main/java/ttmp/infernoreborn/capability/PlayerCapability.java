@@ -14,6 +14,7 @@ import net.minecraft.nbt.ListNBT;
 import net.minecraft.util.CombatRules;
 import net.minecraft.util.Direction;
 import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.capabilities.CapabilityInject;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.common.capabilities.ICapabilitySerializable;
 import net.minecraftforge.common.util.LazyOptional;
@@ -22,17 +23,18 @@ import top.theillusivec4.curios.api.CuriosApi;
 import top.theillusivec4.curios.api.type.capability.ICuriosItemHandler;
 import top.theillusivec4.curios.api.type.inventory.ICurioStacksHandler;
 import top.theillusivec4.curios.api.type.inventory.IDynamicStackHandler;
-import ttmp.infernoreborn.contents.sigil.Sigil;
-import ttmp.infernoreborn.contents.sigil.holder.PlayerSigilHolder;
-import ttmp.infernoreborn.contents.sigil.holder.SigilHolder;
+import ttmp.infernoreborn.api.Caps;
+import ttmp.infernoreborn.api.shield.MutableShield;
+import ttmp.infernoreborn.api.shield.Shield;
+import ttmp.infernoreborn.api.shield.ShieldModifier;
+import ttmp.infernoreborn.api.shield.ShieldProvider;
+import ttmp.infernoreborn.api.sigil.Sigil;
+import ttmp.infernoreborn.api.sigil.SigilHolder;
+import ttmp.infernoreborn.api.sigil.SigilSlot;
 import ttmp.infernoreborn.network.ModNet;
 import ttmp.infernoreborn.network.SyncBodySigilMsg;
 import ttmp.infernoreborn.network.SyncShieldMsg;
 import ttmp.infernoreborn.shield.ArmorShield;
-import ttmp.infernoreborn.shield.MutableShield;
-import ttmp.infernoreborn.shield.Shield;
-import ttmp.infernoreborn.shield.ShieldModifier;
-import ttmp.infernoreborn.util.SigilSlot;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -51,8 +53,11 @@ import static net.minecraftforge.common.util.Constants.NBT.TAG_COMPOUND;
 import static net.minecraftforge.common.util.Constants.NBT.TAG_LIST;
 
 public class PlayerCapability implements ICapabilitySerializable<CompoundNBT>{
+	@CapabilityInject(PlayerCapability.class)
+	public static Capability<PlayerCapability> playerCapability;
+
 	@SuppressWarnings("ConstantConditions") @Nullable public static PlayerCapability of(ICapabilityProvider provider){
-		return provider.getCapability(Caps.playerCapability).orElse(null);
+		return provider.getCapability(playerCapability).orElse(null);
 	}
 
 	private static final UUID HEART_CRYSTAL_ATTRIBUTE = UUID.fromString("d709bd61-cd81-434e-865a-487a293fd141");
@@ -319,7 +324,7 @@ public class PlayerCapability implements ICapabilitySerializable<CompoundNBT>{
 	@Nullable private LazyOptional<SigilHolder> sigilHolderLO;
 
 	@Nonnull @Override public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable Direction side){
-		if(cap==Caps.playerCapability){
+		if(cap==playerCapability){
 			if(self==null) self = LazyOptional.of(() -> this);
 			return self.cast();
 		}else if(cap==Caps.sigilHolder){

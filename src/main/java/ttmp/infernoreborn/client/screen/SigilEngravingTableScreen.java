@@ -9,8 +9,8 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.vector.Matrix3f;
 import net.minecraft.util.math.vector.Matrix4f;
 import net.minecraft.util.text.ITextComponent;
+import ttmp.infernoreborn.api.sigil.Sigil;
 import ttmp.infernoreborn.contents.container.SigilEngravingTableContainer;
-import ttmp.infernoreborn.contents.sigil.Sigil;
 
 import java.util.Set;
 

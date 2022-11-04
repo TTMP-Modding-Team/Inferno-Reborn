@@ -6,9 +6,9 @@ import net.minecraft.item.crafting.ICraftingRecipe;
 import net.minecraft.item.crafting.IRecipeSerializer;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
+import ttmp.infernoreborn.api.ability.Ability;
 import ttmp.infernoreborn.contents.ModItems;
 import ttmp.infernoreborn.contents.ModRecipes;
-import ttmp.infernoreborn.contents.ability.Ability;
 import ttmp.infernoreborn.contents.item.ability.FixedAbilityItem;
 
 import java.util.Collections;

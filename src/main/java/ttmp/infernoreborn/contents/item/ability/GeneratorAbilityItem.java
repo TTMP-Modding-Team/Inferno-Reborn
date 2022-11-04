@@ -9,8 +9,8 @@ import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.Style;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.Constants;
+import ttmp.infernoreborn.capability.ServerAbilityHolder;
 import ttmp.infernoreborn.contents.ModItems;
-import ttmp.infernoreborn.contents.ability.holder.ServerAbilityHolder;
 import ttmp.infernoreborn.infernaltype.InfernalType;
 import ttmp.infernoreborn.infernaltype.InfernalTypes;
 

@@ -34,11 +34,14 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import top.theillusivec4.curios.api.SlotTypeMessage;
 import top.theillusivec4.curios.api.SlotTypePreset;
+import ttmp.infernoreborn.api.TickingTaskHandler;
+import ttmp.infernoreborn.api.ability.AbilityHolder;
+import ttmp.infernoreborn.api.essence.EssenceHolder;
+import ttmp.infernoreborn.api.essence.EssenceNetProvider;
+import ttmp.infernoreborn.api.shield.ShieldProvider;
+import ttmp.infernoreborn.api.sigil.SigilHolder;
 import ttmp.infernoreborn.capability.ClientPlayerCapability;
-import ttmp.infernoreborn.capability.EssenceNetProvider;
 import ttmp.infernoreborn.capability.PlayerCapability;
-import ttmp.infernoreborn.capability.ShieldProvider;
-import ttmp.infernoreborn.capability.TickingTaskHandler;
 import ttmp.infernoreborn.client.CrucibleBubbleParticle;
 import ttmp.infernoreborn.client.color.AbilityColorPickerColor;
 import ttmp.infernoreborn.client.color.EssenceHolderBookSparkColor;
@@ -71,16 +74,13 @@ import ttmp.infernoreborn.contents.ModParticles;
 import ttmp.infernoreborn.contents.ModRecipes;
 import ttmp.infernoreborn.contents.ModTileEntities;
 import ttmp.infernoreborn.contents.Sigils;
-import ttmp.infernoreborn.contents.ability.holder.AbilityHolder;
 import ttmp.infernoreborn.contents.block.GoldenSkullBlock;
 import ttmp.infernoreborn.contents.block.essencenet.EssenceNetCoreBlock;
 import ttmp.infernoreborn.contents.entity.SummonedSkeletonEntity;
 import ttmp.infernoreborn.contents.entity.SummonedZombieEntity;
 import ttmp.infernoreborn.contents.item.EssenceNetAccessorItem;
 import ttmp.infernoreborn.contents.item.JudgementItem;
-import ttmp.infernoreborn.contents.sigil.holder.SigilHolder;
 import ttmp.infernoreborn.network.ModNet;
-import ttmp.infernoreborn.util.EssenceHolder;
 
 import javax.annotation.Nullable;
 
@@ -127,9 +127,10 @@ public class InfernoReborn{
 			registerDefaultCapability(EssenceHolder.class);
 			registerDefaultCapability(SigilHolder.class);
 			registerDefaultCapability(TickingTaskHandler.class);
-			registerDefaultCapability(PlayerCapability.class);
 			registerDefaultCapability(ShieldProvider.class);
 			registerDefaultCapability(EssenceNetProvider.class);
+
+			registerDefaultCapability(PlayerCapability.class);
 			registerDefaultCapability(EssenceNetAccessorItem.Data.class);
 			registerDefaultCapability(ClientPlayerCapability.class);
 		});

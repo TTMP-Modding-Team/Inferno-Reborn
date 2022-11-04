@@ -5,8 +5,8 @@ import net.minecraft.entity.ai.attributes.Attribute;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.entity.ai.attributes.AttributeModifier.Operation;
 import net.minecraft.entity.ai.attributes.Attributes;
-import ttmp.infernoreborn.compat.patchouli.sigil.SigilPageBuilder;
-import ttmp.infernoreborn.util.SigilSlot;
+import ttmp.infernoreborn.api.sigil.SigilSlot;
+import ttmp.infernoreborn.api.sigil.page.SigilPageBuilder;
 
 public class FaintAfflictionSigil extends AttributeSigil{
 	public FaintAfflictionSigil(Properties properties){
