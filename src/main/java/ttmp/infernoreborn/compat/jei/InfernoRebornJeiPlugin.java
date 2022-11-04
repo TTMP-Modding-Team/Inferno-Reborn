@@ -46,7 +46,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import static ttmp.infernoreborn.InfernoReborn.MODID;
+import static ttmp.infernoreborn.api.InfernoRebornApi.MODID;
 
 @JeiPlugin
 public class InfernoRebornJeiPlugin implements IModPlugin{

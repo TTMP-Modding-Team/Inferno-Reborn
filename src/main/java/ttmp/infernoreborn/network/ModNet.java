@@ -40,7 +40,7 @@ import ttmp.infernoreborn.util.damage.Damages;
 import java.util.Optional;
 import java.util.function.Supplier;
 
-import static ttmp.infernoreborn.InfernoReborn.MODID;
+import static ttmp.infernoreborn.api.InfernoRebornApi.MODID;
 
 public final class ModNet{
 	private ModNet(){}
@@ -270,13 +270,12 @@ public final class ModNet{
 
 		public static void handleOpenAbilityColorPicker(AbilityColorPickerMsg msg, Supplier<NetworkEvent.Context> ctx){
 			ctx.get().setPacketHandled(true);
-			ctx.get().enqueueWork(() -> {
-				Minecraft.getInstance().setScreen(new AbilityColorPickerScreen(
-						msg.getInventoryIndex(),
-						msg.getPrimaryColor(),
-						msg.getSecondaryColor(),
-						msg.getHighlightColor()));
-			});
+			ctx.get().enqueueWork(() -> Minecraft.getInstance()
+					.setScreen(new AbilityColorPickerScreen(
+							msg.getInventoryIndex(),
+							msg.getPrimaryColor(),
+							msg.getSecondaryColor(),
+							msg.getHighlightColor())));
 		}
 	}
 }

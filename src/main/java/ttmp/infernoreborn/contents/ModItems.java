@@ -43,7 +43,7 @@ import ttmp.infernoreborn.contents.item.weapon.DragonSlayerItem;
 import ttmp.infernoreborn.contents.item.weapon.ExplosiveSwordItem;
 import ttmp.infernoreborn.shield.ShieldSkins;
 
-import static ttmp.infernoreborn.InfernoReborn.MODID;
+import static ttmp.infernoreborn.api.InfernoRebornApi.MODID;
 
 public final class ModItems{
 	private ModItems(){}

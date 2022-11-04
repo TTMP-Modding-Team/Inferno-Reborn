@@ -25,7 +25,7 @@ import ttmp.infernoreborn.contents.sigil.ScaldRuneSigil;
 import ttmp.infernoreborn.contents.sigil.ShieldModifierSigil;
 import ttmp.infernoreborn.contents.sigil.TravelerSigil;
 
-import static ttmp.infernoreborn.InfernoReborn.MODID;
+import static ttmp.infernoreborn.api.InfernoRebornApi.MODID;
 
 @Mod.EventBusSubscriber(modid = MODID, bus = Bus.MOD)
 public final class Sigils{

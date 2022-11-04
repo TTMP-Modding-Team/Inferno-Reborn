@@ -12,7 +12,7 @@ import ttmp.infernoreborn.contents.container.SigilScrapperContainer;
 import ttmp.infernoreborn.contents.container.StigmaScrapperContainer;
 import ttmp.infernoreborn.contents.container.StigmaTableContainer;
 
-import static ttmp.infernoreborn.InfernoReborn.MODID;
+import static ttmp.infernoreborn.api.InfernoRebornApi.MODID;
 
 public final class ModContainers{
 	private ModContainers(){}

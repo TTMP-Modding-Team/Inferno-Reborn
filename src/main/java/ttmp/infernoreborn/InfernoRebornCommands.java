@@ -31,7 +31,7 @@ import java.util.Objects;
 import static net.minecraft.command.Commands.argument;
 import static net.minecraft.command.Commands.literal;
 import static net.minecraft.command.ISuggestionProvider.suggest;
-import static ttmp.infernoreborn.InfernoReborn.MODID;
+import static ttmp.infernoreborn.api.InfernoRebornApi.MODID;
 
 @Mod.EventBusSubscriber(modid = MODID)
 public final class InfernoRebornCommands{

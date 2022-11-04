@@ -14,7 +14,7 @@ import net.minecraft.util.math.vector.Matrix4f;
 import net.minecraft.util.math.vector.Vector3f;
 import ttmp.infernoreborn.contents.entity.WindEntity;
 
-import static ttmp.infernoreborn.InfernoReborn.MODID;
+import static ttmp.infernoreborn.api.InfernoRebornApi.MODID;
 
 public class WindEntityRenderer extends EntityRenderer<WindEntity>{
 	private static final ResourceLocation TEXTURE_LOCATION = new ResourceLocation(MODID, "textures/entity/wind_entity.png");

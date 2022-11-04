@@ -10,7 +10,7 @@ import net.minecraftforge.registries.ForgeRegistries;
 import ttmp.infernoreborn.contents.loot.EssenceLootModifier;
 import ttmp.infernoreborn.contents.loot.FuckingLootEntry;
 
-import static ttmp.infernoreborn.InfernoReborn.MODID;
+import static ttmp.infernoreborn.api.InfernoRebornApi.MODID;
 
 public final class ModLootModifiers{
 	private ModLootModifiers(){}

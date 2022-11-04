@@ -14,7 +14,7 @@ import ttmp.infernoreborn.contents.container.SigilEngravingTableContainer;
 
 import java.util.Set;
 
-import static ttmp.infernoreborn.InfernoReborn.MODID;
+import static ttmp.infernoreborn.api.InfernoRebornApi.MODID;
 
 public abstract class SigilEngravingTableScreen extends ContainerScreen<SigilEngravingTableContainer> implements SigilScreen{
 	private SigilWidget sigilWidget;

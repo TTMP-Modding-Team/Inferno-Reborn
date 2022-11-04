@@ -10,7 +10,7 @@ import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.util.ResourceLocation;
 
-import static ttmp.infernoreborn.InfernoReborn.MODID;
+import static ttmp.infernoreborn.api.InfernoRebornApi.MODID;
 
 public class SummonFireBipedLayer<E extends LivingEntity, M extends BipedModel<E>> extends LayerRenderer<E, M>{
 	public static final ResourceLocation TEXTURE = new ResourceLocation(MODID, "textures/entity/summon_fire.png");

@@ -28,7 +28,7 @@ import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
 import java.util.Collections;
 
-import static ttmp.infernoreborn.InfernoReborn.MODID;
+import static ttmp.infernoreborn.api.InfernoRebornApi.MODID;
 
 @Mod.EventBusSubscriber(modid = MODID)
 public final class ModCfg{
@@ -78,9 +78,10 @@ public final class ModCfg{
 				}
 				write = sigilHolderConfig.appendMissingEntry(getDefaultSigilHolderConfig());
 			}
-			if(write) Files.write(config, Collections.singleton(GSON.toJson(sigilHolderConfig.write())), new StandardOpenOption[]{
-					StandardOpenOption.CREATE, StandardOpenOption.WRITE, StandardOpenOption.TRUNCATE_EXISTING
-			});
+			if(write)
+				Files.write(config, Collections.singleton(GSON.toJson(sigilHolderConfig.write())), new StandardOpenOption[]{
+						StandardOpenOption.CREATE, StandardOpenOption.WRITE, StandardOpenOption.TRUNCATE_EXISTING
+				});
 		}catch(IOException e){
 			InfernoReborn.LOGGER.error("Cannot read or write sigil holder config file", e);
 			sigilHolderConfig = getDefaultSigilHolderConfig();

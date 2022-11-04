@@ -10,7 +10,7 @@ import ttmp.infernoreborn.contents.container.SigilScrapperContainer;
 import ttmp.infernoreborn.network.ModNet;
 import ttmp.infernoreborn.network.ScrapSigilMsg;
 
-import static ttmp.infernoreborn.InfernoReborn.MODID;
+import static ttmp.infernoreborn.api.InfernoRebornApi.MODID;
 
 public class SigilScrapperScreen extends BaseScrapperScreen<SigilScrapperContainer>{
 	private static final ResourceLocation TEXTURE = new ResourceLocation(MODID, "textures/gui/sigil_scrapper.png");

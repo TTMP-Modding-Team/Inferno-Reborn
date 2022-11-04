@@ -21,19 +21,19 @@ import net.minecraft.tags.ItemTags;
 import net.minecraft.util.IItemProvider;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.Tags;
+import ttmp.infernoreborn.api.essence.EssenceSize;
+import ttmp.infernoreborn.api.essence.EssenceType;
 import ttmp.infernoreborn.contents.ModItems;
 import ttmp.infernoreborn.contents.ModRecipes;
 import ttmp.infernoreborn.contents.ModTags;
 import ttmp.infernoreborn.contents.Sigils;
-import ttmp.infernoreborn.api.essence.EssenceSize;
-import ttmp.infernoreborn.api.essence.EssenceType;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.function.Consumer;
 
-import static ttmp.infernoreborn.InfernoReborn.MODID;
+import static ttmp.infernoreborn.api.InfernoRebornApi.MODID;
 
 public class RecipeGen extends RecipeProvider{
 	public RecipeGen(DataGenerator generator){

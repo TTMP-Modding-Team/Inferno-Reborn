@@ -10,7 +10,7 @@ import ttmp.infernoreborn.contents.ModItems;
 
 import javax.annotation.Nullable;
 
-import static ttmp.infernoreborn.InfernoReborn.MODID;
+import static ttmp.infernoreborn.api.InfernoRebornApi.MODID;
 
 public class ThanatosHeavyArmorItem extends ArmorItem{
 	private static final IArmorMaterial MAT = new IArmorMaterial(){

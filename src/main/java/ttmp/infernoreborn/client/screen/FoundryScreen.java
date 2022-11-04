@@ -9,7 +9,7 @@ import net.minecraft.util.text.ITextComponent;
 import ttmp.infernoreborn.contents.container.FoundryContainer;
 import ttmp.infernoreborn.contents.tile.FoundryTile;
 
-import static ttmp.infernoreborn.InfernoReborn.MODID;
+import static ttmp.infernoreborn.api.InfernoRebornApi.MODID;
 
 public class FoundryScreen extends ContainerScreen<FoundryContainer>{
 	private static final ResourceLocation TEXTURE = new ResourceLocation(MODID, "textures/gui/foundry.png");

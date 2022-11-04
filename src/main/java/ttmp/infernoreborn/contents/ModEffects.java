@@ -11,10 +11,10 @@ import ttmp.infernoreborn.contents.effect.FrostbiteEffect;
 import ttmp.infernoreborn.contents.effect.SimpleEffect;
 
 import static net.minecraft.entity.ai.attributes.AttributeModifier.Operation.*;
-import static ttmp.infernoreborn.InfernoReborn.MODID;
+import static ttmp.infernoreborn.api.InfernoRebornApi.MODID;
 
-public final class ModEffects {
-	private ModEffects() {
+public final class ModEffects{
+	private ModEffects(){
 	}
 
 	public static final DeferredRegister<Effect> REGISTER = DeferredRegister.create(ForgeRegistries.POTIONS, MODID);

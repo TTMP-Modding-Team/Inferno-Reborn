@@ -16,7 +16,7 @@ import java.util.Arrays;
 
 import static net.minecraft.state.properties.BlockStateProperties.HORIZONTAL_FACING;
 import static net.minecraft.state.properties.BlockStateProperties.LIT;
-import static ttmp.infernoreborn.InfernoReborn.MODID;
+import static ttmp.infernoreborn.api.InfernoRebornApi.MODID;
 
 public class BlockModelGen extends BlockStateProvider{
 	private final ExistingFileHelper existingFileHelper;

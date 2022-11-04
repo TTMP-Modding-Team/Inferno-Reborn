@@ -4,12 +4,12 @@ import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import ttmp.infernoreborn.InfernoReborn;
 import ttmp.infernoreborn.api.essence.EssenceType;
 
 import javax.annotation.Nullable;
 import java.util.Random;
 
+import static ttmp.infernoreborn.api.InfernoRebornApi.MODID;
 import static ttmp.infernoreborn.client.render.CrucibleTileEntityRenderer.STIR_ROTATION_INCREMENT;
 
 public final class Crucible{
@@ -19,7 +19,7 @@ public final class Crucible{
 	public static final int INPUT_INVENTORY_SIZE = 8;
 	public static final int FLUID_TANK_SIZE = 1000;
 
-	private static final String CRUCIBLE_EXCLUDED = InfernoReborn.MODID+":crucible_excluded";
+	private static final String CRUCIBLE_EXCLUDED = MODID+":crucible_excluded";
 
 	static void partialShuffle(EssenceType[] arr, int end, Random random){
 		for(int i = end-1; i>0; i--){

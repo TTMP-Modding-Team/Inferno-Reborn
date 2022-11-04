@@ -23,7 +23,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-import static ttmp.infernoreborn.InfernoReborn.MODID;
+import static ttmp.infernoreborn.api.InfernoRebornApi.MODID;
 
 public abstract class StigmaTableScreen extends ContainerScreen<StigmaTableContainer> implements SigilScreen{
 	@Nullable private Sigil sigilCache;

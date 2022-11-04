@@ -17,7 +17,7 @@ import ttmp.infernoreborn.contents.recipe.foundry.SimpleFoundryRecipeSerializer;
 import ttmp.infernoreborn.contents.recipe.sigilcraft.ShapedSigilEngravingRecipe;
 import ttmp.infernoreborn.contents.recipe.sigilcraft.ShapedSigilTableCraftingRecipe;
 
-import static ttmp.infernoreborn.InfernoReborn.MODID;
+import static ttmp.infernoreborn.api.InfernoRebornApi.MODID;
 
 public final class ModRecipes{
 	private ModRecipes(){}

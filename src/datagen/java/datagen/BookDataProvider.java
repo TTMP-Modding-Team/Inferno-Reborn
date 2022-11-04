@@ -3,23 +3,6 @@ package datagen;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
-import net.minecraft.block.Blocks;
-import net.minecraft.data.DataGenerator;
-import net.minecraft.data.DirectoryCache;
-import net.minecraft.data.IDataProvider;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.ResourceLocation;
-import ttmp.infernoreborn.InfernoReborn;
-import ttmp.infernoreborn.compat.patchouli.AbilityAttributeComponent;
-import ttmp.infernoreborn.compat.patchouli.SigilEffectComponent;
-import ttmp.infernoreborn.api.sigil.page.SigilBookEntry;
-import ttmp.infernoreborn.contents.Abilities;
-import ttmp.infernoreborn.contents.ModItems;
-import ttmp.infernoreborn.contents.Sigils;
-import ttmp.infernoreborn.api.ability.Ability;
-import ttmp.infernoreborn.contents.item.SigilItem;
-import ttmp.infernoreborn.contents.item.ability.FixedAbilityItem;
-import ttmp.infernoreborn.api.sigil.Sigil;
 import datagen.builder.book.BookBuilder;
 import datagen.builder.book.BookCategory;
 import datagen.builder.book.BookEntry;
@@ -27,12 +10,29 @@ import datagen.builder.book.BookFileGenerator;
 import datagen.builder.book.Stack;
 import datagen.builder.book.page.TemplatePage;
 import datagen.builder.book.page.TextPage;
+import net.minecraft.block.Blocks;
+import net.minecraft.data.DataGenerator;
+import net.minecraft.data.DirectoryCache;
+import net.minecraft.data.IDataProvider;
+import net.minecraft.item.ItemStack;
+import net.minecraft.util.ResourceLocation;
+import ttmp.infernoreborn.InfernoReborn;
+import ttmp.infernoreborn.api.ability.Ability;
+import ttmp.infernoreborn.api.sigil.Sigil;
+import ttmp.infernoreborn.api.sigil.page.SigilBookEntry;
+import ttmp.infernoreborn.compat.patchouli.AbilityAttributeComponent;
+import ttmp.infernoreborn.compat.patchouli.SigilEffectComponent;
+import ttmp.infernoreborn.contents.Abilities;
+import ttmp.infernoreborn.contents.ModItems;
+import ttmp.infernoreborn.contents.Sigils;
+import ttmp.infernoreborn.contents.item.SigilItem;
+import ttmp.infernoreborn.contents.item.ability.FixedAbilityItem;
 
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.Objects;
 
-import static ttmp.infernoreborn.InfernoReborn.MODID;
+import static ttmp.infernoreborn.api.InfernoRebornApi.MODID;
 
 public class BookDataProvider implements IDataProvider{
 	private static final Gson GSON = new GsonBuilder()
@@ -104,7 +104,7 @@ public class BookDataProvider implements IDataProvider{
 						for(int i = 0; i<bookPageContent.getDescriptionPages(); i++){
 							bookEntry.page(new TextPage(i18nText("text", "sigil", sigil.getRegistryName(), String.valueOf(i))));
 						}
-						for(int i = 0; i<bookPageContent.getEffectPages().size(); i+=2){
+						for(int i = 0; i<bookPageContent.getEffectPages().size(); i += 2){
 							bookEntry.page(new TemplatePage(sigilEffect)
 									.param("sigil", sigil.getRegistryName())
 									.param("page", i));

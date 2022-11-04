@@ -84,10 +84,11 @@ import ttmp.infernoreborn.network.ModNet;
 
 import javax.annotation.Nullable;
 
-@Mod(InfernoReborn.MODID)
-@Mod.EventBusSubscriber(modid = InfernoReborn.MODID, bus = Bus.MOD)
+import static ttmp.infernoreborn.api.InfernoRebornApi.MODID;
+
+@Mod(MODID)
+@Mod.EventBusSubscriber(modid = MODID, bus = Bus.MOD)
 public class InfernoReborn{
-	public static final String MODID = "infernoreborn";
 	public static final Logger LOGGER = LogManager.getLogger("Inferno Reborn");
 
 	public InfernoReborn(){

@@ -28,7 +28,7 @@ import ttmp.infernoreborn.contents.tile.SigilEngravingTableTile;
 import ttmp.infernoreborn.contents.tile.StigmaTableTile;
 
 import static net.minecraft.state.properties.BlockStateProperties.LIT;
-import static ttmp.infernoreborn.InfernoReborn.MODID;
+import static ttmp.infernoreborn.api.InfernoRebornApi.MODID;
 
 public final class ModBlocks{
 	private ModBlocks(){}

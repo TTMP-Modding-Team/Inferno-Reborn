@@ -17,7 +17,7 @@ import ttmp.infernoreborn.infernaltype.dsl.dynamic.DynamicInt;
 import java.util.List;
 import java.util.Map;
 
-import static ttmp.infernoreborn.InfernoReborn.MODID;
+import static ttmp.infernoreborn.api.InfernoRebornApi.MODID;
 
 public interface AbilityGen{
 	List<Ability> generate(InfernalGenContext context);

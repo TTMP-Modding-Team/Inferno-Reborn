@@ -7,7 +7,7 @@ import net.minecraftforge.common.data.GlobalLootModifierProvider;
 import ttmp.infernoreborn.contents.ModLootModifiers;
 import ttmp.infernoreborn.contents.loot.EssenceLootModifier;
 
-import static ttmp.infernoreborn.InfernoReborn.MODID;
+import static ttmp.infernoreborn.api.InfernoRebornApi.MODID;
 
 public class LootModifierGen extends GlobalLootModifierProvider{
 	public LootModifierGen(DataGenerator gen){

@@ -11,7 +11,7 @@ import ttmp.infernoreborn.contents.entity.SummonedSkeletonEntity;
 import ttmp.infernoreborn.contents.entity.SummonedZombieEntity;
 import ttmp.infernoreborn.contents.entity.WindEntity;
 
-import static ttmp.infernoreborn.InfernoReborn.MODID;
+import static ttmp.infernoreborn.api.InfernoRebornApi.MODID;
 
 public final class ModEntities{
 	private ModEntities(){}

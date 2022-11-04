@@ -8,12 +8,12 @@ import net.minecraftforge.client.model.generators.ItemModelProvider;
 import net.minecraftforge.client.model.generators.ModelBuilder;
 import net.minecraftforge.client.model.generators.ModelFile;
 import net.minecraftforge.common.data.ExistingFileHelper;
-import ttmp.infernoreborn.contents.ModItems;
 import ttmp.infernoreborn.api.essence.EssenceType;
+import ttmp.infernoreborn.contents.ModItems;
 
 import java.util.Objects;
 
-import static ttmp.infernoreborn.InfernoReborn.MODID;
+import static ttmp.infernoreborn.api.InfernoRebornApi.MODID;
 
 public class ItemModelGen extends ItemModelProvider{
 	public ItemModelGen(DataGenerator generator, ExistingFileHelper existingFileHelper){

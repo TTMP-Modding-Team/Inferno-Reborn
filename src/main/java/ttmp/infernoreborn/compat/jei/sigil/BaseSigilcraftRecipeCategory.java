@@ -14,7 +14,7 @@ import ttmp.infernoreborn.contents.recipe.sigilcraft.BaseSigilcraftRecipe;
 
 import java.util.List;
 
-import static ttmp.infernoreborn.InfernoReborn.MODID;
+import static ttmp.infernoreborn.api.InfernoRebornApi.MODID;
 
 public abstract class BaseSigilcraftRecipeCategory<T extends BaseSigilcraftRecipe> implements IRecipeCategory<T>{
 	public static final ResourceLocation TEXTURE = new ResourceLocation(MODID, "textures/gui/jei/sigil_engraving_table.png");

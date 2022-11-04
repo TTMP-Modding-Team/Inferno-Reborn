@@ -15,7 +15,6 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.HandSide;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.EntityRayTraceResult;
 import net.minecraft.util.math.RayTraceResult;
@@ -27,7 +26,6 @@ import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
-import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.player.ItemTooltipEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -48,22 +46,13 @@ import java.text.DecimalFormat;
 import java.util.List;
 import java.util.Set;
 
-import static ttmp.infernoreborn.InfernoReborn.MODID;
+import static ttmp.infernoreborn.api.InfernoRebornApi.MODID;
 
 @Mod.EventBusSubscriber(modid = MODID, value = Dist.CLIENT)
 public final class ClientEventHandlers{
 	private ClientEventHandlers(){}
 
-	private static final ResourceLocation CLIENT_PLAYER_CAPS = new ResourceLocation(MODID, "client_caps");
-	private static final DecimalFormat FUCK = new DecimalFormat("#.#");
-
-	@SubscribeEvent
-	public static void attachEntityCapabilities(AttachCapabilitiesEvent<Entity> event){
-		Entity e = event.getObject();
-		if(e instanceof PlayerEntity&&e.level.isClientSide()){
-			event.addCapability(CLIENT_PLAYER_CAPS, new ClientPlayerCapability((PlayerEntity)e));
-		}
-	}
+	private static final DecimalFormat format = new DecimalFormat("#.#");
 
 	@SuppressWarnings("ConstantConditions")
 	@SubscribeEvent
@@ -192,7 +181,7 @@ public final class ClientEventHandlers{
 				ActiveShield shield = cps.shields.get(j);
 				draw(matrixStack, hotbarEnd-5-w2, screenHeight-5-y-maxHeight/2, shield);
 				if(renderNumber){
-					String s = FUCK.format(shield.getDurability());
+					String s = format.format(shield.getDurability());
 					int sw = mc.font.width(s)+1;
 					// jesus christ
 					//noinspection IntegerDivisionInFloatingPointContext

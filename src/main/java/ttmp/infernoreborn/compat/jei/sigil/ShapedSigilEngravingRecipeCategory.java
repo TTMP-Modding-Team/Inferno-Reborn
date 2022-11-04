@@ -16,7 +16,7 @@ import ttmp.infernoreborn.contents.recipe.sigilcraft.ShapedSigilEngravingRecipe;
 
 import java.util.List;
 
-import static ttmp.infernoreborn.InfernoReborn.MODID;
+import static ttmp.infernoreborn.api.InfernoRebornApi.MODID;
 
 public class ShapedSigilEngravingRecipeCategory extends BaseSigilcraftRecipeCategory<ShapedSigilEngravingRecipe>{
 	public ShapedSigilEngravingRecipeCategory(IGuiHelper guiHelper, RecipeSize size){

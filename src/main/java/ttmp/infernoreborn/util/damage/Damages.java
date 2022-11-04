@@ -4,7 +4,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.util.DamageSource;
 import ttmp.infernoreborn.contents.entity.WindEntity;
 
-import static ttmp.infernoreborn.InfernoReborn.MODID;
+import static ttmp.infernoreborn.api.InfernoRebornApi.MODID;
 
 public final class Damages{
 	private Damages(){}
