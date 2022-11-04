@@ -1,12 +1,12 @@
 package ttmp.infernoreborn.infernaltype.dsl.dynamic;
 
-import among.ReportHandler;
 import among.TypeFlags;
 import among.construct.ConditionedConstructor;
 import among.construct.ConstructRule;
 import among.construct.Constructor;
 import among.construct.Constructors;
 import among.obj.Among;
+import among.report.ReportHandler;
 import com.google.common.collect.Maps;
 import ttmp.infernoreborn.infernaltype.InfernalGenContext;
 import ttmp.infernoreborn.infernaltype.dsl.SwitchDsl;

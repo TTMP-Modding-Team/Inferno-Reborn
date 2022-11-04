@@ -31,7 +31,6 @@ import java.util.Objects;
 import static net.minecraft.command.Commands.argument;
 import static net.minecraft.command.Commands.literal;
 import static net.minecraft.command.ISuggestionProvider.suggest;
-import static net.minecraft.util.text.TextFormatting.GOLD;
 import static ttmp.infernoreborn.InfernoReborn.MODID;
 
 @Mod.EventBusSubscriber(modid = MODID)
@@ -92,14 +91,10 @@ public final class InfernoRebornCommands{
 		InfernalTypes.load(new InfernalTypes.LogHandler(){
 			@Override public void logInfo(String message){
 				source.sendSuccess(new StringTextComponent(message), true);
-				InfernoReborn.LOGGER.info(message);
-			}
-			@Override public void logWarn(String message){
-				source.sendSuccess(new StringTextComponent(message).withStyle(GOLD), true);
 				InfernoReborn.LOGGER.warn(message);
 			}
-			@Override public void logWarn(String message, Throwable exception){
-				source.sendSuccess(new StringTextComponent(message+": "+exception).withStyle(GOLD), true);
+			@Override public void logInfo(String message, Throwable exception){
+				source.sendSuccess(new StringTextComponent(message+": "+exception), true);
 				InfernoReborn.LOGGER.warn(message, exception);
 			}
 			@Override public void logError(String message){

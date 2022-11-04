@@ -1,6 +1,6 @@
 package ttmp.infernoreborn.infernaltype.dsl;
 
-import among.ReportHandler;
+import among.report.ReportHandler;
 import it.unimi.dsi.fastutil.doubles.Double2ObjectMap;
 import it.unimi.dsi.fastutil.doubles.Double2ObjectOpenHashMap;
 import ttmp.infernoreborn.infernaltype.InfernalGenContext;

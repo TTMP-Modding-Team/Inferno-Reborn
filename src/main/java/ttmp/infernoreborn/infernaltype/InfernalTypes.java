@@ -4,7 +4,6 @@ import among.AmongDefinition;
 import among.AmongEngine;
 import among.CompileResult;
 import among.ReadResult;
-import among.Report;
 import among.RootAndDefinition;
 import among.Source;
 import among.internals.library.DefaultInstanceProvider;
@@ -12,6 +11,7 @@ import among.macro.Macro;
 import among.macro.MacroType;
 import among.obj.Among;
 import among.operator.OperatorType;
+import among.report.ReportList;
 import net.minecraft.entity.LivingEntity;
 import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.loading.FMLPaths;
@@ -101,30 +101,28 @@ public final class InfernalTypes{
 		long start = System.nanoTime();
 		infernalTypes = loadFromConfig(logHandler);
 		long elapsed = System.nanoTime()-start;
-		logHandler.logInfo(infernalTypes.size()+" infernal type(s) loaded in "+fmt.format(elapsed/100000.0)+" ms");
+		logHandler.logInfo(infernalTypes.size()+" infernal type(s) loaded in "+fmt.format(elapsed/1000000.0)+" ms");
 	}
 
 	private static List<InfernalType> loadFromConfig(LogHandler logHandler){
 		try{
-			ReadResult rad = engine.readFrom(INFERNAL_TYPES_FILENAME, InfernoReborn.LOGGER::warn);
+			ReadResult result = engine.readFrom(INFERNAL_TYPES_FILENAME, InfernoReborn.LOGGER::warn);
 			engine.clearInstances();
-			if(rad.isSuccess()){
+			if(result.isSuccess()){
+				CompileResult compileResult = result.result();
+				ReportList.Mutable reports = compileResult!=null ?
+						new ReportList.Mutable(compileResult.reports()) : new ReportList.Mutable();
 				List<InfernalType> infernalTypes = new ArrayList<>();
-				for(Among a : rad.root().values()){
+				for(Among a : result.root().values()){
 					if(a.isObj()){
-						InfernalType t = InfernalType.INFERNAL_TYPE.construct(a.asObj(), (type, message, srcIndex, ex, hints) -> {
-							Report r = new Report(type, message, srcIndex, ex, hints);
-							switch(type){
-								case INFO: r.print(rad.source(), logHandler::logInfo); break;
-								case WARN: r.print(rad.source(), logHandler::logWarn); break;
-								case ERROR: r.print(rad.source(), logHandler::logError); break;
-							}
-						});
+						InfernalType t = InfernalType.INFERNAL_TYPE.construct(a.asObj(), reports);
 						if(t!=null) infernalTypes.add(t);
-					}else logHandler.logWarn("Skipping over non-object value '"+a+"' in infernal generators");
+					}else logHandler.logInfo("Skipping over non-object value '"+a+"' in infernal generators");
 				}
+				reports.printReports(INFERNAL_TYPES_FILENAME, result.source(),
+						reports.hasError() ? logHandler::logError : logHandler::logInfo);
 				return infernalTypes;
-			}
+			}else result.printReports(INFERNAL_TYPES_FILENAME, logHandler::logError);
 		}catch(RuntimeException ex){
 			logHandler.logError("Cannot continue loading infernal types due to an unexpected exception", ex);
 		}
@@ -162,11 +160,8 @@ public final class InfernalTypes{
 		@Override public void logInfo(String message){
 			InfernoReborn.LOGGER.info(message);
 		}
-		@Override public void logWarn(String message){
-			InfernoReborn.LOGGER.warn(message);
-		}
-		@Override public void logWarn(String message, Throwable exception){
-			InfernoReborn.LOGGER.warn(message, exception);
+		@Override public void logInfo(String message, Throwable exception){
+			InfernoReborn.LOGGER.info(message, exception);
 		}
 		@Override public void logError(String message){
 			InfernoReborn.LOGGER.error(message);
@@ -178,8 +173,7 @@ public final class InfernalTypes{
 
 	public interface LogHandler{
 		void logInfo(String message);
-		void logWarn(String message);
-		void logWarn(String message, Throwable exception);
+		void logInfo(String message, Throwable exception);
 		void logError(String message);
 		void logError(String message, Throwable exception);
 	}
