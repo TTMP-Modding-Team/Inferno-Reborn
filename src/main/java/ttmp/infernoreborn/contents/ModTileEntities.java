@@ -4,7 +4,7 @@ import net.minecraft.tileentity.TileEntityType;
 import net.minecraftforge.fml.RegistryObject;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
-import ttmp.infernoreborn.contents.tile.CrucibleTile;
+import ttmp.infernoreborn.contents.tile.crucible.CrucibleTile;
 import ttmp.infernoreborn.contents.tile.EssenceHolderTile;
 import ttmp.infernoreborn.contents.tile.EssenceNetCoreTile;
 import ttmp.infernoreborn.contents.tile.EssenceNetExporterTile;

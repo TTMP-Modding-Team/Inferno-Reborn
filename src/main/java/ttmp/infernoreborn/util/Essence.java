@@ -2,6 +2,7 @@ package ttmp.infernoreborn.util;
 
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.network.PacketBuffer;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
@@ -24,6 +25,15 @@ public final class Essence{
 		return amount;
 	}
 
+	public void write(PacketBuffer buffer){
+		buffer.writeByte(type.ordinal());
+		buffer.writeVarInt(amount);
+	}
+
+	@Override public String toString(){
+		return type+" * "+amount;
+	}
+
 	@Nullable public static Essence from(ItemStack stack){
 		return from(stack.getItem(), stack.getCount());
 	}
@@ -32,6 +42,12 @@ public final class Essence{
 			for(EssenceSize s : EssenceSize.values())
 				if(t.getItem(s)==item) return new Essence(t, count*s.getCompressionRate());
 		return null;
+	}
+
+	public static Essence read(PacketBuffer buffer){
+		return new Essence(
+				EssenceType.values()[buffer.readUnsignedByte()%EssenceType.values().length],
+				buffer.readVarInt());
 	}
 
 	public static boolean isEssenceItem(ItemStack stack){
@@ -60,9 +76,10 @@ public final class Essence{
 	}
 
 	public static void addItems(List<ItemStack> items, EssenceType type, int amount){
-		if(amount>=9*9){
-			items.add(new ItemStack(type.getExquisiteEssenceItem(), amount/9*9));
-			amount %= 9*9;
+		if(amount>=81){
+			for(int amount2 = amount/81; amount2>0; amount2 -= Math.min(64, amount2))
+				items.add(new ItemStack(type.getExquisiteEssenceItem(), Math.min(64, amount2)));
+			amount %= 81;
 		}
 		if(amount>=9){
 			items.add(new ItemStack(type.getGreaterEssenceItem(), amount/9));

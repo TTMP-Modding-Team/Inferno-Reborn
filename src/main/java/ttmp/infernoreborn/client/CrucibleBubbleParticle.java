@@ -10,7 +10,7 @@ import net.minecraft.particles.BasicParticleType;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import ttmp.infernoreborn.client.render.CrucibleTileEntityRenderer;
-import ttmp.infernoreborn.contents.tile.CrucibleTile;
+import ttmp.infernoreborn.contents.tile.crucible.CrucibleTile;
 
 public class CrucibleBubbleParticle extends SpriteTexturedParticle{
 	protected CrucibleBubbleParticle(ClientWorld level, double x, double y, double z, double xd, double yd, double zd){

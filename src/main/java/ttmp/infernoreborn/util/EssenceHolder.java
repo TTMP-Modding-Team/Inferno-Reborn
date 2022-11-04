@@ -2,6 +2,7 @@ package ttmp.infernoreborn.util;
 
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraftforge.common.util.INBTSerializable;
+import ttmp.infernoreborn.contents.recipe.EssenceIngredient;
 
 public class EssenceHolder implements Essences, EssenceHandler, INBTSerializable<CompoundNBT>{
 	private final int[] essences = new int[EssenceType.values().length];
@@ -48,6 +49,44 @@ public class EssenceHolder implements Essences, EssenceHandler, INBTSerializable
 			onChanged(type);
 		}
 		return toExtract;
+	}
+	@Override public Simulation<Essences> consume(EssenceIngredient ingredient){
+		int[] extractedState = essences.clone();
+		for(EssenceType t : EssenceType.values()){
+			int c = ingredient.getEssenceConsumptionFor(t);
+			if(c<=0) continue;
+			extractedState[t.ordinal()] -= c;
+			if(extractedState[t.ordinal()]<0)
+				return Simulation.fail();
+		}
+		if(ingredient.getAnyEssenceConsumption()>0){
+			int c = ingredient.getAnyEssenceConsumption();
+			do{
+				int i = maxIndex(extractedState);
+				if(i<0) return Simulation.fail();
+				int extract = Math.min(c, extractedState[i]);
+				extractedState[i] -= extract;
+				c -= extract;
+			}while(c>0);
+		}
+		int[] extracted = essences.clone();
+		for(int i = 0; i<extracted.length; i++)
+			extracted[i] -= extractedState[i];
+		return Simulation.success(() -> {
+			System.arraycopy(extractedState, 0, this.essences, 0, extractedState.length);
+			return t -> extracted[t.ordinal()];
+		});
+	}
+
+	private static int maxIndex(int[] consumptions){
+		int max = 0;
+		int index = -1;
+		for(int i = 0; i<consumptions.length; i++){
+			if(max>=consumptions[i]) continue;
+			max = consumptions[i];
+			index = i;
+		}
+		return index;
 	}
 
 	@Override public boolean isEmpty(){

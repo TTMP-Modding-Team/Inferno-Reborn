@@ -20,7 +20,8 @@ import net.minecraft.util.math.vector.Vector4f;
 import net.minecraftforge.fluids.FluidAttributes;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.IFluidTank;
-import ttmp.infernoreborn.contents.tile.CrucibleTile;
+import ttmp.infernoreborn.contents.tile.crucible.CrucibleTile;
+import ttmp.infernoreborn.contents.tile.crucible.Crucible;
 
 import java.util.Random;
 
@@ -56,7 +57,7 @@ public class CrucibleTileEntityRenderer extends TileEntityRenderer<CrucibleTile>
 			boolean is3d = bakedModel.isGui3d();
 			int renderAmount = getRenderAmount(stack);
 			pose.mulPose(Vector3f.YP.rotation(crucible.clientStir+
-					CrucibleTile.calculateStirRotationIncrement(crucible.getManualStirPower())*partialTicks+
+					Crucible.calculateStirRotationIncrement(crucible.getManualStirPower())*partialTicks+
 					INDEX_DIFFERENCE*i));
 			if(!is3d) pose.translate(0, 0, -0.09375f*(float)(renderAmount-1)*0.5f);
 

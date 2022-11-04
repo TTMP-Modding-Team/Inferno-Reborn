@@ -15,9 +15,9 @@ import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
 import ttmp.infernoreborn.contents.ModBlocks;
 import ttmp.infernoreborn.contents.ModItems;
+import ttmp.infernoreborn.contents.recipe.EssenceIngredient;
 import ttmp.infernoreborn.contents.recipe.foundry.FoundryRecipe;
 import ttmp.infernoreborn.util.EssenceType;
-import ttmp.infernoreborn.util.Essences;
 import ttmp.infernoreborn.util.QuantifiedIngredient;
 
 import java.util.ArrayList;
@@ -106,28 +106,30 @@ public class FoundryRecipeCategory implements IRecipeCategory<FoundryRecipe>{
 	@Override public void draw(FoundryRecipe recipe, MatrixStack matrixStack, double mouseX, double mouseY){
 		progressBar.draw(matrixStack, 44, 9);
 
-		Essences essences = recipe.getEssences();
+		EssenceIngredient essences = recipe.getEssences();
 		boolean flag = false;
 		for(EssenceType type : EssenceType.values()){
-			if(essences.getEssence(type)<=0) continue;
+			if(essences.getEssenceConsumptionFor(type)<=0) continue;
 			if(!flag){
 				flag = true;
 				holder.draw(matrixStack, 2, 27);
 			}
 			essenceIcons.get(type).draw(matrixStack, 15+type.ordinal()*8, type.ordinal()%2==0 ? 27 : 32);
 		}
+		// TODO indicator for 'any' consumption
 	}
 
 	@Override public List<ITextComponent> getTooltipStrings(FoundryRecipe recipe, double mouseX, double mouseY){
-		Essences essences = recipe.getEssences();
+		EssenceIngredient essences = recipe.getEssences();
 		if(mouseX<2||mouseY<27||mouseX>=2+16||mouseY>=27+16||essences.isEmpty()) return Collections.emptyList();
 		List<ITextComponent> list = new ArrayList<>();
 		for(EssenceType type : EssenceType.values()){
-			int essence = essences.getEssence(type);
+			int essence = essences.getEssenceConsumptionFor(type);
 			if(essence>0)
 				list.add(new TranslationTextComponent("item.infernoreborn.essence_holder.desc.essences."+type.id, essence));
 		}
 		return list;
+		// TODO indicator for 'any' consumption
 	}
 
 	// TODO handle click???????

@@ -42,7 +42,7 @@ import ttmp.infernoreborn.client.color.ColorUtils;
 import ttmp.infernoreborn.contents.ability.holder.ClientAbilityHolder;
 import ttmp.infernoreborn.contents.sigil.Sigil;
 import ttmp.infernoreborn.contents.sigil.holder.SigilHolder;
-import ttmp.infernoreborn.contents.tile.CrucibleTile;
+import ttmp.infernoreborn.contents.tile.crucible.CrucibleTile;
 import ttmp.infernoreborn.shield.ShieldSkin;
 
 import java.text.DecimalFormat;

@@ -1,5 +1,6 @@
 package datagen;
 
+import datagen.builder.CrucibleRecipeBuilder;
 import datagen.builder.FoundryRecipeBuilder;
 import datagen.builder.NotSoSpecialRecipeBuilder;
 import datagen.builder.ShapedSigilEngravingRecipeBuilder;
@@ -266,6 +267,12 @@ public class RecipeGen extends RecipeProvider{
 				.define('1', Ingredient.of(greater(EssenceType.FIRE)))
 				.unlockedBy("fuck", has(greater(EssenceType.FIRE)))
 				.save(consumer, new ResourceLocation(MODID, "sigil_engraving/scald_rune"));
+
+		new CrucibleRecipeBuilder()
+				.output(ModItems.RUNESTONE.get())
+				.ingredient(Ingredient.of(Tags.Items.STONE), 1)
+				.anyEssence(1)
+				.save(consumer, new ResourceLocation(MODID, "crucible/idk"));
 
 		new FoundryRecipeBuilder(new ItemStack(Items.NETHERITE_INGOT, 2))
 				.ingredient(Ingredient.of(Tags.Items.INGOTS_GOLD), 1)

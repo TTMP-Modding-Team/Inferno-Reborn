@@ -7,21 +7,18 @@ import net.minecraft.inventory.InventoryHelper;
 import net.minecraft.inventory.container.Container;
 import net.minecraft.inventory.container.INamedContainerProvider;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.Direction;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.fml.server.ServerLifecycleHooks;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.IItemHandlerModifiable;
@@ -39,6 +36,7 @@ import ttmp.infernoreborn.contents.recipe.foundry.FoundryRecipe;
 import ttmp.infernoreborn.inventory.FoundryInventory;
 import ttmp.infernoreborn.util.Essence;
 import ttmp.infernoreborn.util.EssenceHandler;
+import ttmp.infernoreborn.util.Simulation;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -58,8 +56,7 @@ public class FoundryTile extends TileEntity implements ITickableTileEntity, INam
 	private final ItemStackHandler inv = new ItemHandler();
 	private final FoundryInventory foundryInventory = new FoundryInventoryImpl();
 
-	@Nullable private FoundryRecipe currentRecipe;
-	private int process;
+	@Nullable private RecipeProcess process;
 
 	public FoundryTile(){
 		this(ModTileEntities.FOUNDRY.get());
@@ -68,11 +65,11 @@ public class FoundryTile extends TileEntity implements ITickableTileEntity, INam
 		super(type);
 	}
 
-	@Nullable public FoundryRecipe getCurrentRecipe(){
-		return currentRecipe;
+	public int getMaxProcess(){
+		return process!=null ? process.maxProcess : 0;
 	}
 	public int getProcess(){
-		return process;
+		return process!=null ? process.process : 0;
 	}
 
 	public void dropAllContents(){
@@ -110,14 +107,13 @@ public class FoundryTile extends TileEntity implements ITickableTileEntity, INam
 				}
 			}
 		}
-		if(currentRecipe!=null){
-			if(process<currentRecipe.getProcessingTime()) process++;
-			if(process>=currentRecipe.getProcessingTime()){
-				if(insertItems(currentRecipe, false)) searchRecipe();
-			}
+		if(process!=null){
+			if(process.work())
+				if(insertItems(process.result, process.byproduct, false))
+					searchRecipe();
 		}else searchRecipe();
 
-		boolean lit = currentRecipe!=null;
+		boolean lit = process!=null;
 		if(this.getBlockState().getValue(LIT)!=lit){
 			BlockPos.Mutable mpos = new BlockPos.Mutable().set(getBlockPos());
 			this.level.setBlock(mpos, this.getBlockState().setValue(LIT, lit), 3);
@@ -130,33 +126,33 @@ public class FoundryTile extends TileEntity implements ITickableTileEntity, INam
 	}
 
 	private void searchRecipe(){
-		this.process = 0;
-		if(inv.getStackInSlot(INPUT_SLOT_1).isEmpty()&&inv.getStackInSlot(INPUT_SLOT_2).isEmpty()) return;
+		@Nullable FoundryRecipe prevRecipe = this.process!=null ? this.process.recipe : null;
+		this.process = null;
+		if(foundryInventory.isEmpty()) return;
 		MinecraftServer server = Objects.requireNonNull(level).getServer();
 		if(server==null){
 			InfernoReborn.LOGGER.warn("Foundry is trying to search for recipes in client side!");
 			return;
 		}
 
-		if(currentRecipe!=null&&startIfCanHandleResult(currentRecipe)) return;
-		for(FoundryRecipe r : server.getRecipeManager().getRecipesFor(ModRecipes.FOUNDRY_RECIPE_TYPE, foundryInventory, level))
-			if(r!=currentRecipe&&startIfCanHandleResult(r)) return;
-
-		this.currentRecipe = null;
+		if(prevRecipe!=null&&startIfCanHandleResult(prevRecipe)) return;
+		for(FoundryRecipe r : server.getRecipeManager().getAllRecipesFor(ModRecipes.FOUNDRY_RECIPE_TYPE))
+			if(r!=prevRecipe&&startIfCanHandleResult(r)) return;
 	}
 
 	private boolean startIfCanHandleResult(FoundryRecipe recipe){
-		if(!insertItems(recipe, true)) return false;
-		this.currentRecipe = recipe;
-		return recipe.consume(foundryInventory, false);
+		if(!insertItems(recipe.getResultItem(), recipe.getByproduct(), true))
+			return false;
+		Simulation<FoundryRecipe.Result> consume = recipe.consume(foundryInventory);
+		if(!consume.isSuccess()) return false;
+		this.process = new RecipeProcess(recipe, consume.apply());
+		return true;
 	}
 
-	private boolean insertItems(FoundryRecipe recipe, boolean simulate){
+	private boolean insertItems(ItemStack result, ItemStack byproduct, boolean simulate){
 		ItemStackHandler ish = new ItemStackHandler(2);
 		ish.setStackInSlot(0, inv.getStackInSlot(OUTPUT_SLOT_1).copy());
 		ish.setStackInSlot(1, inv.getStackInSlot(OUTPUT_SLOT_2).copy());
-		ItemStack result = recipe.getResultItem().copy();
-		ItemStack byproduct = recipe.getByproduct().copy();
 
 		for(int i = 0; i<ish.getSlots(); i++){
 			result = ish.insertItem(i, result, false);
@@ -222,30 +218,15 @@ public class FoundryTile extends TileEntity implements ITickableTileEntity, INam
 	}
 
 	@Override public void load(BlockState state, CompoundNBT nbt){
-		if(nbt.contains("currentRecipe", Constants.NBT.TAG_STRING)){
-			currentRecipe = getFoundryRecipe(new ResourceLocation(nbt.getString("currentRecipe")));
-			process = nbt.getInt("process");
-		}else{
-			currentRecipe = null;
-			process = 0;
-		}
+		process = nbt.contains("Process", Constants.NBT.TAG_COMPOUND) ?
+				new RecipeProcess(nbt.getCompound("Process")) : null;
 		inv.deserializeNBT(nbt.getCompound("inv"));
 		super.load(state, nbt);
 	}
 	@Override public CompoundNBT save(CompoundNBT nbt){
-		if(currentRecipe!=null){
-			nbt.putString("currentRecipe", currentRecipe.getId().toString());
-			nbt.putInt("process", process);
-		}
+		if(process!=null) nbt.put("Process", process.write());
 		nbt.put("inv", inv.serializeNBT());
 		return super.save(nbt);
-	}
-
-	@Nullable private FoundryRecipe getFoundryRecipe(ResourceLocation id){
-		MinecraftServer server = ServerLifecycleHooks.getCurrentServer();
-		if(server==null) return null;
-		IRecipe<?> r = server.getRecipeManager().byKey(id).orElse(null);
-		return r instanceof FoundryRecipe ? (FoundryRecipe)r : null;
 	}
 
 	@Override protected void invalidateCaps(){
@@ -259,7 +240,42 @@ public class FoundryTile extends TileEntity implements ITickableTileEntity, INam
 		return new TranslationTextComponent("container.infernoreborn.foundry");
 	}
 	@Override public Container createMenu(int id, PlayerInventory playerInventory, PlayerEntity player){
-		return new FoundryContainer(id, playerInventory, inv, () -> process, () -> currentRecipe!=null ? currentRecipe.getProcessingTime() : 0);
+		return new FoundryContainer(id, playerInventory, inv, () -> getProcess(), () -> getMaxProcess());
+	}
+
+	public static final class RecipeProcess{
+		@Nullable private final FoundryRecipe recipe;
+		private final ItemStack result;
+		private final ItemStack byproduct;
+		private final int maxProcess;
+		private int process;
+
+		public RecipeProcess(@Nullable FoundryRecipe recipe, FoundryRecipe.Result currentRecipe){
+			this.recipe = recipe;
+			this.result = currentRecipe.getResult();
+			this.byproduct = currentRecipe.getByproduct();
+			this.maxProcess = currentRecipe.getProcessingTime();
+		}
+		public RecipeProcess(CompoundNBT tag){
+			this.recipe = null;
+			this.result = ItemStack.of(tag.getCompound("Result"));
+			this.byproduct = ItemStack.of(tag.getCompound("Byproduct"));
+			this.maxProcess = tag.getInt("MaxProcess");
+			this.process = tag.getInt("Process");
+		}
+
+		public boolean work(){
+			return this.process>=maxProcess||++this.process>=maxProcess;
+		}
+
+		public CompoundNBT write(){
+			CompoundNBT tag = new CompoundNBT();
+			tag.put("Result", result.serializeNBT());
+			tag.put("Byproduct", byproduct.serializeNBT());
+			tag.putInt("MaxProcess", maxProcess);
+			tag.putInt("Process", process);
+			return tag;
+		}
 	}
 
 	public static final class ItemHandler extends ItemStackHandler{

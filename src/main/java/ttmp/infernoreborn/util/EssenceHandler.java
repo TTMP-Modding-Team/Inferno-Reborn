@@ -1,5 +1,7 @@
 package ttmp.infernoreborn.util;
 
+import ttmp.infernoreborn.contents.recipe.EssenceIngredient;
+
 public interface EssenceHandler{
 	/**
 	 * Inserts essence of chosen type.
@@ -20,30 +22,13 @@ public interface EssenceHandler{
 	 */
 	int extractEssence(EssenceType type, int essence, boolean simulate);
 
-	default boolean insertEssences(Essences holder, boolean simulate){
-		for(EssenceType type : EssenceType.values()){
-			int essence = holder.getEssence(type);
-			if(essence>0&&insertEssence(type, essence, true)!=essence) return false;
-		}
-		if(!simulate){
-			for(EssenceType type : EssenceType.values()){
-				int essence = holder.getEssence(type);
-				if(essence>0) insertEssence(type, essence, false);
-			}
-		}
-		return true;
-	}
-	default boolean extractEssences(Essences holder, boolean simulate){
-		for(EssenceType type : EssenceType.values()){
-			int essence = holder.getEssence(type);
-			if(essence>0&&extractEssence(type, essence, true)!=essence) return false;
-		}
-		if(!simulate){
-			for(EssenceType type : EssenceType.values()){
-				int essence = holder.getEssence(type);
-				if(essence>0) extractEssence(type, essence, false);
-			}
-		}
-		return true;
-	}
+	/**
+	 * Consumes essences. The result indicates whether the specified essences can be fully deduced from this handler.
+	 * Applying successful result deduces specified essences from this handler, and returns total essences deduced.
+	 *
+	 * @param ingredient Essences to be deduced
+	 * @return Whether the specified essences can be fully deduced from this handler.
+	 * Applying successful result deduces specified essences from this handler, and returns total essences deduced.
+	 */
+	Simulation<Essences> consume(EssenceIngredient ingredient);
 }

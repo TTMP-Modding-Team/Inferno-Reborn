@@ -1,0 +1,16 @@
+{
+  "type": "infernoreborn:crucible",
+  "ingredients": [
+    {
+      "ingredient": {
+        "tag": "forge:stone"
+      }
+    }
+  ],
+  "essences": {
+    "any": 1
+  },
+  "result": {
+    "item": "infernoreborn:runestone"
+  }
+}
