@@ -8,9 +8,9 @@ import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 import net.minecraftforge.common.crafting.IShapedRecipe;
+import ttmp.infernoreborn.api.RecipeTypes;
 import ttmp.infernoreborn.api.sigil.SigilcraftInventory;
 import ttmp.infernoreborn.api.sigil.SigilcraftRecipe;
-import ttmp.infernoreborn.contents.ModRecipes;
 
 public abstract class BaseSigilcraftRecipe implements SigilcraftRecipe, IShapedRecipe<SigilcraftInventory>{
 	protected final ResourceLocation id;
@@ -107,7 +107,7 @@ public abstract class BaseSigilcraftRecipe implements SigilcraftRecipe, IShapedR
 
 	@Override public abstract IRecipeSerializer<?> getSerializer();
 	@Override public IRecipeType<?> getType(){
-		return ModRecipes.SIGILCRAFT_RECIPE_TYPE;
+		return RecipeTypes.sigilcraft();
 	}
 
 	@Override public int getRecipeWidth(){

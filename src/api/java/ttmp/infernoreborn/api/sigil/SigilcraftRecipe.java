@@ -6,6 +6,6 @@ import ttmp.infernoreborn.api.RecipeTypes;
 
 public interface SigilcraftRecipe extends IRecipe<SigilcraftInventory>{
 	@Override default IRecipeType<?> getType(){
-		return RecipeTypes.sigilcraftRecipeType();
+		return RecipeTypes.sigilcraft();
 	}
 }

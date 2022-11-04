@@ -34,6 +34,7 @@ import net.minecraftforge.items.ItemStackHandler;
 import net.minecraftforge.items.wrapper.PlayerMainInvWrapper;
 import net.minecraftforge.items.wrapper.RecipeWrapper;
 import ttmp.infernoreborn.InfernoReborn;
+import ttmp.infernoreborn.api.RecipeTypes;
 import ttmp.infernoreborn.api.Simulation;
 import ttmp.infernoreborn.api.crucible.CrucibleHeat;
 import ttmp.infernoreborn.api.crucible.CrucibleHeatSource;
@@ -47,7 +48,6 @@ import ttmp.infernoreborn.api.essence.EssenceType;
 import ttmp.infernoreborn.api.essence.Essences;
 import ttmp.infernoreborn.contents.ModBlocks;
 import ttmp.infernoreborn.contents.ModParticles;
-import ttmp.infernoreborn.contents.ModRecipes;
 import ttmp.infernoreborn.contents.ModTileEntities;
 
 import javax.annotation.Nonnull;
@@ -402,7 +402,7 @@ public class CrucibleTile extends TileEntity implements ITickableTileEntity{
 				Simulation<CrucibleRecipe.Result> sim = prevRecipe.consume(crucibleInventory);
 				if(sim.isSuccess()) return new CrucibleRecipeProcess(prevRecipe, sim, crucibleInventory);
 			}
-			for(CrucibleRecipe r : server.getRecipeManager().getAllRecipesFor(ModRecipes.CRUCIBLE_RECIPE_TYPE)){
+			for(CrucibleRecipe r : server.getRecipeManager().getAllRecipesFor(RecipeTypes.crucible())){
 				if(r==prevRecipe) continue;
 				Simulation<CrucibleRecipe.Result> sim = r.consume(crucibleInventory);
 				if(sim.isSuccess()) return new CrucibleRecipeProcess(r, sim, crucibleInventory);

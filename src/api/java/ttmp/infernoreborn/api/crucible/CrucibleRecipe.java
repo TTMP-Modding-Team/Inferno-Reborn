@@ -48,7 +48,7 @@ public interface CrucibleRecipe extends WackyRecipe<CrucibleInventory, CrucibleR
 	List<FluidStack> fluidOutputs();
 
 	@Override default IRecipeType<?> getType(){
-		return RecipeTypes.crucibleRecipeType();
+		return RecipeTypes.crucible();
 	}
 
 	@Deprecated @Override default ItemStack getResultItem(){

@@ -12,24 +12,24 @@ import static ttmp.infernoreborn.api.InfernoRebornApi.MODID;
 public final class RecipeTypes{
 	private RecipeTypes(){}
 
-	private static IRecipeType<SigilcraftRecipe> sigilcraftRecipeType;
-	private static IRecipeType<FoundryRecipe> foundryRecipeType;
-	private static IRecipeType<CrucibleRecipe> crucibleRecipeType;
+	private static IRecipeType<SigilcraftRecipe> sigilcraft;
+	private static IRecipeType<FoundryRecipe> foundry;
+	private static IRecipeType<CrucibleRecipe> crucible;
 
-	public static IRecipeType<SigilcraftRecipe> sigilcraftRecipeType(){
-		return sigilcraftRecipeType;
+	public static IRecipeType<SigilcraftRecipe> sigilcraft(){
+		return sigilcraft;
 	}
-	public static IRecipeType<FoundryRecipe> foundryRecipeType(){
-		return foundryRecipeType;
+	public static IRecipeType<FoundryRecipe> foundry(){
+		return foundry;
 	}
-	public static IRecipeType<CrucibleRecipe> crucibleRecipeType(){
-		return crucibleRecipeType;
+	public static IRecipeType<CrucibleRecipe> crucible(){
+		return crucible;
 	}
 
 	@SuppressWarnings("unchecked")
 	public static void setTypes(){
-		RecipeTypes.sigilcraftRecipeType = (IRecipeType<SigilcraftRecipe>)Registry.RECIPE_TYPE.get(new ResourceLocation(MODID+":sigilcraft"));
-		RecipeTypes.foundryRecipeType = (IRecipeType<FoundryRecipe>)Registry.RECIPE_TYPE.get(new ResourceLocation(MODID+":foundry"));
-		RecipeTypes.crucibleRecipeType = (IRecipeType<CrucibleRecipe>)Registry.RECIPE_TYPE.get(new ResourceLocation(MODID+":crucible"));
+		sigilcraft = (IRecipeType<SigilcraftRecipe>)Registry.RECIPE_TYPE.get(new ResourceLocation(MODID+":sigilcraft"));
+		foundry = (IRecipeType<FoundryRecipe>)Registry.RECIPE_TYPE.get(new ResourceLocation(MODID+":foundry"));
+		crucible = (IRecipeType<CrucibleRecipe>)Registry.RECIPE_TYPE.get(new ResourceLocation(MODID+":crucible"));
 	}
 }

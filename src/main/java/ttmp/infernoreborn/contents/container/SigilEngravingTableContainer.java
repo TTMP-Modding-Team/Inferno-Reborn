@@ -15,12 +15,12 @@ import net.minecraft.util.NonNullList;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeHooks;
 import net.minecraftforge.fml.network.PacketDistributor;
+import ttmp.infernoreborn.api.RecipeTypes;
 import ttmp.infernoreborn.api.sigil.Sigil;
 import ttmp.infernoreborn.api.sigil.SigilHolder;
 import ttmp.infernoreborn.api.sigil.SigilcraftInventory;
 import ttmp.infernoreborn.api.sigil.SigilcraftRecipe;
 import ttmp.infernoreborn.contents.ModContainers;
-import ttmp.infernoreborn.contents.ModRecipes;
 import ttmp.infernoreborn.inventory.DelegateSigilcraftInventory;
 import ttmp.infernoreborn.inventory.SigilTableInventory;
 import ttmp.infernoreborn.network.ModNet;
@@ -123,7 +123,7 @@ public abstract class SigilEngravingTableContainer extends Container{
 		ItemStack resultStack = ItemStack.EMPTY;
 		SigilcraftRecipe recipe = Objects.requireNonNull(world.getServer())
 				.getRecipeManager()
-				.getRecipeFor(ModRecipes.SIGILCRAFT_RECIPE_TYPE, inventory, world)
+				.getRecipeFor(RecipeTypes.sigilcraft(), inventory, world)
 				.orElse(null);
 		if(recipe!=null){
 			if(resultSlots.setRecipeUsed(world, player, recipe))
@@ -235,7 +235,8 @@ public abstract class SigilEngravingTableContainer extends Container{
 		@Override public ItemStack onTake(PlayerEntity player, ItemStack stack){
 			this.checkTakeAchievements(stack);
 			ForgeHooks.setCraftingPlayer(player);
-			NonNullList<ItemStack> remainingItems = player.level.getRecipeManager().getRemainingItemsFor(ModRecipes.SIGILCRAFT_RECIPE_TYPE, this.sigilcraftInventory, player.level);
+			NonNullList<ItemStack> remainingItems = player.level.getRecipeManager()
+					.getRemainingItemsFor(RecipeTypes.sigilcraft(), this.sigilcraftInventory, player.level);
 			ForgeHooks.setCraftingPlayer(null);
 			for(int i = 0; i<remainingItems.size(); ++i){
 				ItemStack stackIn = this.sigilcraftInventory.getItem(i);

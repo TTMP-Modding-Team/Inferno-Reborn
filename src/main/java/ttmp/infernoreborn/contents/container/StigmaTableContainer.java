@@ -12,6 +12,7 @@ import net.minecraft.util.IWorldPosCallable;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.network.PacketDistributor;
 import ttmp.infernoreborn.api.Caps;
+import ttmp.infernoreborn.api.RecipeTypes;
 import ttmp.infernoreborn.api.sigil.EmptySigilHolder;
 import ttmp.infernoreborn.api.sigil.Sigil;
 import ttmp.infernoreborn.api.sigil.SigilEngravingRecipe;
@@ -19,7 +20,6 @@ import ttmp.infernoreborn.api.sigil.SigilHolder;
 import ttmp.infernoreborn.api.sigil.SigilcraftInventory;
 import ttmp.infernoreborn.api.sigil.SigilcraftRecipe;
 import ttmp.infernoreborn.contents.ModContainers;
-import ttmp.infernoreborn.contents.ModRecipes;
 import ttmp.infernoreborn.contents.Sigils;
 import ttmp.infernoreborn.inventory.DelegateSigilcraftInventory;
 import ttmp.infernoreborn.inventory.SigilTableInventory;
@@ -127,7 +127,7 @@ public abstract class StigmaTableContainer extends Container{
 	protected void slotChangedCraftingGrid(World world){
 		if(world.isClientSide) return;
 		for(SigilcraftRecipe recipe : Objects.requireNonNull(world.getServer())
-				.getRecipeManager().getAllRecipesFor(ModRecipes.SIGILCRAFT_RECIPE_TYPE)){
+				.getRecipeManager().getAllRecipesFor(RecipeTypes.sigilcraft())){
 			if(!(recipe instanceof SigilEngravingRecipe)) continue;
 			Sigil sigil = ((SigilEngravingRecipe)recipe).tryEngrave(sigilHolder, inventory);
 			if(sigil!=null){

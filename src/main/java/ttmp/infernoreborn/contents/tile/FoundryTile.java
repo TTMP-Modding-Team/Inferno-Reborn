@@ -27,13 +27,13 @@ import net.minecraftforge.items.wrapper.RangedWrapper;
 import net.minecraftforge.items.wrapper.RecipeWrapper;
 import ttmp.infernoreborn.InfernoReborn;
 import ttmp.infernoreborn.api.Caps;
+import ttmp.infernoreborn.api.RecipeTypes;
 import ttmp.infernoreborn.api.Simulation;
 import ttmp.infernoreborn.api.essence.Essence;
 import ttmp.infernoreborn.api.essence.EssenceHandler;
 import ttmp.infernoreborn.api.foundry.FoundryInventory;
 import ttmp.infernoreborn.api.foundry.FoundryRecipe;
 import ttmp.infernoreborn.contents.ModBlocks;
-import ttmp.infernoreborn.contents.ModRecipes;
 import ttmp.infernoreborn.contents.ModTileEntities;
 import ttmp.infernoreborn.contents.block.FoundryBlock;
 import ttmp.infernoreborn.contents.container.FoundryContainer;
@@ -136,7 +136,7 @@ public class FoundryTile extends TileEntity implements ITickableTileEntity, INam
 		}
 
 		if(prevRecipe!=null&&startIfCanHandleResult(prevRecipe)) return;
-		for(FoundryRecipe r : server.getRecipeManager().getAllRecipesFor(ModRecipes.FOUNDRY_RECIPE_TYPE))
+		for(FoundryRecipe r : server.getRecipeManager().getAllRecipesFor(RecipeTypes.foundry()))
 			if(r!=prevRecipe&&startIfCanHandleResult(r)) return;
 	}
 

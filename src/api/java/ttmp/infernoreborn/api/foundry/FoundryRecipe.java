@@ -30,7 +30,7 @@ public interface FoundryRecipe extends WackyRecipe<FoundryInventory, FoundryReci
 	ItemStack getByproduct();
 
 	@Override default IRecipeType<?> getType(){
-		return RecipeTypes.foundryRecipeType();
+		return RecipeTypes.foundry();
 	}
 
 	/**

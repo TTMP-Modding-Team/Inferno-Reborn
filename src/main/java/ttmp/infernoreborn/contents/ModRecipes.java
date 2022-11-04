@@ -7,9 +7,6 @@ import net.minecraftforge.fml.RegistryObject;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import ttmp.infernoreborn.api.RecipeTypes;
-import ttmp.infernoreborn.api.crucible.CrucibleRecipe;
-import ttmp.infernoreborn.api.foundry.FoundryRecipe;
-import ttmp.infernoreborn.api.sigil.SigilcraftRecipe;
 import ttmp.infernoreborn.contents.recipe.ApplySigilRecipe;
 import ttmp.infernoreborn.contents.recipe.CombineSparkRecipe;
 import ttmp.infernoreborn.contents.recipe.EssenceHolderBookRecipe;
@@ -24,10 +21,6 @@ import static ttmp.infernoreborn.InfernoReborn.MODID;
 
 public final class ModRecipes{
 	private ModRecipes(){}
-
-	public static final IRecipeType<SigilcraftRecipe> SIGILCRAFT_RECIPE_TYPE = IRecipeType.register(MODID+":sigilcraft");
-	public static final IRecipeType<FoundryRecipe> FOUNDRY_RECIPE_TYPE = IRecipeType.register(MODID+":foundry");
-	public static final IRecipeType<CrucibleRecipe> CRUCIBLE_RECIPE_TYPE = IRecipeType.register(MODID+":crucible");
 
 	public static final DeferredRegister<IRecipeSerializer<?>> REGISTER = DeferredRegister.create(ForgeRegistries.RECIPE_SERIALIZERS, MODID);
 

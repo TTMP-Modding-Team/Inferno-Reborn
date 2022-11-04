@@ -32,7 +32,6 @@ import ttmp.infernoreborn.compat.jei.sigil.ShapedSigilEngravingRecipeCategory;
 import ttmp.infernoreborn.compat.jei.sigil.ShapedSigilTableCraftingRecipeCategory;
 import ttmp.infernoreborn.compat.jei.sigil.SigilcraftRecipeTransferHandler;
 import ttmp.infernoreborn.contents.ModItems;
-import ttmp.infernoreborn.contents.ModRecipes;
 import ttmp.infernoreborn.contents.container.SigilEngravingTableContainer;
 import ttmp.infernoreborn.contents.container.StigmaTableContainer;
 import ttmp.infernoreborn.contents.item.SigilItem;
@@ -81,7 +80,7 @@ public class InfernoRebornJeiPlugin implements IModPlugin{
 		Multimap<RecipeSize, ShapedSigilEngravingRecipe> sigilEngravingRecipes = ArrayListMultimap.create();
 		Multimap<RecipeSize, ShapedSigilTableCraftingRecipe> sigilTableCraftingRecipes = ArrayListMultimap.create();
 
-		for(SigilcraftRecipe recipe : world.getRecipeManager().getAllRecipesFor(RecipeTypes.sigilcraftRecipeType())){
+		for(SigilcraftRecipe recipe : world.getRecipeManager().getAllRecipesFor(RecipeTypes.sigilcraft())){
 			if(recipe instanceof ShapedSigilEngravingRecipe){
 				ShapedSigilEngravingRecipe r = (ShapedSigilEngravingRecipe)recipe;
 				RecipeSize recipeSize = getRecipeSize(r);
@@ -97,7 +96,7 @@ public class InfernoRebornJeiPlugin implements IModPlugin{
 			registration.addRecipes(sigilTableCraftingRecipes.get(s), ShapedSigilTableCraftingRecipeCategory.getUidBySize(s));
 		}
 
-		registration.addRecipes(world.getRecipeManager().getAllRecipesFor(ModRecipes.FOUNDRY_RECIPE_TYPE),
+		registration.addRecipes(world.getRecipeManager().getAllRecipesFor(RecipeTypes.foundry()),
 				FoundryRecipeCategory.UID);
 	}
 

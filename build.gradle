@@ -33,7 +33,10 @@ sourceSets {
     }
 
     main {
-        resources { srcDir 'src/generated/resources' }
+        resources {
+            srcDirs 'src/generated/resources'
+            exclude '.cache'
+        }
         compileClasspath += sourceSets.api.output
         runtimeClasspath += sourceSets.api.output
     }
@@ -143,7 +146,7 @@ dependencies {
     runtimeOnly fg.deobf("top.theillusivec4.curios:curios-forge:1.16.5-4.0.8.2")
     compileOnly fg.deobf("top.theillusivec4.curios:curios-forge:1.16.5-4.0.8.2:api")
 
-    apiImplementation fg.deobf("top.theillusivec4.curios:curios-forge:1.16.5-4.0.8.2:api")
+    apiCompileOnly fg.deobf("top.theillusivec4.curios:curios-forge:1.16.5-4.0.8.2:api")
 
     implementation('io.github.amonglang:among:0.6.0-SNAPSHOT'){
         changing = true
