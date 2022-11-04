@@ -21,7 +21,7 @@ import ttmp.infernoreborn.api.Caps;
 import ttmp.infernoreborn.api.essence.EssenceHolder;
 import ttmp.infernoreborn.api.essence.EssenceNetProvider;
 import ttmp.infernoreborn.contents.block.essencenet.EssenceNetCoreBlock;
-import ttmp.infernoreborn.contents.container.EssenceHolderContainerProvider;
+import ttmp.infernoreborn.contents.container.EssenceHolderItemContainerProvider;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -50,7 +50,7 @@ public class EssenceNetAccessorItem extends Item implements EssenceNetCoreBlock.
 	@Override public ActionResult<ItemStack> use(World world, PlayerEntity player, Hand hand){
 		ItemStack stack = player.getItemInHand(hand);
 		if(!world.isClientSide&&stack.getCapability(Caps.essenceHolder).isPresent())
-			player.openMenu(new EssenceHolderContainerProvider(stack.getHoverName(), player, hand));
+			player.openMenu(new EssenceHolderItemContainerProvider(stack.getHoverName(), player, hand));
 		return ActionResult.sidedSuccess(stack, world.isClientSide);
 	}
 

@@ -18,7 +18,7 @@ import net.minecraftforge.common.util.LazyOptional;
 import ttmp.infernoreborn.api.Caps;
 import ttmp.infernoreborn.api.essence.EssenceHolder;
 import ttmp.infernoreborn.api.essence.EssenceType;
-import ttmp.infernoreborn.contents.container.EssenceHolderContainerProvider;
+import ttmp.infernoreborn.contents.container.EssenceHolderItemContainerProvider;
 import ttmp.infernoreborn.util.ExpandKey;
 
 import javax.annotation.Nonnull;
@@ -62,7 +62,7 @@ public class EssenceHolderItem extends Item{
 
 	protected void openGui(PlayerEntity player, Hand hand){
 		ItemStack stack = player.getItemInHand(hand);
-		player.openMenu(new EssenceHolderContainerProvider(stack.getHoverName(), player, hand));
+		player.openMenu(new EssenceHolderItemContainerProvider(stack.getHoverName(), player, hand));
 	}
 
 	protected void listEssences(ItemStack stack, List<ITextComponent> text){

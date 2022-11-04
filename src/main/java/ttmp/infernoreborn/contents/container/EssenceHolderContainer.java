@@ -10,9 +10,7 @@ import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.IntReferenceHolder;
-import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fml.network.PacketDistributor;
-import ttmp.infernoreborn.api.Caps;
 import ttmp.infernoreborn.api.essence.EssenceHolder;
 import ttmp.infernoreborn.api.essence.EssenceType;
 import ttmp.infernoreborn.contents.ModContainers;
@@ -39,13 +37,7 @@ public class EssenceHolderContainer extends Container{
 	public EssenceHolderContainer(@Nullable ContainerType<?> type, int id, PlayerInventory playerInventory, @Nullable EssenceHolder essenceHolder){
 		super(type, id);
 		this.playerInventory = playerInventory;
-		this.essenceHolder = essenceHolder!=null ?
-				EssenceHolderItemHandler.withInstance(essenceHolder) :
-				EssenceHolderItemHandler.withLazyOptional(() -> { // TODO max
-					int holderSlot = this.holderSlot.get();
-					return holderSlot>=0&&holderSlot<this.playerInventory.getContainerSize() ?
-							this.playerInventory.getItem(holderSlot).getCapability(Caps.essenceHolder) : LazyOptional.empty();
-				});
+		this.essenceHolder = EssenceHolderItemHandler.withInstance(essenceHolder!=null ? essenceHolder : new EssenceHolder());
 
 		this.addSlot(new Slot(new Inventory(0), 0, 0, 0){
 			@Override public ItemStack getItem(){
