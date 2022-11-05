@@ -105,6 +105,11 @@ public class BlockModelGen extends BlockStateProvider{
 				ConfiguredModel.builder().modelFile(state.getValue(LIT) ? crucibleCampfire : crucibleCampfireOff)
 						.rotationY(((int)state.getValue(HORIZONTAL_FACING).toYRot())%360).build());
 
+		stove(ModBlocks.FURNACE_STOVE.get(), "stove/furnace");
+		stove(ModBlocks.FOUNDRY_STOVE.get(), "stove/foundry");
+		stove(ModBlocks.NETHER_STOVE.get(), "stove/nether");
+		stove(ModBlocks.ESSENCE_STOVE.get(), "stove/essence");
+
 		simpleItemAndBlock(ModBlocks.ESSENCE_HOLDER_BLOCK.get(), existing(res("block/essence_holder")));
 		simpleItemAndBlock(ModBlocks.ESSENCE_NET_CORE.get(), existing(res("block/essence_net_core")));
 		getVariantBuilder(ModBlocks.ESSENCE_NET_IMPORTER.get()).forAllStates(state -> ConfiguredModel.builder()
@@ -152,5 +157,14 @@ public class BlockModelGen extends BlockStateProvider{
 
 	private ExistingModelFile existing(ResourceLocation location){
 		return new ExistingModelFile(location, existingFileHelper);
+	}
+
+	private void stove(Block block, String baseName){
+		ResourceLocation bottom = res("block/"+baseName+"/bottom");
+		ResourceLocation top = res("block/"+baseName+"/top");
+		ModelFile offModel = models().cubeBottomTop(baseName, res("block/"+baseName+"/side"), bottom, top);
+		ModelFile onModel = models().cubeBottomTop(baseName+"_on", res("block/"+baseName+"/side_on"), bottom, top);
+		getVariantBuilder(block).forAllStates(state -> ConfiguredModel.builder().modelFile(state.getValue(LIT) ? onModel : offModel).build());
+		simpleBlockItem(block, offModel);
 	}
 }

@@ -50,6 +50,10 @@ public class McmetaGen implements IDataProvider{
 		add(new ResourceLocation(MODID, "block/essence_net_core/side"), mcmeta(10, true));
 		add(new ResourceLocation(MODID, "block/essence_net_core/top"), mcmeta(10, true));
 		add(new ResourceLocation(MODID, "item/judgement"), mcmeta(3, false));
+		add(new ResourceLocation(MODID, "block/stove/essence/side_on"), mcmeta(10, true));
+		add(new ResourceLocation(MODID, "block/stove/foundry/side_on"), mcmeta(10, true));
+		add(new ResourceLocation(MODID, "block/stove/furnace/side_on"), mcmeta(10, true));
+		add(new ResourceLocation(MODID, "block/stove/nether/side_on"), mcmeta(10, true));
 	}
 
 	@Override public void run(DirectoryCache directoryCache){

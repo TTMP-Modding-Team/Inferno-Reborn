@@ -49,4 +49,11 @@ public enum CrucibleHeat{
 	public static CrucibleHeat max(CrucibleHeat h1, CrucibleHeat h2){
 		return h1.ordinal()>h2.ordinal() ? h1 : h2;
 	}
+
+	public static CrucibleHeat getMinimumHeatRequired(long essences){
+		for(CrucibleHeat h : values())
+			if(essences<=h.maxEssence())
+				return h;
+		return ESSENCE;
+	}
 }

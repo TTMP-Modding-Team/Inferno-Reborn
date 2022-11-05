@@ -66,26 +66,26 @@ public class RecipeGen extends RecipeProvider{
 		compactAndUncompact(ModItems.DAMASCUS_STEEL_BLOCK.get(), ModItems.DAMASCUS_STEEL_INGOT.get(), consumer);
 		compactAndUncompact(ModItems.DAMASCUS_STEEL_INGOT.get(), ModItems.DAMASCUS_STEEL_NUGGET.get(), consumer);
 
-		ShapelessRecipeBuilder.shapeless(ModItems.BOOK_OF_THE_UNSPEAKABLE::get)
+		ShapelessRecipeBuilder.shapeless(ModItems.BOOK_OF_THE_UNSPEAKABLE.get())
 				.requires(Items.PAPER)
 				.requires(ModTags.ESSENCES)
 				.unlockedBy("fuck", has(ModTags.ESSENCES))
 				.save(consumer);
-		ShapedRecipeBuilder.shaped(ModItems.ESSENCE_HOLDER::get)
+		ShapedRecipeBuilder.shaped(ModItems.ESSENCE_HOLDER.get())
 				.pattern(" 1 ")
 				.pattern("111")
 				.pattern(" 1 ")
 				.define('1', ModTags.ESSENCES)
 				.unlockedBy("fuck", has(ModTags.ESSENCES))
 				.save(consumer);
-		ShapedRecipeBuilder.shaped(ModItems.ESSENCE_HOLDER_BLOCK::get)
+		ShapedRecipeBuilder.shaped(ModItems.ESSENCE_HOLDER_BLOCK.get())
 				.pattern("1")
 				.pattern("2")
 				.define('1', ModItems.ESSENCE_HOLDER.get())
 				.define('2', Tags.Items.INGOTS_GOLD)
 				.unlockedBy("fuck", has(ModItems.ESSENCE_HOLDER.get()))
 				.save(consumer);
-		ShapedRecipeBuilder.shaped(ModItems.FOUNDRY::get)
+		ShapedRecipeBuilder.shaped(ModItems.FOUNDRY.get())
 				.pattern("111")
 				.pattern("121")
 				.pattern("111")
@@ -93,7 +93,7 @@ public class RecipeGen extends RecipeProvider{
 				.define('2', Items.BLAST_FURNACE)
 				.unlockedBy("fuck", has(ModTags.ESSENCES))
 				.save(consumer);
-		ShapedRecipeBuilder.shaped(ModItems.SIGIL_ENGRAVING_TABLE_3X3::get)
+		ShapedRecipeBuilder.shaped(ModItems.SIGIL_ENGRAVING_TABLE_3X3.get())
 				.pattern(" 1 ")
 				.pattern("232")
 				.pattern("444")
@@ -102,6 +102,13 @@ public class RecipeGen extends RecipeProvider{
 				.define('3', Tags.Items.INGOTS_GOLD)
 				.define('4', ItemTags.PLANKS)
 				.unlockedBy("fuck", has(ModTags.ESSENCES))
+				.save(consumer);
+		ShapedRecipeBuilder.shaped(ModItems.CRUCIBLE.get())
+				.pattern("1 1")
+				.pattern("212")
+				.define('1', Tags.Items.INGOTS_IRON)
+				.define('2', ModTags.INGOTS_PYRITE)
+				.unlockedBy("fuck", has(ModTags.INGOTS_PYRITE))
 				.save(consumer);
 
 		new ShapedSigilTableCraftingRecipeBuilder(ModItems.RUNESTONE.get())
@@ -272,7 +279,14 @@ public class RecipeGen extends RecipeProvider{
 				.output(ModItems.RUNESTONE.get())
 				.ingredient(Ingredient.of(Tags.Items.STONE), 1)
 				.anyEssence(1)
-				.save(consumer, new ResourceLocation(MODID, "crucible/idk"));
+				.save(consumer, new ResourceLocation(MODID, "crucible/runestone"));
+
+		new CrucibleRecipeBuilder()
+				.output(ModItems.FOUNDRY_TILE.get())
+				.ingredient(Ingredient.of(Items.BRICKS), 1)
+				.ingredient(Ingredient.of(Items.COAL, Items.CHARCOAL), 1)
+				.anyEssence(4)
+				.save(consumer, new ResourceLocation(MODID, "crucible/foundry_tile"));
 
 		new FoundryRecipeBuilder(new ItemStack(Items.NETHERITE_INGOT, 2))
 				.ingredient(Ingredient.of(Tags.Items.INGOTS_GOLD), 1)

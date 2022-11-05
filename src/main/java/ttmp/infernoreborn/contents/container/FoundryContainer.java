@@ -28,7 +28,7 @@ public class FoundryContainer extends Container{
 	@Nullable private final IntSupplier maxProcessSupplier;
 
 	public FoundryContainer(int windowId, PlayerInventory playerInventory){
-		this(windowId, playerInventory, new FoundryTile.ItemHandler(), null, null);
+		this(windowId, playerInventory, FoundryTile.createInventory(), null, null);
 	}
 	public FoundryContainer(int windowId,
 	                        PlayerInventory playerInventory,

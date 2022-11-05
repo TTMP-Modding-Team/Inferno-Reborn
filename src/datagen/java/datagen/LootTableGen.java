@@ -75,6 +75,7 @@ public class LootTableGen extends LootTableProvider{
 
 			dropSelf(ModBlocks.FOUNDRY_TILE.get());
 			add(ModBlocks.FOUNDRY.get(), b -> createNameableBlockEntityTable(ModBlocks.FOUNDRY.get()));
+
 			dropSelf(ModBlocks.CRUCIBLE.get());
 			add(ModBlocks.CRUCIBLE_CAMPFIRE.get(), b -> lootTable().withPool(applyExplosionCondition(b, lootPool()
 					.setRolls(ConstantRange.exactly(1))
@@ -86,6 +87,11 @@ public class LootTableGen extends LootTableProvider{
 							lootTableItem(ModBlocks.CRUCIBLE.get())
 					)))
 			));
+
+			dropSelf(ModBlocks.FURNACE_STOVE.get());
+			dropSelf(ModBlocks.FOUNDRY_STOVE.get());
+			dropSelf(ModBlocks.NETHER_STOVE.get());
+			dropSelf(ModBlocks.ESSENCE_STOVE.get());
 
 			addNbtCopiedDrop(ModBlocks.ESSENCE_HOLDER_BLOCK.get(), "Essence");
 

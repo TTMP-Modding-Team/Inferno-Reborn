@@ -30,7 +30,6 @@ import net.minecraftforge.fluids.capability.templates.FluidTank;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.IItemHandlerModifiable;
 import net.minecraftforge.items.ItemHandlerHelper;
-import net.minecraftforge.items.ItemStackHandler;
 import net.minecraftforge.items.wrapper.PlayerMainInvWrapper;
 import net.minecraftforge.items.wrapper.RecipeWrapper;
 import ttmp.infernoreborn.InfernoReborn;
@@ -49,6 +48,7 @@ import ttmp.infernoreborn.api.essence.Essences;
 import ttmp.infernoreborn.contents.ModBlocks;
 import ttmp.infernoreborn.contents.ModParticles;
 import ttmp.infernoreborn.contents.ModTileEntities;
+import ttmp.infernoreborn.inventory.BaseInventory;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -70,14 +70,9 @@ public class CrucibleTile extends TileEntity implements ITickableTileEntity{
 			updateRecipe = saveAndSync = true;
 		}
 	};
-	private final ItemStackHandler inputs = new ItemStackHandler(Crucible.INPUT_INVENTORY_SIZE){
-		@Override public boolean isItemValid(int slot, @Nonnull ItemStack stack){
-			return !Essence.isEssenceItem(stack);
-		}
-		@Override protected void onContentsChanged(int slot){
-			updateRecipe = saveAndSync = true;
-		}
-	};
+	private final BaseInventory inputs = new BaseInventory(Crucible.INPUT_INVENTORY_SIZE)
+			.setItemValidator((slot, stack) -> !Essence.isEssenceItem(stack))
+			.setOnContentsChanged(slot -> updateRecipe = saveAndSync = true);
 	private final EssenceHolder essences = new EssenceHolder(){
 		@Override protected void onChanged(EssenceType type){
 			updateRecipe = saveAndSync = true;
@@ -261,7 +256,7 @@ public class CrucibleTile extends TileEntity implements ITickableTileEntity{
 			BlockPos belowPos = getBlockPos().below();
 			BlockState below = level.getBlockState(belowPos);
 			CrucibleHeat newHeat = below.getBlock() instanceof CrucibleHeatSource ?
-					CrucibleHeat.max(((CrucibleHeatSource)below.getBlock()).getHeat(level, belowPos), baseHeat) :
+					CrucibleHeat.max(((CrucibleHeatSource)below.getBlock()).getHeat(below, level, belowPos), baseHeat) :
 					baseHeat;
 			if(newHeat!=this.heat){
 				updateRecipe = true;
@@ -430,7 +425,7 @@ public class CrucibleTile extends TileEntity implements ITickableTileEntity{
 	private CompoundNBT getSyncTag(){
 		CompoundNBT tag = new CompoundNBT();
 		tag.put("Fluid", fluid.writeToNBT(new CompoundNBT()));
-		tag.put("Inputs", inputs.serializeNBT());
+		inputs.write(tag);
 		tag.put("Essences", essences.serializeNBT());
 		tag.putByte("Heat", heat.id());
 		return tag;
@@ -438,7 +433,7 @@ public class CrucibleTile extends TileEntity implements ITickableTileEntity{
 
 	private void loadSyncTag(CompoundNBT tag){
 		this.fluid.readFromNBT(tag.getCompound("Fluid"));
-		this.inputs.deserializeNBT(tag.getCompound("Inputs"));
+		this.inputs.read(tag);
 		this.essences.deserializeNBT(tag.getCompound("Essences"));
 		this.heat = CrucibleHeat.from(tag.getByte("Heat"));
 	}
@@ -447,7 +442,7 @@ public class CrucibleTile extends TileEntity implements ITickableTileEntity{
 		this.process = tag.contains("Process", Constants.NBT.TAG_COMPOUND) ?
 				new CrucibleRecipeProcess(tag.getCompound("Process")) : null;
 		this.fluid.readFromNBT(tag.getCompound("Fluid"));
-		this.inputs.deserializeNBT(tag.getCompound("Inputs"));
+		this.inputs.read(tag);
 		this.essences.deserializeNBT(tag.getCompound("Essences"));
 		this.stir = tag.getByte("Stir");
 		this.updateHeat = true;
@@ -457,7 +452,7 @@ public class CrucibleTile extends TileEntity implements ITickableTileEntity{
 	@Override public CompoundNBT save(CompoundNBT tag){
 		if(process!=null) tag.put("Process", process.write());
 		tag.put("Fluid", fluid.writeToNBT(new CompoundNBT()));
-		tag.put("Inputs", inputs.serializeNBT());
+		inputs.write(tag);
 		tag.put("Essences", essences.serializeNBT());
 		tag.putByte("Stir", (byte)stir);
 		return super.save(tag);

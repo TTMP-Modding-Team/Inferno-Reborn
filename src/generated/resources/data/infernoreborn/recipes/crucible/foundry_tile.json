@@ -1,0 +1,26 @@
+{
+  "type": "infernoreborn:crucible",
+  "ingredients": [
+    {
+      "ingredient": {
+        "item": "minecraft:bricks"
+      }
+    },
+    {
+      "ingredient": [
+        {
+          "item": "minecraft:coal"
+        },
+        {
+          "item": "minecraft:charcoal"
+        }
+      ]
+    }
+  ],
+  "essences": {
+    "any": 4
+  },
+  "result": {
+    "item": "infernoreborn:foundry_tile"
+  }
+}

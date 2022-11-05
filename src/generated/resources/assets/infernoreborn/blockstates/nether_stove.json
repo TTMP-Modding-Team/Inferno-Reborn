@@ -1,0 +1,10 @@
+{
+  "variants": {
+    "lit=false": {
+      "model": "infernoreborn:stove/nether"
+    },
+    "lit=true": {
+      "model": "infernoreborn:stove/nether_on"
+    }
+  }
+}

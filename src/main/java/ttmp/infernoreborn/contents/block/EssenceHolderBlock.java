@@ -28,12 +28,13 @@ public class EssenceHolderBlock extends Block{
 		super(properties);
 	}
 
-	@SuppressWarnings("deprecation") @Override public ActionResultType use(BlockState state,
-	                                                                       World level,
-	                                                                       BlockPos pos,
-	                                                                       PlayerEntity player,
-	                                                                       Hand hand,
-	                                                                       BlockRayTraceResult hit){
+	@SuppressWarnings("deprecation") @Override public ActionResultType use(
+			BlockState state,
+			World level,
+			BlockPos pos,
+			PlayerEntity player,
+			Hand hand,
+			BlockRayTraceResult hit){
 		if(level.isClientSide) return ActionResultType.SUCCESS;
 		TileEntity te = level.getBlockEntity(pos);
 		if(te instanceof EssenceHolderTile) player.openMenu((INamedContainerProvider)te);
@@ -48,7 +49,7 @@ public class EssenceHolderBlock extends Block{
 	}
 
 	@SuppressWarnings("deprecation")
-	public VoxelShape getShape(BlockState state, IBlockReader level, BlockPos pos, ISelectionContext context) {
+	public VoxelShape getShape(BlockState state, IBlockReader level, BlockPos pos, ISelectionContext context){
 		return SHAPE;
 	}
 }

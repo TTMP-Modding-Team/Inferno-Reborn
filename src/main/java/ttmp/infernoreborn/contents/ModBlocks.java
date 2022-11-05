@@ -21,6 +21,7 @@ import ttmp.infernoreborn.contents.block.NamedContainerBlock;
 import ttmp.infernoreborn.contents.block.PyriteOreBlock;
 import ttmp.infernoreborn.contents.block.SigilScrapperBlock;
 import ttmp.infernoreborn.contents.block.StigmaScrapperBlock;
+import ttmp.infernoreborn.contents.block.StoveBlock;
 import ttmp.infernoreborn.contents.block.essencenet.EssenceNetCoreBlock;
 import ttmp.infernoreborn.contents.block.essencenet.EssenceNetExporterBlock;
 import ttmp.infernoreborn.contents.block.essencenet.EssenceNetImporterBlock;
@@ -106,21 +107,30 @@ public final class ModBlocks{
 	public static final RegistryObject<Block> CRUCIBLE_CAMPFIRE = REGISTER.register("crucible_campfire", () -> new CampfireCrucibleBlock(
 			Properties.of(Material.METAL, MaterialColor.STONE).requiresCorrectToolForDrops().strength(2).lightLevel(s -> s.getValue(LIT) ? 15 : 0).noOcclusion().sound(SoundType.LANTERN)));
 
-	public static final RegistryObject<Block> FOUNDRY_TILE = REGISTER.register("foundry_tile", () -> new Block(
-			Properties.of(Material.STONE).requiresCorrectToolForDrops().strength(3.5f)));
-	public static final RegistryObject<Block> FOUNDRY = REGISTER.register("foundry", () -> new FoundryBlock(
+	public static final RegistryObject<Block> FURNACE_STOVE = REGISTER.register("furnace_stove", () -> new StoveBlock.Furnace(
 			Properties.of(Material.STONE).requiresCorrectToolForDrops().strength(3.5f).lightLevel(s -> s.getValue(LIT) ? 13 : 0)));
+	public static final RegistryObject<Block> FOUNDRY_STOVE = REGISTER.register("foundry_stove", () -> new StoveBlock.Foundry(
+			Properties.of(Material.STONE, MaterialColor.COLOR_BLACK).requiresCorrectToolForDrops().strength(3.5f).lightLevel(s -> s.getValue(LIT) ? 13 : 0)));
+	public static final RegistryObject<Block> NETHER_STOVE = REGISTER.register("nether_stove", () -> new StoveBlock.Nether(
+			Properties.of(Material.STONE, MaterialColor.NETHER).requiresCorrectToolForDrops().strength(3.5f).lightLevel(s -> s.getValue(LIT) ? 15 : 0).sound(SoundType.NETHERRACK)));
+	public static final RegistryObject<Block> ESSENCE_STOVE = REGISTER.register("essence_stove", () -> new StoveBlock.Essence(
+			Properties.of(Material.STONE).requiresCorrectToolForDrops().strength(3.5f).lightLevel(s -> s.getValue(LIT) ? 15 : 0)));
+
+	public static final RegistryObject<Block> FOUNDRY_TILE = REGISTER.register("foundry_tile", () -> new Block(
+			Properties.of(Material.STONE, MaterialColor.COLOR_BLACK).requiresCorrectToolForDrops().strength(3.5f)));
+	public static final RegistryObject<Block> FOUNDRY = REGISTER.register("foundry", () -> new FoundryBlock(
+			Properties.of(Material.STONE, MaterialColor.COLOR_BLACK).requiresCorrectToolForDrops().strength(3.5f).lightLevel(s -> s.getValue(LIT) ? 13 : 0)));
 
 	public static final RegistryObject<FoundryBlock.ProxyBlock> FOUNDRY_FIREBOX = REGISTER.register("foundry_firebox", () -> new FoundryBlock.FireboxProxyBlock(0, 0, 1,
-			Properties.of(Material.STONE).requiresCorrectToolForDrops().strength(3.5f).lightLevel(s -> s.getValue(LIT) ? 13 : 0).noDrops()));
+			Properties.of(Material.STONE, MaterialColor.COLOR_BLACK).requiresCorrectToolForDrops().strength(3.5f).lightLevel(s -> s.getValue(LIT) ? 13 : 0).noDrops()));
 	public static final RegistryObject<FoundryBlock.ProxyBlock> FOUNDRY_GRATE_1 = REGISTER.register("foundry_grate_1", () -> new FoundryBlock.GrateProxyBlock(0, 1, 0,
-			Properties.of(Material.STONE).requiresCorrectToolForDrops().strength(3.5f).noDrops()));
+			Properties.of(Material.STONE, MaterialColor.COLOR_BLACK).requiresCorrectToolForDrops().strength(3.5f).noDrops()));
 	public static final RegistryObject<FoundryBlock.ProxyBlock> FOUNDRY_GRATE_2 = REGISTER.register("foundry_grate_2", () -> new FoundryBlock.GrateProxyBlock(0, 1, 1,
-			Properties.of(Material.STONE).requiresCorrectToolForDrops().strength(3.5f).noDrops()));
+			Properties.of(Material.STONE, MaterialColor.COLOR_BLACK).requiresCorrectToolForDrops().strength(3.5f).noDrops()));
 	public static final RegistryObject<FoundryBlock.ProxyBlock> FOUNDRY_MOLD_1 = REGISTER.register("foundry_mold_1", () -> new FoundryBlock.MoldProxyBlock(1, 0, 0,
-			Properties.of(Material.STONE).requiresCorrectToolForDrops().strength(3.5f).noDrops().dynamicShape()));
+			Properties.of(Material.STONE, MaterialColor.COLOR_BLACK).requiresCorrectToolForDrops().strength(3.5f).noDrops().dynamicShape()));
 	public static final RegistryObject<FoundryBlock.ProxyBlock> FOUNDRY_MOLD_2 = REGISTER.register("foundry_mold_2", () -> new FoundryBlock.MoldProxyBlock2(1, 0, 1,
-			Properties.of(Material.STONE).requiresCorrectToolForDrops().strength(3.5f).noDrops().dynamicShape()));
+			Properties.of(Material.STONE, MaterialColor.COLOR_BLACK).requiresCorrectToolForDrops().strength(3.5f).noDrops().dynamicShape()));
 
 	public static final RegistryObject<Block> ESSENCE_HOLDER_BLOCK = REGISTER.register("essence_holder_block", () -> new EssenceHolderBlock(
 			Properties.of(Material.GLASS).strength(1.5f).dynamicShape().lightLevel(value -> 15)));

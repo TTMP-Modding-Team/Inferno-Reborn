@@ -37,6 +37,7 @@ import ttmp.infernoreborn.contents.ModBlocks;
 import ttmp.infernoreborn.contents.ModTileEntities;
 import ttmp.infernoreborn.contents.block.FoundryBlock;
 import ttmp.infernoreborn.contents.container.FoundryContainer;
+import ttmp.infernoreborn.inventory.BaseInventory;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -53,7 +54,7 @@ public class FoundryTile extends TileEntity implements ITickableTileEntity, INam
 	public static final int OUTPUT_SLOT_1 = 4;
 	public static final int OUTPUT_SLOT_2 = 5;
 
-	private final ItemStackHandler inv = new ItemHandler();
+	private final BaseInventory inv = createInventory();
 	private final FoundryInventory foundryInventory = new FoundryInventoryImpl();
 
 	@Nullable private RecipeProcess process;
@@ -217,16 +218,16 @@ public class FoundryTile extends TileEntity implements ITickableTileEntity, INam
 		return super.getCapability(cap, side);
 	}
 
-	@Override public void load(BlockState state, CompoundNBT nbt){
-		process = nbt.contains("Process", Constants.NBT.TAG_COMPOUND) ?
-				new RecipeProcess(nbt.getCompound("Process")) : null;
-		inv.deserializeNBT(nbt.getCompound("inv"));
-		super.load(state, nbt);
+	@Override public void load(BlockState state, CompoundNBT tag){
+		process = tag.contains("Process", Constants.NBT.TAG_COMPOUND) ?
+				new RecipeProcess(tag.getCompound("Process")) : null;
+		inv.read(tag);
+		super.load(state, tag);
 	}
-	@Override public CompoundNBT save(CompoundNBT nbt){
-		if(process!=null) nbt.put("Process", process.write());
-		nbt.put("inv", inv.serializeNBT());
-		return super.save(nbt);
+	@Override public CompoundNBT save(CompoundNBT tag){
+		if(process!=null) tag.put("Process", process.write());
+		inv.write(tag);
+		return super.save(tag);
 	}
 
 	@Override protected void invalidateCaps(){
@@ -278,21 +279,14 @@ public class FoundryTile extends TileEntity implements ITickableTileEntity, INam
 		}
 	}
 
-	public static final class ItemHandler extends ItemStackHandler{
-		public ItemHandler(){
-			super(6);
-		}
-
-		@Override public boolean isItemValid(int slot, @Nonnull ItemStack stack){
+	public static BaseInventory createInventory(){
+		return new BaseInventory(6).setItemValidator((slot, stack) -> {
 			switch(slot){
-				case ESSENCE_HOLDER_SLOT:
-					return stack.getCapability(Caps.essenceHandler).isPresent();
-				case ESSENCE_INPUT_SLOT:
-					return Essence.isEssenceItem(stack);
-				default:
-					return true;
+				case ESSENCE_HOLDER_SLOT: return stack.getCapability(Caps.essenceHandler).isPresent();
+				case ESSENCE_INPUT_SLOT: return Essence.isEssenceItem(stack);
+				default: return true;
 			}
-		}
+		});
 	}
 
 	private final class FoundryInventoryImpl extends RecipeWrapper implements FoundryInventory{

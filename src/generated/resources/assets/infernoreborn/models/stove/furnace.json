@@ -1,0 +1,8 @@
+{
+  "parent": "minecraft:block/cube_bottom_top",
+  "textures": {
+    "side": "infernoreborn:block/stove/furnace/side",
+    "bottom": "infernoreborn:block/stove/furnace/bottom",
+    "top": "infernoreborn:block/stove/furnace/top"
+  }
+}

@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "1 1",
+    "212"
+  ],
+  "key": {
+    "1": {
+      "tag": "forge:ingots/iron"
+    },
+    "2": {
+      "tag": "forge:ingots/pyrite"
+    }
+  },
+  "result": {
+    "item": "infernoreborn:crucible"
+  }
+}

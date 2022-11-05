@@ -1,0 +1,10 @@
+{
+  "variants": {
+    "lit=false": {
+      "model": "infernoreborn:stove/furnace"
+    },
+    "lit=true": {
+      "model": "infernoreborn:stove/furnace_on"
+    }
+  }
+}

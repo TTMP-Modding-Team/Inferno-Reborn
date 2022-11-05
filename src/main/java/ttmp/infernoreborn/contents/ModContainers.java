@@ -7,6 +7,7 @@ import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import ttmp.infernoreborn.contents.container.EssenceHolderContainer;
 import ttmp.infernoreborn.contents.container.FoundryContainer;
+import ttmp.infernoreborn.contents.container.FuelBasedStoveContainer;
 import ttmp.infernoreborn.contents.container.SigilEngravingTableContainer;
 import ttmp.infernoreborn.contents.container.SigilScrapperContainer;
 import ttmp.infernoreborn.contents.container.StigmaScrapperContainer;
@@ -31,4 +32,8 @@ public final class ModContainers{
 	public static final RegistryObject<ContainerType<SigilScrapperContainer>> SIGIL_SCRAPPER = REGISTER.register("sigil_scrapper", () -> new ContainerType<>(SigilScrapperContainer::new));
 	public static final RegistryObject<ContainerType<StigmaScrapperContainer>> STIGMA_SCRAPPER = REGISTER.register("stigma_scrapper", () -> new ContainerType<>((int id, PlayerInventory playerInventory) -> new StigmaScrapperContainer(id, playerInventory)));
 	public static final RegistryObject<ContainerType<FoundryContainer>> FOUNDRY = REGISTER.register("foundry", () -> new ContainerType<>(FoundryContainer::new));
+
+	public static final RegistryObject<ContainerType<FuelBasedStoveContainer>> FURNACE_STOVE = REGISTER.register("furnace_stove", () -> new ContainerType<>(FuelBasedStoveContainer::furnace));
+	public static final RegistryObject<ContainerType<FuelBasedStoveContainer>> FOUNDRY_STOVE = REGISTER.register("foundry_stove", () -> new ContainerType<>(FuelBasedStoveContainer::foundry));
+	public static final RegistryObject<ContainerType<FuelBasedStoveContainer>> NETHER_STOVE = REGISTER.register("nether_stove", () -> new ContainerType<>(FuelBasedStoveContainer::nether));
 }

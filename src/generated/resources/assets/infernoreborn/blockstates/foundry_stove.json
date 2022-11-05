@@ -1,0 +1,10 @@
+{
+  "variants": {
+    "lit=false": {
+      "model": "infernoreborn:stove/foundry"
+    },
+    "lit=true": {
+      "model": "infernoreborn:stove/foundry_on"
+    }
+  }
+}

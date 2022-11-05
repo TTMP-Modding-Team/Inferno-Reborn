@@ -57,6 +57,7 @@ import ttmp.infernoreborn.client.render.SummonedZombieRenderer;
 import ttmp.infernoreborn.client.render.WindEntityRenderer;
 import ttmp.infernoreborn.client.screen.EssenceHolderScreen;
 import ttmp.infernoreborn.client.screen.FoundryScreen;
+import ttmp.infernoreborn.client.screen.FuelBasedStoveScreen;
 import ttmp.infernoreborn.client.screen.SigilEngravingTableScreen;
 import ttmp.infernoreborn.client.screen.SigilScrapperScreen;
 import ttmp.infernoreborn.client.screen.StigmaScrapperScreen;
@@ -170,6 +171,9 @@ public class InfernoReborn{
 				ScreenManager.register(ModContainers.SIGIL_SCRAPPER.get(), SigilScrapperScreen::new);
 				ScreenManager.register(ModContainers.STIGMA_SCRAPPER.get(), StigmaScrapperScreen::new);
 				ScreenManager.register(ModContainers.FOUNDRY.get(), FoundryScreen::new);
+				ScreenManager.register(ModContainers.FURNACE_STOVE.get(), FuelBasedStoveScreen::new);
+				ScreenManager.register(ModContainers.FOUNDRY_STOVE.get(), FuelBasedStoveScreen::new);
+				ScreenManager.register(ModContainers.NETHER_STOVE.get(), FuelBasedStoveScreen::new);
 
 				ItemModelsProperties.register(ModItems.EXPLOSIVE_SWORD.get(), new ResourceLocation("using"),
 						(stack, world, entity) -> entity!=null&&entity.isUsingItem()&&entity.getUseItem()==stack ? 1 : 0);

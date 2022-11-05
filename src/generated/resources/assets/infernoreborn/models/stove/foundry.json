@@ -1,0 +1,8 @@
+{
+  "parent": "minecraft:block/cube_bottom_top",
+  "textures": {
+    "side": "infernoreborn:block/stove/foundry/side",
+    "bottom": "infernoreborn:block/stove/foundry/bottom",
+    "top": "infernoreborn:block/stove/foundry/top"
+  }
+}
