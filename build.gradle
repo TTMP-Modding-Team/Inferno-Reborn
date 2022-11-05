@@ -148,11 +148,8 @@ dependencies {
 
     apiCompileOnly fg.deobf("top.theillusivec4.curios:curios-forge:1.16.5-4.0.8.2:api")
 
-    implementation('io.github.amonglang:among:0.6.0-SNAPSHOT'){
-        changing = true
-    }
-
-    implementation files('libs/construct-0.1.0.jar')
+    implementation 'io.github.amonglang:among:0.6.0'
+    implementation 'io.github.amonglang:construct:0.1.0'
 }
 
 minecraft {
