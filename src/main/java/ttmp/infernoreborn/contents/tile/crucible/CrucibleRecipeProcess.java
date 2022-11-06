@@ -55,8 +55,8 @@ public final class CrucibleRecipeProcess{
 		this.currentStir = currentStir;
 	}
 
-	public void incrementStir(){
-		if(currentStir<maxStir) currentStir++;
+	public void incrementStir(int increment){
+		if(currentStir<maxStir) currentStir += increment;
 	}
 	public boolean isWorkComplete(){
 		return currentStir>=maxStir;

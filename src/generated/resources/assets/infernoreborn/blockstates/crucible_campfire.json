@@ -1,7 +1,7 @@
 {
   "variants": {
     "automated=false,facing=north,lit=false": {
-      "model": "infernoreborn:block/crucible_campfire_off",
+      "model": "infernoreborn:block/crucible_campfire_automated_off",
       "y": 180
     },
     "automated=true,facing=north,lit=false": {
@@ -9,13 +9,13 @@
       "y": 180
     },
     "automated=false,facing=south,lit=false": {
-      "model": "infernoreborn:block/crucible_campfire_off"
+      "model": "infernoreborn:block/crucible_campfire_automated_off"
     },
     "automated=true,facing=south,lit=false": {
       "model": "infernoreborn:block/crucible_campfire_off"
     },
     "automated=false,facing=west,lit=false": {
-      "model": "infernoreborn:block/crucible_campfire_off",
+      "model": "infernoreborn:block/crucible_campfire_automated_off",
       "y": 90
     },
     "automated=true,facing=west,lit=false": {
@@ -23,7 +23,7 @@
       "y": 90
     },
     "automated=false,facing=east,lit=false": {
-      "model": "infernoreborn:block/crucible_campfire_off",
+      "model": "infernoreborn:block/crucible_campfire_automated_off",
       "y": 270
     },
     "automated=true,facing=east,lit=false": {
@@ -35,21 +35,21 @@
       "y": 180
     },
     "automated=true,facing=north,lit=true": {
-      "model": "infernoreborn:block/crucible_campfire",
+      "model": "infernoreborn:block/crucible_campfire_automated",
       "y": 180
     },
     "automated=false,facing=south,lit=true": {
       "model": "infernoreborn:block/crucible_campfire"
     },
     "automated=true,facing=south,lit=true": {
-      "model": "infernoreborn:block/crucible_campfire"
+      "model": "infernoreborn:block/crucible_campfire_automated"
     },
     "automated=false,facing=west,lit=true": {
       "model": "infernoreborn:block/crucible_campfire",
       "y": 90
     },
     "automated=true,facing=west,lit=true": {
-      "model": "infernoreborn:block/crucible_campfire",
+      "model": "infernoreborn:block/crucible_campfire_automated",
       "y": 90
     },
     "automated=false,facing=east,lit=true": {
@@ -57,7 +57,7 @@
       "y": 270
     },
     "automated=true,facing=east,lit=true": {
-      "model": "infernoreborn:block/crucible_campfire",
+      "model": "infernoreborn:block/crucible_campfire_automated",
       "y": 270
     }
   }

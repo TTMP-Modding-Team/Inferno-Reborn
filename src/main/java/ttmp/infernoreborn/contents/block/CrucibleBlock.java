@@ -27,6 +27,7 @@ import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidUtil;
 import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
 import ttmp.infernoreborn.contents.ModBlocks;
+import ttmp.infernoreborn.contents.tile.crucible.CrucibleAutomationUnitTile;
 import ttmp.infernoreborn.contents.tile.crucible.CrucibleTile;
 import ttmp.infernoreborn.util.ReplaceBlockContext;
 
@@ -45,6 +46,7 @@ public class CrucibleBlock extends Block{
 			box(3, 2, 1, 13, 12, 3),
 			box(3, 2, 13, 13, 12, 15)
 	).optimize();
+	private static final VoxelShape AUTOMATED_SHAPE = box(1, 0, 1, 15, 16, 15);
 
 	public CrucibleBlock(Properties p){
 		super(p);
@@ -98,13 +100,20 @@ public class CrucibleBlock extends Block{
 	}
 
 	@Override public VoxelShape getShape(BlockState state, IBlockReader level, BlockPos pos, ISelectionContext ctx){
-		return SHAPE;
+		return state.getValue(AUTOMATED) ? AUTOMATED_SHAPE : SHAPE;
 	}
 
 	@Override public BlockState updateShape(BlockState state, Direction facing, BlockState facingState, IWorld level, BlockPos currentPos, BlockPos facingPos){
-		if(facing==Direction.DOWN&&!level.isClientSide()){
-			CrucibleTile te = te(level, currentPos);
-			if(te!=null) te.markUpdateHeat();
+		if(!level.isClientSide()){
+			if(facing==Direction.DOWN){
+				CrucibleTile crucible = te(level, currentPos);
+				if(crucible!=null) crucible.markUpdateHeat();
+			}else if(facing==Direction.UP){
+				TileEntity te = level.getBlockEntity(facingPos);
+				boolean automated = te instanceof CrucibleAutomationUnitTile;
+				if(state.getValue(AUTOMATED)!=automated)
+					level.setBlock(currentPos, state.setValue(AUTOMATED, automated), 3);
+			}
 		}
 		return state;
 	}

@@ -17,6 +17,7 @@ import java.util.Arrays;
 import static net.minecraft.state.properties.BlockStateProperties.HORIZONTAL_FACING;
 import static net.minecraft.state.properties.BlockStateProperties.LIT;
 import static ttmp.infernoreborn.api.InfernoRebornApi.MODID;
+import static ttmp.infernoreborn.contents.block.ModProperties.AUTOMATED;
 
 public class BlockModelGen extends BlockStateProvider{
 	private final ExistingFileHelper existingFileHelper;
@@ -94,16 +95,23 @@ public class BlockModelGen extends BlockStateProvider{
 						.rotationY(state.getValue(HORIZONTAL_FACING).get2DDataValue()*90+90).build());
 
 		ExistingModelFile crucible = existing(res("block/crucible"));
+		ExistingModelFile crucibleAutomated = existing(res("block/crucible_automated"));
 		ExistingModelFile crucibleCampfire = existing(res("block/crucible_campfire"));
 		ExistingModelFile crucibleCampfireOff = existing(res("block/crucible_campfire_off"));
+		ExistingModelFile crucibleCampfireAutomated = existing(res("block/crucible_campfire_automated"));
+		ExistingModelFile crucibleCampfireAutomatedOff = existing(res("block/crucible_campfire_automated_off"));
 
 		simpleBlockItem(ModBlocks.CRUCIBLE.get(), crucible);
 		getVariantBuilder(ModBlocks.CRUCIBLE.get()).forAllStates(state ->
-				ConfiguredModel.builder().modelFile(crucible).build());
+				ConfiguredModel.builder().modelFile(state.getValue(AUTOMATED) ? crucibleAutomated : crucible).build());
 		simpleBlockItem(ModBlocks.CRUCIBLE_CAMPFIRE.get(), crucibleCampfire);
 		getVariantBuilder(ModBlocks.CRUCIBLE_CAMPFIRE.get()).forAllStates(state ->
-				ConfiguredModel.builder().modelFile(state.getValue(LIT) ? crucibleCampfire : crucibleCampfireOff)
+				ConfiguredModel.builder().modelFile(state.getValue(LIT) ?
+								state.getValue(AUTOMATED) ? crucibleCampfireAutomated : crucibleCampfire :
+								state.getValue(AUTOMATED) ? crucibleCampfireOff : crucibleCampfireAutomatedOff)
 						.rotationY(((int)state.getValue(HORIZONTAL_FACING).toYRot())%360).build());
+
+		simpleItemAndBlock(ModBlocks.CRUCIBLE_AUTOMATION_UNIT.get(), existing(res("block/automation_unit")));
 
 		stove(ModBlocks.FURNACE_STOVE.get(), "stove/furnace");
 		stove(ModBlocks.FOUNDRY_STOVE.get(), "stove/foundry");

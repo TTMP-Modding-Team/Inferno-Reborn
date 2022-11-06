@@ -365,7 +365,7 @@ public class CrucibleTile extends TileEntity implements ITickableTileEntity{
 
 		if(process==null) this.process = searchRecipe(null);
 		else{
-			if(stir) process.incrementStir();
+			if(stir) process.incrementStir(1);
 			if(process.isWorkComplete()){
 				if(process.getSimulation()!=null){
 					if(!automated){ // If automated, the recipe should be handled by automation module

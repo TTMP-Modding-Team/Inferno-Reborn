@@ -15,6 +15,7 @@ import ttmp.infernoreborn.contents.tile.FoundryTile;
 import ttmp.infernoreborn.contents.tile.GoldenSkullTile;
 import ttmp.infernoreborn.contents.tile.SigilEngravingTableTile;
 import ttmp.infernoreborn.contents.tile.StigmaTableTile;
+import ttmp.infernoreborn.contents.tile.crucible.CrucibleAutomationUnitTile;
 import ttmp.infernoreborn.contents.tile.crucible.CrucibleTile;
 import ttmp.infernoreborn.contents.tile.crucible.EssenceStoveTile;
 import ttmp.infernoreborn.contents.tile.crucible.FuelBasedStoveTile;
@@ -53,6 +54,9 @@ public final class ModTileEntities{
 
 	public static final RegistryObject<TileEntityType<CrucibleTile>> CRUCIBLE = REGISTER.register("crucible",
 			te(CrucibleTile::new, ModBlocks.CRUCIBLE, ModBlocks.CRUCIBLE_CAMPFIRE));
+
+	public static final RegistryObject<TileEntityType<CrucibleAutomationUnitTile>> CRUCIBLE_AUTOMATION_UNIT = REGISTER.register("crucible_automation_unit",
+			te(CrucibleAutomationUnitTile::new, ModBlocks.CRUCIBLE_AUTOMATION_UNIT));
 
 	public static final RegistryObject<TileEntityType<FuelBasedStoveTile.Furnace>> FURNACE_STOVE = REGISTER.register("furnace_stove",
 			te(FuelBasedStoveTile.Furnace::new, ModBlocks.FURNACE_STOVE));

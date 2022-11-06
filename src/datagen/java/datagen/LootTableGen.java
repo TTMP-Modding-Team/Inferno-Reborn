@@ -88,6 +88,8 @@ public class LootTableGen extends LootTableProvider{
 					)))
 			));
 
+			dropSelf(ModBlocks.CRUCIBLE_AUTOMATION_UNIT.get());
+
 			dropSelf(ModBlocks.FURNACE_STOVE.get());
 			dropSelf(ModBlocks.FOUNDRY_STOVE.get());
 			dropSelf(ModBlocks.NETHER_STOVE.get());

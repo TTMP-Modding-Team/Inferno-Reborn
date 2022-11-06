@@ -38,6 +38,10 @@ public class CampfireCrucibleBlock extends CrucibleBlock{
 			box(3, 6, 13, 13, 16, 15),
 			box(0, 0, 0, 16, 4, 16)
 	).optimize();
+	private static final VoxelShape AUTOMATED_SHAPE = VoxelShapes.or(
+			box(1, 4, 1, 15, 16, 15),
+			box(0, 0, 0, 16, 4, 16)
+	).optimize();
 
 	public CampfireCrucibleBlock(Properties p){
 		super(p);
@@ -48,7 +52,7 @@ public class CampfireCrucibleBlock extends CrucibleBlock{
 	}
 
 	@Override public VoxelShape getShape(BlockState state, IBlockReader level, BlockPos pos, ISelectionContext ctx){
-		return SHAPE;
+		return state.getValue(AUTOMATED) ? AUTOMATED_SHAPE : SHAPE;
 	}
 
 	@Override public BlockState getStateForPlacement(BlockItemUseContext ctx){

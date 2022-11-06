@@ -23,7 +23,7 @@ def translate(box, rot):
     elif rot == 3:
         return [[16-box[0][2], box[0][1], box[0][0]], [16-box[1][2], box[1][1], box[1][0]]]
     else:
-        raise Exception('Invalid rotation: '+rot)
+        raise Exception('Invalid rotation: '+str(rot))
 
 def box_to_model(box, rot):
     box = translate(box, rot)
@@ -34,7 +34,7 @@ def to_model(boxes, rot):
     if length == 0:
         return 'VoxelShapes.empty()'
     elif length == 1:
-        return translate(boxes[0], rot)
+        return box_to_model(boxes[0], rot)
     else:
         s = 'VoxelShapes.or('
         for i, box in enumerate(boxes):
@@ -47,9 +47,11 @@ def make_and_copy_shape(json):
     boxes = []
     for i, e in enumerate(json['elements']):
         if 'rotation' in e:
-            print('Skipping element ['+i+'] because of rotation')
-        else:
-            boxes.append([e['from'], e['to']])
+            rotation = e['rotation']
+            if rotation['angle'] != 0:
+                print('Skipping element ['+str(i)+'] because of rotation')
+                continue
+        boxes.append([e['from'], e['to']])
     s = None
     if facing:
         s = ''

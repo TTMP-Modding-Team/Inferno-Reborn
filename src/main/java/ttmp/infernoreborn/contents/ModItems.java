@@ -226,6 +226,7 @@ public final class ModItems{
 
 	public static final RegistryObject<BlockItem> CRUCIBLE = REGISTER.register("crucible", () -> new CrucibleBlockItem(ModBlocks.CRUCIBLE.get(), artifacts()));
 	public static final RegistryObject<BlockItem> CRUCIBLE_CAMPFIRE = REGISTER.register("crucible_campfire", () -> new BlockItem(ModBlocks.CRUCIBLE_CAMPFIRE.get(), new Item.Properties()));
+	public static final RegistryObject<BlockItem> CRUCIBLE_AUTOMATION_UNIT = REGISTER.register("crucible_automation_unit", () -> new BlockItem(ModBlocks.CRUCIBLE_AUTOMATION_UNIT.get(), artifacts()));
 
 	public static final RegistryObject<BlockItem> FURNACE_STOVE = REGISTER.register("furnace_stove", () -> new BlockItem(ModBlocks.FURNACE_STOVE.get(), artifacts()));
 	public static final RegistryObject<BlockItem> FOUNDRY_STOVE = REGISTER.register("foundry_stove", () -> new BlockItem(ModBlocks.FOUNDRY_STOVE.get(), artifacts()));

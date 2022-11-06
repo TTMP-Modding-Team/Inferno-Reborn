@@ -4,7 +4,7 @@
       "model": "infernoreborn:block/crucible"
     },
     "automated=true": {
-      "model": "infernoreborn:block/crucible"
+      "model": "infernoreborn:block/crucible_automated"
     }
   }
 }

@@ -12,6 +12,7 @@ import net.minecraftforge.fml.RegistryObject;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import ttmp.infernoreborn.contents.block.CampfireCrucibleBlock;
+import ttmp.infernoreborn.contents.block.CrucibleAutomationUnitBlock;
 import ttmp.infernoreborn.contents.block.CrucibleBlock;
 import ttmp.infernoreborn.contents.block.EssenceHolderBlock;
 import ttmp.infernoreborn.contents.block.FoundryBlock;
@@ -106,6 +107,8 @@ public final class ModBlocks{
 			Properties.of(Material.METAL, MaterialColor.STONE).requiresCorrectToolForDrops().strength(2).noOcclusion().sound(SoundType.LANTERN)));
 	public static final RegistryObject<Block> CRUCIBLE_CAMPFIRE = REGISTER.register("crucible_campfire", () -> new CampfireCrucibleBlock(
 			Properties.of(Material.METAL, MaterialColor.STONE).requiresCorrectToolForDrops().strength(2).lightLevel(s -> s.getValue(LIT) ? 15 : 0).noOcclusion().sound(SoundType.LANTERN)));
+	public static final RegistryObject<Block> CRUCIBLE_AUTOMATION_UNIT = REGISTER.register("crucible_automation_unit", () -> new CrucibleAutomationUnitBlock(
+			Properties.of(Material.METAL, MaterialColor.STONE).requiresCorrectToolForDrops().strength(2).noOcclusion().sound(SoundType.LANTERN)));
 
 	public static final RegistryObject<Block> FURNACE_STOVE = REGISTER.register("furnace_stove", () -> new StoveBlock.Furnace(
 			Properties.of(Material.STONE).requiresCorrectToolForDrops().strength(3.5f).lightLevel(s -> s.getValue(LIT) ? 13 : 0)));
