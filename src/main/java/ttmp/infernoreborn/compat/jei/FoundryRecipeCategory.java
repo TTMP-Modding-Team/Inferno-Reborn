@@ -13,7 +13,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
-import ttmp.infernoreborn.api.QuantifiedIngredient;
+import ttmp.infernoreborn.api.recipe.QuantifiedIngredient;
 import ttmp.infernoreborn.api.essence.EssenceIngredient;
 import ttmp.infernoreborn.api.essence.EssenceType;
 import ttmp.infernoreborn.api.foundry.FoundryRecipe;

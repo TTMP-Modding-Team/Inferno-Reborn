@@ -27,7 +27,7 @@ import net.minecraftforge.items.wrapper.RangedWrapper;
 import net.minecraftforge.items.wrapper.RecipeWrapper;
 import ttmp.infernoreborn.InfernoReborn;
 import ttmp.infernoreborn.api.Caps;
-import ttmp.infernoreborn.api.RecipeTypes;
+import ttmp.infernoreborn.api.recipe.RecipeTypes;
 import ttmp.infernoreborn.api.Simulation;
 import ttmp.infernoreborn.api.essence.Essence;
 import ttmp.infernoreborn.api.essence.EssenceHandler;

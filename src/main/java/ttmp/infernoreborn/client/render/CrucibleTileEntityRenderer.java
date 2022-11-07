@@ -19,10 +19,11 @@ import net.minecraft.util.math.vector.Vector3f;
 import net.minecraft.util.math.vector.Vector4f;
 import net.minecraftforge.fluids.FluidAttributes;
 import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.IFluidTank;
 import ttmp.infernoreborn.contents.tile.crucible.Crucible;
 import ttmp.infernoreborn.contents.tile.crucible.CrucibleTile;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
 import static net.minecraft.inventory.container.PlayerContainer.BLOCK_ATLAS;
@@ -43,8 +44,7 @@ public class CrucibleTileEntityRenderer extends TileEntityRenderer<CrucibleTile>
 				new Box(3/16f, 13/16f, 6/16f, 1, 3/16f, 13/16f) :
 				new Box(3/16f, 13/16f, 2/16f, 12/16f, 3/16f, 13/16f);
 
-		IFluidTank fluid = crucible.getFluidTank();
-		float fluidLevel = fluid.getFluid().isEmpty() ? box.yMin : getFluidLevel(box, fluid);
+		float fluidLevel = getFluidLevel(box, crucible);
 
 		for(int i = 0; i<crucible.getInputs().getSlots(); i++){
 			ItemStack stack = crucible.getInputs().getStackInSlot(i);
@@ -79,8 +79,7 @@ public class CrucibleTileEntityRenderer extends TileEntityRenderer<CrucibleTile>
 			pose.popPose();
 		}
 
-		if(!fluid.getFluid().isEmpty())
-			drawFluid(crucible, pose, buffer, box, getFluidLevel(box, fluid), combinedLight, combinedOverlay, fluid.getFluid());
+		drawFluid(crucible, pose, buffer, box, fluidLevel, combinedLight, combinedOverlay);
 	}
 
 	private static int getRenderAmount(ItemStack s){
@@ -92,41 +91,59 @@ public class CrucibleTileEntityRenderer extends TileEntityRenderer<CrucibleTile>
 		return i;
 	}
 
-	private static float getFluidLevel(Box box, IFluidTank fluid){
-		return getFluidLevel(box.yMin, box.yMax, fluid);
+	private static float getFluidLevel(Box box, CrucibleTile crucible){
+		return getFluidLevel(box.yMin, box.yMax, crucible.getMaxFluidFillRate());
 	}
-	public static float getFluidLevel(float yMin, float yMax, IFluidTank fluid){
+	public static float getFluidLevel(float yMin, float yMax, double fillRate){
 		float minLevel = yMin+0.01f;
 		float maxLevel = yMax-.5f/16;
-		float percentage = (float)fluid.getFluidAmount()/fluid.getCapacity();
-		return (maxLevel-minLevel)*percentage+minLevel;
+		return (maxLevel-minLevel)*(float)fillRate+minLevel;
 	}
 
-	private static void drawFluid(CrucibleTile crucible, MatrixStack pose, IRenderTypeBuffer buffer, Box box, float y, int packedLight, int packedOverlay, FluidStack fluid){
+	private static void drawFluid(CrucibleTile crucible, MatrixStack pose, IRenderTypeBuffer buffer, Box box, float y, int packedLight, int packedOverlay){
+		List<FluidStack> fluids = new ArrayList<>();
+		int amountSum = 0;
+		for(int i = 0; i<crucible.getFluidHandler().getTanks(); i++){
+			FluidStack f = crucible.getFluidHandler().getFluidInTank(i);
+			if(!f.isEmpty()){
+				fluids.add(f);
+				amountSum += f.getAmount();
+			}
+		}
+		if(fluids.isEmpty()) return;
+		float prevRatio = box.xMin;
+		int amount = 0;
+		for(FluidStack fluid : fluids){
+			amount += fluid.getAmount();
+			float ratio = (box.xMax-box.xMin)*((float)amount/amountSum)+box.xMin;
+			drawFluid(fluid, crucible, pose, buffer, prevRatio, ratio, box.zMin, box.zMax, y, packedLight, packedOverlay);
+			prevRatio = ratio;
+		}
+	}
+
+	private static void drawFluid(FluidStack fluid, CrucibleTile crucible, MatrixStack pose, IRenderTypeBuffer buffer, float xMin, float xMax, float zMin, float zMax, float y, int packedLight, int packedOverlay){
 		FluidAttributes attr = fluid.getFluid().getAttributes();
 		ResourceLocation tex;
 		int color;
-		//noinspection ConstantConditions
-		if(crucible!=null&&crucible.getLevel()!=null){
+		if(crucible.getLevel()!=null){
 			tex = attr.getStillTexture(crucible.getLevel(), crucible.getBlockPos());
 			color = attr.getColor(crucible.getLevel(), crucible.getBlockPos());
 		}else{
 			tex = attr.getStillTexture(fluid);
 			color = attr.getColor(fluid);
 		}
-
-		drawFlatQuad(entityTranslucent(buffer, tex), pose, box, y, color, packedLight, packedOverlay);
+		drawFlatQuad(entityTranslucent(buffer, tex), pose, xMin, xMax, zMin, zMax, y, color, packedLight, packedOverlay);
 	}
 
-	private static void drawFlatQuad(IVertexBuilder vc, MatrixStack pose, Box xz, float y, int color, int packedLight, int packedOverlay){
+	private static void drawFlatQuad(IVertexBuilder vc, MatrixStack pose, float xMin, float xMax, float zMin, float zMax, float y, int color, int packedLight, int packedOverlay){
 		float a = (color >> 24)/255f;
 		float r = (color >> 16)/255f;
 		float g = (color >> 8)/255f;
 		float b = (color)/255f;
-		drawFlatQuadVertex(vc, pose, xz.xMin, y, xz.zMin, r, g, b, a, packedLight, packedOverlay);
-		drawFlatQuadVertex(vc, pose, xz.xMin, y, xz.zMax, r, g, b, a, packedLight, packedOverlay);
-		drawFlatQuadVertex(vc, pose, xz.xMax, y, xz.zMax, r, g, b, a, packedLight, packedOverlay);
-		drawFlatQuadVertex(vc, pose, xz.xMax, y, xz.zMin, r, g, b, a, packedLight, packedOverlay);
+		drawFlatQuadVertex(vc, pose, xMin, y, zMin, r, g, b, a, packedLight, packedOverlay);
+		drawFlatQuadVertex(vc, pose, xMin, y, zMax, r, g, b, a, packedLight, packedOverlay);
+		drawFlatQuadVertex(vc, pose, xMax, y, zMax, r, g, b, a, packedLight, packedOverlay);
+		drawFlatQuadVertex(vc, pose, xMax, y, zMin, r, g, b, a, packedLight, packedOverlay);
 	}
 
 	private static void drawFlatQuadVertex(IVertexBuilder vc, MatrixStack pose, float x, float y, float z, float r, float g, float b, float a, int packedLight, int packedOverlay){

@@ -7,7 +7,6 @@ import net.minecraft.client.particle.Particle;
 import net.minecraft.client.particle.SpriteTexturedParticle;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.particles.BasicParticleType;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import ttmp.infernoreborn.client.render.CrucibleTileEntityRenderer;
 import ttmp.infernoreborn.contents.tile.crucible.Crucible;
@@ -16,6 +15,7 @@ import ttmp.infernoreborn.contents.tile.crucible.CrucibleTile;
 public class CrucibleBubbleParticle extends SpriteTexturedParticle{
 	protected CrucibleBubbleParticle(ClientWorld level, double x, double y, double z, double xd, double yd, double zd){
 		super(level, x, y, z, xd, yd, zd);
+		setPower(.1f);
 		this.hasPhysics = false;
 		this.lifetime *= 2;
 	}
@@ -31,22 +31,19 @@ public class CrucibleBubbleParticle extends SpriteTexturedParticle{
 			this.yd *= 0.85;
 			this.zd *= 0.85;
 			CrucibleTile crucible = Crucible.crucible(level, new BlockPos(this.x, this.y, this.z));
-			if(crucible!=null&&!crucible.getFluidTank().getFluid().isEmpty()){
-				boolean onCampfire = crucible.isOnCampfire();
-				BlockPos p = crucible.getBlockPos();
-				float fluidLevel = p.getY()+CrucibleTileEntityRenderer.getFluidLevel(
-						onCampfire ? 6/16f : 2/16f, onCampfire ? 1 : 12/16f, crucible.getFluidTank());
-				if(y>fluidLevel){
-					this.y = fluidLevel;
-					this.yd = 0;
-					this.xd = 0;
-					this.zd = 0;
+			if(crucible!=null){
+				double fillRate = crucible.getMaxFluidFillRate();
+				if(fillRate>0){
+					boolean onCampfire = crucible.isOnCampfire();
+					BlockPos p = crucible.getBlockPos();
+					this.y = p.getY()+CrucibleTileEntityRenderer.getFluidLevel(
+							onCampfire ? 6/16f : 2/16f, onCampfire ? 1 : 12/16f, fillRate);
+					if(x<p.getX()+3/16f) x = p.getX()+4/16f;
+					else if(x>p.getX()+13/16f) x = p.getX()+12/16f;
+					if(z<p.getZ()+3/16f) z = p.getZ()+4/16f;
+					else if(z>p.getZ()+13/16f) z = p.getZ()+12/16f;
+					return;
 				}
-				if(x<p.getX()+3/16f) x = p.getX()+4/16f;
-				else if(x>p.getX()+13/16f) x = p.getX()+12/16f;
-				if(z<p.getZ()+3/16f) z = p.getZ()+4/16f;
-				else if(z>p.getZ()+13/16f) z = p.getZ()+12/16f;
-				return;
 			}
 		}
 		this.remove();

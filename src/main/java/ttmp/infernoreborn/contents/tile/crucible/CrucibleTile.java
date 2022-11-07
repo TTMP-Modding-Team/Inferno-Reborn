@@ -5,9 +5,9 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.fluid.Fluids;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.ListNBT;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.play.server.SUpdateTileEntityPacket;
 import net.minecraft.particles.ParticleTypes;
@@ -23,17 +23,13 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.IFluidTank;
 import net.minecraftforge.fluids.capability.IFluidHandler;
-import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
-import net.minecraftforge.fluids.capability.templates.FluidTank;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.IItemHandlerModifiable;
 import net.minecraftforge.items.ItemHandlerHelper;
 import net.minecraftforge.items.wrapper.PlayerMainInvWrapper;
 import net.minecraftforge.items.wrapper.RecipeWrapper;
 import ttmp.infernoreborn.InfernoReborn;
-import ttmp.infernoreborn.api.RecipeTypes;
 import ttmp.infernoreborn.api.Simulation;
 import ttmp.infernoreborn.api.crucible.CrucibleHeat;
 import ttmp.infernoreborn.api.crucible.CrucibleHeatSource;
@@ -45,13 +41,16 @@ import ttmp.infernoreborn.api.essence.EssenceHolder;
 import ttmp.infernoreborn.api.essence.EssenceIngredient;
 import ttmp.infernoreborn.api.essence.EssenceType;
 import ttmp.infernoreborn.api.essence.Essences;
+import ttmp.infernoreborn.api.recipe.RecipeHelper;
+import ttmp.infernoreborn.api.recipe.RecipeTypes;
 import ttmp.infernoreborn.contents.ModBlocks;
 import ttmp.infernoreborn.contents.ModParticles;
 import ttmp.infernoreborn.contents.ModTileEntities;
 import ttmp.infernoreborn.inventory.BaseInventory;
+import ttmp.infernoreborn.inventory.MultiFluidTank;
 
-import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -59,24 +58,14 @@ import static net.minecraft.state.properties.BlockStateProperties.LIT;
 import static ttmp.infernoreborn.contents.block.ModProperties.AUTOMATED;
 
 public class CrucibleTile extends TileEntity implements ITickableTileEntity{
-	private final FluidTank fluid = new FluidTank(Crucible.FLUID_TANK_SIZE, fluid -> fluid.getFluid().isSame(Fluids.WATER)){
-		@Nonnull @Override public FluidStack drain(FluidStack resource, FluidAction action){
-			return FluidStack.EMPTY;
-		}
-		@Nonnull @Override public FluidStack drain(int maxDrain, FluidAction action){
-			return FluidStack.EMPTY;
-		}
-		@Override protected void onContentsChanged(){
-			updateRecipe = saveAndSync = true;
-		}
-	};
+	private final MultiFluidTank fluid = new MultiFluidTank(Crucible.FLUID_TANK_SIZE, Crucible.FLUID_TANK_CAPACITY)
+			.onContentsChanged(value -> updateRecipe = saveAndSync = true);
 	private final BaseInventory inputs = new BaseInventory(Crucible.INPUT_INVENTORY_SIZE)
 			.setItemValidator((slot, stack) -> !Essence.isEssenceItem(stack))
 			.setOnContentsChanged(slot -> updateRecipe = saveAndSync = true);
 	private final EssenceHolder essences = new EssenceHolder(){
 		@Override protected void onChanged(EssenceType type){
 			updateRecipe = saveAndSync = true;
-			markUpdated();
 		}
 	};
 	private final EssenceHandler essenceInputHandler = new EssenceHandler(){
@@ -95,7 +84,7 @@ public class CrucibleTile extends TileEntity implements ITickableTileEntity{
 	};
 	private final CrucibleInventory crucibleInventory = new CrucibleInventoryImpl();
 
-	private int stir = 0;
+	private int manualStir = 0;
 
 	private CrucibleHeat heat = CrucibleHeat.NONE;
 	private boolean updateHeat = true;
@@ -104,6 +93,9 @@ public class CrucibleTile extends TileEntity implements ITickableTileEntity{
 
 	@Nullable private CrucibleRecipeProcess process;
 	private boolean updateRecipe = true;
+
+	@Nullable private List<ItemStack> outputCache;
+	@Nullable private List<FluidStack> fluidOutputCache;
 
 	private boolean saveAndSync;
 
@@ -119,9 +111,6 @@ public class CrucibleTile extends TileEntity implements ITickableTileEntity{
 	public IFluidHandler getFluidHandler(){
 		return fluid;
 	}
-	public IFluidTank getFluidTank(){
-		return fluid;
-	}
 	public IItemHandlerModifiable getInputs(){
 		return inputs;
 	}
@@ -132,6 +121,23 @@ public class CrucibleTile extends TileEntity implements ITickableTileEntity{
 		return essenceInputHandler;
 	}
 
+	public int totalFluidCapacity(){
+		return Crucible.FLUID_TANK_SIZE*Crucible.FLUID_TANK_CAPACITY;
+	}
+	public int totalFluidAmount(){
+		int sum = 0;
+		for(int i = 0; i<this.fluid.getTanks(); i++) sum += fluid.getFluidInTank(i).getAmount();
+		return sum;
+	}
+	public double getMaxFluidFillRate(){
+		double max = 0;
+		for(int i = 0; i<this.fluid.getTanks(); i++){
+			double filled = this.fluid.getFluidInTank(i).getAmount()/(double)Crucible.FLUID_TANK_CAPACITY;
+			if(max<filled) max = filled;
+		}
+		return max;
+	}
+
 	public CrucibleHeat getHeat(){
 		return heat;
 	}
@@ -140,29 +146,29 @@ public class CrucibleTile extends TileEntity implements ITickableTileEntity{
 	}
 
 	public int getManualStirPower(){
-		return stir;
+		return manualStir;
 	}
 
 	@Nullable public CrucibleRecipeProcess getProcess(){
 		return process;
 	}
+	@Nullable public List<ItemStack> getOutputCache(){
+		return outputCache;
+	}
+	@Nullable public List<FluidStack> getFluidOutputCache(){
+		return fluidOutputCache;
+	}
 
 	public boolean stirManually(){
-		if(!fluid.isEmpty()&&stir<=Crucible.MANUAL_STIR_TICKS/2){
-			stir = Crucible.MANUAL_STIR_TICKS;
-			return true;
-		}else return false;
-	}
-	public void increaseStir(){
-		stir++;
+		if(manualStir>Crucible.MANUAL_STIR_TICKS/2) return false;
+		manualStir = Crucible.MANUAL_STIR_TICKS;
+		return true;
 	}
 
 	public void empty(PlayerEntity player, boolean emptyWater){
 		if(!dropContents(true, false, player, true)&&emptyWater&&!fluid.isEmpty()){
-			fluid.setFluid(FluidStack.EMPTY);
-			player.level.playSound(null, getBlockPos(),
-					SoundEvents.BOAT_PADDLE_WATER, SoundCategory.PLAYERS, 1,
-					0.8f+0.4f*player.level.random.nextFloat());
+			fluid.clear();
+			player.level.playSound(null, getBlockPos(), SoundEvents.BUCKET_EMPTY, SoundCategory.PLAYERS, 1, 1);
 			dropContents(false, true, player, true);
 		}
 	}
@@ -243,13 +249,13 @@ public class CrucibleTile extends TileEntity implements ITickableTileEntity{
 						getBlockPos().getZ()+0.25+level.random.nextDouble()/2,
 						0, 0, 0);
 			}
-			clientStir += Crucible.calculateStirRotationIncrement(stir);
+			clientStir += Crucible.calculateStirRotationIncrement(manualStir);
 			if(clientStir>Math.PI) clientStir -= Math.PI*2;
-			if(stir>-Crucible.MANUAL_STIR_TICKS) stir--;
+			if(manualStir>-Crucible.MANUAL_STIR_TICKS) manualStir--;
 			return;
 		}
-		boolean stir = this.stir>0;
-		if(stir) this.stir--;
+		boolean stirred = this.manualStir>0;
+		if(stirred) this.manualStir--;
 		if(updateHeat){
 			updateHeat = false;
 			CrucibleHeat baseHeat = isOnLitCampfire() ? CrucibleHeat.CAMPFIRE : CrucibleHeat.NONE;
@@ -266,14 +272,14 @@ public class CrucibleTile extends TileEntity implements ITickableTileEntity{
 		}
 		boolean automated = isAutomated();
 		if(!automated&&this.heat.boilsWater()&&!this.fluid.isEmpty()){
-			this.fluid.setFluid(FluidStack.EMPTY);
+			this.fluid.clear();
 			level.playSound(null, getBlockPos(), SoundEvents.FIRE_EXTINGUISH, SoundCategory.BLOCKS,
 					0.5f, 2.6f+(level.random.nextFloat()-level.random.nextFloat())*0.8f);
-			for(int l = 0; l<8; ++l)
+			for(int l = 0; l<8; ++l)  // TODO nope, need to be on client side
 				level.addParticle(ParticleTypes.LARGE_SMOKE,
-						getBlockPos().getX()+.5+Math.random(),
-						getBlockPos().getY()+.5+Math.random(),
-						getBlockPos().getZ()+.5+Math.random(),
+						getBlockPos().getX()+.5+(Math.random()-.5)*10/16.0,
+						getBlockPos().getY()+.5+(Math.random()-.5)*10/16.0,
+						getBlockPos().getZ()+.5+(Math.random()-.5)*10/16.0,
 						0, 0, 0);
 			float damage = this.heat.damage();
 			if(damage>0){
@@ -285,42 +291,9 @@ public class CrucibleTile extends TileEntity implements ITickableTileEntity{
 			}
 		}
 
-		if(!automated&&level.getGameTime()%2==0) for(Entity e : level.getEntities(null, box())){
-			if(!e.isAlive()) continue;
-			if(e instanceof ItemEntity){ // TODO splash sound
-				ItemEntity ie = (ItemEntity)e;
-				if(Crucible.isExcluded(ie)) continue;
-				Essence essence = Essence.from(ie.getItem());
-				if(essence!=null){
-					int inserted = this.essences.insertEssence(essence.getType(), essence.getAmount(), false);
-					if(inserted>0){
-						this.lastInsertedEssence = essence.getType();
-						if(inserted==essence.getAmount()) ie.remove();
-						else{
-							List<ItemStack> items = Essence.items(essence.getType(), essence.getAmount()-inserted);
-							ie.setItem(items.get(0));
-							for(int i = 1; i<items.size(); i++){
-								ItemEntity ie2 = new ItemEntity(level, ie.getX(), ie.getY(), ie.getZ(), items.get(i));
-								ie2.setDeltaMovement(ie.getDeltaMovement());
-								level.addFreshEntity(ie2);
-							}
-						}
-					}
-				}else{
-					ItemStack stack2 = ie.getItem();
-					for(int i = 0; i<inputs.getSlots(); i++){
-						stack2 = this.inputs.insertItem(i, stack2, false);
-						if(stack2.isEmpty()) break;
-					}
-					if(stack2.isEmpty()) ie.remove();
-					else if(ie.getItem().getCount()!=stack2.getCount()) ie.setItem(stack2);
-				}
-			}else if(e instanceof LivingEntity){
-				float damage = heat.damage();
-				if(damage<=0) continue;
-				e.hurt(DamageSource.HOT_FLOOR, damage);
-			}
-		}
+		if(!automated&&level.getGameTime()%2==0)
+			for(Entity e : level.getEntities(null, box()))
+				handleEntityInCrucible(e);
 
 		long essenceOverflow = this.essences.totalEssences()-getMaxEssences();
 		if(essenceOverflow>0){
@@ -352,40 +325,94 @@ public class CrucibleTile extends TileEntity implements ITickableTileEntity{
 				}
 			}
 		}
-
-		if(updateRecipe){
-			updateRecipe = false;
-			CrucibleRecipeProcess proc = searchRecipe(null);
-			if(proc!=null){
-				if(this.process!=null&&Objects.equals(this.process.getRecipeId(), proc.getRecipeId()))
-					proc.setCurrentStir(this.process.getCurrentStir());
-				this.process = proc;
-			}
-		}
-
-		if(process==null) this.process = searchRecipe(null);
-		else{
-			if(stir) process.incrementStir(1);
-			if(process.isWorkComplete()){
-				if(process.getSimulation()!=null){
-					if(!automated){ // If automated, the recipe should be handled by automation module
-						if(fluid.getFluidAmount()>=process.getWaterRequirement()){
-							fluid.drain(process.getWaterRequirement(), FluidAction.EXECUTE);
-							CrucibleRecipe.Result result = process.getSimulation().apply();
-							for(ItemStack output : result.outputs())
-								Crucible.spawnItem(level, getBlockPos(), output, true);
-							// TODO spawn particle and play sound if fluid output is discarded
-							this.process = searchRecipe(process.getRecipe());
-							this.updateRecipe = false;
-						}
-					}
-				}else updateRecipe = true;
-			}
-		}
-
+		updateRecipe(stirred, automated);
 		if(saveAndSync){
 			saveAndSync = false;
-			markUpdated();
+			if(automated) setChanged();
+			else markUpdated();
+		}
+	}
+
+	private void handleEntityInCrucible(Entity e){
+		if(!e.isAlive()) return;
+		if(e instanceof ItemEntity){
+			if(fluid.isEmpty()) return;
+			ItemEntity ie = (ItemEntity)e;
+			if(Crucible.isExcluded(ie)) return;
+			Essence essence = Essence.from(ie.getItem());
+			if(essence!=null){
+				int inserted = this.essences.insertEssence(essence.getType(), essence.getAmount(), false);
+				if(inserted<=0) return;
+				this.lastInsertedEssence = essence.getType();
+				if(inserted==essence.getAmount()) ie.remove();
+				else{
+					List<ItemStack> items = Essence.items(essence.getType(), essence.getAmount()-inserted);
+					ie.setItem(items.get(0));
+					for(int i = 1; i<items.size(); i++){
+						ItemEntity ie2 = new ItemEntity(Objects.requireNonNull(level), ie.getX(), ie.getY(), ie.getZ(), items.get(i));
+						ie2.setDeltaMovement(ie.getDeltaMovement());
+						level.addFreshEntity(ie2);
+					}
+				}
+			}else{
+				ItemStack stack2 = ie.getItem();
+				for(int i = 0; i<inputs.getSlots(); i++){
+					stack2 = this.inputs.insertItem(i, stack2, false);
+					if(stack2.isEmpty()) break;
+				}
+				if(stack2.isEmpty()) ie.remove();
+				else if(ie.getItem().getCount()!=stack2.getCount()) ie.setItem(stack2);
+			}
+			if(!fluid.isEmpty())
+				Objects.requireNonNull(level).playSound(null, getBlockPos(), SoundEvents.AMBIENT_UNDERWATER_ENTER, SoundCategory.BLOCKS,
+						0.5f, 0.8f+0.4f*level.random.nextFloat()*(2-(float)getMaxFluidFillRate()));
+		}else if(e instanceof LivingEntity){
+			float damage = heat.damage();
+			if(damage<=0) return;
+			e.hurt(DamageSource.HOT_FLOOR, damage);
+		}
+	}
+
+	private void updateRecipe(boolean stirred, boolean automated){
+		if(updateRecipe){
+			if(outputCache!=null||fluidOutputCache!=null) return;
+			updateRecipe = false;
+			CrucibleRecipeProcess proc = searchRecipe(null);
+			if(proc!=null&&this.process!=null&&Objects.equals(this.process.getRecipeId(), proc.getRecipeId()))
+				proc.setCurrentStir(this.process.getCurrentStir());
+			this.process = proc;
+		}
+		if(process==null) return;
+		if(stirred) process.incrementStir(1);
+		if(!process.isWorkComplete()) return;
+		if(process.getSimulation()==null){
+			updateRecipe = true;
+			return;
+		}
+		this.saveAndSync = true;
+		CrucibleRecipe.Result result = process.getSimulation().apply();
+		if(automated){
+			this.outputCache = result.outputs();
+			this.fluidOutputCache = result.fluidOutputs();
+			this.process = null;
+			this.updateRecipe = true;
+		}else{
+			World level = Objects.requireNonNull(this.level);
+			for(ItemStack output : result.outputs())
+				Crucible.spawnItem(level, getBlockPos(), output, true);
+			if(!result.fluidOutputs().isEmpty()){
+				int sum = result.fluidOutputs().stream().mapToInt(fluid -> fluid.getAmount()).sum();
+				for(int i = 0, j = 2+level.random.nextInt(Math.max(sum, 4000))/250; i<j; i++)
+					level.addParticle(ParticleTypes.SMOKE,  // TODO nope, need to be on client side
+							getBlockPos().getX()+0.25+level.random.nextDouble()*.5,
+							getBlockPos().getY()+.5,
+							getBlockPos().getZ()+0.25+level.random.nextDouble()*.5,
+							0, 0, 0);
+				level.playSound(null, getBlockPos(), SoundEvents.GENERIC_BURN, SoundCategory.BLOCKS,
+						0.4f, 2+level.random.nextFloat()*0.4f);
+			}
+			this.process = searchRecipe(process.getRecipe());
+			this.updateRecipe = false;
 		}
 	}
 
@@ -424,7 +451,7 @@ public class CrucibleTile extends TileEntity implements ITickableTileEntity{
 
 	private CompoundNBT getSyncTag(){
 		CompoundNBT tag = new CompoundNBT();
-		tag.put("Fluid", fluid.writeToNBT(new CompoundNBT()));
+		fluid.write(tag);
 		inputs.write(tag);
 		tag.put("Essences", essences.serializeNBT());
 		tag.putByte("Heat", heat.id());
@@ -432,7 +459,7 @@ public class CrucibleTile extends TileEntity implements ITickableTileEntity{
 	}
 
 	private void loadSyncTag(CompoundNBT tag){
-		this.fluid.readFromNBT(tag.getCompound("Fluid"));
+		this.fluid.read(tag);
 		this.inputs.read(tag);
 		this.essences.deserializeNBT(tag.getCompound("Essences"));
 		this.heat = CrucibleHeat.from(tag.getByte("Heat"));
@@ -441,20 +468,42 @@ public class CrucibleTile extends TileEntity implements ITickableTileEntity{
 	@Override public void load(BlockState state, CompoundNBT tag){
 		this.process = tag.contains("Process", Constants.NBT.TAG_COMPOUND) ?
 				new CrucibleRecipeProcess(tag.getCompound("Process")) : null;
-		this.fluid.readFromNBT(tag.getCompound("Fluid"));
+		this.fluid.read(tag);
 		this.inputs.read(tag);
 		this.essences.deserializeNBT(tag.getCompound("Essences"));
-		this.stir = tag.getByte("Stir");
+		this.manualStir = tag.getByte("Stir");
 		this.updateHeat = true;
 		this.updateRecipe = true;
+		if(tag.contains("OutputCache", Constants.NBT.TAG_LIST)){
+			this.outputCache = new ArrayList<>();
+			ListNBT list = tag.getList("OutputCache", Constants.NBT.TAG_COMPOUND);
+			for(int i = 0; i<list.size(); i++)
+				outputCache.add(ItemStack.of(list.getCompound(i)));
+		}else this.outputCache = null;
+		if(tag.contains("FluidOutputCache", Constants.NBT.TAG_LIST)){
+			this.fluidOutputCache = new ArrayList<>();
+			ListNBT list = tag.getList("FluidOutputCache", Constants.NBT.TAG_COMPOUND);
+			for(int i = 0; i<list.size(); i++)
+				fluidOutputCache.add(FluidStack.loadFluidStackFromNBT(list.getCompound(i)));
+		}else this.fluidOutputCache = null;
 		super.load(state, tag);
 	}
 	@Override public CompoundNBT save(CompoundNBT tag){
 		if(process!=null) tag.put("Process", process.write());
-		tag.put("Fluid", fluid.writeToNBT(new CompoundNBT()));
+		fluid.write(tag);
 		inputs.write(tag);
 		tag.put("Essences", essences.serializeNBT());
-		tag.putByte("Stir", (byte)stir);
+		tag.putByte("Stir", (byte)manualStir);
+		if(outputCache!=null){
+			ListNBT list = new ListNBT();
+			for(ItemStack s : outputCache) list.add(s.serializeNBT());
+			tag.put("OutputCache", list);
+		}
+		if(fluidOutputCache!=null){
+			ListNBT list = new ListNBT();
+			for(FluidStack s : fluidOutputCache) list.add(s.writeToNBT(new CompoundNBT()));
+			tag.put("FluidOutputCache", list);
+		}
 		return super.save(tag);
 	}
 
@@ -485,8 +534,8 @@ public class CrucibleTile extends TileEntity implements ITickableTileEntity{
 		@Override public CrucibleHeat heat(){
 			return heat;
 		}
-		@Override public int waterLevel(){
-			return fluid.getFluidAmount();
+		@Override public RecipeHelper.FluidTankAccessor fluidInput(){
+			return fluid;
 		}
 	}
 }

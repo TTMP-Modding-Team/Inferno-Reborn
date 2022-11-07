@@ -17,9 +17,17 @@
       ]
     }
   ],
+  "fluidIngredients": [
+    {
+      "tag": "minecraft:water",
+      "amount": 250,
+      "type": "infernoreborn:tag"
+    }
+  ],
   "essences": {
     "any": 4
   },
+  "stir": 40,
   "result": {
     "item": "infernoreborn:foundry_tile"
   }

@@ -14,7 +14,6 @@ public final class CrucibleRecipeProcess{
 	@Nullable private final CrucibleRecipe recipe;
 	@Nullable private final ResourceLocation recipeId;
 	@Nullable private final Simulation<CrucibleRecipe.Result> simulation;
-	private final int waterRequirement;
 	private final int maxStir;
 	private int currentStir;
 
@@ -23,7 +22,6 @@ public final class CrucibleRecipeProcess{
 		this.recipe = recipe;
 		this.recipeId = recipe.getId();
 		this.simulation = simulation;
-		this.waterRequirement = recipe.waterConsumption(inventory);
 		this.maxStir = recipe.stir(inventory);
 	}
 	public CrucibleRecipeProcess(CompoundNBT tag){
@@ -31,7 +29,6 @@ public final class CrucibleRecipeProcess{
 		this.recipeId = tag.contains("Recipe", Constants.NBT.TAG_STRING) ?
 				ResourceLocation.tryParse(tag.getString("Recipe")) : null;
 		this.simulation = null;
-		this.waterRequirement = tag.getInt("WaterRequirement");
 		this.maxStir = tag.getInt("Stir");
 		this.currentStir = tag.getInt("CurrentStir");
 	}
@@ -44,9 +41,6 @@ public final class CrucibleRecipeProcess{
 	}
 	@Nullable public Simulation<CrucibleRecipe.Result> getSimulation(){
 		return simulation;
-	}
-	public int getWaterRequirement(){
-		return waterRequirement;
 	}
 	public int getCurrentStir(){
 		return currentStir;
@@ -65,7 +59,6 @@ public final class CrucibleRecipeProcess{
 	public CompoundNBT write(){
 		CompoundNBT tag = new CompoundNBT();
 		if(recipeId!=null) tag.putString("Recipe", recipeId.toString());
-		tag.putInt("WaterRequirement", waterRequirement);
 		tag.putInt("Stir", maxStir);
 		tag.putInt("CurrentStir", currentStir);
 		return tag;

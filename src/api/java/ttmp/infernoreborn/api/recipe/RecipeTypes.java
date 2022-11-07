@@ -1,4 +1,4 @@
-package ttmp.infernoreborn.api;
+package ttmp.infernoreborn.api.recipe;
 
 import net.minecraft.item.crafting.IRecipeType;
 import net.minecraft.util.ResourceLocation;

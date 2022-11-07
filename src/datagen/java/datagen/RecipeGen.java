@@ -13,10 +13,12 @@ import net.minecraft.data.IFinishedRecipe;
 import net.minecraft.data.RecipeProvider;
 import net.minecraft.data.ShapedRecipeBuilder;
 import net.minecraft.data.ShapelessRecipeBuilder;
+import net.minecraft.fluid.Fluids;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.item.crafting.Ingredient;
+import net.minecraft.tags.FluidTags;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.util.IItemProvider;
 import net.minecraft.util.ResourceLocation;
@@ -278,15 +280,33 @@ public class RecipeGen extends RecipeProvider{
 		new CrucibleRecipeBuilder()
 				.output(ModItems.RUNESTONE.get())
 				.ingredient(Ingredient.of(Tags.Items.STONE), 1)
+				.water()
 				.anyEssence(1)
+				.stirTime(40)
 				.save(consumer, new ResourceLocation(MODID, "crucible/runestone"));
 
 		new CrucibleRecipeBuilder()
 				.output(ModItems.FOUNDRY_TILE.get())
 				.ingredient(Ingredient.of(Items.BRICKS), 1)
 				.ingredient(Ingredient.of(Items.COAL, Items.CHARCOAL), 1)
+				.water()
 				.anyEssence(4)
+				.stirTime(40)
 				.save(consumer, new ResourceLocation(MODID, "crucible/foundry_tile"));
+
+		new CrucibleRecipeBuilder()
+				.output(Items.DIAMOND, 64)
+				.ingredient(Ingredient.of(Items.PUFFERFISH_BUCKET), 1)
+				.ingredient(FluidTags.LAVA, 250)
+				.essence(EssenceType.DEATH, 9)
+				.stirTime(200)
+				.save(consumer, new ResourceLocation(MODID, "crucible/idk"));
+
+		new CrucibleRecipeBuilder()
+				.output(Fluids.WATER, 1000)
+				.ingredient(Ingredient.of(Items.PUFFERFISH), 1)
+				.stirTime(20)
+				.save(consumer, new ResourceLocation(MODID, "crucible/idk2"));
 
 		new FoundryRecipeBuilder(new ItemStack(Items.NETHERITE_INGOT, 2))
 				.ingredient(Ingredient.of(Tags.Items.INGOTS_GOLD), 1)

@@ -1,10 +1,11 @@
-package ttmp.infernoreborn.api;
+package ttmp.infernoreborn.api.recipe;
 
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.world.World;
 import net.minecraftforge.fluids.FluidStack;
+import ttmp.infernoreborn.api.Simulation;
 
 /**
  * Nontraditional recipes which uses {@link Simulation} for simulating and processing recipes. Various forms of

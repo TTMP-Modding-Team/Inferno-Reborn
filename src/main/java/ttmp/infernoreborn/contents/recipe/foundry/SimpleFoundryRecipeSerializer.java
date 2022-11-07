@@ -9,10 +9,10 @@ import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.JSONUtils;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.registries.ForgeRegistryEntry;
-import ttmp.infernoreborn.api.QuantifiedIngredient;
+import ttmp.infernoreborn.api.recipe.QuantifiedIngredient;
 import ttmp.infernoreborn.api.essence.EssenceIngredient;
 import ttmp.infernoreborn.api.foundry.FoundryRecipe;
-import ttmp.infernoreborn.contents.recipe.RecipeHelper;
+import ttmp.infernoreborn.api.recipe.RecipeHelper;
 
 public class SimpleFoundryRecipeSerializer extends ForgeRegistryEntry<IRecipeSerializer<?>> implements IRecipeSerializer<SimpleFoundryRecipe>{
 	@SuppressWarnings("ConstantConditions")

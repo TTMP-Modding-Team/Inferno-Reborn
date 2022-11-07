@@ -3,9 +3,10 @@ package ttmp.infernoreborn.api.crucible;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipeType;
 import net.minecraftforge.fluids.FluidStack;
-import ttmp.infernoreborn.api.QuantifiedIngredient;
-import ttmp.infernoreborn.api.RecipeTypes;
-import ttmp.infernoreborn.api.WackyRecipe;
+import ttmp.infernoreborn.api.recipe.FluidIngredient;
+import ttmp.infernoreborn.api.recipe.QuantifiedIngredient;
+import ttmp.infernoreborn.api.recipe.RecipeTypes;
+import ttmp.infernoreborn.api.recipe.WackyRecipe;
 import ttmp.infernoreborn.api.essence.EssenceIngredient;
 
 import java.util.List;
@@ -13,10 +14,6 @@ import java.util.List;
 public interface CrucibleRecipe extends WackyRecipe<CrucibleInventory, CrucibleRecipe.Result>{
 	int DEFAULT_WATER_CONSUMPTION = 250;
 
-	/**
-	 * @return Water consumption, not preview
-	 */
-	int waterConsumption(CrucibleInventory inventory);
 	/**
 	 * @return Required stir ticks, not preview
 	 */
@@ -27,13 +24,13 @@ public interface CrucibleRecipe extends WackyRecipe<CrucibleInventory, CrucibleR
 	 */
 	List<QuantifiedIngredient> getQuantifiedIngredients();
 	/**
+	 * @return List of fluid ingredients for preview purposes
+	 */
+	List<FluidIngredient<?>> getFluidIngredients();
+	/**
 	 * @return List of essence requirements for preview purposes
 	 */
 	EssenceIngredient essences();
-	/**
-	 * @return Water consumption for preview purposes
-	 */
-	int waterConsumption();
 	/**
 	 * @return Required stir ticks for preview purposes
 	 */
@@ -59,19 +56,14 @@ public interface CrucibleRecipe extends WackyRecipe<CrucibleInventory, CrucibleR
 	 * Result of crucible recipes. Item/FluidStacks inside are safe to use/modify.
 	 */
 	final class Result{
-		private final int waterRequirement;
 		private final List<ItemStack> outputs;
 		private final List<FluidStack> fluidOutputs;
 
-		public Result(int waterRequirement, List<ItemStack> outputs, List<FluidStack> fluidOutputs){
-			this.waterRequirement = waterRequirement;
+		public Result(List<ItemStack> outputs, List<FluidStack> fluidOutputs){
 			this.outputs = outputs;
 			this.fluidOutputs = fluidOutputs;
 		}
 
-		public int waterRequirement(){
-			return waterRequirement;
-		}
 		public List<ItemStack> outputs(){
 			return outputs;
 		}
@@ -81,8 +73,7 @@ public interface CrucibleRecipe extends WackyRecipe<CrucibleInventory, CrucibleR
 
 		@Override public String toString(){
 			return "Result{"+
-					"waterRequirement="+waterRequirement+
-					", outputs="+outputs+
+					"outputs="+outputs+
 					", fluidOutputs="+fluidOutputs+
 					'}';
 		}

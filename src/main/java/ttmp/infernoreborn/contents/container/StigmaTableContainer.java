@@ -12,7 +12,7 @@ import net.minecraft.util.IWorldPosCallable;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.network.PacketDistributor;
 import ttmp.infernoreborn.api.Caps;
-import ttmp.infernoreborn.api.RecipeTypes;
+import ttmp.infernoreborn.api.recipe.RecipeTypes;
 import ttmp.infernoreborn.api.sigil.EmptySigilHolder;
 import ttmp.infernoreborn.api.sigil.Sigil;
 import ttmp.infernoreborn.api.sigil.SigilEngravingRecipe;

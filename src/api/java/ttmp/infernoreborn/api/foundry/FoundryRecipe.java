@@ -2,9 +2,9 @@ package ttmp.infernoreborn.api.foundry;
 
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipeType;
-import ttmp.infernoreborn.api.QuantifiedIngredient;
-import ttmp.infernoreborn.api.RecipeTypes;
-import ttmp.infernoreborn.api.WackyRecipe;
+import ttmp.infernoreborn.api.recipe.QuantifiedIngredient;
+import ttmp.infernoreborn.api.recipe.RecipeTypes;
+import ttmp.infernoreborn.api.recipe.WackyRecipe;
 import ttmp.infernoreborn.api.essence.EssenceIngredient;
 
 import java.util.List;

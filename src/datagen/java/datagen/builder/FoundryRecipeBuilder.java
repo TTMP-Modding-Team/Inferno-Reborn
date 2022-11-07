@@ -16,7 +16,7 @@ import ttmp.infernoreborn.contents.ModRecipes;
 import ttmp.infernoreborn.api.essence.EssenceIngredient;
 import ttmp.infernoreborn.api.foundry.FoundryRecipe;
 import ttmp.infernoreborn.api.essence.EssenceType;
-import ttmp.infernoreborn.api.QuantifiedIngredient;
+import ttmp.infernoreborn.api.recipe.QuantifiedIngredient;
 
 import java.util.ArrayList;
 import java.util.List;

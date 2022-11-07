@@ -108,7 +108,7 @@ public class BlockModelGen extends BlockStateProvider{
 		getVariantBuilder(ModBlocks.CRUCIBLE_CAMPFIRE.get()).forAllStates(state ->
 				ConfiguredModel.builder().modelFile(state.getValue(LIT) ?
 								state.getValue(AUTOMATED) ? crucibleCampfireAutomated : crucibleCampfire :
-								state.getValue(AUTOMATED) ? crucibleCampfireOff : crucibleCampfireAutomatedOff)
+								state.getValue(AUTOMATED) ? crucibleCampfireAutomatedOff : crucibleCampfireOff)
 						.rotationY(((int)state.getValue(HORIZONTAL_FACING).toYRot())%360).build());
 
 		ExistingModelFile crucibleAU = existing(res("block/automation_unit/base"));

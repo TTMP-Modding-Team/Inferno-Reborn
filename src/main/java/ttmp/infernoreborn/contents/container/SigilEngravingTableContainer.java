@@ -15,7 +15,7 @@ import net.minecraft.util.NonNullList;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeHooks;
 import net.minecraftforge.fml.network.PacketDistributor;
-import ttmp.infernoreborn.api.RecipeTypes;
+import ttmp.infernoreborn.api.recipe.RecipeTypes;
 import ttmp.infernoreborn.api.sigil.Sigil;
 import ttmp.infernoreborn.api.sigil.SigilHolder;
 import ttmp.infernoreborn.api.sigil.SigilcraftInventory;

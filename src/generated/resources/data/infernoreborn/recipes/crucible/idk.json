@@ -3,22 +3,23 @@
   "ingredients": [
     {
       "ingredient": {
-        "tag": "forge:stone"
+        "item": "minecraft:pufferfish_bucket"
       }
     }
   ],
   "fluidIngredients": [
     {
-      "tag": "minecraft:water",
+      "tag": "minecraft:lava",
       "amount": 250,
       "type": "infernoreborn:tag"
     }
   ],
   "essences": {
-    "any": 1
+    "death": 9
   },
-  "stir": 40,
+  "stir": 200,
   "result": {
-    "item": "infernoreborn:runestone"
+    "item": "minecraft:diamond",
+    "count": 64
   }
 }

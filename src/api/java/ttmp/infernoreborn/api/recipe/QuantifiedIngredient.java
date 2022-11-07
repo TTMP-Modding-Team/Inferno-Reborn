@@ -1,4 +1,4 @@
-package ttmp.infernoreborn.api;
+package ttmp.infernoreborn.api.recipe;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -26,7 +26,7 @@ public final class QuantifiedIngredient implements Predicate<ItemStack>{
 		this.quantity = Math.max(0, quantity);
 	}
 	public QuantifiedIngredient(JsonObject obj){
-		this(Ingredient.fromJson(obj.get("ingredient")), Math.max(1, JSONUtils.getAsInt(obj, "quantity", 1)));
+		this(Ingredient.fromJson(obj.get("ingredient")), Math.max(0, JSONUtils.getAsInt(obj, "quantity", 1)));
 	}
 
 	public Ingredient getIngredient(){

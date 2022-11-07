@@ -6,7 +6,7 @@ import net.minecraft.item.crafting.SpecialRecipeSerializer;
 import net.minecraftforge.fml.RegistryObject;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
-import ttmp.infernoreborn.api.RecipeTypes;
+import ttmp.infernoreborn.api.recipe.RecipeTypes;
 import ttmp.infernoreborn.contents.recipe.ApplySigilRecipe;
 import ttmp.infernoreborn.contents.recipe.CombineSparkRecipe;
 import ttmp.infernoreborn.contents.recipe.EssenceHolderBookRecipe;

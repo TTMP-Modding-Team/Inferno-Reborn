@@ -36,6 +36,16 @@ public final class BaseInventory implements IItemHandlerModifiable{
 		return this;
 	}
 
+	public boolean isEmpty(){
+		for(int i = 0; i<delegate.getSlots(); i++)
+			if(!delegate.getStackInSlot(i).isEmpty()) return false;
+		return true;
+	}
+	public void clear(){
+		for(int i = 0; i<delegate.getSlots(); i++)
+			delegate.setStackInSlot(i, ItemStack.EMPTY);
+	}
+
 	@Override public void setStackInSlot(int slot, ItemStack stack){delegate.setStackInSlot(slot, stack);}
 	@Override public int getSlots(){return delegate.getSlots();}
 	@Override public ItemStack getStackInSlot(int slot){return delegate.getStackInSlot(slot);}
@@ -58,6 +68,7 @@ public final class BaseInventory implements IItemHandlerModifiable{
 	}
 
 	public void read(CompoundNBT tag){
+		clear();
 		if(!tag.contains("Items", Constants.NBT.TAG_LIST)) return;
 		ListNBT list = tag.getList("Items", Constants.NBT.TAG_COMPOUND);
 		for(int i = 0; i<list.size(); i++){

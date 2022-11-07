@@ -12,15 +12,20 @@ import net.minecraft.fluid.Fluid;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipeSerializer;
 import net.minecraft.item.crafting.Ingredient;
+import net.minecraft.tags.FluidTags;
+import net.minecraft.tags.ITag;
 import net.minecraft.util.IItemProvider;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fluids.FluidStack;
-import ttmp.infernoreborn.contents.ModRecipes;
-import ttmp.infernoreborn.api.essence.EssenceIngredient;
 import ttmp.infernoreborn.api.crucible.CrucibleRecipe;
-import ttmp.infernoreborn.contents.tile.crucible.Crucible;
+import ttmp.infernoreborn.api.essence.EssenceIngredient;
 import ttmp.infernoreborn.api.essence.EssenceType;
-import ttmp.infernoreborn.api.QuantifiedIngredient;
+import ttmp.infernoreborn.api.recipe.FluidIngredient;
+import ttmp.infernoreborn.api.recipe.FluidTagIngredient;
+import ttmp.infernoreborn.api.recipe.QuantifiedIngredient;
+import ttmp.infernoreborn.api.recipe.SimpleFluidIngredient;
+import ttmp.infernoreborn.contents.ModRecipes;
+import ttmp.infernoreborn.contents.tile.crucible.Crucible;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,9 +36,9 @@ public class CrucibleRecipeBuilder{
 	private final List<FluidStack> fluidOutputs = new ArrayList<>();
 
 	private final List<QuantifiedIngredient> ingredients = new ArrayList<>();
+	private final List<FluidIngredient<?>> fluidIngredients = new ArrayList<>();
 	private final EssenceIngredient.Builder essences = EssenceIngredient.builder();
 
-	private int water = CrucibleRecipe.DEFAULT_WATER_CONSUMPTION;
 	private int stir = 0;
 
 	private final Advancement.Builder advancement = Advancement.Builder.advancement();
@@ -62,6 +67,23 @@ public class CrucibleRecipeBuilder{
 		return this;
 	}
 
+	public CrucibleRecipeBuilder ingredient(Fluid fluid, int amount){
+		return ingredient(new SimpleFluidIngredient(amount, fluid));
+	}
+	public CrucibleRecipeBuilder ingredient(ITag.INamedTag<Fluid> fluidTag, int amount){
+		return ingredient(new FluidTagIngredient(fluidTag.getName(), fluidTag, amount));
+	}
+	public CrucibleRecipeBuilder water(){
+		return water(CrucibleRecipe.DEFAULT_WATER_CONSUMPTION);
+	}
+	public CrucibleRecipeBuilder water(int amount){
+		return ingredient(FluidTags.WATER, amount);
+	}
+	public CrucibleRecipeBuilder ingredient(FluidIngredient<?> ingredient){
+		this.fluidIngredients.add(ingredient);
+		return this;
+	}
+
 	public CrucibleRecipeBuilder essence(EssenceType type, int amount){
 		if(amount<=0) throw new IllegalArgumentException("amount");
 		essences.add(type, amount);
@@ -71,13 +93,6 @@ public class CrucibleRecipeBuilder{
 	public CrucibleRecipeBuilder anyEssence(int amount){
 		if(amount<=0) throw new IllegalArgumentException("amount");
 		essences.any(amount);
-		return this;
-	}
-
-	public CrucibleRecipeBuilder waterConsumption(int waterConsumption){
-		if(waterConsumption<0||waterConsumption>Crucible.FLUID_TANK_SIZE)
-			throw new IllegalArgumentException("waterConsumption");
-		this.water = waterConsumption;
 		return this;
 	}
 
@@ -100,16 +115,20 @@ public class CrucibleRecipeBuilder{
 				.requirements(IRequirementsStrategy.OR);
 		consumer.accept(new IFinishedRecipe(){
 			@Override public void serializeRecipeData(JsonObject object){
-				JsonArray arr = new JsonArray();
-				for(QuantifiedIngredient ing : ingredients) arr.add(ing.serialize());
-				object.add("ingredients", arr);
+				if(!ingredients.isEmpty()){
+					JsonArray arr = new JsonArray();
+					for(QuantifiedIngredient ing : ingredients) arr.add(ing.serialize());
+					object.add("ingredients", arr);
+				}
+				if(!fluidIngredients.isEmpty()){
+					JsonArray arr = new JsonArray();
+					for(FluidIngredient<?> ing : fluidIngredients) arr.add(ing.write());
+					object.add("fluidIngredients", arr);
+				}
 				EssenceIngredient essences = CrucibleRecipeBuilder.this.essences.build();
 				if(!essences.isEmpty()) object.add("essences", essences.toJsonObject());
-				if(water!=CrucibleRecipe.DEFAULT_WATER_CONSUMPTION)
-					object.addProperty("water", water);
-				if(stir!=0)
-					object.addProperty("stir", stir);
-				arr = new JsonArray();
+				if(stir!=0) object.addProperty("stir", stir);
+				JsonArray arr = new JsonArray();
 				for(ItemStack output : outputs)
 					arr.add(BuilderUtils.result(output));
 				for(FluidStack fluid : fluidOutputs)
@@ -133,7 +152,11 @@ public class CrucibleRecipeBuilder{
 
 	private void ensureValid(ResourceLocation id){
 		// if(this.advancement.getCriteria().isEmpty()) throw new IllegalStateException("No way of obtaining recipe "+id);
-		if(ingredients.isEmpty()) throw new IllegalStateException("No ingredients");
 		if(ingredients.size()>Crucible.INPUT_INVENTORY_SIZE) throw new IllegalStateException("Too many ingredients");
+		if(fluidIngredients.size()>Crucible.FLUID_TANK_SIZE)
+			throw new IllegalStateException("Too many fluid ingredients");
+		for(FluidIngredient<?> ing : fluidIngredients)
+			if(ing.getAmount()>Crucible.FLUID_TANK_CAPACITY)
+				throw new IllegalStateException("Too much fluid required: "+ing);
 	}
 }

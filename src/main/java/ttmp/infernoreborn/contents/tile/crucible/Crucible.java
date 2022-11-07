@@ -19,7 +19,8 @@ public final class Crucible{
 
 	public static final int MANUAL_STIR_TICKS = 20;
 	public static final int INPUT_INVENTORY_SIZE = 8;
-	public static final int FLUID_TANK_SIZE = 1000;
+	public static final int FLUID_TANK_SIZE = 4;
+	public static final int FLUID_TANK_CAPACITY = 1000;
 
 	private static final String CRUCIBLE_EXCLUDED = MODID+":crucible_excluded";
 
@@ -48,7 +49,7 @@ public final class Crucible{
 	public static void spawnItem(@Nullable World level, BlockPos pos, ItemStack stack, boolean launch){
 		if(level==null||level.isClientSide||stack.isEmpty()) return;
 		ItemEntity e = new ItemEntity(level, pos.getX()+.5, pos.getY()+.5, pos.getZ()+.5, stack);
-		if(launch) e.setDeltaMovement(e.getDeltaMovement().add(0, 1, 0));
+		if(launch) e.setDeltaMovement(e.getDeltaMovement().add(0, .5, 0));
 		setExcluded(e, true);
 		level.addFreshEntity(e);
 	}

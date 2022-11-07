@@ -94,16 +94,19 @@ public class CrucibleBlock extends Block{
 		}else if(stack.getItem()==Items.STICK){
 			CrucibleTile crucible = Crucible.crucible(level, pos);
 			if(crucible!=null&&crucible.stirManually()){
-				float waterLevel = crucible.getFluidTank().getFluidAmount()/(float)crucible.getFluidTank().getCapacity();
-				level.playSound(player, pos,
+				float waterLevel = (float)crucible.getMaxFluidFillRate();
+				if(waterLevel>0) level.playSound(player, pos,
 						SoundEvents.BOAT_PADDLE_WATER, SoundCategory.PLAYERS, 1,
 						0.8f+0.4f*level.random.nextFloat()*(2-waterLevel));
+				else level.playSound(player, pos,
+						SoundEvents.BOAT_PADDLE_LAND, SoundCategory.PLAYERS, 1,
+						0.8f+0.4f*level.random.nextFloat());
 			}
 			return ActionResultType.sidedSuccess(level.isClientSide);
-		}else{
+		}else if(FluidUtil.getFluidHandler(stack).isPresent()){
 			CrucibleTile crucible = Crucible.crucible(level, pos);
-			if(crucible!=null&&FluidUtil.interactWithFluidHandler(player, hand, crucible.getFluidHandler()))
-				return ActionResultType.sidedSuccess(level.isClientSide);
+			if(crucible!=null) FluidUtil.interactWithFluidHandler(player, hand, crucible.getFluidHandler());
+			return ActionResultType.sidedSuccess(level.isClientSide);
 		}
 		return ActionResultType.PASS;
 	}
@@ -166,11 +169,9 @@ public class CrucibleBlock extends Block{
 
 	@Override public void handleRain(World level, BlockPos pos){
 		if(level.random.nextInt(20)==1){
-			float temp = level.getBiome(pos).getTemperature(pos);
-			if(!(temp<0.15f)){
+			if(!(level.getBiome(pos).getTemperature(pos)<0.15f)){
 				CrucibleTile te = Crucible.crucible(level, pos);
-				if(te!=null&&te.getFluidTank().getCapacity()>te.getFluidTank().getFluidAmount())
-					te.getFluidTank().fill(new FluidStack(Fluids.WATER, 100), FluidAction.EXECUTE);
+				if(te!=null) te.getFluidHandler().fill(new FluidStack(Fluids.WATER, 100), FluidAction.EXECUTE);
 			}
 		}
 	}

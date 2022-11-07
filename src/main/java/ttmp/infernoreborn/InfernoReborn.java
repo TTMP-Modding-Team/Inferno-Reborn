@@ -38,6 +38,9 @@ import ttmp.infernoreborn.api.TickingTaskHandler;
 import ttmp.infernoreborn.api.ability.AbilityHolder;
 import ttmp.infernoreborn.api.essence.EssenceHolder;
 import ttmp.infernoreborn.api.essence.EssenceNetProvider;
+import ttmp.infernoreborn.api.recipe.FluidIngredient;
+import ttmp.infernoreborn.api.recipe.FluidTagIngredient;
+import ttmp.infernoreborn.api.recipe.SimpleFluidIngredient;
 import ttmp.infernoreborn.api.shield.ShieldProvider;
 import ttmp.infernoreborn.api.sigil.SigilHolder;
 import ttmp.infernoreborn.capability.ClientPlayerCapability;
@@ -109,6 +112,9 @@ public class InfernoReborn{
 
 		ModCfg.init();
 		ModNet.init();
+
+		FluidIngredient.register(SimpleFluidIngredient.TYPE);
+		FluidIngredient.register(FluidTagIngredient.TYPE);
 	}
 
 	@SubscribeEvent
