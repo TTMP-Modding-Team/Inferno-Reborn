@@ -1,0 +1,48 @@
+{
+	"parent": "block/block",
+	"textures": {
+		"3": "infernoreborn:block/automation_unit/extension_joint_top",
+		"4": "infernoreborn:block/automation_unit/extension_top",
+		"5": "infernoreborn:block/automation_unit/extension_side",
+		"6": "infernoreborn:block/automation_unit/extension_bottom",
+		"7": "infernoreborn:block/automation_unit/extension_joint_bottom",
+		"8": "infernoreborn:block/automation_unit/extension_joint_side"
+	},
+	"elements": [
+		{
+			"from": [6, 11, 0],
+			"to": [10, 15, 6],
+			"rotation": {"angle": 0, "axis": "y", "origin": [8, 15, 0]},
+			"faces": {
+				"east": {"uv": [10, 1, 16, 5], "texture": "#5"},
+				"west": {"uv": [0, 1, 6, 5], "texture": "#5"},
+				"up": {"uv": [10, 6, 16, 10], "rotation": 270, "texture": "#4"},
+				"down": {"uv": [0, 6, 6, 10], "rotation": 270, "texture": "#6"}
+			}
+		},
+		{
+			"from": [6, 11, -5],
+			"to": [10, 15, 0],
+			"rotation": {"angle": 0, "axis": "y", "origin": [8, 15, -3]},
+			"faces": {
+				"east": {"uv": [0, 1, 5, 5], "texture": "#5", "cullface": "north"},
+				"west": {"uv": [11, 1, 16, 5], "texture": "#5", "cullface": "north"},
+				"up": {"uv": [0, 6, 5, 10], "rotation": 270, "texture": "#4", "cullface": "north"},
+				"down": {"uv": [11, 6, 16, 10], "rotation": 270, "texture": "#6", "cullface": "north"}
+			}
+		},
+		{
+			"from": [5, 10, -11],
+			"to": [11, 16, -5],
+			"rotation": {"angle": 0, "axis": "y", "origin": [8, 16, -6]},
+			"faces": {
+				"north": {"uv": [5, 0, 11, 6], "texture": "#8", "cullface": "north"},
+				"east": {"uv": [5, 0, 11, 6], "texture": "#8", "cullface": "north"},
+				"south": {"uv": [5, 0, 11, 6], "texture": "#8", "cullface": "north"},
+				"west": {"uv": [5, 0, 11, 6], "texture": "#8", "cullface": "north"},
+				"up": {"uv": [5, 5, 11, 11], "rotation": 90, "texture": "#3", "cullface": "north"},
+				"down": {"uv": [5, 5, 11, 11], "rotation": 270, "texture": "#7", "cullface": "north"}
+			}
+		}
+	]
+}

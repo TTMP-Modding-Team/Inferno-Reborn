@@ -1,0 +1,21 @@
+{
+	"parent": "block/block",
+	"textures": {
+		"0": "infernoreborn:block/automation_unit/extension_joint_side",
+		"1": "infernoreborn:block/automation_unit/extension_joint_top",
+		"particle": "infernoreborn:block/automation_unit/extension_joint_side"
+	},
+	"elements": [
+		{
+			"from": [5, -3, -1],
+			"to": [11, 3, 1],
+			"faces": {
+				"north": {"uv": [5, 5, 11, 11], "texture": "#1"},
+				"east": {"uv": [5, 0, 11, 2], "rotation": 90, "texture": "#0"},
+				"west": {"uv": [5, 0, 11, 2], "rotation": 270, "texture": "#0"},
+				"up": {"uv": [5, 0, 11, 2], "texture": "#0"},
+				"down": {"uv": [5, 0, 11, 2], "rotation": 180, "texture": "#0"}
+			}
+		}
+	]
+}

@@ -19,6 +19,7 @@ import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.shapes.ISelectionContext;
 import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.util.math.shapes.VoxelShapes;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ToolType;
@@ -107,5 +108,12 @@ public class CampfireCrucibleBlock extends CrucibleBlock{
 			}
 		}
 		super.animateTick(state, level, pos, rand);
+	}
+
+	@Override public Direction getClickedCrucibleSide(BlockRayTraceResult hit){
+		Vector3d location = hit.getLocation();
+		double y = location.y-hit.getBlockPos().getY();
+		if(gt(4/16.0, y)) return Direction.DOWN;
+		return super.getClickedCrucibleSide(hit);
 	}
 }

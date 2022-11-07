@@ -19,6 +19,7 @@ import ttmp.infernoreborn.contents.tile.crucible.CrucibleAutomationUnitTile;
 import ttmp.infernoreborn.contents.tile.crucible.CrucibleTile;
 import ttmp.infernoreborn.contents.tile.crucible.EssenceStoveTile;
 import ttmp.infernoreborn.contents.tile.crucible.FuelBasedStoveTile;
+import ttmp.infernoreborn.contents.tile.crucible.MockAutomationModuleTile;
 
 import java.util.Arrays;
 import java.util.function.Supplier;
@@ -57,6 +58,9 @@ public final class ModTileEntities{
 
 	public static final RegistryObject<TileEntityType<CrucibleAutomationUnitTile>> CRUCIBLE_AUTOMATION_UNIT = REGISTER.register("crucible_automation_unit",
 			te(CrucibleAutomationUnitTile::new, ModBlocks.CRUCIBLE_AUTOMATION_UNIT));
+
+	public static final RegistryObject<TileEntityType<MockAutomationModuleTile>> MOCK_AUTOMATION_MODULE = REGISTER.register("mock_automation_module",
+			te(MockAutomationModuleTile::new, ModBlocks.MOCK_AUTOMATION_MODULE));
 
 	public static final RegistryObject<TileEntityType<FuelBasedStoveTile.Furnace>> FURNACE_STOVE = REGISTER.register("furnace_stove",
 			te(FuelBasedStoveTile.Furnace::new, ModBlocks.FURNACE_STOVE));

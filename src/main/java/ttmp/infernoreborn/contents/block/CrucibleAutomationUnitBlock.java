@@ -2,17 +2,29 @@ package ttmp.infernoreborn.contents.block;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.state.StateContainer;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.ActionResultType;
+import net.minecraft.util.Direction;
+import net.minecraft.util.Hand;
+import net.minecraft.util.SoundCategory;
+import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.shapes.ISelectionContext;
 import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.util.math.shapes.VoxelShapes;
 import net.minecraft.world.IBlockReader;
+import net.minecraft.world.IWorld;
+import net.minecraft.world.World;
+import ttmp.infernoreborn.contents.tile.crucible.Crucible;
 import ttmp.infernoreborn.contents.tile.crucible.CrucibleAutomationUnitTile;
+import ttmp.infernoreborn.contents.tile.crucible.CrucibleTile;
 
 import static ttmp.infernoreborn.contents.block.ModProperties.*;
 
+@SuppressWarnings("deprecation")
 public class CrucibleAutomationUnitBlock extends Block{
 	private static final VoxelShape SHAPE = VoxelShapes.or(
 			box(1, 0, 1, 15, 4, 15),
@@ -37,6 +49,31 @@ public class CrucibleAutomationUnitBlock extends Block{
 				.setValue(OUT_E, false));
 	}
 
+	@Override public ActionResultType use(BlockState state, World level, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult hit){
+		if(player.isCrouching()&&hit.getDirection()!=Direction.UP&&hit.getDirection()!=Direction.DOWN){
+			BlockState belowState = level.getBlockState(pos.below());
+			if(belowState.hasProperty(AUTOMATED)&&belowState.getValue(AUTOMATED)){
+				if(!level.isClientSide){
+					TileEntity te = level.getBlockEntity(pos);
+					if(te instanceof CrucibleAutomationUnitTile)
+						playOutputToggleSound(level, pos,
+								((CrucibleAutomationUnitTile)te).toggleSetOutput(hit.getDirection()));
+				}
+				return ActionResultType.sidedSuccess(level.isClientSide);
+			}
+		}
+		return ActionResultType.PASS;
+	}
+
+	@Override public BlockState updateShape(BlockState state, Direction facing, BlockState facingState, IWorld level, BlockPos currentPos, BlockPos facingPos){
+		if(!level.isClientSide()&&facing==Direction.DOWN){
+			CrucibleTile crucible = Crucible.crucible(level, facingPos);
+			if(crucible==null) for(Direction d : Direction.Plane.HORIZONTAL)
+				state = state.setValue(ModProperties.outputProperty(d), false);
+		}
+		return state;
+	}
+
 	@Override public boolean hasTileEntity(BlockState state){
 		return true;
 	}
@@ -44,12 +81,16 @@ public class CrucibleAutomationUnitBlock extends Block{
 		return new CrucibleAutomationUnitTile();
 	}
 
-	@SuppressWarnings("deprecation")
 	@Override public VoxelShape getShape(BlockState pState, IBlockReader pLevel, BlockPos pPos, ISelectionContext pContext){
 		return SHAPE;
 	}
 
 	@Override protected void createBlockStateDefinition(StateContainer.Builder<Block, BlockState> b){
 		b.add(MODULE_U, MODULE_N, MODULE_S, MODULE_W, MODULE_E, OUT_N, OUT_S, OUT_W, OUT_E);
+	}
+
+	public static void playOutputToggleSound(IWorld level, BlockPos pos, boolean open){
+		level.playSound(null, pos, open ? SoundEvents.IRON_DOOR_OPEN : SoundEvents.IRON_DOOR_CLOSE,
+				SoundCategory.PLAYERS, 1, level.getRandom().nextFloat()*0.1f+1.4f);
 	}
 }

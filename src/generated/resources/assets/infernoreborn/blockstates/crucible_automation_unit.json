@@ -1,7 +1,115 @@
 {
-  "variants": {
-    "": {
-      "model": "infernoreborn:block/automation_unit"
+  "multipart": [
+    {
+      "apply": {
+        "model": "infernoreborn:block/automation_unit/base"
+      }
+    },
+    {
+      "when": {
+        "AND": [
+          {
+            "module_u": "false"
+          },
+          {
+            "OR": [
+              {
+                "module_n": "true"
+              },
+              {
+                "module_s": "true"
+              },
+              {
+                "module_e": "true"
+              },
+              {
+                "module_w": "true"
+              }
+            ]
+          }
+        ]
+      },
+      "apply": {
+        "model": "infernoreborn:block/automation_unit/joint"
+      }
+    },
+    {
+      "when": {
+        "module_u": "true"
+      },
+      "apply": {
+        "model": "infernoreborn:block/automation_unit/top_extension"
+      }
+    },
+    {
+      "when": {
+        "module_n": "true"
+      },
+      "apply": {
+        "model": "infernoreborn:block/automation_unit/side_extension"
+      }
+    },
+    {
+      "when": {
+        "module_s": "true"
+      },
+      "apply": {
+        "model": "infernoreborn:block/automation_unit/side_extension",
+        "y": 180
+      }
+    },
+    {
+      "when": {
+        "module_e": "true"
+      },
+      "apply": {
+        "model": "infernoreborn:block/automation_unit/side_extension",
+        "y": 90
+      }
+    },
+    {
+      "when": {
+        "module_w": "true"
+      },
+      "apply": {
+        "model": "infernoreborn:block/automation_unit/side_extension",
+        "y": 270
+      }
+    },
+    {
+      "when": {
+        "out_n": "true"
+      },
+      "apply": {
+        "model": "infernoreborn:block/automation_unit/output"
+      }
+    },
+    {
+      "when": {
+        "out_s": "true"
+      },
+      "apply": {
+        "model": "infernoreborn:block/automation_unit/output",
+        "y": 180
+      }
+    },
+    {
+      "when": {
+        "out_e": "true"
+      },
+      "apply": {
+        "model": "infernoreborn:block/automation_unit/output",
+        "y": 90
+      }
+    },
+    {
+      "when": {
+        "out_w": "true"
+      },
+      "apply": {
+        "model": "infernoreborn:block/automation_unit/output",
+        "y": 270
+      }
     }
-  }
+  ]
 }

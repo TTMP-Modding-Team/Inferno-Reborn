@@ -1,9 +1,11 @@
 package ttmp.infernoreborn.contents.tile.crucible;
 
+import net.minecraft.state.BooleanProperty;
 import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
 import ttmp.infernoreborn.contents.ModTileEntities;
 
 import java.util.Objects;
@@ -21,10 +23,10 @@ public class CrucibleAutomationUnitTile extends TileEntity implements ITickableT
 	}
 
 	public boolean isAttached(Direction direction){
-		return direction!=Direction.UP&&getBlockState().getValue(moduleProperty(direction));
+		return direction!=Direction.DOWN&&getBlockState().getValue(moduleProperty(direction));
 	}
 	public void setAttached(Direction direction, boolean attached){
-		if(direction!=Direction.UP){
+		if(direction!=Direction.DOWN){
 			boolean prevAttached = isAttached(direction);
 			if(attached!=prevAttached){
 				Objects.requireNonNull(level).setBlock(getBlockPos(), getBlockState()
@@ -38,21 +40,25 @@ public class CrucibleAutomationUnitTile extends TileEntity implements ITickableT
 				getBlockState().getValue(outputProperty(direction));
 	}
 	public void setOutput(Direction direction, boolean output){
-		if(direction!=Direction.UP&&direction!=Direction.DOWN){
-			boolean prevOutput = outputsTo(direction);
-			if(output!=prevOutput){
-				Objects.requireNonNull(level).setBlock(getBlockPos(), getBlockState()
-						.setValue(outputProperty(direction), output), 3);
-			}
-		}
+		if(direction==Direction.UP||direction==Direction.DOWN) return;
+		boolean prevOutput = outputsTo(direction);
+		if(output!=prevOutput) Objects.requireNonNull(level)
+				.setBlock(getBlockPos(), getBlockState().setValue(outputProperty(direction), output), 3);
+	}
+	public boolean toggleSetOutput(Direction direction){
+		if(direction==Direction.UP||direction==Direction.DOWN) return false;
+		BooleanProperty property = outputProperty(direction);
+		boolean newValue = !getBlockState().getValue(property);
+		Objects.requireNonNull(level).setBlock(getBlockPos(), getBlockState()
+				.setValue(property, newValue), 3);
+		return newValue;
 	}
 
 	@Override public void tick(){
 		if(level==null||level.isClientSide) return;
 		long gameTime = level.getGameTime();
-		TileEntity te = level.getBlockEntity(mpos.set(getBlockPos()).move(Direction.DOWN));
-		if(!(te instanceof CrucibleTile)) return;
-		CrucibleTile crucible = (CrucibleTile)te;
+		CrucibleTile crucible = Crucible.crucible(level, mpos.set(getBlockPos()).move(Direction.DOWN));
+		if(crucible==null) return;
 		switch((int)(gameTime%10)){
 			case 0: tickAttachedModule(crucible, Direction.UP); break;
 			case 2: tickAttachedModule(crucible, Direction.NORTH); break;
@@ -67,7 +73,9 @@ public class CrucibleAutomationUnitTile extends TileEntity implements ITickableT
 		if(!isAttached(dir)) return;
 		mpos.set(this.getBlockPos()).move(Direction.UP);
 		if(dir!=Direction.UP) mpos.move(dir);
-		TileEntity te = Objects.requireNonNull(level).getBlockEntity(mpos);
+		World level = Objects.requireNonNull(this.level);
+		if(!level.isLoaded(mpos)) return;
+		TileEntity te = level.getBlockEntity(mpos);
 		if(te instanceof AutomationModule){
 			AutomationModule m = (AutomationModule)te;
 			m.operate(crucible);
@@ -77,6 +85,4 @@ public class CrucibleAutomationUnitTile extends TileEntity implements ITickableT
 	private void output(CrucibleTile crucible){
 		// TODO
 	}
-
-
 }

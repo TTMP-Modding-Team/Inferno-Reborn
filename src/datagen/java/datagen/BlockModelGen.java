@@ -17,7 +17,7 @@ import java.util.Arrays;
 import static net.minecraft.state.properties.BlockStateProperties.HORIZONTAL_FACING;
 import static net.minecraft.state.properties.BlockStateProperties.LIT;
 import static ttmp.infernoreborn.api.InfernoRebornApi.MODID;
-import static ttmp.infernoreborn.contents.block.ModProperties.AUTOMATED;
+import static ttmp.infernoreborn.contents.block.ModProperties.*;
 
 public class BlockModelGen extends BlockStateProvider{
 	private final ExistingFileHelper existingFileHelper;
@@ -111,7 +111,41 @@ public class BlockModelGen extends BlockStateProvider{
 								state.getValue(AUTOMATED) ? crucibleCampfireOff : crucibleCampfireAutomatedOff)
 						.rotationY(((int)state.getValue(HORIZONTAL_FACING).toYRot())%360).build());
 
-		simpleItemAndBlock(ModBlocks.CRUCIBLE_AUTOMATION_UNIT.get(), existing(res("block/automation_unit")));
+		ExistingModelFile crucibleAU = existing(res("block/automation_unit/base"));
+		ExistingModelFile crucibleAUExtension = existing(res("block/automation_unit/top_extension"));
+		ExistingModelFile crucibleAUSideExtension = existing(res("block/automation_unit/side_extension"));
+		ExistingModelFile crucibleAUOutput = existing(res("block/automation_unit/output"));
+		ExistingModelFile crucibleAUJoint = existing(res("block/automation_unit/joint"));
+
+		simpleBlockItem(ModBlocks.CRUCIBLE_AUTOMATION_UNIT.get(), crucibleAU);
+		getMultipartBuilder(ModBlocks.CRUCIBLE_AUTOMATION_UNIT.get())
+				.part().modelFile(crucibleAU).addModel().end()
+				.part().modelFile(crucibleAUJoint).addModel()
+				.nestedGroup().condition(MODULE_U, false).end()
+				.nestedGroup().useOr()
+				.condition(MODULE_N, true)
+				.condition(MODULE_S, true)
+				.condition(MODULE_E, true)
+				.condition(MODULE_W, true)
+				.end().end()
+				.part().modelFile(crucibleAUExtension).addModel()
+				.condition(MODULE_U, true).end()
+				.part().modelFile(crucibleAUSideExtension).addModel()
+				.condition(MODULE_N, true).end()
+				.part().modelFile(crucibleAUSideExtension).rotationY(180).addModel()
+				.condition(MODULE_S, true).end()
+				.part().modelFile(crucibleAUSideExtension).rotationY(90).addModel()
+				.condition(MODULE_E, true).end()
+				.part().modelFile(crucibleAUSideExtension).rotationY(270).addModel()
+				.condition(MODULE_W, true).end()
+				.part().modelFile(crucibleAUOutput).addModel()
+				.condition(OUT_N, true).end()
+				.part().modelFile(crucibleAUOutput).rotationY(180).addModel()
+				.condition(OUT_S, true).end()
+				.part().modelFile(crucibleAUOutput).rotationY(90).addModel()
+				.condition(OUT_E, true).end()
+				.part().modelFile(crucibleAUOutput).rotationY(270).addModel()
+				.condition(OUT_W, true).end();
 
 		stove(ModBlocks.FURNACE_STOVE.get(), "stove/furnace");
 		stove(ModBlocks.FOUNDRY_STOVE.get(), "stove/foundry");

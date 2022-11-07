@@ -13,7 +13,6 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.HandSide;
 import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.EntityRayTraceResult;
@@ -40,6 +39,7 @@ import ttmp.infernoreborn.capability.ClientPlayerCapability;
 import ttmp.infernoreborn.capability.ClientPlayerCapability.ActiveShield;
 import ttmp.infernoreborn.capability.SimpleTickingTaskHandler;
 import ttmp.infernoreborn.client.color.ColorUtils;
+import ttmp.infernoreborn.contents.tile.crucible.Crucible;
 import ttmp.infernoreborn.contents.tile.crucible.CrucibleTile;
 
 import java.text.DecimalFormat;
@@ -69,11 +69,9 @@ public final class ClientEventHandlers{
 			}
 			if(Minecraft.getInstance().hitResult!=null&&Minecraft.getInstance().hitResult.getType()==RayTraceResult.Type.BLOCK){
 				BlockRayTraceResult hitResult = (BlockRayTraceResult)Minecraft.getInstance().hitResult;
-				TileEntity be = Minecraft.getInstance().level.getBlockEntity(hitResult.getBlockPos());
-				if(be instanceof CrucibleTile){
-					CrucibleTile crucible = (CrucibleTile)be;
+				CrucibleTile crucible = Crucible.crucible(Minecraft.getInstance().level, hitResult.getBlockPos());
+				if(crucible!=null)
 					event.getLeft().add("Heat: "+crucible.getHeat()+", Stir: "+crucible.getManualStirPower()+", ClientStir: "+crucible.clientStir);
-				}
 			}
 		}
 	}

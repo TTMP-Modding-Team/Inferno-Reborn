@@ -2,7 +2,9 @@ package ttmp.infernoreborn.contents.tile.crucible;
 
 import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.item.ItemStack;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.IWorldReader;
 import net.minecraft.world.World;
 import ttmp.infernoreborn.api.essence.EssenceType;
 
@@ -49,5 +51,10 @@ public final class Crucible{
 		if(launch) e.setDeltaMovement(e.getDeltaMovement().add(0, 1, 0));
 		setExcluded(e, true);
 		level.addFreshEntity(e);
+	}
+
+	@Nullable public static CrucibleTile crucible(IWorldReader level, BlockPos pos){
+		TileEntity te = level.getBlockEntity(pos);
+		return te instanceof CrucibleTile ? (CrucibleTile)te : null;
 	}
 }

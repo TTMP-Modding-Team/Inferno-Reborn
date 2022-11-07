@@ -11,6 +11,7 @@ import net.minecraft.world.IBlockReader;
 import net.minecraftforge.fml.RegistryObject;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
+import ttmp.infernoreborn.contents.block.BaseAutomationModuleBlock;
 import ttmp.infernoreborn.contents.block.CampfireCrucibleBlock;
 import ttmp.infernoreborn.contents.block.CrucibleAutomationUnitBlock;
 import ttmp.infernoreborn.contents.block.CrucibleBlock;
@@ -108,6 +109,9 @@ public final class ModBlocks{
 	public static final RegistryObject<Block> CRUCIBLE_CAMPFIRE = REGISTER.register("crucible_campfire", () -> new CampfireCrucibleBlock(
 			Properties.of(Material.METAL, MaterialColor.STONE).requiresCorrectToolForDrops().strength(2).lightLevel(s -> s.getValue(LIT) ? 15 : 0).noOcclusion().sound(SoundType.LANTERN)));
 	public static final RegistryObject<Block> CRUCIBLE_AUTOMATION_UNIT = REGISTER.register("crucible_automation_unit", () -> new CrucibleAutomationUnitBlock(
+			Properties.of(Material.METAL, MaterialColor.STONE).requiresCorrectToolForDrops().strength(2).noOcclusion().sound(SoundType.LANTERN)));
+
+	public static final RegistryObject<Block> MOCK_AUTOMATION_MODULE = REGISTER.register("mock_automation_module", () -> new BaseAutomationModuleBlock(
 			Properties.of(Material.METAL, MaterialColor.STONE).requiresCorrectToolForDrops().strength(2).noOcclusion().sound(SoundType.LANTERN)));
 
 	public static final RegistryObject<Block> FURNACE_STOVE = REGISTER.register("furnace_stove", () -> new StoveBlock.Furnace(
