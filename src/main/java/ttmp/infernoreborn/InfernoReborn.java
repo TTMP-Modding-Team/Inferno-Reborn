@@ -42,6 +42,7 @@ import ttmp.infernoreborn.api.recipe.FluidIngredient;
 import ttmp.infernoreborn.api.recipe.FluidTagIngredient;
 import ttmp.infernoreborn.api.recipe.SimpleFluidIngredient;
 import ttmp.infernoreborn.api.shield.ShieldProvider;
+import ttmp.infernoreborn.api.sigil.Sigil;
 import ttmp.infernoreborn.api.sigil.SigilHolder;
 import ttmp.infernoreborn.capability.ClientPlayerCapability;
 import ttmp.infernoreborn.capability.PlayerCapability;
@@ -224,8 +225,12 @@ public class InfernoReborn{
 
 		@SubscribeEvent
 		public static void beforeTextureStitch(TextureStitchEvent.Pre event){
-			if(event.getMap().location().equals(PlayerContainer.BLOCK_ATLAS))
+			if(event.getMap().location().equals(PlayerContainer.BLOCK_ATLAS)){
 				event.addSprite(new ResourceLocation(MODID, "item/empty_essence_holder"));
+				for(Sigil sigil : Sigils.getRegistry().getValues())
+					event.addSprite(sigil.getSigilTextureLocation());
+				event.addSprite( new ResourceLocation(MODID, "sigil/missingno"));
+			}
 		}
 
 		@SubscribeEvent

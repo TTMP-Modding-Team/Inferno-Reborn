@@ -1,14 +1,18 @@
 package ttmp.infernoreborn.api.sigil;
 
 import com.google.common.collect.ListMultimap;
+import net.minecraft.client.renderer.model.RenderMaterial;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.ai.attributes.Attribute;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.inventory.container.PlayerContainer;
 import net.minecraft.item.Rarity;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.TextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.event.entity.living.LivingAttackEvent;
 import net.minecraftforge.registries.ForgeRegistryEntry;
 import ttmp.infernoreborn.api.sigil.context.ItemContext;
@@ -105,12 +109,12 @@ public class Sigil extends ForgeRegistryEntry<Sigil>{
 					sigilTextureLocation = createSigilTextureLocation();
 			}
 		}
-		return sigilTextureLocation;
+		return Objects.requireNonNull(sigilTextureLocation);
 	}
 
 	protected ResourceLocation createSigilTextureLocation(){
 		ResourceLocation id = Objects.requireNonNull(this.getRegistryName());
-		return new ResourceLocation(id.getNamespace(), "textures/sigil/"+id.getPath()+".png");
+		return new ResourceLocation(id.getNamespace(), "sigil/"+id.getPath());
 	}
 
 	@Nullable private volatile SigilBookEntry sigilBookEntry;
@@ -125,7 +129,7 @@ public class Sigil extends ForgeRegistryEntry<Sigil>{
 				}
 			}
 		}
-		return sigilBookEntry;
+		return Objects.requireNonNull(sigilBookEntry);
 	}
 
 	protected void createSigilBookEntryContent(SigilPageBuilder builder){}

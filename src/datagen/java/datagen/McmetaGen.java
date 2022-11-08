@@ -54,6 +54,8 @@ public class McmetaGen implements IDataProvider{
 		add(new ResourceLocation(MODID, "block/stove/foundry/side_on"), mcmeta(10, true));
 		add(new ResourceLocation(MODID, "block/stove/furnace/side_on"), mcmeta(10, true));
 		add(new ResourceLocation(MODID, "block/stove/nether/side_on"), mcmeta(10, true));
+
+		add(new ResourceLocation(MODID, "sigil/missingno"), mcmeta(2, false));
 	}
 
 	@Override public void run(DirectoryCache directoryCache){
