@@ -30,9 +30,9 @@ import static net.minecraft.inventory.container.PlayerContainer.BLOCK_ATLAS;
 
 public class CrucibleTileEntityRenderer extends TileEntityRenderer<CrucibleTile>{
 	public static final float STIR_ROTATION_INCREMENT = 0.15f;
-	private static final float INDEX_DIFFERENCE = 0.5f;
+	private static final float INDEX_DIFFERENCE = (float)((Math.PI*2)/8*3);
 
-	private final Random random = new Random();
+	private static final Random random = new Random();
 
 	public CrucibleTileEntityRenderer(TileEntityRendererDispatcher dispatcher){
 		super(dispatcher);
@@ -51,25 +51,29 @@ public class CrucibleTileEntityRenderer extends TileEntityRenderer<CrucibleTile>
 			if(stack.isEmpty()) continue;
 			pose.pushPose();
 			pose.translate(.5, Math.max(box.yMin+1/16f, fluidLevel-2/16f), .5);
-			this.random.setSeed(Item.getId(stack.getItem())+stack.getDamageValue());
+			random.setSeed(Item.getId(stack.getItem())+stack.getDamageValue()+i*1024L);
 			IBakedModel bakedModel = Minecraft.getInstance().getItemRenderer()
 					.getModel(stack, crucible.getLevel(), null);
 			boolean is3d = bakedModel.isGui3d();
 			int renderAmount = getRenderAmount(stack);
-			pose.mulPose(Vector3f.YP.rotation(crucible.clientStir+
+			float rot = crucible.clientStir+
 					Crucible.calculateStirRotationIncrement(crucible.getManualStirPower())*partialTicks+
-					INDEX_DIFFERENCE*i));
-			if(!is3d) pose.translate(0, 0, -0.09375f*(float)(renderAmount-1)*0.5f);
+					INDEX_DIFFERENCE*i;
+			pose.mulPose(Vector3f.YP.rotation(rot));
+			pose.translate(0.03+Math.sin(rot/2)*0.01, 0, is3d ? 0 : -0.09375f*(float)(renderAmount-1)*0.5f);
 
 			for(int j = 0; j<renderAmount; ++j){
 				pose.pushPose();
-				if(is3d) pose.translate((this.random.nextFloat()*2-1)*0.15f,
-						(this.random.nextFloat()*2-1)*0.15f,
-						(this.random.nextFloat()*2-1)*0.15f);
-				else pose.translate((this.random.nextFloat()*2-1)*0.15f*0.5f,
-						(this.random.nextFloat()*2-1)*0.15f*0.5f,
+				if(is3d) pose.translate((random.nextFloat()*2-1)*0.1f,
+						(random.nextFloat()*2-1)*0.1f,
+						(random.nextFloat()*2-1)*0.1f);
+				else pose.translate((random.nextFloat()*2-1)*0.1f*0.5f,
+						(random.nextFloat()*2-1)*0.1f*0.5f,
 						0);
 
+				pose.mulPose(Vector3f.XP.rotation(random.nextFloat()-.5f+(float)Math.sin(rot/2)*0.5f*random.nextFloat()));
+				pose.mulPose(Vector3f.ZP.rotation(random.nextFloat()-.5f+(float)Math.sin(rot/2)*0.5f*random.nextFloat()));
+				pose.scale(0.8f, 0.8f, 0.8f);
 				Minecraft.getInstance().getItemRenderer()
 						.render(stack, TransformType.GROUND, false, pose, buffer, combinedLight,
 								OverlayTexture.NO_OVERLAY, bakedModel);

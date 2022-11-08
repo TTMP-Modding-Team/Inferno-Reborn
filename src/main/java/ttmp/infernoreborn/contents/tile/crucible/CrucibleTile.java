@@ -84,7 +84,7 @@ public class CrucibleTile extends TileEntity implements ITickableTileEntity{
 	};
 	private final CrucibleInventory crucibleInventory = new CrucibleInventoryImpl();
 
-	private int manualStir = 0;
+	private int manualStir = -Crucible.MANUAL_STIR_TICKS;
 
 	private CrucibleHeat heat = CrucibleHeat.NONE;
 	private boolean updateHeat = true;
@@ -250,7 +250,7 @@ public class CrucibleTile extends TileEntity implements ITickableTileEntity{
 						0, 0, 0);
 			}
 			clientStir += Crucible.calculateStirRotationIncrement(manualStir);
-			if(clientStir>Math.PI) clientStir -= Math.PI*2;
+			if(clientStir>Math.PI*2) clientStir -= Math.PI*4;
 			if(manualStir>-Crucible.MANUAL_STIR_TICKS) manualStir--;
 			return;
 		}
@@ -336,11 +336,11 @@ public class CrucibleTile extends TileEntity implements ITickableTileEntity{
 	private void handleEntityInCrucible(Entity e){
 		if(!e.isAlive()) return;
 		if(e instanceof ItemEntity){
-			if(fluid.isEmpty()) return;
 			ItemEntity ie = (ItemEntity)e;
 			if(Crucible.isExcluded(ie)) return;
 			Essence essence = Essence.from(ie.getItem());
 			if(essence!=null){
+				if(fluid.isEmpty()) return;
 				int inserted = this.essences.insertEssence(essence.getType(), essence.getAmount(), false);
 				if(inserted<=0) return;
 				this.lastInsertedEssence = essence.getType();
@@ -362,6 +362,7 @@ public class CrucibleTile extends TileEntity implements ITickableTileEntity{
 				}
 				if(stack2.isEmpty()) ie.remove();
 				else if(ie.getItem().getCount()!=stack2.getCount()) ie.setItem(stack2);
+				else return;
 			}
 			if(!fluid.isEmpty())
 				Objects.requireNonNull(level).playSound(null, getBlockPos(), SoundEvents.AMBIENT_UNDERWATER_ENTER, SoundCategory.BLOCKS,
@@ -375,7 +376,10 @@ public class CrucibleTile extends TileEntity implements ITickableTileEntity{
 
 	private void updateRecipe(boolean stirred, boolean automated){
 		if(updateRecipe){
-			if(outputCache!=null||fluidOutputCache!=null) return;
+			if(outputCache!=null||fluidOutputCache!=null){
+				if(automated) return;
+				ejectOutput(outputCache, fluidOutputCache);
+			}
 			updateRecipe = false;
 			CrucibleRecipeProcess proc = searchRecipe(null);
 			if(proc!=null&&this.process!=null&&Objects.equals(this.process.getRecipeId(), proc.getRecipeId()))
@@ -397,22 +401,27 @@ public class CrucibleTile extends TileEntity implements ITickableTileEntity{
 			this.process = null;
 			this.updateRecipe = true;
 		}else{
-			World level = Objects.requireNonNull(this.level);
-			for(ItemStack output : result.outputs())
-				Crucible.spawnItem(level, getBlockPos(), output, true);
-			if(!result.fluidOutputs().isEmpty()){
-				int sum = result.fluidOutputs().stream().mapToInt(fluid -> fluid.getAmount()).sum();
-				for(int i = 0, j = 2+level.random.nextInt(Math.max(sum, 4000))/250; i<j; i++)
-					level.addParticle(ParticleTypes.SMOKE,  // TODO nope, need to be on client side
-							getBlockPos().getX()+0.25+level.random.nextDouble()*.5,
-							getBlockPos().getY()+.5,
-							getBlockPos().getZ()+0.25+level.random.nextDouble()*.5,
-							0, 0, 0);
-				level.playSound(null, getBlockPos(), SoundEvents.GENERIC_BURN, SoundCategory.BLOCKS,
-						0.4f, 2+level.random.nextFloat()*0.4f);
-			}
+			ejectOutput(result.outputs(), result.fluidOutputs());
 			this.process = searchRecipe(process.getRecipe());
 			this.updateRecipe = false;
+		}
+	}
+
+	private void ejectOutput(@Nullable List<ItemStack> outputs, @Nullable List<FluidStack> fluidOutputs){
+		World level = Objects.requireNonNull(this.level);
+		if(outputs!=null)
+			for(ItemStack output : outputs)
+				Crucible.spawnItem(level, getBlockPos(), output, true);
+		if(fluidOutputs!=null&&!fluidOutputs.isEmpty()){
+			int sum = fluidOutputs.stream().mapToInt(fluid -> fluid.getAmount()).sum();
+			for(int i = 0, j = 2+level.random.nextInt(Math.max(sum, 4000))/250; i<j; i++)
+				level.addParticle(ParticleTypes.SMOKE,  // TODO nope, need to be on client side
+						getBlockPos().getX()+0.25+level.random.nextDouble()*.5,
+						getBlockPos().getY()+.5,
+						getBlockPos().getZ()+0.25+level.random.nextDouble()*.5,
+						0, 0, 0);
+			level.playSound(null, getBlockPos(), SoundEvents.GENERIC_BURN, SoundCategory.BLOCKS,
+					0.4f, 2+level.random.nextFloat()*0.4f);
 		}
 	}
 
