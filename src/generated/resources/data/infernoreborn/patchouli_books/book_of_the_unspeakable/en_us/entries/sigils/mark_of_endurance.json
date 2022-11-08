@@ -1,7 +1,7 @@
 {
   "name": "sigil.infernoreborn.mark_of_endurance",
   "category": "infernoreborn:sigils",
-  "icon": "infernoreborn:sigil{Sigils:\"infernoreborn:mark_of_endurance\"}",
+  "icon": "infernoreborn:sigil_icon{Sigil:\"infernoreborn:mark_of_endurance\"}",
   "pages": [
     {
       "type": "text",

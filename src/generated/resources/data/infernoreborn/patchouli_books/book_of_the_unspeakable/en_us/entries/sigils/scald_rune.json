@@ -1,7 +1,7 @@
 {
   "name": "sigil.infernoreborn.scald_rune",
   "category": "infernoreborn:sigils",
-  "icon": "infernoreborn:sigil{Sigils:\"infernoreborn:scald_rune\"}",
+  "icon": "infernoreborn:sigil_icon{Sigil:\"infernoreborn:scald_rune\"}",
   "pages": [
     {
       "type": "text",

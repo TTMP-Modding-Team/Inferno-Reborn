@@ -1,7 +1,7 @@
 {
   "name": "sigil.infernoreborn.shield_recovery_time",
   "category": "infernoreborn:sigils",
-  "icon": "infernoreborn:sigil{Sigils:\"infernoreborn:shield_recovery_time\"}",
+  "icon": "infernoreborn:sigil_icon{Sigil:\"infernoreborn:shield_recovery_time\"}",
   "pages": [
     {
       "type": "text",

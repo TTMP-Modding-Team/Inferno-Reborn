@@ -95,7 +95,7 @@ public class BookDataProvider implements IDataProvider{
 
 					for(Sigil sigil : Sigils.getRegistry()){
 						SigilBookEntry bookPageContent = sigil.getSigilBookEntryContent();
-						ItemStack stack = SigilItem.createSigilItem(sigil);
+						ItemStack stack = SigilItem.createIconStack(sigil);
 						BookEntry bookEntry = new BookEntry(
 								Objects.requireNonNull(sigil.getRegistryName()).getPath(),
 								sigil.getUnlocalizedName(),

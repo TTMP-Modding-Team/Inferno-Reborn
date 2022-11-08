@@ -70,7 +70,7 @@ public abstract class BaseScrapperScreen<C extends Container> extends ContainerS
 			Sigil sigil = sigils.get(i);
 			int sigilX = getSigilX(i);
 			int sigilY = getSigilY(i);
-			ItemStack item = sigilItems.computeIfAbsent(sigil, SigilItem::createSigilItem);
+			ItemStack item = sigilItems.computeIfAbsent(sigil, SigilItem::createStack);
 			itemRenderer.renderAndDecorateFakeItem(item, leftPos+sigilX, topPos+sigilY);
 			itemRenderer.renderGuiItemDecorations(font, item, leftPos+sigilX, topPos+sigilY, "");
 			if(isHovering(sigilX, sigilY, 16, 16, mouseX, mouseY)){

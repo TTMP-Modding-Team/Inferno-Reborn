@@ -1,7 +1,7 @@
 {
   "name": "sigil.infernoreborn.faint_heart",
   "category": "infernoreborn:sigils",
-  "icon": "infernoreborn:sigil{Sigils:\"infernoreborn:faint_heart\"}",
+  "icon": "infernoreborn:sigil_icon{Sigil:\"infernoreborn:faint_heart\"}",
   "pages": [
     {
       "type": "text",

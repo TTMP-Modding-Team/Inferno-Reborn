@@ -1,12 +1,13 @@
 package datagen;
 
+import net.minecraft.client.renderer.model.BlockModel;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.item.Item;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.model.generators.ItemModelBuilder;
 import net.minecraftforge.client.model.generators.ItemModelProvider;
 import net.minecraftforge.client.model.generators.ModelBuilder;
-import net.minecraftforge.client.model.generators.ModelFile;
+import net.minecraftforge.client.model.generators.ModelFile.UncheckedModelFile;
 import net.minecraftforge.common.data.ExistingFileHelper;
 import ttmp.infernoreborn.api.essence.EssenceType;
 import ttmp.infernoreborn.contents.ModItems;
@@ -32,7 +33,7 @@ public class ItemModelGen extends ItemModelProvider{
 		held(ModItems.EXPLOSIVE_SWORD.getId().getPath(), new ResourceLocation(MODID, "item/explosive_sword"))
 				.override()
 				.predicate(new ResourceLocation("using"), 1)
-				.model(new ModelFile.UncheckedModelFile(new ResourceLocation(MODID, "item/explosive_sword_using")))
+				.model(new UncheckedModelFile(new ResourceLocation(MODID, "item/explosive_sword_using")))
 				.end();
 		held("explosive_sword_using", new ResourceLocation(MODID, "item/explosive_sword"))
 				.transforms()
@@ -107,15 +108,38 @@ public class ItemModelGen extends ItemModelProvider{
 		simpleItem(ModItems.ESSENCE_NET_ACCESSOR.get())
 				.override().predicate(new ResourceLocation("no_network"), 1)
 				.model(item("item/essence_net_accessor_no_network", new ResourceLocation(MODID, "item/essence_net_accessor_no_network")));
-		getBuilder(ModItems.ESSENCE_NET_IMPORTER.getId().getPath()).parent(new ModelFile.UncheckedModelFile(new ResourceLocation(MODID, "block/essence_net_importer/essence_net_importer")))
+		getBuilder(ModItems.ESSENCE_NET_IMPORTER.getId().getPath()).parent(new UncheckedModelFile(new ResourceLocation(MODID, "block/essence_net_importer/essence_net_importer")))
 				.override().predicate(new ResourceLocation("no_network"), 1)
-				.model(getBuilder("essence_net_importer_no_network").parent(new ModelFile.UncheckedModelFile(new ResourceLocation(MODID, "block/essence_net_importer/essence_net_importer_no_network"))));
-		getBuilder(ModItems.ESSENCE_NET_EXPORTER.getId().getPath()).parent(new ModelFile.UncheckedModelFile(new ResourceLocation(MODID, "block/essence_net_exporter/essence_net_exporter")))
+				.model(getBuilder("essence_net_importer_no_network").parent(new UncheckedModelFile(new ResourceLocation(MODID, "block/essence_net_importer/essence_net_importer_no_network"))));
+		getBuilder(ModItems.ESSENCE_NET_EXPORTER.getId().getPath()).parent(new UncheckedModelFile(new ResourceLocation(MODID, "block/essence_net_exporter/essence_net_exporter")))
 				.override().predicate(new ResourceLocation("no_network"), 1)
-				.model(getBuilder("essence_net_exporter_no_network").parent(new ModelFile.UncheckedModelFile(new ResourceLocation(MODID, "block/essence_net_exporter/essence_net_exporter_no_network"))));
+				.model(getBuilder("essence_net_exporter_no_network").parent(new UncheckedModelFile(new ResourceLocation(MODID, "block/essence_net_exporter/essence_net_exporter_no_network"))));
 
 		simpleItem(ModItems.SIGIL.get());
 		simpleItem(ModItems.BODY_SIGIL.get());
+		getBuilder(ModItems.SIGIL_ICON.getId().getPath())
+				.parent(new UncheckedModelFile("builtin/entity"))
+				.guiLight(BlockModel.GuiLight.FRONT)
+				.transforms()
+				.transform(ModelBuilder.Perspective.GROUND)
+				.rotation(0, 0, 0)
+				.translation(0, 2, 0)
+				.scale(.5f, .5f, .5f).end()
+				.transform(ModelBuilder.Perspective.HEAD)
+				.rotation(0, 180, 0)
+				.translation(0, 13, 7)
+				.scale(1, 1, 1).end()
+				.transform(ModelBuilder.Perspective.THIRDPERSON_RIGHT)
+				.rotation(0, 0, 0)
+				.translation(0, 3, 1)
+				.scale(.55f, .55f, .55f).end()
+				.transform(ModelBuilder.Perspective.FIRSTPERSON_RIGHT)
+				.rotation(0, -90, 25)
+				.translation(1.13f, 3.2f, 1.13f)
+				.scale(.68f, .68f, .68f).end()
+				.transform(ModelBuilder.Perspective.FIXED)
+				.rotation(0, 180, 0)
+				.scale(1, 1, 1).end();
 	}
 
 	protected ItemModelBuilder simpleItem(Item item){

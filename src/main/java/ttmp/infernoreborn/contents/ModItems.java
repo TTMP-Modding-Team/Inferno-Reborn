@@ -15,6 +15,7 @@ import ttmp.infernoreborn.api.essence.EssenceType;
 import ttmp.infernoreborn.api.shield.SimpleShield;
 import ttmp.infernoreborn.client.render.FoundryISTER;
 import ttmp.infernoreborn.client.render.GoldenSkullISTER;
+import ttmp.infernoreborn.client.render.SigilIconRenderer;
 import ttmp.infernoreborn.contents.item.AutomationModuleBlockItem;
 import ttmp.infernoreborn.contents.item.BodySigilItem;
 import ttmp.infernoreborn.contents.item.CrucibleAutomationUnitBlockItem;
@@ -247,6 +248,7 @@ public final class ModItems{
 
 	public static final RegistryObject<Item> SIGIL = REGISTER.register("sigil", () -> new SigilItem(sigils()));
 	public static final RegistryObject<Item> BODY_SIGIL = REGISTER.register("body_sigil", () -> new BodySigilItem(sigils()));
+	public static final RegistryObject<Item> SIGIL_ICON = REGISTER.register("sigil_icon", () -> new SigilItem(new Item.Properties().setISTER(() -> SigilIconRenderer::new)));
 
 	public static final RegistryObject<Item> ABILITY_COLOR_PICKER = REGISTER.register("ability_color_picker", () -> new AbilityColorPickerItem(new Item.Properties()));
 

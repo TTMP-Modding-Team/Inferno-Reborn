@@ -52,7 +52,7 @@ public class ShapedSigilEngravingRecipe extends BaseSigilcraftRecipe implements 
 	}
 
 	@Override public ItemStack getResultItem(){
-		return SigilItem.createSigilItem(sigil);
+		return SigilItem.createStack(sigil);
 	}
 
 	@Override public IRecipeSerializer<?> getSerializer(){

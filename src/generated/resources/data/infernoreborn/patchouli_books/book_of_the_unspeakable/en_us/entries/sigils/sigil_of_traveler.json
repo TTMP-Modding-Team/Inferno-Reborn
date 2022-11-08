@@ -1,7 +1,7 @@
 {
   "name": "sigil.infernoreborn.sigil_of_traveler",
   "category": "infernoreborn:sigils",
-  "icon": "infernoreborn:sigil{Sigils:\"infernoreborn:sigil_of_traveler\"}",
+  "icon": "infernoreborn:sigil_icon{Sigil:\"infernoreborn:sigil_of_traveler\"}",
   "pages": [
     {
       "type": "text",

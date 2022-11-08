@@ -1,7 +1,7 @@
 {
   "name": "sigil.infernoreborn.feather_fall_sigil",
   "category": "infernoreborn:sigils",
-  "icon": "infernoreborn:sigil{Sigils:\"infernoreborn:feather_fall_sigil\"}",
+  "icon": "infernoreborn:sigil_icon{Sigil:\"infernoreborn:feather_fall_sigil\"}",
   "pages": [
     {
       "type": "text",

@@ -1,7 +1,7 @@
 {
   "name": "sigil.infernoreborn.shield_regen",
   "category": "infernoreborn:sigils",
-  "icon": "infernoreborn:sigil{Sigils:\"infernoreborn:shield_regen\"}",
+  "icon": "infernoreborn:sigil_icon{Sigil:\"infernoreborn:shield_regen\"}",
   "pages": [
     {
       "type": "text",

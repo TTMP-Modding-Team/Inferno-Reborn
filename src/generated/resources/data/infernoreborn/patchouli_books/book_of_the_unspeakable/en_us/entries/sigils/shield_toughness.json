@@ -1,7 +1,7 @@
 {
   "name": "sigil.infernoreborn.shield_toughness",
   "category": "infernoreborn:sigils",
-  "icon": "infernoreborn:sigil{Sigils:\"infernoreborn:shield_toughness\"}",
+  "icon": "infernoreborn:sigil_icon{Sigil:\"infernoreborn:shield_toughness\"}",
   "pages": [
     {
       "type": "text",

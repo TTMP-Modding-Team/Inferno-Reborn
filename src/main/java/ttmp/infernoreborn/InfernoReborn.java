@@ -56,6 +56,7 @@ import ttmp.infernoreborn.client.render.AnvilEntityRenderer;
 import ttmp.infernoreborn.client.render.CreeperMissileEntityRenderer;
 import ttmp.infernoreborn.client.render.CrucibleTileEntityRenderer;
 import ttmp.infernoreborn.client.render.GoldenSkullTileEntityRenderer;
+import ttmp.infernoreborn.client.render.SigilIconRenderer;
 import ttmp.infernoreborn.client.render.SummonedSkeletonRenderer;
 import ttmp.infernoreborn.client.render.SummonedZombieRenderer;
 import ttmp.infernoreborn.client.render.WindEntityRenderer;
@@ -229,7 +230,7 @@ public class InfernoReborn{
 				event.addSprite(new ResourceLocation(MODID, "item/empty_essence_holder"));
 				for(Sigil sigil : Sigils.getRegistry().getValues())
 					event.addSprite(sigil.getSigilTextureLocation());
-				event.addSprite( new ResourceLocation(MODID, "sigil/missingno"));
+				event.addSprite(SigilIconRenderer.missingnoTexture());
 			}
 		}
 

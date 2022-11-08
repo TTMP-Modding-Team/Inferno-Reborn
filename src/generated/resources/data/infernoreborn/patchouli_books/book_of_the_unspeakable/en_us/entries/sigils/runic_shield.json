@@ -1,7 +1,7 @@
 {
   "name": "sigil.infernoreborn.runic_shield",
   "category": "infernoreborn:sigils",
-  "icon": "infernoreborn:sigil{Sigils:\"infernoreborn:runic_shield\"}",
+  "icon": "infernoreborn:sigil_icon{Sigil:\"infernoreborn:runic_shield\"}",
   "pages": [
     {
       "type": "text",

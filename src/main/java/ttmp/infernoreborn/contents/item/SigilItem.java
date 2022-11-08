@@ -79,16 +79,22 @@ public class SigilItem extends Item{
 
 	@Nullable public static Sigil getSigil(ItemStack stack){
 		CompoundNBT tag = stack.getTag();
-		if(tag==null||!tag.contains("Sigils", Constants.NBT.TAG_STRING)) return null;
-		return Sigils.getRegistry().getValue(new ResourceLocation(tag.getString("Sigils")));
+		if(tag==null||!tag.contains("Sigil", Constants.NBT.TAG_STRING)) return null;
+		return Sigils.getRegistry().getValue(new ResourceLocation(tag.getString("Sigil")));
 	}
 
 	public static void setSigil(ItemStack stack, Sigil sigil){
-		stack.getOrCreateTag().putString("Sigils", Objects.requireNonNull(sigil.getRegistryName()).toString());
+		stack.getOrCreateTag().putString("Sigil", Objects.requireNonNull(sigil.getRegistryName()).toString());
 	}
 
-	public static ItemStack createSigilItem(Sigil sigil){
+	public static ItemStack createStack(Sigil sigil){
 		ItemStack stack = new ItemStack(ModItems.SIGIL.get());
+		setSigil(stack, sigil);
+		return stack;
+	}
+
+	public static ItemStack createIconStack(Sigil sigil){
+		ItemStack stack = new ItemStack(ModItems.SIGIL_ICON.get());
 		setSigil(stack, sigil);
 		return stack;
 	}

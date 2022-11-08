@@ -1,7 +1,7 @@
 {
   "name": "sigil.infernoreborn.blessing_of_mercury",
   "category": "infernoreborn:sigils",
-  "icon": "infernoreborn:sigil{Sigils:\"infernoreborn:blessing_of_mercury\"}",
+  "icon": "infernoreborn:sigil_icon{Sigil:\"infernoreborn:blessing_of_mercury\"}",
   "pages": [
     {
       "type": "text",

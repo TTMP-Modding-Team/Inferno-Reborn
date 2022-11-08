@@ -1,7 +1,7 @@
 {
   "name": "sigil.infernoreborn.shield_resistance",
   "category": "infernoreborn:sigils",
-  "icon": "infernoreborn:sigil{Sigils:\"infernoreborn:shield_resistance\"}",
+  "icon": "infernoreborn:sigil_icon{Sigil:\"infernoreborn:shield_resistance\"}",
   "pages": [
     {
       "type": "text",

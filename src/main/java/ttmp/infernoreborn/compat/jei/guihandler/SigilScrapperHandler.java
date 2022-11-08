@@ -12,6 +12,6 @@ public class SigilScrapperHandler<T extends ContainerScreen<?>> implements IGuiC
 	@Nullable @Override public Object getIngredientUnderMouse(T screen, double mouseX, double mouseY){
 		if(!(screen instanceof ScrapperScreen)) throw new IllegalStateException("Not ScrapperScreen");
 		Sigil sigil = ((ScrapperScreen)screen).sigilAt(mouseX, mouseY);
-		return sigil!=null ? SigilItem.createSigilItem(sigil) : null;
+		return sigil!=null ? SigilItem.createStack(sigil) : null;
 	}
 }

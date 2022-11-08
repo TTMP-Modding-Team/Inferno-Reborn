@@ -1,7 +1,7 @@
 {
   "name": "sigil.infernoreborn.faint_affliction",
   "category": "infernoreborn:sigils",
-  "icon": "infernoreborn:sigil{Sigils:\"infernoreborn:faint_affliction\"}",
+  "icon": "infernoreborn:sigil_icon{Sigil:\"infernoreborn:faint_affliction\"}",
   "pages": [
     {
       "type": "text",
