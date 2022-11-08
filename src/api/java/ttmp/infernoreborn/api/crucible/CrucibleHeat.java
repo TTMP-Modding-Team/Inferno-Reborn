@@ -24,9 +24,10 @@ public enum CrucibleHeat{
 	}
 
 	/**
-	 * @return Whether water gets instantly boiled in non-automated crucible
+	 * @return Whether fluids with tag of {@code infernoreborn:can_vaporize_in_crucible} get instantly boiled in
+	 * non-automated crucible in this heat
 	 */
-	public boolean boilsWater(){
+	public boolean boilsFluid(){
 		return this==NETHER||this==ESSENCE;
 	}
 

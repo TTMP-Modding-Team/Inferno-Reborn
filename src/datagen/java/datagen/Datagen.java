@@ -19,6 +19,7 @@ public class Datagen{
 			BlockTagGen blockTagGen = new BlockTagGen(event.getGenerator(), event.getExistingFileHelper());
 			generator.addProvider(blockTagGen);
 			generator.addProvider(new ItemTagGen(event.getGenerator(), blockTagGen, event.getExistingFileHelper()));
+			generator.addProvider(new FluidTagGen(event.getGenerator(), event.getExistingFileHelper()));
 			generator.addProvider(new LootModifierGen(event.getGenerator()));
 			generator.addProvider(new LootTableGen(event.getGenerator()));
 		}

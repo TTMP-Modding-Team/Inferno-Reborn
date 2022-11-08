@@ -22,6 +22,7 @@ import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.Constants;
+import net.minecraftforge.fluids.FluidAttributes;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.items.IItemHandler;
@@ -55,6 +56,7 @@ import java.util.List;
 import java.util.Objects;
 
 import static net.minecraft.state.properties.BlockStateProperties.LIT;
+import static ttmp.infernoreborn.contents.ModTags.Fluids.CAN_VAPORIZE_IN_CRUCIBLE;
 import static ttmp.infernoreborn.contents.block.ModProperties.AUTOMATED;
 
 public class CrucibleTile extends TileEntity implements ITickableTileEntity{
@@ -271,22 +273,33 @@ public class CrucibleTile extends TileEntity implements ITickableTileEntity{
 			}
 		}
 		boolean automated = isAutomated();
-		if(!automated&&this.heat.boilsWater()&&!this.fluid.isEmpty()){
-			this.fluid.clear();
-			level.playSound(null, getBlockPos(), SoundEvents.FIRE_EXTINGUISH, SoundCategory.BLOCKS,
-					0.5f, 2.6f+(level.random.nextFloat()-level.random.nextFloat())*0.8f);
-			for(int l = 0; l<8; ++l)  // TODO nope, need to be on client side
-				level.addParticle(ParticleTypes.LARGE_SMOKE,
-						getBlockPos().getX()+.5+(Math.random()-.5)*10/16.0,
-						getBlockPos().getY()+.5+(Math.random()-.5)*10/16.0,
-						getBlockPos().getZ()+.5+(Math.random()-.5)*10/16.0,
-						0, 0, 0);
-			float damage = this.heat.damage();
-			if(damage>0){
-				for(Entity e : level.getEntitiesOfClass(LivingEntity.class, new AxisAlignedBB(getBlockPos())
-						.inflate(0.5f))){
-					if(!e.isAlive()) continue;
-					e.hurt(DamageSource.ON_FIRE, damage);
+		if(!automated){
+			boolean vaporized = false;
+			for(int i = 0; i<this.fluid.getTanks(); i++){
+				FluidStack fluid = this.fluid.getFluidInTank(i);
+				if(fluid.isEmpty()) continue;
+				FluidAttributes attr = fluid.getFluid().getAttributes();
+				if(attr.isGaseous()||(this.heat.boilsFluid()&&fluid.getFluid().is(CAN_VAPORIZE_IN_CRUCIBLE))){
+					vaporized = true;
+					this.fluid.setFluid(i, FluidStack.EMPTY);
+				}
+			}
+			if(vaporized){
+				level.playSound(null, getBlockPos(), SoundEvents.FIRE_EXTINGUISH, SoundCategory.BLOCKS,
+						0.5f, 2.6f+(level.random.nextFloat()-level.random.nextFloat())*0.8f);
+				for(int l = 0; l<8; ++l)  // TODO nope, need to be on client side
+					level.addParticle(ParticleTypes.LARGE_SMOKE,
+							getBlockPos().getX()+.5+(Math.random()-.5)*10/16.0,
+							getBlockPos().getY()+.5+(Math.random()-.5)*10/16.0,
+							getBlockPos().getZ()+.5+(Math.random()-.5)*10/16.0,
+							0, 0, 0);
+				float damage = this.heat.damage();
+				if(damage>0){
+					for(Entity e : level.getEntitiesOfClass(LivingEntity.class, new AxisAlignedBB(getBlockPos())
+							.inflate(0.5f))){
+						if(!e.isAlive()) continue;
+						e.hurt(DamageSource.ON_FIRE, damage);
+					}
 				}
 			}
 		}

@@ -1,8 +1,10 @@
 package ttmp.infernoreborn.contents;
 
 import net.minecraft.block.Block;
+import net.minecraft.fluid.Fluid;
 import net.minecraft.item.Item;
 import net.minecraft.tags.BlockTags;
+import net.minecraft.tags.FluidTags;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.Tags;
@@ -47,5 +49,11 @@ public final class ModTags{
 		public static final Tags.IOptionalNamedTag<Block> STORAGE_BLOCKS_PYRITE = BlockTags.createOptional(new ResourceLocation("forge", "storage_blocks/pyrite"));
 		public static final Tags.IOptionalNamedTag<Block> STORAGE_BLOCKS_NETHER_STEEL = BlockTags.createOptional(new ResourceLocation("forge", "storage_blocks/nether_steel"));
 		public static final Tags.IOptionalNamedTag<Block> STORAGE_BLOCKS_DAMASCUS_STEEL = BlockTags.createOptional(new ResourceLocation("forge", "storage_blocks/damascus_steel"));
+	}
+
+	public static final class Fluids {
+		private Fluids(){}
+
+		public static final Tags.IOptionalNamedTag<Fluid> CAN_VAPORIZE_IN_CRUCIBLE = FluidTags.createOptional(new ResourceLocation(MODID, "can_vaporize_in_crucible"));
 	}
 }

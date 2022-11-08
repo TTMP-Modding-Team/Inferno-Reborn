@@ -16,6 +16,7 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.ColorHandlerEvent;
 import net.minecraftforge.client.event.ParticleFactoryRegisterEvent;
 import net.minecraftforge.client.event.TextureStitchEvent;
+import net.minecraftforge.common.ForgeMod;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityManager;
 import net.minecraftforge.event.entity.EntityAttributeCreationEvent;
@@ -114,6 +115,8 @@ public class InfernoReborn{
 
 		ModCfg.init();
 		ModNet.init();
+
+		ForgeMod.enableMilkFluid();
 
 		FluidIngredient.register(SimpleFluidIngredient.TYPE);
 		FluidIngredient.register(FluidTagIngredient.TYPE);
