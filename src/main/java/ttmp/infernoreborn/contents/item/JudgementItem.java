@@ -8,6 +8,8 @@ import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import net.minecraft.world.World;
 import ttmp.infernoreborn.capability.PlayerCapability;
+import ttmp.infernoreborn.contents.ModEntities;
+import ttmp.infernoreborn.contents.entity.JudgementEntity;
 
 import static ttmp.infernoreborn.util.StupidUtils.getBool;
 import static ttmp.infernoreborn.util.StupidUtils.set;
@@ -31,7 +33,8 @@ public class JudgementItem extends Item{
 		if(level.isClientSide) return ActionResult.success(stack);
 		PlayerCapability cap = PlayerCapability.of(player);
 		if(cap!=null&&!cap.hasJudgementCooldown()){
-			// TODO activate THE JUDGEMENT
+			JudgementEntity e = new JudgementEntity(ModEntities.JUDGEMENT.get(), level, player.position());
+			level.addFreshEntity(e);
 			cap.setJudgementCooldown(JUDGEMENT_COOLDOWN);
 		}
 		return ActionResult.consume(stack);

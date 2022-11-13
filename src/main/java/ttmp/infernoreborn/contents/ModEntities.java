@@ -7,6 +7,7 @@ import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import ttmp.infernoreborn.contents.entity.AnvilEntity;
 import ttmp.infernoreborn.contents.entity.CreeperMissileEntity;
+import ttmp.infernoreborn.contents.entity.JudgementEntity;
 import ttmp.infernoreborn.contents.entity.SummonedSkeletonEntity;
 import ttmp.infernoreborn.contents.entity.SummonedZombieEntity;
 import ttmp.infernoreborn.contents.entity.WindEntity;
@@ -38,4 +39,8 @@ public final class ModEntities{
 			EntityType.Builder.<SummonedSkeletonEntity>of(SummonedSkeletonEntity::new, EntityClassification.MISC)
 					.sized(0.6f, 1.95f).clientTrackingRange(64).updateInterval(1)
 					.build("summoned_skeleton"));
+	public static final RegistryObject<EntityType<JudgementEntity>> JUDGEMENT = REGISTER.register("judgement", () ->
+			EntityType.Builder.<JudgementEntity>of(JudgementEntity::new, EntityClassification.MISC)
+					.sized(0f, 0f).clientTrackingRange(64).updateInterval(1)
+					.build("judgement"));
 }
