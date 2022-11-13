@@ -10,13 +10,17 @@ import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.potion.Effect;
 import net.minecraft.potion.EffectInstance;
-import net.minecraft.world.World;
+import net.minecraft.util.ClassInheritanceMultiMap;
+import net.minecraft.util.math.MathHelper;
+import net.minecraft.world.IWorldReader;
 import net.minecraft.world.chunk.Chunk;
+import net.minecraft.world.chunk.ChunkStatus;
+import net.minecraft.world.chunk.IChunk;
 
 import javax.annotation.Nullable;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import java.util.function.Consumer;
 
 public final class LivingUtils{
 	private LivingUtils(){}
@@ -96,44 +100,30 @@ public final class LivingUtils{
 			attributeMap.put(attribute, new AttributeModifier(fallbackUuid!=null ? fallbackUuid : UUID.randomUUID(), "", amount, operation));
 	}
 
-	public static List<LivingEntity> getLivingEntitiesInSphere(Entity entity, int radius){
-		List<LivingEntity> resultList = new ArrayList<>();
-		int range = (radius/16)+1;
-		int squareLength = 2*range+1;
-		World world = entity.level;
-		for(int i = 1; i<=Math.pow(squareLength, 2); i++){
-			Chunk chunk = world.getChunk(entity.xChunk-range+(i/squareLength), entity.zChunk-range+(i%squareLength));
-			for(int k = 0; k<chunk.getEntitySections().length; ++k){
-				for(Entity e : chunk.getEntitySections()[k]){
-					if(e instanceof LivingEntity&&e!=entity){
-						if(radius*radius>=e.distanceToSqr(entity))
-							resultList.add((LivingEntity)e);
-					}
-				}
-			}
-		}
-		return resultList;
+	public static void forEachLivingEntitiesInCylinder(Entity entity, double radius, double height, Consumer<LivingEntity> consumer){
+		forEachLivingEntitiesInCylinder(entity.level, entity.getX(), entity.getY(), entity.getZ(), radius, height, entity, consumer);
 	}
-
-	public static List<LivingEntity> getLivingEntitiesInCylinder(Entity entity, int radius, int height){
-		List<LivingEntity> resultList = new ArrayList<>();
-		int range = (radius/16)+1;
-		int squareLength = 2*range+1;
-		World world = entity.level;
-		for(int i = 1; i<=Math.pow(squareLength, 2); i++){
-			Chunk chunk = world.getChunk(entity.xChunk-range+(i/squareLength), entity.zChunk-range+(i%squareLength));
-			for(int k = 0; k<chunk.getEntitySections().length; ++k){
-				for(Entity e : chunk.getEntitySections()[k]){
-					if(e instanceof LivingEntity&&e!=entity){
-						double distanceX = e.getX()-entity.getX();
-						double distanceY = Math.abs(e.getY()-entity.getY());
-						double distanceZ = e.getZ()-entity.getZ();
-						if(radius*radius>=distanceX*distanceX+distanceZ*distanceZ&&distanceY<=height)
-							resultList.add((LivingEntity)e);
+	public static void forEachLivingEntitiesInCylinder(IWorldReader level, double x, double y, double z, double radius, double height, @Nullable Entity excludedEntity, Consumer<LivingEntity> consumer){
+		int chunkMinX = MathHelper.floor(x-radius) >> 4;
+		int chunkMaxX = MathHelper.floor(x+radius) >> 4;
+		int chunkMinZ = MathHelper.floor(z-radius) >> 4;
+		int chunkMaxZ = MathHelper.floor(z+radius) >> 4;
+		for(int cx = chunkMinX; cx<=chunkMaxX; cx++){
+			for(int cz = chunkMinZ; cz<=chunkMaxZ; cz++){
+				IChunk chunk = level.getChunk(cx, cz, ChunkStatus.FULL, false);
+				if(!(chunk instanceof Chunk)) continue;
+				for(ClassInheritanceMultiMap<Entity> section : ((Chunk)chunk).getEntitySections()){
+					for(Entity e : section){
+						if(e instanceof LivingEntity&&e!=excludedEntity){
+							double distanceX = e.getX()-x;
+							double distanceY = Math.abs(e.getY()-y);
+							double distanceZ = e.getZ()-z;
+							if(radius*radius>=distanceX*distanceX+distanceZ*distanceZ&&distanceY<=height/2)
+								consumer.accept((LivingEntity)e);
+						}
 					}
 				}
 			}
 		}
-		return resultList;
 	}
 }
