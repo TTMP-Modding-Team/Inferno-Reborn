@@ -2,9 +2,9 @@ package ttmp.infernoreborn.capability;
 
 import net.minecraft.util.Direction;
 import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.capabilities.CapabilityInject;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.common.util.LazyOptional;
+import ttmp.infernoreborn.api.Caps;
 import ttmp.infernoreborn.api.TickingTask;
 import ttmp.infernoreborn.api.TickingTaskHandler;
 
@@ -14,9 +14,6 @@ import java.util.Iterator;
 import java.util.List;
 
 public class SimpleTickingTaskHandler implements TickingTaskHandler, ICapabilityProvider{
-	@CapabilityInject(TickingTaskHandler.class)
-	private static Capability<TickingTaskHandler> tickingTaskHandler;
-
 	private final List<TickingTask> actions = new ArrayList<>();
 
 	@Override public void add(TickingTask task){
@@ -37,6 +34,6 @@ public class SimpleTickingTaskHandler implements TickingTaskHandler, ICapability
 	private final LazyOptional<TickingTaskHandler> self = LazyOptional.of(() -> this);
 
 	@Override public <T> LazyOptional<T> getCapability(Capability<T> cap, @Nullable Direction side){
-		return cap==tickingTaskHandler ? self.cast() : LazyOptional.empty();
+		return cap==Caps.tickingTaskHandler ? self.cast() : LazyOptional.empty();
 	}
 }

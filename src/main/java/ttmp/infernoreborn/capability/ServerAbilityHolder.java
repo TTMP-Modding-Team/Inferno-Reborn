@@ -31,6 +31,7 @@ import ttmp.infernoreborn.infernaltype.dsl.effect.ParticleEffect;
 import ttmp.infernoreborn.network.ModNet;
 import ttmp.infernoreborn.network.SyncAbilityHolderMsg;
 import ttmp.infernoreborn.util.LazyPopulatedList;
+import ttmp.infernoreborn.util.ServerAbilityCooldown;
 import ttmp.infernoreborn.util.StupidUtils;
 
 import javax.annotation.Nonnull;
@@ -91,7 +92,7 @@ public class ServerAbilityHolder implements AbilityHolder, ICapabilitySerializab
 	private boolean generateAbility = true;
 	private boolean disableDrop;
 
-	private final ServerCooldown cooldown = new ServerCooldown();
+	private final ServerAbilityCooldown cooldown = new ServerAbilityCooldown();
 
 	@Override public Set<Ability> getAbilities(){
 		return abilitiesView;

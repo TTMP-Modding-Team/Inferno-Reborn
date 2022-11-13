@@ -6,9 +6,9 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.ListNBT;
 import net.minecraft.util.Direction;
 import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.capabilities.CapabilityInject;
 import net.minecraftforge.common.capabilities.ICapabilitySerializable;
 import net.minecraftforge.common.util.LazyOptional;
+import ttmp.infernoreborn.api.Caps;
 import ttmp.infernoreborn.api.essence.EssenceHolder;
 import ttmp.infernoreborn.api.essence.EssenceNetProvider;
 
@@ -16,9 +16,6 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 public final class SimpleEssenceNetProvider implements EssenceNetProvider, ICapabilitySerializable<ListNBT>{
-	@CapabilityInject(EssenceNetProvider.class)
-	private static Capability<EssenceNetProvider> essenceNetProvider;
-
 	private static final int NET_SIZE_LIMIT = 100000000;
 
 	private final Int2ObjectMap<EssenceHolder> essenceHolders = new Int2ObjectOpenHashMap<>();
@@ -37,7 +34,7 @@ public final class SimpleEssenceNetProvider implements EssenceNetProvider, ICapa
 	@Nullable private LazyOptional<EssenceNetProvider> self;
 
 	@Nonnull @Override public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable Direction side){
-		if(cap==essenceNetProvider){
+		if(cap==Caps.essenceNetProvider){
 			if(self==null) self = LazyOptional.of(() -> this);
 			return self.cast();
 		}else return LazyOptional.empty();

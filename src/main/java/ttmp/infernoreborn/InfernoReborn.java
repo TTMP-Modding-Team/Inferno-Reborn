@@ -37,6 +37,7 @@ import top.theillusivec4.curios.api.SlotTypeMessage;
 import top.theillusivec4.curios.api.SlotTypePreset;
 import ttmp.infernoreborn.api.TickingTaskHandler;
 import ttmp.infernoreborn.api.ability.AbilityHolder;
+import ttmp.infernoreborn.api.essence.EssenceHandler;
 import ttmp.infernoreborn.api.essence.EssenceHolder;
 import ttmp.infernoreborn.api.essence.EssenceNetProvider;
 import ttmp.infernoreborn.api.recipe.FluidIngredient;
@@ -138,6 +139,7 @@ public class InfernoReborn{
 		event.enqueueWork(() -> {
 			registerDefaultCapability(AbilityHolder.class);
 			registerDefaultCapability(EssenceHolder.class);
+			registerDefaultCapability(EssenceHandler.class);
 			registerDefaultCapability(SigilHolder.class);
 			registerDefaultCapability(TickingTaskHandler.class);
 			registerDefaultCapability(ShieldProvider.class);

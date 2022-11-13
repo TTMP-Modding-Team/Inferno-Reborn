@@ -1,4 +1,4 @@
-package ttmp.infernoreborn.capability;
+package ttmp.infernoreborn.util;
 
 import it.unimi.dsi.fastutil.objects.Object2LongLinkedOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Object2LongMap;
@@ -14,7 +14,7 @@ import ttmp.infernoreborn.contents.Abilities;
 import javax.annotation.Nullable;
 import java.util.Set;
 
-public class ServerCooldown implements Cooldown{
+public class ServerAbilityCooldown implements Cooldown{
 	private final Object2LongMap<Ability.CooldownTicket> cooldowns = new Object2LongLinkedOpenHashMap<>();
 
 	@Nullable private AbilitySkill castingSkill;
