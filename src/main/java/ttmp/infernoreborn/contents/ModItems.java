@@ -20,6 +20,7 @@ import ttmp.infernoreborn.contents.item.AutomationModuleBlockItem;
 import ttmp.infernoreborn.contents.item.BodySigilItem;
 import ttmp.infernoreborn.contents.item.CrucibleAutomationUnitBlockItem;
 import ttmp.infernoreborn.contents.item.CrucibleBlockItem;
+import ttmp.infernoreborn.contents.item.CylinderTestItem;
 import ttmp.infernoreborn.contents.item.EssenceHolderBookItem;
 import ttmp.infernoreborn.contents.item.EssenceHolderItem;
 import ttmp.infernoreborn.contents.item.EssenceNetAccessorItem;
@@ -251,6 +252,7 @@ public final class ModItems{
 	public static final RegistryObject<Item> SIGIL_ICON = REGISTER.register("sigil_icon", () -> new SigilItem(new Item.Properties().setISTER(() -> SigilIconRenderer::new)));
 
 	public static final RegistryObject<Item> ABILITY_COLOR_PICKER = REGISTER.register("ability_color_picker", () -> new AbilityColorPickerItem(new Item.Properties()));
+	public static final RegistryObject<Item> CYLINDER_TEST = REGISTER.register("cylinder_test", () -> new CylinderTestItem(new Item.Properties()));
 
 	private static RegistryObject<Item> essence(EssenceType type, EssenceSize size){
 		String id;

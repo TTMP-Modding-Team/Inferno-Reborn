@@ -176,8 +176,8 @@ public final class Abilities{
 			new Ability(new Ability.Properties(0xf5bfa4, 0x992614, 0xf2bcb3)
 					.addSkill(10, 300, (entity, holder) -> {
 						if(entity.getLastHurtByMob()==null) return false;
-						for(LivingEntity e : LivingUtils.getLivingEntitiesInCylinder(entity, 32, 10))
-							e.setLastHurtByMob(entity.getLastHurtByMob());
+						LivingUtils.forEachLivingEntitiesInCylinder(entity, 32, 10,
+								e -> e.setLastHurtByMob(entity.getLastHurtByMob()));
 						return true;
 					}, (entity, holder) -> entity.getLastHurtByMob()!=null)
 					.addAttribute(Attributes.MAX_HEALTH, "2d145dfc-dda4-4fc0-aa35-6666eae0a776", 0.25, Operation.ADDITION)
@@ -380,14 +380,14 @@ public final class Abilities{
 			new Ability(new Ability.Properties(0x1d1d1d, 0x750000)
 					.addTargetedSkill(5, 50, (entity, holder, target) -> {
 						if(!(entity.getHealth()/entity.getMaxHealth()<0.4)) return false;
-						boolean succeed = false;
-						for(LivingEntity e : LivingUtils.getLivingEntitiesInCylinder(entity, 12, 5)){
-							if(e.hurt(DamageSource.GENERIC, 1)){
-								succeed = true;
-								entity.heal(1);
-							}
-						}
-						return succeed;
+						final int[] healAmount = {0};
+						LivingUtils.forEachLivingEntitiesInCylinder(entity, 12, 5, e -> {
+							if(e.hurt(DamageSource.GENERIC, 1)) healAmount[0]++;
+						});
+						if(healAmount[0]>0){
+							entity.heal(healAmount[0]);
+							return true;
+						}else return false;
 					}, (entity, holder, target) -> entity.getHealth()/entity.getMaxHealth()<0.4)
 					.drops(EssenceType.DEATH, 2*9)
 					.drops(EssenceType.WATER, 9)
@@ -420,11 +420,10 @@ public final class Abilities{
 
 	public static final RegistryObject<Ability> EMPERORS_AURA = REGISTER.register("emperors_aura", () ->
 			new Ability(new Ability.Properties(0xb20000, 0xdcb600, 0xdcb600)
-					.onHit((entity, holder, event) -> {
-						for(LivingEntity e : LivingUtils.getLivingEntitiesInCylinder(entity, 16, 10))
-							if(e.isAlive()&&!(e instanceof PlayerEntity))
-								LivingUtils.addStackEffect(e, Effects.DAMAGE_BOOST, 140, 0, 1, 64);
-					})
+					.onHit((entity, holder, event) -> LivingUtils.forEachLivingEntitiesInCylinder(entity, 16, 10, e -> {
+						if(e.isAlive()&&!(e instanceof PlayerEntity))
+							LivingUtils.addStackEffect(e, Effects.DAMAGE_BOOST, 140, 0, 1, 64);
+					}))
 					.addAttribute(Attributes.ATTACK_DAMAGE, "4b220817-9f85-432f-9ce8-ac9d282b5d38", 2, Operation.MULTIPLY_BASE)
 					.addAttribute(Attributes.MAX_HEALTH, "1b071763-1bae-4c09-8c95-58c06629b9a3", 1.5, Operation.MULTIPLY_BASE)
 					.drops(EssenceType.DOMINANCE, 9*9)));
