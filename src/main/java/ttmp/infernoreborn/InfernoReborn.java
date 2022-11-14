@@ -58,6 +58,7 @@ import ttmp.infernoreborn.client.render.AnvilEntityRenderer;
 import ttmp.infernoreborn.client.render.CreeperMissileEntityRenderer;
 import ttmp.infernoreborn.client.render.CrucibleTileEntityRenderer;
 import ttmp.infernoreborn.client.render.GoldenSkullTileEntityRenderer;
+import ttmp.infernoreborn.client.render.JudgementRenderer;
 import ttmp.infernoreborn.client.render.SigilIconRenderer;
 import ttmp.infernoreborn.client.render.SummonedSkeletonRenderer;
 import ttmp.infernoreborn.client.render.SummonedZombieRenderer;
@@ -215,6 +216,7 @@ public class InfernoReborn{
 			RenderingRegistry.registerEntityRenderingHandler(ModEntities.CREEPER_MISSILE.get(), CreeperMissileEntityRenderer::new);
 			RenderingRegistry.registerEntityRenderingHandler(ModEntities.SUMMONED_ZOMBIE.get(), SummonedZombieRenderer::new);
 			RenderingRegistry.registerEntityRenderingHandler(ModEntities.SUMMONED_SKELETON.get(), SummonedSkeletonRenderer::new);
+			RenderingRegistry.registerEntityRenderingHandler(ModEntities.JUDGEMENT.get(), JudgementRenderer::new);
 
 			ClientRegistry.bindTileEntityRenderer(ModTileEntities.GOLDEN_SKULL.get(), GoldenSkullTileEntityRenderer::new);
 			ClientRegistry.bindTileEntityRenderer(ModTileEntities.CRUCIBLE.get(), CrucibleTileEntityRenderer::new);

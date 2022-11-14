@@ -7,96 +7,111 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.IPacket;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.World;
-import net.minecraft.world.chunk.Chunk;
 import net.minecraftforge.fml.network.NetworkHooks;
+import ttmp.infernoreborn.api.LivingUtils;
+import ttmp.infernoreborn.api.ability.AbilityHolder;
+import ttmp.infernoreborn.contents.ModEntities;
 
+import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
 public class JudgementEntity extends Entity{
+	public static final double MAX_RADIUS = 6*16;
+	public static final int TICKS = 40;
 
-	private float radius = 0;
-	private final float EXTEND_SPEED = 0.1f;
-	private final int MAX_RADIUS = 30;
-	private final List<MobEntry> removeEntityList;
-	private int currentIndex = 0;
+	@Nullable private List<MobEntry> removeEntityList;
+	private int nextEntry;
+
 	public JudgementEntity(EntityType<JudgementEntity> type, World world){
 		super(type, world);
-		removeEntityList = getTargetEntities();
-		removeEntityList.sort(Comparator.naturalOrder());
+		this.noPhysics = true;
+		this.setNoGravity(true);
+	}
+	public JudgementEntity(World world, Vector3d pos){
+		this(ModEntities.JUDGEMENT.get(), world);
+		this.setPos(pos.x(), pos.y(), pos.z());
 	}
 
-	public JudgementEntity(EntityType<JudgementEntity> type, World world, Vector3d pos){
-		super(type, world);
-		this.setPos(pos.x(), pos.y(), pos.z());
-		removeEntityList = getTargetEntities();
-		removeEntityList.sort(Comparator.naturalOrder());
-	}
 	@Override protected void defineSynchedData(){}
-	@Override protected void readAdditionalSaveData(CompoundNBT pCompound){}
-	@Override protected void addAdditionalSaveData(CompoundNBT pCompound){}
 	@Override public IPacket<?> getAddEntityPacket(){
 		return NetworkHooks.getEntitySpawningPacket(this);
 	}
 
-	@Override public void tick(){
-		super.tick();
-		if(radius>=MAX_RADIUS) this.remove();
-		radius += EXTEND_SPEED;
-		if(removeEntityList.size()==currentIndex+1) return;
-		if(tickCount>=removeEntityList.get(currentIndex).getTick()){
-			removeEntityList.get(currentIndex).getEntity().remove();
-			currentIndex += 1;
-		}
+	public double getRadius(){
+		return getRadius(0);
+	}
+	public double getRadius(float partialTicks){
+		return Math.max(1, (this.tickCount+partialTicks)/TICKS)*MAX_RADIUS;
 	}
 
-	public float getRadius(){
-		return this.radius;
+	@Override public void tick(){
+		super.tick();
+		if(level.isClientSide) return;
+		if(tickCount>=TICKS){
+			this.remove();
+			return;
+		}
+		if(removeEntityList==null){
+			removeEntityList = getTargetEntities();
+			nextEntry = 0;
+		}
+		while(nextEntry<removeEntityList.size()){
+			MobEntry e = removeEntityList.get(nextEntry);
+			if(tickCount<e.tick) break;
+			e.entity.remove();
+			nextEntry++;
+		}
 	}
 
 	private List<MobEntry> getTargetEntities(){
 		List<MobEntry> resultList = new ArrayList<>();
-		int range = (MAX_RADIUS/16)+1;
-		int squareLength = 2*range+1;
-		World world = this.level;
-		for(int i = 1; i<=Math.pow(squareLength, 2); i++){
-			Chunk chunk = world.getChunk(this.xChunk-range+(i/squareLength), this.zChunk-range+(i%squareLength));
-			for(int k = 0; k<chunk.getEntitySections().length; ++k){
-				for(Entity e : chunk.getEntitySections()[k]){
-					if(e instanceof LivingEntity){
-						double distanceX = e.getX()-this.getX();
-						double distanceZ = e.getZ()-this.getZ();
-						double distanceSquare = distanceX*distanceX+distanceZ*distanceZ;
-						if(radius*radius>=distanceSquare)
-							resultList.add(new MobEntry((LivingEntity)e, Math.sqrt(distanceSquare)/EXTEND_SPEED+(double)this.tickCount));
-
-					}
-				}
-			}
-		}
+		LivingUtils.forEachLivingEntitiesInCylinder(this, MAX_RADIUS, Double.POSITIVE_INFINITY, e -> {
+			if(!e.isAlive()) return;
+			AbilityHolder h = AbilityHolder.of(e);
+			if(h==null||h.getAbilities().isEmpty()) return;
+			double dx = this.getX()-e.getX();
+			double dz = this.getZ()-e.getZ();
+			double dist = Math.sqrt(dx*dx+dz*dz);
+			double percentage = dist/MAX_RADIUS;
+			resultList.add(new MobEntry(e, (int)Math.ceil(percentage*TICKS)));
+		});
+		resultList.sort(Comparator.naturalOrder());
 		return resultList;
 	}
-}
 
-class MobEntry implements Comparable<MobEntry>{
-	private final LivingEntity e;
-	private final double tick;
-
-	public MobEntry(LivingEntity e, double tick){
-		this.e = e;
-		this.tick = tick;
+	@Override protected void readAdditionalSaveData(CompoundNBT tag){
+		this.tickCount = tag.getInt("Age");
+	}
+	@Override protected void addAdditionalSaveData(CompoundNBT tag){
+		tag.putInt("Age", this.tickCount);
 	}
 
-	public LivingEntity getEntity(){
-		return e;
+	@Override public boolean ignoreExplosion(){
+		return true;
+	}
+	@Override public boolean isInvisible(){
+		return true;
 	}
 
-	public double getTick(){
-		return tick;
-	}
+	private static final class MobEntry implements Comparable<MobEntry>{
+		private final LivingEntity entity;
+		private final int tick;
 
-	@Override public int compareTo(MobEntry o){
-		return Double.compare(this.getTick(), o.getTick());
+		public MobEntry(LivingEntity entity, int tick){
+			this.entity = entity;
+			this.tick = tick;
+		}
+
+		@Override public int compareTo(MobEntry o){
+			return Double.compare(tick, o.tick);
+		}
+		@Override public String toString(){
+			return "MobEntry{"+
+					"entity="+entity+
+					", tick="+tick+
+					'}';
+		}
 	}
 }

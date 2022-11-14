@@ -33,7 +33,7 @@ public class JudgementItem extends Item{
 		if(level.isClientSide) return ActionResult.success(stack);
 		PlayerCapability cap = PlayerCapability.of(player);
 		if(cap!=null&&!cap.hasJudgementCooldown()){
-			JudgementEntity e = new JudgementEntity(ModEntities.JUDGEMENT.get(), level, player.position());
+			JudgementEntity e = new JudgementEntity(level, player.position());
 			level.addFreshEntity(e);
 			cap.setJudgementCooldown(JUDGEMENT_COOLDOWN);
 		}
